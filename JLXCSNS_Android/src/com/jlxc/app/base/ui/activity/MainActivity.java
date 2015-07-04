@@ -12,7 +12,7 @@ import android.support.v4.app.FragmentTabHost;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.View.OnClickListener; 
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
@@ -29,7 +29,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	private int mImageViewArray[] = {R.drawable.tab_home_btn,R.drawable.tab_message_btn};
 	
 	private String mTextviewArray[] = {"主页", "哈哈"};
-	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.jlxc.app.R;
+import com.handmark.pulltorefresh.library.MyListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -44,9 +45,11 @@ public class NextActivity extends FragmentActivity {
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 
 		// Set a listener to be invoked when the list should be refreshed.
-		mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+        mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<MyListView>() {
+
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+			public void onRefresh(PullToRefreshBase<MyListView> refreshView) {
+
 				String label = DateUtils.formatDateTime(getApplicationContext(), System.currentTimeMillis(),
 						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
 
@@ -78,6 +81,7 @@ public class NextActivity extends FragmentActivity {
 						mPullRefreshListView.onRefreshComplete();
 					}
 				});
+			
 			}
 		});
 
