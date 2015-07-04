@@ -8,6 +8,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.jlxc.app.base.manager.ActivityManager;
+import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -24,7 +25,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class NextActivity extends FragmentActivity {
+public class NextActivity extends BaseActivityWithTopBar {
 	private String[] mStrings = { "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
 			"Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale", "Aisy Cendre",
 			"Allgauer Emmentaler", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
@@ -38,11 +39,8 @@ public class NextActivity extends FragmentActivity {
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
 		super.onCreate(arg0);
-        ActivityManager.getInstence().pushActivity(this);
-        setContentView(R.layout.activity_next);
 		
         mPullRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
-
 		// Set a listener to be invoked when the list should be refreshed.
 		mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
@@ -53,44 +51,43 @@ public class NextActivity extends FragmentActivity {
 				// Update the LastUpdatedLabel
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 
+				mListItems.addFirst("haha new line");
+				mAdapter.notifyDataSetChanged();
+				// Call onRefreshComplete when the list has been refreshed.
+				mPullRefreshListView.onRefreshComplete();
+				
 				// Do work to refresh the list here.
-				HttpUtils httpUtils = new HttpUtils();
-				httpUtils.send(HttpMethod.GET, "http://www.lidroid.com", new RequestCallBack<String>() {
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1) {
-						// TODO Auto-generated method stub
-						Log.i("--", arg1+"faile");
-						mPullRefreshListView.onRefreshComplete();
-					}
-
-					@Override
-					public void onSuccess(ResponseInfo<String> arg0) {
-						// TODO Auto-generated method stub
-						Log.i("--", arg0.result);
-						 
-						//��ͷ��������������
-						mListItems.addFirst("haha new line");
-						
-						//֪ͨ������ݼ��Ѿ��ı�?�����ͨ�?����ô������ˢ��mListItems�ļ���
-						mAdapter.notifyDataSetChanged();
-						// Call onRefreshComplete when the list has been refreshed.
-						mPullRefreshListView.onRefreshComplete();
-					}
-				});
+//				HttpUtils httpUtils = new HttpUtils();
+//				httpUtils.send(HttpMethod.GET, "http://www.lidroid.com", new RequestCallBack<String>() {
+//
+//					@Override
+//					public void onFailure(HttpException arg0, String arg1) {
+//						// TODO Auto-generated method stub
+//						Log.i("--", arg1+"faile");
+//						mPullRefreshListView.onRefreshComplete();
+//					}
+//
+//					@Override
+//					public void onSuccess(ResponseInfo<String> arg0) {
+//						// TODO Auto-generated method stub
+//						Log.i("--", arg0.result);
+//						 
+//						mListItems.addFirst("haha new line");
+//						
+//						mAdapter.notifyDataSetChanged();
+//						// Call onRefreshComplete when the list has been refreshed.
+//						mPullRefreshListView.onRefreshComplete();
+//					}
+//				});
 			}
 		});
 
-		// �����б�����
 		mListItems = new LinkedList<String>();
 		mListItems.addAll(Arrays.asList(mStrings));
 		mAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, mListItems);
 
-		// �������󶨷�������һ
-		// ����һ
 		// mPullRefreshListView.setAdapter(mAdapter);
-		// ������
 		ListView actualListView = mPullRefreshListView.getRefreshableView();
 		actualListView.setAdapter(mAdapter);
 	}
@@ -152,6 +149,21 @@ public class NextActivity extends FragmentActivity {
 
 			super.onPostExecute(result);//����Ǳ��еģ�?AsyncTask�涨�ĸ�ʽ
 		}
+	}
+
+
+
+	@Override
+	public int setLayoutId() {
+		// TODO Auto-generated method stub
+		
+		return R.layout.activity_next;
+	}
+
+	@Override
+	protected void setUpView() {
+		// TODO Auto-generated method stub
+		
 	}	
 
 }

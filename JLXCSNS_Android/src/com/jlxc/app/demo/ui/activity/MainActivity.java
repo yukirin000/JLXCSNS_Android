@@ -1,9 +1,16 @@
 package com.jlxc.app.demo.ui.activity;
 
+import com.alibaba.fastjson.JSONObject;
+import com.handmark.pulltorefresh.library.R.string;
 import com.jlxc.app.R;
-import com.jlxc.app.base.ui.activity.JLXCBaseActivity;
+import com.jlxc.app.base.helper.JsonRequestCallBack;
+import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.DBManager;
+import com.jlxc.app.base.manager.HttpManager;
+import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.demo.ui.fragment.FragmentPage1;
 import com.jlxc.app.demo.ui.fragment.FragmentPage2;
+import com.lidroid.xutils.exception.HttpException;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,10 +23,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
 
-public class MainActivity extends JLXCBaseActivity{
+public class MainActivity extends BaseActivity{
 
 	//FragmentTabHost对象
-	private FragmentTabHost mTabHost;
+	private FragmentTabHost mTabHost; 
 	
 	private LayoutInflater layoutInflater;
 		
@@ -36,7 +43,24 @@ public class MainActivity extends JLXCBaseActivity{
 //		ImageView menuImg = (ImageView) findViewById(R.id.title_bar_menu_btn);
 //		menuImg.setOnClickListener(this);
 		initTab();
-
+//		HttpManager.get("http://192.168.1.101/jlxc_php/index.php/Home/MobileApi/recommendFriendsList?user_id=19", new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
+//			@Override
+//			public void onSuccess(JSONObject jsonResponse, String flag) {
+//				// TODO Auto-generated method stub
+//				super.onSuccess(jsonResponse, flag);
+//				
+//				Log.i("--", "haha"+jsonResponse.toJSONString());
+//				
+//			}
+//			@Override
+//			public void onFailure(HttpException arg0, String arg1, String flag) {
+//				// TODO Auto-generated method stub
+//				super.onFailure(arg0, arg1, flag);
+//				
+//				Log.i("--", "fail");
+//			}
+//			
+//		}, null));
 	}
     
     public void initTab() {

@@ -19,16 +19,13 @@ import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.R;
 
 /**
- * 全局基类
  * 
- * @author Michael.liu
  * 
  */
-public abstract class JLXCBaseActivity extends FragmentActivity {
+public abstract class BaseActivity extends FragmentActivity {
 	private ProgressDialog ubabyProgressDialog;
 
 	/**
-	 * 是否有可用网络
 	 */
 	public boolean hasActiveNetwork(Context context) {
 		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -53,7 +50,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 					"Please return the layout id in setLayoutId method,as simple as R.layout.cr_news_fragment_layout")
 					.printStackTrace();
 		} else {
-			// 注入view和事件
+			// 娉ㄥ��view���浜�浠�
 			v = LayoutInflater.from(this).inflate(setLayoutId(), null);
 			setContentView(v);
 			ViewUtils.inject(this);
@@ -63,7 +60,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 获取layout的id
+	 * ��峰��layout���id
 	 * 
 	 * @return
 	 */
@@ -74,7 +71,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	protected abstract void setUpView();
 
 	/**
-	 * 右侧进入
+	 * ��充晶杩����
 	 * 
 	 * @param intent
 	 */
@@ -84,7 +81,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 右侧退出
+	 * ��充晶������
 	 */
 	public void finishWithRight() {
 		ActivityManager.getInstence().popActivity(this);
@@ -93,7 +90,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 下方进入
+	 * 涓���硅�����
 	 * 
 	 * @param intent
 	 */
@@ -103,7 +100,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 下方退出
+	 * 涓���归�����
 	 */
 	public void finishWithBottom() {
 		ActivityManager.getInstence().popActivity(this);
@@ -112,7 +109,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 加载progressdialog
+	 * ���杞�progressdialog
 	 */
 	public void showLoading(String message, boolean cancleable) {
 		if (ubabyProgressDialog == null) {
@@ -126,7 +123,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 关闭progressdialog
+	 * ��抽��progressdialog
 	 */
 	public void hideLoading() {
 		if (ubabyProgressDialog != null && ubabyProgressDialog.isShowing()) {
@@ -136,10 +133,10 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 显示AlertDialog且只有确认按钮
+	 * ��剧ずAlertDialog涓�������纭�璁ゆ�����
 	 */
 	public void showConfirmAlert(String title, String message) {
-		new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("确认", null).show();
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("纭�璁�", null).show();
 	}
 
 	public void onResume() {
@@ -153,7 +150,7 @@ public abstract class JLXCBaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 重写返回操作
+	 * ������杩�������浣�
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
