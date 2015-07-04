@@ -3,7 +3,6 @@ package com.jlxc.app.base.manager;
 import java.util.Stack;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 
 public class ActivityManager {
 	private static Stack<Activity> activityStack;
@@ -20,17 +19,16 @@ public class ActivityManager {
 		return instance;
 	}
 
-	// Ôø????∫Ê??È°?Activity
+	//Âá∫Ê†à
 	public void popActivity(Activity activity) {
 		if (activity != null) {
-			// ??®‰?????ÂÆ?‰π???????‰∏??????∫Â?????Activity??∂Ô??‰π?Ëø?Ë°?‰∫?Activity?????≥È?????Ôø??
 			activity.finish();
 			activityStack.remove(activity);
 			activity = null;
 		}
 	}
 
-	// ??∑Â??ÂΩ???????È°?Activity
+	//ÂΩìÂâçactivity
 	public Activity currentActivity() {
 		Activity activity = null;
 		if (!activityStack.empty())
@@ -38,7 +36,7 @@ public class ActivityManager {
 		return activity;
 	}
 
-	// Â∞?ÂΩ????Activity??®Â?•Ê??‰∏?
+	//ËøõÊ†à
 	public void pushActivity(Activity activity) {
 		if (activityStack == null) {
 			activityStack = new Stack<Activity>();
@@ -46,7 +44,7 @@ public class ActivityManager {
 		activityStack.add(activity);
 	}
 
-	// Ôø????∫Ê??‰∏???????Activity
+	//ÂÖ®Âá∫
 	@SuppressWarnings("rawtypes")
 	public void popAllActivityExceptOne(Class cls) {
 		while (true) {
@@ -62,10 +60,10 @@ public class ActivityManager {
 	}
 
 	/**
-	 * Ôø??Ôø??
+	 * ÈÄÄÂá∫app
 	 */
 	public void exitApplication() {
-		System.out.println("Ôø????∫Â??Ôø??");
+		System.out.println("ÈÄÄÂá∫app");
 		while (true) {
 			Activity activity = currentActivity();
 			if (activity == null) {
