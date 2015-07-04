@@ -41,7 +41,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	private int mImageViewArray[] = {R.drawable.tab_home_btn,R.drawable.tab_message_btn};
 	
 	//Tab???项�?��?????�?
-	private String mTextviewArray[] = {"�?�?", "�????", "好�??", "广�??", "??��??"};
+	private String mTextviewArray[] = {"主页", "哈哈"};
 	
 	
     @Override
