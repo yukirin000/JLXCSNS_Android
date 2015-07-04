@@ -11,6 +11,7 @@ import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.demo.ui.fragment.FragmentPage1;
 import com.jlxc.app.demo.ui.fragment.FragmentPage2;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.view.annotation.ViewInject;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.widget.TabHost.TabSpec;
 public class MainActivity extends BaseActivity{
 
 	//FragmentTabHost对象
+	@ViewInject(android.R.id.tabhost)
 	private FragmentTabHost mTabHost; 
 	
 	private LayoutInflater layoutInflater;
@@ -67,7 +69,7 @@ public class MainActivity extends BaseActivity{
     	
 		layoutInflater = LayoutInflater.from(this);
 				
-		mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+//		mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);	
 		
 		int count = fragmentArray.length;	
