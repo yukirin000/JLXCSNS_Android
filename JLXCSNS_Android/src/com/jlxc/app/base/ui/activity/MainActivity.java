@@ -5,6 +5,7 @@ import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.ui.fragment.FragmentPage1;
 import com.jlxc.app.base.ui.fragment.FragmentPage2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -64,7 +65,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	
 	/**
 	 */
-	private View getTabItemView(int index){
+	@SuppressLint("InflateParams") private View getTabItemView(int index){
 		View view = layoutInflater.inflate(R.layout.tab_item_view, null);
 	
 		ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
@@ -72,8 +73,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		TextView textView = (TextView) view.findViewById(R.id.textview);
 		textView.setText(mTextviewArray[index]);
 		
-		int i = mTabHost.getCurrentTab();
-
+//		int i = mTabHost.getCurrentTab();
 		return view;
 	}
 	
