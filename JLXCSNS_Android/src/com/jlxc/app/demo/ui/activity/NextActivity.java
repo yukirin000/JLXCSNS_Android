@@ -1,4 +1,4 @@
-package com.jlxc.app.base.ui.activity;
+package com.jlxc.app.demo.ui.activity;
 
 import java.util.Arrays;
 import java.util.LinkedList;

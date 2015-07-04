@@ -1,24 +1,22 @@
-package com.jlxc.app.base.ui.activity;
+package com.jlxc.app.demo.ui.activity;
 
 import com.jlxc.app.R;
-import com.jlxc.app.base.manager.ActivityManager;
-import com.jlxc.app.base.ui.fragment.FragmentPage1;
-import com.jlxc.app.base.ui.fragment.FragmentPage2;
+import com.jlxc.app.base.ui.activity.JLXCBaseActivity;
+import com.jlxc.app.demo.ui.fragment.FragmentPage1;
+import com.jlxc.app.demo.ui.fragment.FragmentPage2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener; 
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
 
-public class MainActivity extends FragmentActivity implements OnClickListener{
+public class MainActivity extends JLXCBaseActivity{
 
 	//FragmentTabHost对象
 	private FragmentTabHost mTabHost;
@@ -34,11 +32,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityManager.getInstence().pushActivity(this);
-        setContentView(R.layout.activity_main);
-    	
-		ImageView menuImg = (ImageView) findViewById(R.id.title_bar_menu_btn);
-		menuImg.setOnClickListener(this);
+
+//		ImageView menuImg = (ImageView) findViewById(R.id.title_bar_menu_btn);
+//		menuImg.setOnClickListener(this);
 		initTab();
 
 	}
@@ -58,10 +54,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 			mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.selector_tab_background);
 		}
 	} 
-
-	@Override
-	public void onClick(View v) {
-	}
 	
 	/**
 	 */
@@ -77,27 +69,27 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		return view;
 	}
 	
-
-	/**
-	 * 
-	 * @param intent
-	 */
-	public void startActivityWithRight(Intent intent) {
-		startActivity(intent);
-		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-	}
-
-	/**
-	 */
-	public void finishWithRight() {
-		ActivityManager.getInstence().popActivity(this);
-		finish();
-		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-	}
-	
 	public void next(View view) {
 		Log.i("--", "fff");
 		Intent intent = new Intent(this, NextActivity.class);
 		startActivityWithRight(intent);
+	}
+
+	@Override
+	public int setLayoutId() {
+		// TODO Auto-generated method stub
+		return R.layout.activity_main;
+	}
+
+	@Override
+	protected void loadLayout(View v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void setUpView() {
+		// TODO Auto-generated method stub
+		
 	}
 }

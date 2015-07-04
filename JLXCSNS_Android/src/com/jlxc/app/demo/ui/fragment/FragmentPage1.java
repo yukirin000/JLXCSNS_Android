@@ -1,4 +1,4 @@
-package com.jlxc.app.base.ui.fragment;
+package com.jlxc.app.demo.ui.fragment;
 
 import com.jlxc.app.R;
 
