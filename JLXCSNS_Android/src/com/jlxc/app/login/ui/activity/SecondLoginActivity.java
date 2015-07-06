@@ -6,6 +6,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
@@ -37,14 +38,18 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 	
 	private String username;
 	
-	@OnClick(value={R.id.loginBtn,R.id.second_login_activity})
+	@OnClick(value={R.id.loginBtn,R.id.second_login_activity,R.id.findPwdBtn})
 	public void viewClick(View v) {
 		
 		switch (v.getId()) {
-		//登录
 		case R.id.loginBtn:
+			//登录
 			login();
 			break;
+		case R.id.findPwdBtn:
+			//找回密码
+			findPwd();
+			break;	
 		case R.id.second_login_activity:
 			//收键盘
 			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -58,7 +63,8 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 	public void login() {
 		final String password = passwordEt.getText().toString().trim();
 		if (null==password || "".equals(password)) {
-			showConfirmAlert(getResources().getString(R.string.alert_title), "密码不能为空");
+			Toast.makeText(SecondLoginActivity.this, "密码不能为空",
+					Toast.LENGTH_SHORT).show();
 			return; 
 		}
 		//网络请求
@@ -73,7 +79,6 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 			public void onSuccess(JSONObject jsonResponse, String flag) {
 				// TODO Auto-generated method stub
 				super.onSuccess(jsonResponse, flag);
-				LogUtils.i(jsonResponse.toJSONString(), 1);
 				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
@@ -81,12 +86,13 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 					//登录成功用户信息注入
 					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
 					UserManager.getInstance().getUser().setContentWithJson(result);
-					
+					Toast.makeText(SecondLoginActivity.this, "登录成功",
+							Toast.LENGTH_SHORT).show();
 					break;
 				case JLXCConst.STATUS_FAIL:
 					hideLoading();
-					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-					
+					Toast.makeText(SecondLoginActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE),
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 			@Override
@@ -94,7 +100,49 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 				// TODO Auto-generated method stub
 				super.onFailure(arg0, arg1, flag);
 				hideLoading();
-				showConfirmAlert("提示", "登录失败，请检查网络连接!");
+				Toast.makeText(SecondLoginActivity.this, "网络异常",
+						Toast.LENGTH_SHORT).show();
+			}
+			
+		}, null)); 
+	}
+	
+	//找回密码
+	public void findPwd() {
+		//网络请求
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("phone_num", username);
+		HttpManager.post(JLXCConst.GET_MOBILE_VERIFY, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
+			
+			@Override
+			public void onSuccess(JSONObject jsonResponse, String flag) {
+				// TODO Auto-generated method stub
+				super.onSuccess(jsonResponse, flag);
+				LogUtils.i(jsonResponse.toJSONString(), 1);
+				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+				switch (status) {
+				case JLXCConst.STATUS_SUCCESS:
+					hideLoading();
+					//跳转
+	            	Intent intent = new Intent(SecondLoginActivity.this, RegisterActivity.class);
+	            	intent.putExtra("username", username);
+	            	intent.putExtra("isFindPwd", true);
+	            	startActivityWithRight(intent);	
+					
+					break;
+				case JLXCConst.STATUS_FAIL:
+					hideLoading();
+					Toast.makeText(SecondLoginActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE),
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+			@Override
+			public void onFailure(HttpException arg0, String arg1, String flag) {
+				// TODO Auto-generated method stub
+				super.onFailure(arg0, arg1, flag);
+				hideLoading();
+				Toast.makeText(SecondLoginActivity.this, "网络异常",
+						Toast.LENGTH_SHORT).show();
 			}
 			
 		}, null)); 

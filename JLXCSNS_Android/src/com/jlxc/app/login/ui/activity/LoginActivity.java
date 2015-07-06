@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -70,41 +71,15 @@ public class LoginActivity extends BaseActivity {
 	public void loginOrRegister() {
 		final String username = usernameEt.getText().toString();
 		if (!username.matches(JLXCConst.PHONENUMBER_PATTERN)) {
-			showConfirmAlert(getResources().getString(R.string.alert_title), "请输入正确的手机号码");
+			Toast.makeText(LoginActivity.this, "请输入正确的手机号码",
+					Toast.LENGTH_SHORT).show();
 			return; 
 		}
 		//网络请求
 		showLoading("正在验证，请稍后", true);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("username", username);
-		
-		HttpManager.post(JLXCConst.IS_USER, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
-			
-			@Override
-			public void onSuccess(JSONObject jsonResponse, String flag) {
-				// TODO Auto-generated method stub
-				super.onSuccess(jsonResponse, flag);
-				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-				if (status == JLXCConst.STATUS_SUCCESS) {
-					JSONObject object = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-				}
 				
-				if (status == JLXCConst.STATUS_FAIL) {
-					hideLoading();
-					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-				}
-			}
-			
-			@Override
-			public void onFailure(HttpException arg0, String arg1, String flag) {
-				// TODO Auto-generated method stub
-				super.onFailure(arg0, arg1, flag);
-				hideLoading();
-				showConfirmAlert("提示", "登录失败，请检查网络连接!");
-			}
-			
-		}, null));
-		
 		HttpManager.post(JLXCConst.IS_USER, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
 			
 			@Override
@@ -115,7 +90,7 @@ public class LoginActivity extends BaseActivity {
 				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
-					LogUtils.i(jsonResponse.toJSONString(), 1);
+//					LogUtils.i(jsonResponse.toJSONString(), 1);
 					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
 					//登录
 			        int loginDirection    = 1;
@@ -140,7 +115,8 @@ public class LoginActivity extends BaseActivity {
 					break;
 				case JLXCConst.STATUS_FAIL:
 					hideLoading();
-					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+					Toast.makeText(LoginActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE),
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 			@Override
@@ -148,7 +124,8 @@ public class LoginActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				super.onFailure(arg0, arg1, flag);
 				hideLoading();
-				showConfirmAlert("提示", "登录失败，请检查网络连接!");
+				Toast.makeText(LoginActivity.this, "网络异常",
+						Toast.LENGTH_SHORT).show();
 			}
 			
 		}, null)); 
@@ -165,7 +142,6 @@ public class LoginActivity extends BaseActivity {
 			public void onSuccess(JSONObject jsonResponse, String flag) {
 				// TODO Auto-generated method stub
 				super.onSuccess(jsonResponse, flag);
-				LogUtils.i(jsonResponse.toJSONString(), 1);
 				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
@@ -178,7 +154,8 @@ public class LoginActivity extends BaseActivity {
 					break;
 				case JLXCConst.STATUS_FAIL:
 					hideLoading();
-					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+					Toast.makeText(LoginActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE),
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 			@Override
@@ -186,7 +163,8 @@ public class LoginActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				super.onFailure(arg0, arg1, flag);
 				hideLoading();
-				showConfirmAlert("提示", "登录失败，请检查网络连接!");
+				Toast.makeText(LoginActivity.this, "网络异常",
+						Toast.LENGTH_SHORT).show();
 			}
 			
 		}, null)); 

@@ -24,6 +24,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dip"
         android:text="登录" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <Button
+            android:layout_marginLeft="30dip"
+            android:id="@+id/findPwdBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="找回密码" />
+    </LinearLayout>
        
 </LinearLayout>
 

@@ -2,10 +2,12 @@ package com.jlxc.app.login.ui.activity;
 
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.R.bool;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +31,8 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class RegisterActivity extends BaseActivityWithTopBar {
 
+	//是否是忘记密码
+	private Boolean isFindPwd;
 	// 当前倒计时的值
 	private int countdownValue = 0;
 	// 倒计时对象
@@ -62,18 +66,23 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	private EditText passwdeEditText;
 
 	// 点击事件绑定
-	@OnClick({ R.id.base_tv_back, R.id.next_button, R.id.revalidated_textview })
+	@OnClick({ R.id.base_tv_back, R.id.next_button, R.id.revalidated_textview, R.id.register_activity})
 	public void viewCickListener(View view) {
 		switch (view.getId()) {
 		case R.id.base_tv_back:
 			backClick();
 			break;
 		case R.id.next_button:
+			//点击下一步
 			nextClick();
 			break;
 		case R.id.revalidated_textview:
 			getVerificationCode();
 			break;
+		case R.id.register_activity:
+			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
+	        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+	        break;
 		default:
 			break;
 		}
@@ -83,6 +92,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	private void init() {
 		Intent intent = getIntent();
 		userPhoneNumber = intent.getStringExtra("username");
+		isFindPwd = intent.getBooleanExtra("isFindPwd", false);
 	}
 
 	// 点击返回
@@ -98,11 +108,11 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 								public void onClick(DialogInterface dialog,
 										int which) {
 									verifyCountdownTimer.cancel();
-									RegisterActivity.this.finish();
+									finishWithRight();
 								}
 							}).show();
 		} else {
-			RegisterActivity.this.finish();
+			finishWithRight();
 		}
 	}
 
@@ -121,8 +131,62 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 			Toast.makeText(RegisterActivity.this, "密码最少得6位啦",
 					Toast.LENGTH_SHORT).show();
 		} else {
-			startRegister();
+			//忘记密码
+			if (isFindPwd) {
+				findPwd();
+			}else {
+				//注册
+				startRegister();
+			}
 		}
+	}
+	
+	//找回密码
+	private void findPwd() {
+		showLoading("数据上传中^_^", false);
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("username", userPhoneNumber);
+		params.addBodyParameter("password", Md5Utils.encode(password));
+		params.addBodyParameter("verify_code",
+				String.valueOf(verifyCodeEditTextValue));
+
+		HttpManager.post(JLXCConst.FIND_PWD, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							hideLoading();
+							JSONObject result = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							UserModel userMd = new UserModel();
+							userMd.setContentWithJson(result);
+							UserManager.getInstance().setUser(userMd);
+							Toast.makeText(RegisterActivity.this, "修改成功",
+									Toast.LENGTH_SHORT).show();
+							
+						}
+
+						if (status == JLXCConst.STATUS_FAIL) {
+							hideLoading();
+							Toast.makeText(RegisterActivity.this, jsonResponse
+									.getString(JLXCConst.HTTP_MESSAGE),
+									Toast.LENGTH_SHORT).show();
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						hideLoading();
+						showConfirmAlert("提示", "注册失败，请检查网络连接!");
+					}
+
+				}, null));
 	}
 
 	// 开始注册
@@ -156,8 +220,9 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							hideLoading();
-							showConfirmAlert("提示", jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
+							Toast.makeText(RegisterActivity.this, jsonResponse
+									.getString(JLXCConst.HTTP_MESSAGE),
+									Toast.LENGTH_SHORT).show();
 						}
 					}
 
