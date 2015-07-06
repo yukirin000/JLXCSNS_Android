@@ -1,5 +1,6 @@
 package com.jlxc.app.login.ui.activity;
 
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 
 import com.alibaba.fastjson.JSONObject;
@@ -15,6 +17,8 @@ import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
+import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.Md5Utils;
@@ -83,7 +87,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	// 点击返回
 	private void backClick() {
-		if (0 != countdownValue) {
+		if (countdownValue > 0) {
 			new AlertDialog.Builder(RegisterActivity.this)
 					.setTitle("提示")
 					.setMessage("已经发送验证码了，再等会儿")
@@ -140,8 +144,12 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							hideLoading();
-							JSONObject object = jsonResponse
+							JSONObject result = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
+							UserModel userMd = new UserModel();
+							userMd.setContentWithJson(result);
+							UserManager.getInstance().setUser(userMd);
+
 							Toast.makeText(RegisterActivity.this, "注册成功",
 									Toast.LENGTH_SHORT).show();
 						}
@@ -176,18 +184,21 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		titletTextView.setText("注册");
 		phonePromptTextView.setText("验证码已发送至：" + userPhoneNumber);
 		revalidatedTextView.setEnabled(false);
+		revalidatedTextView.setTextColor(Color.GRAY);
 		verifyCountdownTimer = new CountDownTimer(60000, 1000) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {
 				countdownValue = (int) millisUntilFinished / 1000;
-				revalidatedTextView.setText(countdownValue + "s后重发");
+				revalidatedTextView.setText(countdownValue + "s 后重发");
 			}
 
 			@Override
 			public void onFinish() {
+				countdownValue = 0;
 				revalidatedTextView.setEnabled(true);
 				revalidatedTextView.setText("获取验证码");
+				revalidatedTextView.setTextColor(Color.BLUE);
 			}
 		};
 		// 开始倒计时
@@ -201,6 +212,9 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	// 获取验证码
 	private void getVerificationCode() {
+		// 设置字体颜色
+		revalidatedTextView.setTextColor(Color.GRAY);
+		// 网络请求
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("phone_num", userPhoneNumber);
 
@@ -233,5 +247,17 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 						showConfirmAlert("提示", "获取失败，请检查网络连接!");
 					}
 				}, null));
+	}
+
+	/**
+	 * 重写返回操作
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			backClick();
+			return true;
+		} else
+			return super.onKeyDown(keyCode, event);
 	}
 }
