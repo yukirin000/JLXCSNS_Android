@@ -25,6 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity"></activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.LoginActivity"></activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity"></activity>
     </application>
 
 </manifest>
