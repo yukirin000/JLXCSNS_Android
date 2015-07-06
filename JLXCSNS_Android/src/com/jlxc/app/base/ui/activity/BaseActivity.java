@@ -23,7 +23,7 @@ import com.jlxc.app.R;
  * 
  */
 public abstract class BaseActivity extends FragmentActivity {
-	private ProgressDialog ubabyProgressDialog;
+	private ProgressDialog progressDialog;
 
 	/**
 	 */
@@ -50,7 +50,7 @@ public abstract class BaseActivity extends FragmentActivity {
 					"Please return the layout id in setLayoutId method,as simple as R.layout.cr_news_fragment_layout")
 					.printStackTrace();
 		} else {
-			// 娉ㄥ��view���浜�浠�
+			// layout注入
 			v = LayoutInflater.from(this).inflate(setLayoutId(), null);
 			setContentView(v);
 			ViewUtils.inject(this);
@@ -60,7 +60,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * ��峰��layout���id
+	 * 重写方法设置layoutID
 	 * 
 	 * @return
 	 */
@@ -71,7 +71,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected abstract void setUpView();
 
 	/**
-	 * ��充晶杩����
+	 * 右侧进入动画
 	 * 
 	 * @param intent
 	 */
@@ -81,7 +81,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * ��充晶������
+	 * 右侧退出动画
 	 */
 	public void finishWithRight() {
 		ActivityManager.getInstence().popActivity(this);
@@ -90,7 +90,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 涓���硅�����
+	 * 底部进入
 	 * 
 	 * @param intent
 	 */
@@ -100,7 +100,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * 涓���归�����
+	 * 底部退出
 	 */
 	public void finishWithBottom() {
 		ActivityManager.getInstence().popActivity(this);
@@ -109,31 +109,31 @@ public abstract class BaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * ���杞�progressdialog
+	 * 显示加载动画
 	 */
 	public void showLoading(String message, boolean cancleable) {
-		if (ubabyProgressDialog == null) {
-			ubabyProgressDialog = new ProgressDialog(this);
-			ubabyProgressDialog.setCancelable(cancleable);
-			ubabyProgressDialog.setMessage(message + "");
+		if (progressDialog == null) {
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setCancelable(cancleable);
+			progressDialog.setMessage(message + "");
 		}
-		if (!ubabyProgressDialog.isShowing()) {
-			ubabyProgressDialog.show();
+		if (!progressDialog.isShowing()) {
+			progressDialog.show();
 		}
 	}
 
 	/**
-	 * ��抽��progressdialog
+	 * 隐藏加载动画
 	 */
 	public void hideLoading() {
-		if (ubabyProgressDialog != null && ubabyProgressDialog.isShowing()) {
-			ubabyProgressDialog.cancel();
-			ubabyProgressDialog = null;
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.cancel();
+			progressDialog = null;
 		}
 	}
 
 	/**
-	 * ��剧ずAlertDialog涓�������纭�璁ゆ�����
+	 * 显示alert
 	 */
 	public void showConfirmAlert(String title, String message) {
 		new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("纭�璁�", null).show();
@@ -150,7 +150,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	}
 
 	/**
-	 * ������杩�������浣�
+	 * key点击
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
