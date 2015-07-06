@@ -12,6 +12,7 @@ import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
+import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -77,7 +78,9 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
 					hideLoading();
-//					JSONObject result = jsonResponse.getJSONObject("result");
+					//登录成功用户信息注入
+					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
+					UserManager.getInstance().getUser().setContentWithJson(result);
 					
 					break;
 				case JLXCConst.STATUS_FAIL:

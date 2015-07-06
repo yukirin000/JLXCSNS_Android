@@ -13,6 +13,7 @@
            android:drawablePadding="10dp"
            android:hint="请输入手机号码"
            android:singleLine="true"
+           android:inputType="number"
            android:textSize="15sp" />
 
        <Button

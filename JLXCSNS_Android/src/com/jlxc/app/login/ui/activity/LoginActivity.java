@@ -1,8 +1,11 @@
 package com.jlxc.app.login.ui.activity;
 
+import java.util.Map;
+
 import android.annotation.SuppressLint;
 import android.app.DownloadManager.Request;
 import android.content.Intent;
+import android.support.v7.appcompat.R.string;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -14,12 +17,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
+import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
@@ -82,14 +87,12 @@ public class LoginActivity extends BaseActivity {
 				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 				if (status == JLXCConst.STATUS_SUCCESS) {
 					JSONObject object = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-					
 				}
 				
 				if (status == JLXCConst.STATUS_FAIL) {
 					hideLoading();
 					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 				}
-				
 			}
 			
 			@Override
@@ -215,8 +218,6 @@ public class LoginActivity extends BaseActivity {
 
 	@Override
 	protected void setUpView() {
-
-		
 	}
 
 }
