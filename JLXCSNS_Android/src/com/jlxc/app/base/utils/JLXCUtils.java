@@ -1,5 +1,6 @@
 package com.jlxc.app.base.utils;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,6 +8,7 @@ import java.util.Date;
 
 import android.annotation.SuppressLint;
 import android.util.Base64;
+import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class JLXCUtils {
@@ -59,18 +61,62 @@ public class JLXCUtils {
 		return mqttSdf.format(date);
 	}
 
-	/**
-	 * url 加密 先Base64再url编码
-	 * 
-	 * @param url
-	 * @return
+//	/**
+//	 * url 加密 先Base64再url编码
+//	 * 
+//	 * @param url
+//	 * @return
+//	 */
+//	public static String urlEncoding(String url) {
+//		try {
+//			return URLEncoder.encode(Base64.encodeToString(url.getBytes(), Base64.DEFAULT), "UTF-8");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return url;
+//		}
+//	}
+	/*
+	 * urlEncode 编码 
 	 */
-	public static String urlEncoding(String url) {
-		try {
-			return URLEncoder.encode(Base64.encodeToString(url.getBytes(), Base64.DEFAULT), "UTF-8");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return url;
-		}
-	}
+	public static String toURLEncoded(String paramString) {  
+        if (paramString == null || paramString.equals("")) {  
+            return "";  
+        }  
+          
+        try  
+        {  
+            String str = new String(paramString.getBytes(), "UTF-8");  
+            str = URLEncoder.encode(str, "UTF-8");  
+            return str;  
+        }  
+        catch (Exception localException)  
+        {  
+//            Log.i("--","toURLEncoded error:"+paramString, localException);  
+        }  
+          
+        return "";  
+    }  
+	
+	/*
+	 * urlDecode 解码
+	 */
+	public static String toURLDecoded(String paramString) {  
+        if (paramString == null || paramString.equals("")) {  
+            return "";  
+        }  
+          
+        try  
+        {  
+            String str = new String(paramString.getBytes(), "UTF-8");  
+            str = URLDecoder.decode(str, "UTF-8");  
+            return str;  
+        }  
+        catch (Exception localException)  
+        {  
+//        	Log.i("--","toURLDecoded error:"+paramString, localException);  
+        }  
+          
+        return "";  
+    }  
+	
 }
