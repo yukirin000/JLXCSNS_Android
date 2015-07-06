@@ -17,51 +17,51 @@ public class HttpManager {
 	private HttpManager() {
 	}
 
-	/**
-	 * 请求（Get方式）
-	 * 
-	 * @param <T>
-	 * @param <T>
-	 * 
-	 * @param url
-	 * @param params
-	 * @param callBack
-	 */
-	public static <T> void get(String url, RequestParams params, JsonRequestCallBack<T> callBack, boolean isEncrypt) {
-		http.configCurrentHttpCacheExpiry(0);
-		http.configDefaultHttpCacheExpiry(0);
-//		User user = CacheManager.getInstance().getCurrLoginUser();
-//		if (user != null && params != null) {
-//			params.addQueryStringParameter("ubaby_user_id", user.getName());
-//			params.addQueryStringParameter("device", "android");
+//	/**
+//	 * 请求（Get方式）
+//	 * 
+//	 * @param <T>
+//	 * @param <T>
+//	 * 
+//	 * @param url
+//	 * @param params
+//	 * @param callBack
+//	 */
+//	public static <T> void get(String url, RequestParams params, JsonRequestCallBack<T> callBack, boolean isEncrypt) {
+//		http.configCurrentHttpCacheExpiry(0);
+//		http.configDefaultHttpCacheExpiry(0);
+////		User user = CacheManager.getInstance().getCurrLoginUser();
+////		if (user != null && params != null) {
+////			params.addQueryStringParameter("ubaby_user_id", user.getName());
+////			params.addQueryStringParameter("device", "android");
+////		}
+//
+//		if (isEncrypt) {
+//			List<NameValuePair> paramsList = params.getQueryStringParams();
+//			RequestParams paramNew = new RequestParams();
+//			if (null != paramsList && paramsList.size() > 0) {
+//				String paramStr = "";
+//				for (int i = 0; i < paramsList.size(); i++) {
+//					if (i == 0) {
+//						paramStr += paramsList.get(i);
+//					} else {
+//						paramStr += "&" + paramsList.get(i);
+//					}
+//				}
+//				paramStr = JLXCUtils.urlEncoding(paramStr);
+//				paramNew.addQueryStringParameter("params", paramStr);
+//			}
+//			if (null != callBack) {
+//				callBack.setAbsoluteUrl(getAbsoluteUrl(url, paramNew));
+//			}
+//			http.send(HttpMethod.GET, url, paramNew, callBack);
+//		} else {
+//			if (null != callBack) {
+//				callBack.setAbsoluteUrl(getAbsoluteUrl(url, params));
+//			}
+//			http.send(HttpMethod.GET, url, params, callBack);
 //		}
-
-		if (isEncrypt) {
-			List<NameValuePair> paramsList = params.getQueryStringParams();
-			RequestParams paramNew = new RequestParams();
-			if (null != paramsList && paramsList.size() > 0) {
-				String paramStr = "";
-				for (int i = 0; i < paramsList.size(); i++) {
-					if (i == 0) {
-						paramStr += paramsList.get(i);
-					} else {
-						paramStr += "&" + paramsList.get(i);
-					}
-				}
-				paramStr = JLXCUtils.urlEncoding(paramStr);
-				paramNew.addQueryStringParameter("params", paramStr);
-			}
-			if (null != callBack) {
-				callBack.setAbsoluteUrl(getAbsoluteUrl(url, paramNew));
-			}
-			http.send(HttpMethod.GET, url, paramNew, callBack);
-		} else {
-			if (null != callBack) {
-				callBack.setAbsoluteUrl(getAbsoluteUrl(url, params));
-			}
-			http.send(HttpMethod.GET, url, params, callBack);
-		}
-	}
+//	}
 
 	/**
 	 * 请求（Get方式）
