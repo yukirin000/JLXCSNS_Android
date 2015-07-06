@@ -4,4 +4,29 @@
     <string name="app_name">HelloHa</string>
     <string name="hello_world">Hello world!</string>
 
+        <!-- Loading -->
+    <string name="login_loading_data">登录中,请稍后..</string>
+    <string name="loading_data">数据加载中，请稍候..</string>
+    <string name="loading_image">图片加载中，请稍候..</string>
+    <string name="loading_file">文件下载中，请稍候..</string>
+    <string name="sending_image">图片发送中，请稍候..</string>
+    <string name="sending_data">数据发送中，请稍候..</string>
+    <string name="sending_file">文件上传中，请稍候..</string>
+    <string name="loading">加载中，请稍候..</string>
+    <!-- Loading -->
+
+
+    <!-- Toast -->
+    <string name="toast_err_upload">数据提交失败,请检查网络</string>
+    <string name="toast_err_download">数据获取失败,请检查网络</string>
+    <!-- Toast -->
+
+
+    <!-- Alert -->
+    <string name="alert_title">提示</string>
+    <string name="alert_sure">确定</string>
+    <string name="alert_cancle">取消</string>
+    <string name="alert_finish">关闭</string>
+    <!-- Alert -->
+    
 </resources>

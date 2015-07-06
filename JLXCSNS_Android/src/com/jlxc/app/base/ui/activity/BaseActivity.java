@@ -136,7 +136,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	 * 显示alert
 	 */
 	public void showConfirmAlert(String title, String message) {
-		new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("纭�璁�", null).show();
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("确认", null).show();
 	}
 
 	public void onResume() {
