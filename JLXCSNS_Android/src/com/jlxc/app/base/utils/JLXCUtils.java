@@ -82,7 +82,6 @@ public class JLXCUtils {
         if (paramString == null || paramString.equals("")) {  
             return "";  
         }  
-          
         try  
         {  
             String str = new String(paramString.getBytes(), "UTF-8");  

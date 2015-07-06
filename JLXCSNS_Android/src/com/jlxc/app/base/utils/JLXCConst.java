@@ -8,6 +8,10 @@ public interface JLXCConst {
 	
 	public static final int STATUS_SUCCESS = 1;// 接口返回成功
 	public static final int STATUS_FAIL = 0;// 接口返回失败
+	public static final String HTTP_MESSAGE = "message"; //返回值信息
+	public static final String HTTP_RESULT = "result";// 返回值结果
+	public static final String HTTP_STATUS = "status";// 返回值状态
+	public static final String HTTP_LIST = "list";// 返回值列表
 
 	public static final int PAGE_SIZE = 10;
 

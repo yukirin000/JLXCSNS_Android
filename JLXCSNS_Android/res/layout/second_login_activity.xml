@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:id="@+id/second_login_activity"
+    android:gravity="center_horizontal">
+    
+    <include layout="@layout/layout_title_bar" />
+
+    <EditText
+        android:id="@+id/passwordEt"
+        android:layout_width="300dip"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dip"
+        android:drawablePadding="10dp"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dip"
+        android:text="登录" />
+       
+</LinearLayout>
+
+
+    

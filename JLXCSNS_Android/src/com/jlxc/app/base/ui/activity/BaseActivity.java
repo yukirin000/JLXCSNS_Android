@@ -33,7 +33,7 @@ public abstract class BaseActivity extends FragmentActivity {
 		if (connManager.getActiveNetworkInfo() != null) {
 			return connManager.getActiveNetworkInfo().isConnected();
 		}
-
+		
 		return false;
 	}
 

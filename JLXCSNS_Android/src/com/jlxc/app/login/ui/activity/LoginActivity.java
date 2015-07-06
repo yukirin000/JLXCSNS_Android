@@ -2,6 +2,7 @@ package com.jlxc.app.login.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.app.DownloadManager.Request;
+import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -21,7 +22,6 @@ import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -35,18 +35,19 @@ public class LoginActivity extends BaseActivity {
 	@ViewInject(R.id.usernameEt)
 	private EditText usernameEt;
 	//登录注册按钮
-	@ViewInject(R.id.loginRegister)
+	@ViewInject(R.id.loginRegisterBtn)
 	private Button loginRegisterBtn;
 	//布局文件
 	@ViewInject(R.id.login_activity)
 	private LinearLayout loginLayout;
 	
 	
-	@OnClick(value={R.id.loginRegister,R.id.login_activity})
+	@OnClick(value={R.id.loginRegisterBtn,R.id.login_activity})
 	public void loginOrRegisterClick(View v) {
 		
 		switch (v.getId()) {
-		case R.id.loginRegister:
+		//登录或者注册判断
+		case R.id.loginRegisterBtn:
 			loginOrRegister();
 			break;
 		case R.id.login_activity:
@@ -56,22 +57,51 @@ public class LoginActivity extends BaseActivity {
 		default:
 			break;
 		}
-		
 	}
 	
 	/**
 	 * 登录或者注册跳转
 	 */
 	public void loginOrRegister() {
-		String username = usernameEt.getText().toString();
+		final String username = usernameEt.getText().toString();
 		if (!username.matches(JLXCConst.PHONENUMBER_PATTERN)) {
 			showConfirmAlert(getResources().getString(R.string.alert_title), "请输入正确的手机号码");
 			return; 
 		}
 		//网络请求
-		showLoading("正在登录，请稍后", true);
+		showLoading("正在验证，请稍后", true);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("username", username);
+		
+		HttpManager.post(JLXCConst.IS_USER, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
+			
+			@Override
+			public void onSuccess(JSONObject jsonResponse, String flag) {
+				// TODO Auto-generated method stub
+				super.onSuccess(jsonResponse, flag);
+				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+				if (status == JLXCConst.STATUS_SUCCESS) {
+					JSONObject object = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
+					
+				}
+				
+				if (status == JLXCConst.STATUS_FAIL) {
+					hideLoading();
+					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+				}
+				
+			}
+			
+			@Override
+			public void onFailure(HttpException arg0, String arg1, String flag) {
+				// TODO Auto-generated method stub
+				super.onFailure(arg0, arg1, flag);
+				hideLoading();
+				showConfirmAlert("提示", "登录失败，请检查网络连接!");
+			}
+			
+		}, null));
+		
 		HttpManager.post(JLXCConst.IS_USER, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
 			
 			@Override
@@ -79,11 +109,11 @@ public class LoginActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				super.onSuccess(jsonResponse, flag);
 				
-				int status = jsonResponse.getInteger("status");
+				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
 					LogUtils.i(jsonResponse.toJSONString(), 1);
-					JSONObject result = jsonResponse.getJSONObject("result");
+					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
 					//登录
 			        int loginDirection    = 1;
 			        //注册
@@ -91,18 +121,23 @@ public class LoginActivity extends BaseActivity {
 			        int direction = result.getIntValue("direction");
 		            if (direction == loginDirection) {
 		            	hideLoading();
-		            	LogUtils.i("跳转到登录", 1);
+//		            	LogUtils.i("跳转到登录", 1); 
+		            	//跳转
+		            	Intent intent = new Intent(LoginActivity.this, SecondLoginActivity.class);
+		            	intent.putExtra("username", username);
+		            	startActivityWithRight(intent);
 		            }
 		            
 		            if (direction == registerDirection) {
-		            	hideLoading();
-		            	LogUtils.i("跳转到注册", 1);
-		            	showConfirmAlert("注册", "");
+//		            	LogUtils.i("跳转到注册", 1);
+		            	//发送验证码
+		            	sendVerify(username);
 		            }
 					
 					break;
 				case JLXCConst.STATUS_FAIL:
-					showConfirmAlert("提示", jsonResponse.getString("msg"));
+					hideLoading();
+					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 				}
 			}
 			@Override
@@ -114,7 +149,44 @@ public class LoginActivity extends BaseActivity {
 			}
 			
 		}, null)); 
-		
+	}
+	
+	//发送验证码
+	public void sendVerify(final String username) {
+		//网络请求
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("phone_num", username);
+		HttpManager.post(JLXCConst.GET_MOBILE_VERIFY, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
+			
+			@Override
+			public void onSuccess(JSONObject jsonResponse, String flag) {
+				// TODO Auto-generated method stub
+				super.onSuccess(jsonResponse, flag);
+				LogUtils.i(jsonResponse.toJSONString(), 1);
+				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+				switch (status) {
+				case JLXCConst.STATUS_SUCCESS:
+					hideLoading();
+					//跳转
+	            	Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+	            	intent.putExtra("username", username);
+	            	startActivityWithRight(intent);	
+					
+					break;
+				case JLXCConst.STATUS_FAIL:
+					hideLoading();
+					showConfirmAlert("提示", jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+				}
+			}
+			@Override
+			public void onFailure(HttpException arg0, String arg1, String flag) {
+				// TODO Auto-generated method stub
+				super.onFailure(arg0, arg1, flag);
+				hideLoading();
+				showConfirmAlert("提示", "登录失败，请检查网络连接!");
+			}
+			
+		}, null)); 
 	}
 	
 	/**
