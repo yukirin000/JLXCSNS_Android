@@ -3,8 +3,10 @@
     package="com.jlxc.app"
     android:versionCode="1"
     android:versionName="1.0" >
-     <uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="21" />
@@ -27,6 +29,8 @@
         <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity"></activity>
         <activity android:name="com.jlxc.app.login.ui.activity.LoginActivity"></activity>
         <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity"></activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.RegisterActivity" >
+        </activity>
     </application>
 
 </manifest>
