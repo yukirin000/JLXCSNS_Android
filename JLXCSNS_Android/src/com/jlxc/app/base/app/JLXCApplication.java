@@ -1,5 +1,8 @@
 package com.jlxc.app.base.app;
 
+import com.jlxc.app.base.manager.DBManager;
+import com.jlxc.app.base.utils.FileUtil;
+
 import android.app.Application;
 
 /**
@@ -9,7 +12,7 @@ import android.app.Application;
  * 
  */
 public class JLXCApplication extends Application {
-	// ��ȡapplication
+	// application
 	public static JLXCApplication application;
 	public static boolean isDebug;
 
@@ -21,6 +24,11 @@ public class JLXCApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		application = (JLXCApplication) getApplicationContext();
+		//数据库初始化
+		DBManager.getInstance();
+		//FileUtils初始化
+		FileUtil.makeDirs();
+		
 	}  
 
 ////	private void init() {
