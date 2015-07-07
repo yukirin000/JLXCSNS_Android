@@ -3,8 +3,8 @@ package com.jlxc.app.base.utils;
 public interface JLXCConst {
 
 	//	测试环境
-	public static final String DOMIN = "http://192.168.1.101/jlxc_php/index.php/Home/MobileApi";
-	public static final String ATTACHMENT_ADDR = "http://192.168.1.101/jlxc_php/Uploads/";	
+	public static final String DOMIN = "http://192.168.1.107/jlxc_php/index.php/Home/MobileApi";
+	public static final String ATTACHMENT_ADDR = "http://192.168.1.107/jlxc_php/Uploads/";	
 	
 	public static final int STATUS_SUCCESS = 1;// 接口返回成功
 	public static final int STATUS_FAIL = 0;// 接口返回失败
