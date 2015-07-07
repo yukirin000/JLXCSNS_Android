@@ -37,6 +37,8 @@ import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.demo.ui.activity.MainActivity;
+import com.jlxc.app.demo.ui.activity.NextActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -73,7 +75,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	AlertDialog imageDialog;
 	
 	//统计处理点击
-	@OnClick({R.id.headImageView,R.id.register_information_activity,R.id.confirmBtn})
+	@OnClick({R.id.headImageView,R.id.register_information_activity,R.id.confirmBtn,R.id.base_ll_right_btns})
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		//头像点击
@@ -84,6 +86,11 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		case R.id.confirmBtn:
 			//提交信息
 			uploadInformation();
+			break;
+		case R.id.base_ll_right_btns:
+			//跳过
+			Intent intent = new Intent(this, NextActivity.class);
+			startActivityWithRight(intent);
 			break;
 		case R.id.register_information_activity:
 			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
@@ -107,16 +114,6 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	
 	//上传个人信息
 	private void uploadInformation(){
-		
-//		headImageView.setImageResource(R.drawable.ic_launcher);
-		 
-//		Bitmap bitmap = Bitmap.createBitmap(convertViewToBitmap(headImageButton));
-//		headImageButton.setDrawingCacheEnabled(Boolean.FALSE);
-//		headImageButton.buildDrawingCache();
-////		headImageButton.setDrawingCacheEnabled(true); 
-//		Bitmap bitmap = headImageButton.getDrawingCache(true);
-//		headImageButton.setDrawingCacheEnabled(false);
-//				Bitmap.createBitmap(headImageButton.getDrawingCache());
 		
 		final UserModel userModel = UserManager.getInstance().getUser();
 		showLoading("信息上传中，请稍候...", false);
@@ -168,6 +165,9 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 							//toast
 							Toast.makeText(RegisterInformationActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE), Toast.LENGTH_SHORT).show();
 							hideLoading();
+							//跳到主页
+							Intent intent = new Intent(RegisterInformationActivity.this, NextActivity.class);
+							startActivityWithRight(intent);
 							break;
 						case JLXCConst.STATUS_FAIL:
 							hideLoading();
@@ -297,7 +297,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 //		radioGroup.getCheckedRadioButtonId();
 		radioGroup.check(R.id.radioMale);
-		
+		addRightBtn("跳过");
 		
 	}
 
