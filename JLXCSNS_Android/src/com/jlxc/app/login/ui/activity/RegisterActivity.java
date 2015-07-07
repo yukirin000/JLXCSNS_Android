@@ -31,7 +31,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class RegisterActivity extends BaseActivityWithTopBar {
 
-	//是否是忘记密码
+	// 是否是忘记密码
 	private Boolean isFindPwd;
 	// 当前倒计时的值
 	private int countdownValue = 0;
@@ -46,7 +46,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	// 返回按钮
 	@ViewInject(R.id.base_tv_back)
 	private TextView backTextView;
-	// 标题
+	// 页面标头
 	@ViewInject(R.id.base_tv_title)
 	private TextView titletTextView;
 	// 提示电话的textview
@@ -66,23 +66,24 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	private EditText passwdeEditText;
 
 	// 点击事件绑定
-	@OnClick({ R.id.base_tv_back, R.id.next_button, R.id.revalidated_textview, R.id.register_activity})
+	@OnClick({ R.id.base_tv_back, R.id.next_button, R.id.revalidated_textview,
+			R.id.register_activity })
 	public void viewCickListener(View view) {
 		switch (view.getId()) {
 		case R.id.base_tv_back:
 			backClick();
 			break;
 		case R.id.next_button:
-			//点击下一步
+			// 点击下一步
 			nextClick();
 			break;
 		case R.id.revalidated_textview:
 			getVerificationCode();
 			break;
 		case R.id.register_activity:
-			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
-	        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-	        break;
+			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+			break;
 		default:
 			break;
 		}
@@ -131,17 +132,17 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 			Toast.makeText(RegisterActivity.this, "密码最少得6位啦",
 					Toast.LENGTH_SHORT).show();
 		} else {
-			//忘记密码
+			// 忘记密码
 			if (isFindPwd) {
 				findPwd();
-			}else {
-				//注册
+			} else {
+				// 注册
 				startRegister();
 			}
 		}
 	}
-	
-	//找回密码
+
+	// 找回密码
 	private void findPwd() {
 		showLoading("数据上传中^_^", false);
 		RequestParams params = new RequestParams();
@@ -167,13 +168,15 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							UserManager.getInstance().setUser(userMd);
 							Toast.makeText(RegisterActivity.this, "修改成功",
 									Toast.LENGTH_SHORT).show();
-							
+
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							hideLoading();
-							Toast.makeText(RegisterActivity.this, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE),
+							Toast.makeText(
+									RegisterActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE),
 									Toast.LENGTH_SHORT).show();
 						}
 					}
@@ -185,7 +188,6 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 						hideLoading();
 						showConfirmAlert("提示", "注册失败，请检查网络连接!");
 					}
-
 				}, null));
 	}
 
@@ -195,8 +197,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("username", userPhoneNumber);
 		params.addBodyParameter("password", Md5Utils.encode(password));
-		params.addBodyParameter("verify_code",
-				String.valueOf(verifyCodeEditTextValue));
+		params.addBodyParameter("verify_code", verifyCodeEditTextValue);
 
 		HttpManager.post(JLXCConst.REGISTER_USER, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -220,8 +221,10 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							hideLoading();
-							Toast.makeText(RegisterActivity.this, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE),
+							Toast.makeText(
+									RegisterActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE),
 									Toast.LENGTH_SHORT).show();
 						}
 					}

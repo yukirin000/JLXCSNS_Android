@@ -1,52 +1,71 @@
 package com.jlxc.app.base.model;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class SchoolModel {
 
 	// 初中
-	public static final int JUNIOR_MIDDLE_SCHOOL = 0;
+	public static final String JUNIOR_MIDDLE_SCHOOL = "1";
 	// 高中
-	public static final int SENIOR_MIDDLE_SCHOOL = 1;
-
+	public static final String SENIOR_MIDDLE_SCHOOL = "2";
+	// 学校代码
+	private String schoolCode;
 	// 学校的名字
 	private String schoolName;
-	// 学校的区域
-	private String schoolLocation;
-	// 学校的区域
-	private int schoolType;
+	// 区域名字
+	private String districtName;
+	// 所在城市的名字
+	private String cityName;
+	// 学校的类型
+	private String schoolType;
 
-	public SchoolModel(String name, String location, int type) {
-		setSchoolName(name);
-		setSchoolLocation(location);
-		setSchoolType(type);
+	// 内容注入
+	public void setContentWithJson(JSONObject object) {
+
+		setSchoolCode(object.getString("code"));
+		setSchoolName(object.getString("name"));
+		setDistrictName(object.getString("district_name"));
+		setCityName(object.getString("city_name"));
+		setSchoolType(object.getString("level"));
 	}
 
-	// 获取学校的名称
 	public String getSchoolName() {
 		return schoolName;
 	}
 
-	// 设置学校名字
 	public void setSchoolName(String schoolName) {
 		this.schoolName = schoolName;
 	}
 
-	// 获取学校的区域
-	public String getSchoolLocation() {
-		return schoolLocation;
+	public String getSchoolCode() {
+		return schoolCode;
 	}
 
-	// 设置学校的区域
-	public void setSchoolLocation(String schoolLocation) {
-		this.schoolLocation = schoolLocation;
+	public void setSchoolCode(String schoolCode) {
+		this.schoolCode = schoolCode;
 	}
 
-	// 获取学校类型
-	public int getSchoolType() {
+	public String getDistrictName() {
+		return districtName;
+	}
+
+	public void setDistrictName(String districtName) {
+		this.districtName = districtName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getSchoolType() {
 		return schoolType;
 	}
 
-	// 设置学校类型
-	public void setSchoolType(int schoolType) {
+	public void setSchoolType(String schoolType) {
 		this.schoolType = schoolType;
 	}
 
