@@ -13,7 +13,6 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 
-
 public class BigImgLookActivity extends BaseActivity {
 	public static final String INTENT_KEY = "filePath";
 	@ViewInject(R.id.img_big_look)
