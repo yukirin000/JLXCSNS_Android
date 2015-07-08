@@ -235,7 +235,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			}
 		});
 
-		// 设置底部自动刷新
+		/**
+		 * 设置底部自动刷新
+		 * */ 
 		schoolListView
 				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 
