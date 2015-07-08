@@ -102,7 +102,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				getSchoolList();
+				schoolName = searchEditText.getText().toString();
+				schoolAdapter.clear();
+				getSchoolList("1", districtCode, schoolName);
 			}
 
 			@Override
@@ -164,7 +166,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// 上拉刷新
-				getSchoolList(String.valueOf(pageIndex), districtCode, schoolName);
+				getSchoolList(String.valueOf(pageIndex), districtCode,
+						schoolName);
 				LogUtils.i("-------" + pageIndex);
 			}
 
