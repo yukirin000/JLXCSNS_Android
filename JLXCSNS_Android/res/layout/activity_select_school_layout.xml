@@ -39,7 +39,6 @@
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:headerDividersEnabled="false"
-        android:scrollbars="none"
         android:smoothScrollbar="true" />
 
 </LinearLayout>

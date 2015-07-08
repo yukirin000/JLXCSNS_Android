@@ -1,6 +1,7 @@
 package com.jlxc.app.base.model;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jlxc.app.base.utils.LogUtils;
 
 public class SchoolModel {
 
@@ -27,6 +28,7 @@ public class SchoolModel {
 		setDistrictName(object.getString("district_name"));
 		setCityName(object.getString("city_name"));
 		setSchoolType(object.getString("level"));
+
 	}
 
 	public String getSchoolName() {

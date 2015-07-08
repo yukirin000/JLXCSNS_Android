@@ -242,7 +242,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.register_layout;
+		return R.layout.activity_register_layout;
 	}
 
 	@Override

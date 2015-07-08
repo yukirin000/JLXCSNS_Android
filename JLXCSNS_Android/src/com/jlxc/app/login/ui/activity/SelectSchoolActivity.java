@@ -3,12 +3,12 @@ package com.jlxc.app.login.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.integer;
-import android.R.string;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -18,9 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.location.LocationManagerProxy;
+import com.amap.api.location.LocationProviderProxy;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
@@ -28,7 +31,6 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.locate.JLXCLocate;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.SchoolModel;
@@ -61,33 +63,36 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	// 学校列表listview
 	@ViewInject(R.id.school_listview)
 	private PullToRefreshListView schoolListView;
-	// 学校<JSON对象列表
-	List<JSONObject> schoolList = new ArrayList<JSONObject>();
 	// 用户当前所在的区域编码
 	private String districtCode = "110101";
 	// 查询学校时的page值
 	private int pageIndex = 1;
+	// 定位对象
+	Location districtLocation;
 
 	@OnClick(R.id.base_tv_back)
 	public void viewCickListener(View view) {
-
+		back();
 	}
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.select_school_layout;
+		return R.layout.activity_select_school_layout;
+	}
+
+	@Override
+	protected void onStart() {
+		// 开始定位，每0.2s通知一次，距离变化10通知一次，超时时间为5秒
+		districtLocation = new Location(SelectSchoolActivity.this);
+		districtLocation.locateInit(200, 10, 5000);
+		super.onStart();
 	}
 
 	@Override
 	protected void setUpView() {
-		initData();
 		initListViewSet();
 		// 设置为底部刷新模式
 		schoolListView.setMode(Mode.PULL_FROM_END);
-
-		// 开始定位，每0.2s通知一次，距离变化10通知一次，超时时间为5秒
-		Location districtLocation = new Location(SelectSchoolActivity.this);
-		districtLocation.locateInit(200, 10, 5000);
 
 		// 设置搜索框内容改变的监听事件
 		searchEditText.addTextChangedListener(new TextWatcher() {
@@ -121,14 +126,16 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					SchoolModel item) {
-				// 数据绑定
+				// 学校绑定
 				helper.setText(R.id.school_name_textView, item.getSchoolName());
-				if (SchoolModel.JUNIOR_MIDDLE_SCHOOL == item.getSchoolType()) {
+				// 位置绑定
+				if (item.getSchoolType().equals(
+						SchoolModel.JUNIOR_MIDDLE_SCHOOL)) {
 					helper.setText(R.id.school_location_textView,
 							item.getCityName() + item.getDistrictName()
 									+ "◆ 初中");
-				} else if (SchoolModel.SENIOR_MIDDLE_SCHOOL == item
-						.getSchoolType()) {
+				} else if (item.getSchoolType().equals(
+						SchoolModel.SENIOR_MIDDLE_SCHOOL)) {
 					helper.setText(R.id.school_location_textView,
 							item.getCityName() + item.getDistrictName()
 									+ "◆ 高中");
@@ -148,14 +155,14 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// 下拉刷新
-				new GetDataTask().execute(Integer.valueOf(PULL_DOWM_MODE));
+				// getSchoolList(String.valueOf(pageIndex), districtCode, "");
 			}
 
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// 上拉刷新
-				new GetDataTask().execute(Integer.valueOf(PULL_UP_MODE));
+				getSchoolList(String.valueOf(pageIndex), districtCode, "");
 			}
 
 		});
@@ -174,16 +181,15 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	/**
 	 * 初始化数据
 	 * */
-	private void initData() {
-		getSchoolList("1", districtCode, "");
-		if (null != schoolList) {
-			for (JSONObject schoolobj : schoolList) {
-				SchoolModel tempModel = new SchoolModel();
-				tempModel.setContentWithJson(schoolobj);
-				mDatas.add(tempModel);
-			}
-			schoolList.clear();
+	private void schoolDataHandle(List<JSONObject> dataList) {
+		List<SchoolModel> newDatas = new ArrayList<SchoolModel>();
+		for (JSONObject schoolobj : dataList) {
+			SchoolModel tempModel = new SchoolModel();
+			tempModel.setContentWithJson(schoolobj);
+			newDatas.add(tempModel);
 		}
+		schoolAdapter.addAll(newDatas);
+		dataList.clear();
 	}
 
 	/**
@@ -196,9 +202,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("page", page);
 		params.addBodyParameter("district_code", districtCode);
 		params.addBodyParameter("school_name", schoolName);
-
-		LogUtils.i("查询成功,page=" + page);
-		LogUtils.i("districtCode=" + districtCode);
 
 		HttpManager.post(JLXCConst.GET_SCHOOL_LIST, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -213,8 +216,14 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 获取学校列表
-							schoolList = (List<JSONObject>) jResult.get("list");
-							LogUtils.i("查询成功");
+							LogUtils.i("查询学校数据成功");
+							List<JSONObject> objList = (List<JSONObject>) jResult
+									.get("list");
+							schoolDataHandle(objList);
+							schoolListView.onRefreshComplete();
+							if (objList.size() > 0) {
+								pageIndex++;
+							}
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -223,7 +232,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 									jsonResponse
 											.getString(JLXCConst.HTTP_MESSAGE),
 									Toast.LENGTH_SHORT).show();
-							LogUtils.e("查询失败！");
+							LogUtils.e("查询学校列表失败");
+							schoolListView.onRefreshComplete();
 						}
 					}
 
@@ -233,71 +243,100 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						super.onFailure(arg0, arg1, flag);
 						Toast.makeText(SelectSchoolActivity.this,
 								"卧槽，竟然查询失败，检查下网络", Toast.LENGTH_SHORT).show();
+						schoolListView.onRefreshComplete();
 					}
 
 				}, null));
 	}
 
 	/**
-	 * 异步刷新事件
+	 * 定位获取区域代码
 	 * */
-	private class GetDataTask extends
-			AsyncTask<Integer, Void, List<SchoolModel>> {
+	private class Location implements AMapLocationListener {
 
-		// 后台处理部分
-		@Override
-		protected List<SchoolModel> doInBackground(Integer... params) {
-			List<SchoolModel> newDatas = new ArrayList<SchoolModel>();
-			if (PULL_DOWM_MODE == params[0].intValue()) {
-				// 下拉时获取数据
-				/*
-				 * getSchoolList("1", districtCode, ""); for (JSONObject
-				 * schoolobj : schoolList) { SchoolModel tempModel = new
-				 * SchoolModel(); tempModel.setContentWithJson(schoolobj);
-				 * newDatas.add(tempModel); } schoolList.clear();
-				 */
-			} else {
-				// 上拉时获取数据
-				getSchoolList(String.valueOf(pageIndex), districtCode, "");
-				for (JSONObject schoolobj : schoolList) {
-					SchoolModel tempModel = new SchoolModel();
-					tempModel.setContentWithJson(schoolobj);
-					newDatas.add(tempModel);
-				}
-				// 如果上次
-				if (schoolList.size() > 0) {
-					pageIndex++;
-				}
-				schoolList.clear();
-			}
-			return newDatas;
+		private Context mContext;
+		private LocationManagerProxy aMapLocManager = null;
+
+		public Location(Context context) {
+			mContext = context;
 		}
 
-		// 获取数据后的处理
+		/**
+		 * 初始化定位,通知时间（毫秒），通知距离（米），超时值（毫秒）
+		 */
+		public void locateInit(long minTime, float minDistance, int timeOutValue) {
+			aMapLocManager = LocationManagerProxy.getInstance(mContext);
+			aMapLocManager.requestLocationData(
+					LocationProviderProxy.AMapNetwork, minTime, minDistance,
+					this);
+			LogUtils.i("Locate init successed.");
+		}
+
+		/**
+		 * 停止定位并销毁对象
+		 */
+		private void stopLocation() {
+			if (aMapLocManager != null) {
+				aMapLocManager.removeUpdates(this);
+				aMapLocManager.destroy();
+			}
+			aMapLocManager = null;
+			LogUtils.i("Locate stop successed.");
+		}
+
 		@Override
-		protected void onPostExecute(List<SchoolModel> newDatas) {
-			schoolAdapter.addAll(newDatas);
-			schoolListView.onRefreshComplete();
-			super.onPostExecute(newDatas);
+		public void onLocationChanged(android.location.Location location) {
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+		}
+
+		@Override
+		public void onLocationChanged(AMapLocation location) {
+			if (location != null) {
+				districtCode = location.getAdCode();
+				LogUtils.i("get district Code successed.");
+				// 查询区域代码成功后开始查找学校数据
+				getSchoolList("1", districtCode, "");
+				stopLocation();
+			}
 		}
 	}
 
-	// 定位部分
-	private class Location extends JLXCLocate {
-		public Location(Context context) {
-			super(context);
-		}
+	@Override
+	protected void onStop() {
+		// 停止定位
+		districtLocation.stopLocation();
+		super.onStop();
+	}
 
-		@Override
-		public void onLocateFinish(boolean state) {
-			if (state) {
-				// 定位成功
-				listTitleTextView.setText(this.getCityStr() + " "
-						+ this.getDistrictStr());
-				this.stopLocation();
-			} else {
-				// 定位失败
-			}
-		}
+	/**
+	 * 返回操作
+	 * */
+	private void back() {
+		// 停止定位
+		districtLocation.stopLocation();
+		finishWithRight();
+	}
+
+	/**
+	 * 重写返回操作
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			back();
+			return true;
+		} else
+			return super.onKeyDown(keyCode, event);
 	}
 }
