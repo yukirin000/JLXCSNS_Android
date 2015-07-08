@@ -3,6 +3,7 @@ package com.jlxc.app.login.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -224,8 +225,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 				imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
 				// 更新数据
-				updateUserSchool(schoolAdapter.getItem(position)
-						.getSchoolName(), schoolAdapter.getItem(position)
+				updateUserSchool(schoolAdapter.getItem(position - 1)
+						.getSchoolName(), schoolAdapter.getItem(position - 1)
 						.getSchoolCode());
 				// 跳转到下一页面
 				Intent intent = new Intent(SelectSchoolActivity.this,
@@ -341,43 +342,38 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("uid", userModel.getUid() + "");
 		params.addBodyParameter("school", schoolName);
 		params.addBodyParameter("school_code", schoolCode);
-		
-		HttpManager
-				.post(JLXCConst.CHANGE_SCHOOL,
-						params, new JsonRequestCallBack<String>(
-								new LoadDataHandler<String>() {
 
-									@Override
-									public void onSuccess(
-											JSONObject jsonResponse, String flag) {
-										super.onSuccess(jsonResponse, flag);
-										int status = jsonResponse
-												.getInteger(JLXCConst.HTTP_STATUS);
-										if (status == JLXCConst.STATUS_SUCCESS) {
-											LogUtils.i("学校上传成功");
-										}
+		HttpManager.post(JLXCConst.CHANGE_SCHOOL, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
-										if (status == JLXCConst.STATUS_FAIL) {
-											Toast.makeText(
-													SelectSchoolActivity.this,
-													jsonResponse
-															.getString(JLXCConst.HTTP_MESSAGE),
-													Toast.LENGTH_SHORT).show();
-											LogUtils.e("学校上传失败");
-										}
-									}
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							LogUtils.i("学校上传成功");
+						}
 
-									@Override
-									public void onFailure(HttpException arg0,
-											String arg1, String flag) {
-										super.onFailure(arg0, arg1, flag);
-										Toast.makeText(
-												SelectSchoolActivity.this,
-												"卧槽，操作失败，检查下网络",
-												Toast.LENGTH_SHORT).show();
-									}
+						if (status == JLXCConst.STATUS_FAIL) {
+							Toast.makeText(
+									SelectSchoolActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE),
+									Toast.LENGTH_SHORT).show();
+							LogUtils.e("学校上传失败");
+						}
+					}
 
-								}, null));
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						Toast.makeText(SelectSchoolActivity.this,
+								"卧槽，操作失败，检查下网络", Toast.LENGTH_SHORT).show();
+					}
+
+				}, null));
 
 	}
 
