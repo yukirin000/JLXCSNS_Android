@@ -138,6 +138,10 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 			} else {
 				// 注册
 				startRegister();
+				//跳转到选择学校
+				Intent intent = new Intent(RegisterActivity.this,
+						SelectSchoolActivity.class);
+				startActivityWithRight(intent);
 			}
 		}
 	}
@@ -211,6 +215,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							hideLoading();
 							JSONObject result = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
+							// 设置用户实例
 							UserModel userMd = new UserModel();
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);

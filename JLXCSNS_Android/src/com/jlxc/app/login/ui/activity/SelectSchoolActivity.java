@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,8 +28,11 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.services.core.s;
+import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
@@ -54,6 +63,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	private List<SchoolModel> mDatas = new ArrayList<SchoolModel>();
 	// 学校listview的适配器
 	private HelloHaAdapter<SchoolModel> schoolAdapter;
+	// 父layout
+	@ViewInject(R.id.root_layout)
+	private LinearLayout rootLayout;
 	// 搜索框
 	@ViewInject(R.id.search_edittext)
 	private EditText searchEditText;
@@ -70,11 +82,27 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	// 查询学校时的page值
 	private int pageIndex = 1;
 	// 定位对象
-	Location districtLocation;
+	private Location districtLocation;
+	// 是否下拉刷新
+	private boolean isPullDowm = false;
+	// 上次查询的结果数
+	private int lastCount = 0;
 
-	@OnClick(R.id.base_tv_back)
+	@OnClick({ R.id.base_tv_back, R.id.root_layout })
 	public void viewCickListener(View view) {
-		back();
+		switch (view.getId()) {
+		case R.id.base_tv_back:
+			back();
+			break;
+
+		case R.id.root_layout:
+			// 隐藏输入键盘
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -94,17 +122,24 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		initListViewSet();
 		// 设置为底部刷新模式
-		schoolListView.setMode(Mode.PULL_FROM_END);
+		schoolListView.setMode(Mode.BOTH);
 
 		// 设置搜索框内容改变的监听事件
 		searchEditText.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
+			public void onTextChanged(CharSequence str, int start, int before,
 					int count) {
-				schoolName = searchEditText.getText().toString();
-				schoolAdapter.clear();
-				getSchoolList("1", districtCode, schoolName);
+				isPullDowm = true;
+				schoolName = str.toString();
+				if (!schoolName.equals("")) {
+					listTitleTextView.setText("搜索到的学校");
+				} else {
+					listTitleTextView.setText("猜你在这些学校");
+				}
+				pageIndex = 1;
+				getSchoolList(String.valueOf(pageIndex), districtCode,
+						schoolName);
 			}
 
 			@Override
@@ -159,29 +194,60 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// 下拉刷新
-				// getSchoolList(String.valueOf(pageIndex), districtCode, "");
+				isPullDowm = true;
+				pageIndex = 1;
+				getSchoolList(String.valueOf(pageIndex), districtCode,
+						schoolName);
 			}
 
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// 上拉刷新
+				isPullDowm = false;
 				getSchoolList(String.valueOf(pageIndex), districtCode,
 						schoolName);
-				LogUtils.i("-------" + pageIndex);
 			}
 
 		});
 
-		// 设置点击事件
+		/**
+		 * 设置点击item到事件
+		 * */
 		schoolListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// 事件处理
+				// 隐藏输入键盘
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+				// 更新数据
+				updateUserSchool(schoolAdapter.getItem(position)
+						.getSchoolName(), schoolAdapter.getItem(position)
+						.getSchoolCode());
+				// 跳转到下一页面
+				Intent intent = new Intent(SelectSchoolActivity.this,
+						RegisterInformationActivity.class);
+				startActivityWithRight(intent);
 			}
 		});
+
+		// 设置底部自动刷新
+		schoolListView
+				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+					@Override
+					public void onLastItemVisible() {
+						// 底部自动加载
+						schoolListView.setMode(Mode.PULL_FROM_END);
+						schoolListView.setRefreshing(true);
+						isPullDowm = false;
+						getSchoolList(String.valueOf(pageIndex), districtCode,
+								schoolName);
+					}
+				});
 	}
 
 	/**
@@ -194,7 +260,11 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			tempModel.setContentWithJson(schoolobj);
 			newDatas.add(tempModel);
 		}
-		schoolAdapter.addAll(newDatas);
+		if (isPullDowm) {
+			schoolAdapter.replaceAll(newDatas);
+		} else {
+			schoolAdapter.addAll(newDatas);
+		}
 		dataList.clear();
 	}
 
@@ -228,8 +298,10 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 							if (objList.size() > 0) {
 								pageIndex++;
 							}
+							lastCount = objList.size();
 							schoolDataHandle(objList);
 							schoolListView.onRefreshComplete();
+							schoolListView.setMode(Mode.BOTH);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -240,6 +312,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 									Toast.LENGTH_SHORT).show();
 							LogUtils.e("查询学校列表失败");
 							schoolListView.onRefreshComplete();
+							schoolListView.setMode(Mode.BOTH);
 						}
 					}
 
@@ -250,9 +323,62 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						Toast.makeText(SelectSchoolActivity.this,
 								"卧槽，竟然查询失败，检查下网络", Toast.LENGTH_SHORT).show();
 						schoolListView.onRefreshComplete();
+						schoolListView.setMode(Mode.BOTH);
 					}
 
 				}, null));
+	}
+
+	/**
+	 * 上传学校数据
+	 * */
+	private void updateUserSchool(String schoolName, String schoolCode) {
+		final UserModel userModel = UserManager.getInstance().getUser();
+		LogUtils.i("用户id：" + userModel.getUid() + " schoolName:" + schoolName
+				+ " schoolCode:" + schoolCode);
+		// 参数设置
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("uid", userModel.getUid() + "");
+		params.addBodyParameter("school", schoolName);
+		params.addBodyParameter("school_code", schoolCode);
+		
+		HttpManager
+				.post(JLXCConst.CHANGE_SCHOOL,
+						params, new JsonRequestCallBack<String>(
+								new LoadDataHandler<String>() {
+
+									@Override
+									public void onSuccess(
+											JSONObject jsonResponse, String flag) {
+										super.onSuccess(jsonResponse, flag);
+										int status = jsonResponse
+												.getInteger(JLXCConst.HTTP_STATUS);
+										if (status == JLXCConst.STATUS_SUCCESS) {
+											LogUtils.i("学校上传成功");
+										}
+
+										if (status == JLXCConst.STATUS_FAIL) {
+											Toast.makeText(
+													SelectSchoolActivity.this,
+													jsonResponse
+															.getString(JLXCConst.HTTP_MESSAGE),
+													Toast.LENGTH_SHORT).show();
+											LogUtils.e("学校上传失败");
+										}
+									}
+
+									@Override
+									public void onFailure(HttpException arg0,
+											String arg1, String flag) {
+										super.onFailure(arg0, arg1, flag);
+										Toast.makeText(
+												SelectSchoolActivity.this,
+												"卧槽，操作失败，检查下网络",
+												Toast.LENGTH_SHORT).show();
+									}
+
+								}, null));
+
 	}
 
 	/**
@@ -312,7 +438,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 				districtCode = location.getAdCode();
 				LogUtils.i("get district Code successed.");
 				// 查询区域代码成功后开始查找学校数据
-				getSchoolList("1", districtCode, schoolName);
+				isPullDowm = false;
+				getSchoolList(String.valueOf(pageIndex), districtCode,
+						schoolName);
 				stopLocation();
 			}
 		}
