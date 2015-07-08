@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.jlxc.app.base.manager.UserManager;
+
 import android.annotation.SuppressLint;
 import android.util.Base64;
 import android.util.Log;
@@ -117,5 +119,14 @@ public class JLXCUtils {
           
         return "";  
     }  
+	
+	
+	// 使用系统当前日期加以调整作为照片的名称
+    @SuppressLint("SimpleDateFormat") 
+    public static String getPhotoFileName() {
+    	//用户id+时间戳
+    	String fileName = UserManager.getInstance().getUser().getUid()+""+System.currentTimeMillis()/1000;
+        return fileName + ".jpg";
+    }
 	
 }

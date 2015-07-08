@@ -377,7 +377,7 @@ public class FileUtil {
 				options.inJustDecodeBounds = false;
 				Bitmap bmp = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
-				bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+				bmp.compress(Bitmap.CompressFormat.JPEG, 80, bos);
 				bmp.recycle();
 				bos.flush();
 				bos.close();
@@ -393,7 +393,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 将拍照后临时目录的文件压缩后放到正式目录下
+	 * 将相册中的临时目录的文件压缩后放到正式目录下
 	 */
 	public static boolean tempToLocalPath(String fileRealPath, String fileName, int reqWidth, int reqHeight) {
 		try {

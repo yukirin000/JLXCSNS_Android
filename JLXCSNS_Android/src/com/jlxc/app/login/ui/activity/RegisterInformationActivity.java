@@ -130,8 +130,8 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 			//图片
 			params.addBodyParameter("image", new File(FileUtil.HEAD_PIC_PATH, photoName));
 		}
-//		params.addBodyParameter("uid", userModel.getUid()+"");
-		params.addBodyParameter("uid", "1");
+		params.addBodyParameter("uid", userModel.getUid()+"");
+//		params.addBodyParameter("uid", "1");
 		String sex = "0";
 		//性别
 		switch (radioGroup.getCheckedRadioButtonId()) {
@@ -184,7 +184,6 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 						Toast.makeText(RegisterInformationActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
 					}
 		 }, null));
-		
 	}
 	
 	private void showChoiceImageAlert() {
@@ -254,7 +253,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	        			headImageView.setImageBitmap(bitmap);// 将图片显示在ImageView里
 	        			if (null != bitmap && null != headImageName) {
 		    				//删除临时文件
-		        			File file = new File(headImageName);
+		        			File file = new File(FileUtil.TEMP_PATH+headImageName);
 		    				if (file.exists()) {
 		    					file.delete();
 		    				}	

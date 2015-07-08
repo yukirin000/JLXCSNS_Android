@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_big_look"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    <com.jlxc.app.base.ui.view.PinchImageView
+        android:id="@+id/img_big_look"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+    	android:background="#000" />
+
+</LinearLayout> 

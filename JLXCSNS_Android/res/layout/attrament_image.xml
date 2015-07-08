@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/attrament_image"
+    android:id="@+id/attrament_image_layout"
     android:orientation="horizontal" >
 
     <ImageView
@@ -10,7 +10,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/abc_ab_bottom_solid_light_holo" />
 
     <!-- <ImageView
         android:id="@+id/image_attrament"
