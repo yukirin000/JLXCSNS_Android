@@ -11,6 +11,7 @@ import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.demo.ui.fragment.FragmentPage1;
 import com.jlxc.app.demo.ui.fragment.FragmentPage2;
 import com.jlxc.app.login.ui.activity.RegisterActivity;
+import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
@@ -118,7 +119,7 @@ public class MainActivity extends BaseActivity {
 
 	public void next(View view) {
 		Log.i("--", "fff");
-		Intent intent = new Intent(this, NextActivity.class);
+		Intent intent = new Intent(this, LoginActivity.class);
 		startActivityWithRight(intent);
 	}
 

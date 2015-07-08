@@ -65,6 +65,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	private PullToRefreshListView schoolListView;
 	// 用户当前所在的区域编码
 	private String districtCode = "110101";
+	// 需要搜索的学校名字
+	private String schoolName = "";
 	// 查询学校时的page值
 	private int pageIndex = 1;
 	// 定位对象
@@ -100,7 +102,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				//
+				getSchoolList();
 			}
 
 			@Override
@@ -162,7 +164,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// 上拉刷新
-				getSchoolList(String.valueOf(pageIndex), districtCode, "");
+				getSchoolList(String.valueOf(pageIndex), districtCode, schoolName);
+				LogUtils.i("-------" + pageIndex);
 			}
 
 		});
@@ -219,11 +222,11 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 							LogUtils.i("查询学校数据成功");
 							List<JSONObject> objList = (List<JSONObject>) jResult
 									.get("list");
-							schoolDataHandle(objList);
-							schoolListView.onRefreshComplete();
 							if (objList.size() > 0) {
 								pageIndex++;
 							}
+							schoolDataHandle(objList);
+							schoolListView.onRefreshComplete();
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -306,7 +309,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 				districtCode = location.getAdCode();
 				LogUtils.i("get district Code successed.");
 				// 查询区域代码成功后开始查找学校数据
-				getSchoolList("1", districtCode, "");
+				getSchoolList("1", districtCode, schoolName);
 				stopLocation();
 			}
 		}

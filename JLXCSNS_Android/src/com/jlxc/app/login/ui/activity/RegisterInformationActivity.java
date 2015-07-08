@@ -290,7 +290,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	@Override
 	public int setLayoutId() {
 		// TODO Auto-generated method stub
-		return R.layout.register_information_activity;
+		return R.layout.activity_register_information;
 	}
 
 	@Override

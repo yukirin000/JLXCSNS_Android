@@ -151,7 +151,7 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 	@Override
 	public int setLayoutId() {
 		// TODO Auto-generated method stub
-		return R.layout.second_login_activity;
+		return R.layout.activity_second_login;
 	}
 
 	@Override
