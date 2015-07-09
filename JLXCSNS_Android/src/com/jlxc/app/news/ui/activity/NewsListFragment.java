@@ -1,4 +1,4 @@
-package com.jlxc.app.news.ui.activity.fragment;
+package com.jlxc.app.news.ui.activity;
 
 import java.util.List;
 
