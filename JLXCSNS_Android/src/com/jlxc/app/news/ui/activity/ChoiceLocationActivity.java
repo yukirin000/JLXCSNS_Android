@@ -359,13 +359,10 @@ public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AM
 			poiSearch.setOnPoiSearchListener(this);
 			poiSearch.setBound(new SearchBound(lp, 2000, true));//
 			// 设置搜索区域为以lp点为圆心，其周围2000米范围
-			/*
-			 * List<LatLonPoint> list = new ArrayList<LatLonPoint>();
-			 * list.add(lp);
-			 * list.add(AMapUtil.convertToLatLonPoint(Constants.BEIJING));
-			 * poiSearch.setBound(new SearchBound(list));// 设置多边形poi搜索范围
-			 */
 			poiSearch.searchPOIAsyn();// 异步搜索
+		}else {
+			loactionListView.onRefreshComplete();
+			loactionListView.setMode(Mode.BOTH);
 		}
 	}
 
@@ -383,6 +380,9 @@ public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AM
 				ToastUtil
 						.show(this, "没结果");
 			}
+		}else {
+			loactionListView.onRefreshComplete();
+			loactionListView.setMode(Mode.BOTH);
 		}
 	}
 

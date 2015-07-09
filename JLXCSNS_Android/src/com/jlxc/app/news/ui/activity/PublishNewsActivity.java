@@ -2,7 +2,6 @@ package com.jlxc.app.news.ui.activity;
 
 import java.io.File;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -10,14 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.amap.api.services.core.v;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
@@ -42,9 +36,6 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.demo.ui.activity.NextActivity;
-import com.jlxc.app.login.ui.activity.RegisterActivity;
-import com.jlxc.app.login.ui.activity.RegisterInformationActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -143,11 +134,11 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	        super.onActivityResult(requestCode, resultCode, data);
 	        
 	        if (resultCode == Activity.RESULT_OK) {  
-//	            String sdStatus = Environment.getExternalStorageState();  
-//	            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-//	            	LogUtils.i("SD card is not avaiable/writeable right now.", 1);
-//	                return;  
-//	            }  
+	            String sdStatus = Environment.getExternalStorageState();  
+	            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+	            	LogUtils.i("SD card is not avaiable/writeable right now.", 1);
+	                return;  
+	            }  
 	            switch (requestCode) {
 	            case TAKE_PHOTO:// 当选择拍照时调用   
 	            	// 图片压缩
@@ -310,8 +301,8 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		showLoading("发布中，请稍候...", false);
 		RequestParams params = new RequestParams();		
 		//用户id
-//		params.addBodyParameter("uid", userModel.getUid()+"");
-		params.addBodyParameter("uid", "1");
+		params.addBodyParameter("uid", userModel.getUid()+"");
+//		params.addBodyParameter("uid", "1");
 		//内容
 		params.addBodyParameter("content_text", contentEditText.getText().toString());
 		//location
@@ -383,6 +374,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		return R.layout.activity_publish_news;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void setUpView() {
 		// TODO Auto-generated method stub
