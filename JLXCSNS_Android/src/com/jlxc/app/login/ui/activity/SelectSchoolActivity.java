@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.AMapLocation;
@@ -49,6 +48,7 @@ import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.Md5Utils;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -237,7 +237,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 
 		/**
 		 * 设置底部自动刷新
-		 * */ 
+		 * */
 		schoolListView
 				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 
@@ -308,11 +308,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							Toast.makeText(
-									SelectSchoolActivity.this,
+							ToastUtil.show(SelectSchoolActivity.this,
 									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE),
-									Toast.LENGTH_SHORT).show();
+											.getString(JLXCConst.HTTP_MESSAGE));
 							LogUtils.e("查询学校列表失败");
 							schoolListView.onRefreshComplete();
 							schoolListView.setMode(Mode.BOTH);
@@ -323,8 +321,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						Toast.makeText(SelectSchoolActivity.this,
-								"卧槽，竟然查询失败，检查下网络", Toast.LENGTH_SHORT).show();
+						ToastUtil.show(SelectSchoolActivity.this,
+								"卧槽，竟然查询失败，检查下网络");
 						schoolListView.onRefreshComplete();
 						schoolListView.setMode(Mode.BOTH);
 					}
@@ -358,11 +356,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							Toast.makeText(
-									SelectSchoolActivity.this,
+							ToastUtil.show(SelectSchoolActivity.this,
 									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE),
-									Toast.LENGTH_SHORT).show();
+											.getString(JLXCConst.HTTP_MESSAGE));
 							LogUtils.e("学校上传失败");
 						}
 					}
@@ -371,8 +367,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						Toast.makeText(SelectSchoolActivity.this,
-								"卧槽，操作失败，检查下网络", Toast.LENGTH_SHORT).show();
+						ToastUtil.show(SelectSchoolActivity.this,
+								"卧槽，操作失败，检查下网络");
 					}
 
 				}, null));

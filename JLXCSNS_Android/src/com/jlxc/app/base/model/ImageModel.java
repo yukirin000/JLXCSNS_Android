@@ -3,7 +3,7 @@ package com.jlxc.app.base.model;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class NetworkImage {
+public class ImageModel {
 
 	// 图片id
 	private String imageId;

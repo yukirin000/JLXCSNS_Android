@@ -1,4 +1,8 @@
 package com.jlxc.app.base.adapter;
+
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -69,8 +73,8 @@ public class HelloHaBaseAdapterHelper {
 	 *            The parent arg passed to the getView() method.
 	 * @return A BaseAdapterHelper instance.
 	 */
-	public static HelloHaBaseAdapterHelper get(Context context, View convertView,
-			ViewGroup parent, int layoutId) {
+	public static HelloHaBaseAdapterHelper get(Context context,
+			View convertView, ViewGroup parent, int layoutId) {
 		return get(context, convertView, parent, layoutId, -1);
 	}
 
@@ -78,7 +82,8 @@ public class HelloHaBaseAdapterHelper {
 	static HelloHaBaseAdapterHelper get(Context context, View convertView,
 			ViewGroup parent, int layoutId, int position) {
 		if (convertView == null) {
-			return new HelloHaBaseAdapterHelper(context, parent, layoutId, position);
+			return new HelloHaBaseAdapterHelper(context, parent, layoutId,
+					position);
 		}
 
 		// Retrieve the existing helper and update its position
@@ -86,7 +91,8 @@ public class HelloHaBaseAdapterHelper {
 				.getTag();
 
 		if (existingHelper.layoutId != layoutId) {
-			return new HelloHaBaseAdapterHelper(context, parent, layoutId, position);
+			return new HelloHaBaseAdapterHelper(context, parent, layoutId,
+					position);
 		}
 
 		existingHelper.position = position;
@@ -170,7 +176,8 @@ public class HelloHaBaseAdapterHelper {
 	 *            A resource to use as a background.
 	 * @return The BaseAdapterHelper for chaining.
 	 */
-	public HelloHaBaseAdapterHelper setBackgroundRes(int viewId, int backgroundRes) {
+	public HelloHaBaseAdapterHelper setBackgroundRes(int viewId,
+			int backgroundRes) {
 		View view = retrieveView(viewId);
 		view.setBackgroundResource(backgroundRes);
 		return this;
@@ -215,7 +222,8 @@ public class HelloHaBaseAdapterHelper {
 	 *            The image drawable.
 	 * @return The BaseAdapterHelper for chaining.
 	 */
-	public HelloHaBaseAdapterHelper setImageDrawable(int viewId, Drawable drawable) {
+	public HelloHaBaseAdapterHelper setImageDrawable(int viewId,
+			Drawable drawable) {
 		ImageView view = retrieveView(viewId);
 		view.setImageDrawable(drawable);
 		return this;
@@ -223,11 +231,6 @@ public class HelloHaBaseAdapterHelper {
 
 	/**
 	 * Will download an image from a URL and put it in an ImageView.<br/>
-	 * It uses Square's Picasso library to download the image asynchronously and
-	 * put the result into the ImageView.<br/>
-	 * Picasso manages recycling of views in a ListView.<br/>
-	 * If you need more control over the Picasso settings, use
-	 * {BaseAdapterHelper#setImageBuilder}.
 	 * 
 	 * @param viewId
 	 *            The view id.
@@ -235,8 +238,11 @@ public class HelloHaBaseAdapterHelper {
 	 *            The image URL.
 	 * @return The BaseAdapterHelper for chaining.
 	 */
-	public HelloHaBaseAdapterHelper setImageUrl(int viewId, String imageUrl) {
-		// 代码未完善
+	public HelloHaBaseAdapterHelper setImageUrl(int viewId,
+			BitmapUtils bmpUtils, String imageUrl,
+			DefaultBitmapLoadCallBack<ImageView> callBack) {
+		ImageView view = retrieveView(viewId);
+		bmpUtils.display(view, imageUrl, callBack);
 		return this;
 	}
 
@@ -324,7 +330,8 @@ public class HelloHaBaseAdapterHelper {
 	 * Apply the typeface to all the given viewIds, and enable subpixel
 	 * rendering.
 	 */
-	public HelloHaBaseAdapterHelper setTypeface(Typeface typeface, int... viewIds) {
+	public HelloHaBaseAdapterHelper setTypeface(Typeface typeface,
+			int... viewIds) {
 		for (int viewId : viewIds) {
 			TextView view = retrieveView(viewId);
 			view.setTypeface(typeface);
@@ -359,7 +366,8 @@ public class HelloHaBaseAdapterHelper {
 	 *            The max value of a ProgressBar.
 	 * @return The BaseAdapterHelper for chaining.
 	 */
-	public HelloHaBaseAdapterHelper setProgress(int viewId, int progress, int max) {
+	public HelloHaBaseAdapterHelper setProgress(int viewId, int progress,
+			int max) {
 		ProgressBar view = retrieveView(viewId);
 		view.setMax(max);
 		view.setProgress(progress);

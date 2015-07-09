@@ -8,7 +8,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class News {
+public class NewsModel {
 
 	// 用户id
 	private String uid;
@@ -35,13 +35,13 @@ public class News {
 	// 发布的时间
 	private String sendTime;
 	// 添加的图片列表
-	private List<NetworkImage> imageNewsList = new ArrayList<NetworkImage>();
+	private List<ImageModel> imageNewsList = new ArrayList<ImageModel>();
 	// 用户是否点赞
 	private String isLike;
 	// 评论列表
-	private List<Comment> replyList = new ArrayList<Comment>();
+	private List<CommentModel> replyList = new ArrayList<CommentModel>();
 	// 点赞的人列表
-	private List<Like> likeHeadListimage = new ArrayList<Like>();
+	private List<LikeModel> likeHeadListimage = new ArrayList<LikeModel>();
 	// 发布动态的时间戳
 	private String timesTamp;
 	// 关系类型
@@ -66,9 +66,9 @@ public class News {
 		setLikeQuantity(object.getString("like_quantity"));
 		setSendTime(object.getString("add_date"));
 		setIsLike(object.getString("is_like"));
-		setImageNewsList((List<NetworkImage>) object.get("images"));
-		setReplyList((List<Comment>) object.get("comments"));
-		setLikeHeadListimage((List<Like>) object.get("likes"));
+		setImageNewsList((List<ImageModel>) object.get("images"));
+		setReplyList((List<CommentModel>) object.get("comments"));
+		setLikeHeadListimage((List<LikeModel>) object.get("likes"));
 		setTimesTamp(object.getString("add_time"));
 
 		Map<String, String> tempMap = new HashMap<String, String>();
@@ -176,11 +176,11 @@ public class News {
 		this.sendTime = sendTime;
 	}
 
-	public List<NetworkImage> getImageNewsList() {
+	public List<ImageModel> getImageNewsList() {
 		return imageNewsList;
 	}
 
-	public void setImageNewsList(List<NetworkImage> imageNewsList) {
+	public void setImageNewsList(List<ImageModel> imageNewsList) {
 		this.imageNewsList = imageNewsList;
 	}
 
@@ -192,19 +192,19 @@ public class News {
 		this.isLike = isLike;
 	}
 
-	public List<Like> getLikeHeadListimage() {
+	public List<LikeModel> getLikeHeadListimage() {
 		return likeHeadListimage;
 	}
 
-	public void setLikeHeadListimage(List<Like> likeHeadListimage) {
+	public void setLikeHeadListimage(List<LikeModel> likeHeadListimage) {
 		this.likeHeadListimage = likeHeadListimage;
 	}
 
-	public List<Comment> getReplyList() {
+	public List<CommentModel> getReplyList() {
 		return replyList;
 	}
 
-	public void setReplyList(List<Comment> replyList) {
+	public void setReplyList(List<CommentModel> replyList) {
 		this.replyList = replyList;
 	}
 

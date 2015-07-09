@@ -6,7 +6,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.R.bool;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -24,6 +23,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.Md5Utils;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -123,14 +123,11 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		password = passwdeEditText.getText().toString();
 		// 判断输入值是否正确
 		if (verifyCodeEditTextValue.length() == 0) {
-			Toast.makeText(RegisterActivity.this, "验证码未输入", Toast.LENGTH_SHORT)
-					.show();
+			ToastUtil.show(RegisterActivity.this, "验证码未输入");
 		} else if (verifyCodeEditTextValue.length() < 6) {
-			Toast.makeText(RegisterActivity.this, "验证码错误", Toast.LENGTH_SHORT)
-					.show();
+			ToastUtil.show(RegisterActivity.this, "验证码错误");
 		} else if (password.length() < 6) {
-			Toast.makeText(RegisterActivity.this, "密码最少得6位啦",
-					Toast.LENGTH_SHORT).show();
+			ToastUtil.show(RegisterActivity.this, "密码最少得6位啦");
 		} else {
 			// 忘记密码
 			if (isFindPwd) {
@@ -138,7 +135,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 			} else {
 				// 注册
 				startRegister();
-				//跳转到选择学校
+				// 跳转到选择学校
 				Intent intent = new Intent(RegisterActivity.this,
 						SelectSchoolActivity.class);
 				startActivityWithRight(intent);
@@ -170,18 +167,14 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							UserModel userMd = new UserModel();
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);
-							Toast.makeText(RegisterActivity.this, "修改成功",
-									Toast.LENGTH_SHORT).show();
+							ToastUtil.show(RegisterActivity.this, "修改成功");
 
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							hideLoading();
-							Toast.makeText(
-									RegisterActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE),
-									Toast.LENGTH_SHORT).show();
+							ToastUtil.show(RegisterActivity.this, jsonResponse
+									.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 
@@ -220,17 +213,13 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);
 
-							Toast.makeText(RegisterActivity.this, "注册成功",
-									Toast.LENGTH_SHORT).show();
+							ToastUtil.show(RegisterActivity.this, "注册成功");
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							hideLoading();
-							Toast.makeText(
-									RegisterActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE),
-									Toast.LENGTH_SHORT).show();
+							ToastUtil.show(RegisterActivity.this, jsonResponse
+									.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 
@@ -300,8 +289,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							Toast.makeText(RegisterActivity.this, "验证码已发送",
-									Toast.LENGTH_SHORT).show();
+							ToastUtil.show(RegisterActivity.this, "验证码已发送");
 							verifyCountdownTimer.start();
 						}
 

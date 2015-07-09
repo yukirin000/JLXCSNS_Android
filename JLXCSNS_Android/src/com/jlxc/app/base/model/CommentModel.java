@@ -3,7 +3,7 @@ package com.jlxc.app.base.model;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class Comment {
+public class CommentModel {
 
 	// 评论的id
 	private String commentID;

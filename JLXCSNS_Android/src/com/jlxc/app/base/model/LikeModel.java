@@ -3,7 +3,7 @@ package com.jlxc.app.base.model;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class Like {
+public class LikeModel {
 
 	// 点赞者的id
 	private String userID;
