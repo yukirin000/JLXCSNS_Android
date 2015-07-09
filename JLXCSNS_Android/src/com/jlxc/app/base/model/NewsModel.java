@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 
 public class NewsModel {
 
@@ -66,9 +67,36 @@ public class NewsModel {
 		setLikeQuantity(object.getString("like_quantity"));
 		setSendTime(object.getString("add_date"));
 		setIsLike(object.getString("is_like"));
-		setImageNewsList((List<ImageModel>) object.get("images"));
-		setReplyList((List<CommentModel>) object.get("comments"));
-		setLikeHeadListimage((List<LikeModel>) object.get("likes"));
+
+		// 图片的转换
+		List<JSONObject> JImageObj = (List<JSONObject>) object.get("images");
+		List<ImageModel> imgList = new ArrayList<ImageModel>();
+		for (JSONObject imgObject : JImageObj) {
+			ImageModel imgTemp = new ImageModel();
+			imgTemp.setContentWithJson(imgObject);
+			imgList.add(imgTemp);
+		}
+		setImageNewsList(imgList);
+
+		// 评论的转换
+		List<JSONObject> JCommentObj = (List<JSONObject>) object
+				.get("comments");
+		List<CommentModel> cmtList = new ArrayList<CommentModel>();
+		for (JSONObject cmtObject : JCommentObj) {
+			CommentModel cmtTemp = new CommentModel();
+			cmtTemp.setContentWithJson(cmtObject);
+			cmtList.add(cmtTemp);
+		}
+		setReplyList(cmtList);
+		// 点赞
+		List<JSONObject> JLikeObj = (List<JSONObject>) object.get("likes");
+		List<LikeModel> likeList = new ArrayList<LikeModel>();
+		for (JSONObject lkObject : JLikeObj) {
+			LikeModel lkTemp = new LikeModel();
+			lkTemp.setContentWithJson(lkObject);
+			likeList.add(lkTemp);
+		}
+		setLikeHeadListimage(likeList);
 		setTimesTamp(object.getString("add_time"));
 
 		Map<String, String> tempMap = new HashMap<String, String>();
