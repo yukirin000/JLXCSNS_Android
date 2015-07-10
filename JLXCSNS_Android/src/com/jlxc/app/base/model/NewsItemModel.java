@@ -21,12 +21,12 @@ public class NewsItemModel {
 	// 点赞部分
 	public static final int LIKELIST = 3;
 	// 评论部分
-	public static final int REPLY = 4;
+	public static final int COMMENT = 4;
 	// 当前的item类型
-	private int styleType;
+	private int itemType;
 
 	public int getItemType() {
-		return styleType;
+		return itemType;
 	}
 
 	/**
@@ -38,8 +38,8 @@ public class NewsItemModel {
 		case NewsItemModel.BODY:
 		case NewsItemModel.OPERATE:
 		case NewsItemModel.LIKELIST:
-		case NewsItemModel.REPLY:
-			styleType = type;
+		case NewsItemModel.COMMENT:
+			itemType = type;
 			break;
 
 		default:
@@ -205,17 +205,17 @@ public class NewsItemModel {
 	/**
 	 * 评论列表部分
 	 * */
-	public static class ReplyItem extends NewsItemModel {
+	public static class CommentItem extends NewsItemModel {
 
 		// 评论列表
-		private List<CommentModel> replyList = new ArrayList<CommentModel>();// 评论列表
+		private List<CommentModel> commentList = new ArrayList<CommentModel>();// 评论列表
 
-		public List<CommentModel> getReplyList() {
-			return replyList;
+		public List<CommentModel> getCommentList() {
+			return commentList;
 		}
 
-		public void setReplyList(List<CommentModel> replyList) {
-			this.replyList = replyList;
+		public void setCommentList(List<CommentModel> cmtList) {
+			this.commentList = cmtList;
 		}
 	}
 

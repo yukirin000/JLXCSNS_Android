@@ -40,7 +40,7 @@ public class NewsModel {
 	// 用户是否点赞
 	private String isLike;
 	// 评论列表
-	private List<CommentModel> replyList = new ArrayList<CommentModel>();
+	private List<CommentModel> commentList = new ArrayList<CommentModel>();
 	// 点赞的人列表
 	private List<LikeModel> likeHeadListimage = new ArrayList<LikeModel>();
 	// 发布动态的时间戳
@@ -87,7 +87,7 @@ public class NewsModel {
 			cmtTemp.setContentWithJson(cmtObject);
 			cmtList.add(cmtTemp);
 		}
-		setReplyList(cmtList);
+		setCommentList(cmtList);
 		// 点赞
 		List<JSONObject> JLikeObj = (List<JSONObject>) object.get("likes");
 		List<LikeModel> likeList = new ArrayList<LikeModel>();
@@ -228,12 +228,12 @@ public class NewsModel {
 		this.likeHeadListimage = likeHeadListimage;
 	}
 
-	public List<CommentModel> getReplyList() {
-		return replyList;
+	public List<CommentModel> getCommentList() {
+		return commentList;
 	}
 
-	public void setReplyList(List<CommentModel> replyList) {
-		this.replyList = replyList;
+	public void setCommentList(List<CommentModel> replyList) {
+		this.commentList = replyList;
 	}
 
 	public String getTimesTamp() {

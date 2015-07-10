@@ -18,9 +18,9 @@ public class ImageModel {
 	// 发布的时间
 	private String addDate;
 	// 宽度
-	private String imageWidth;
+	private int imageWidth;
 	// 高度
-	private String imageHheight;
+	private int imageHheight;
 
 	// 内容注入
 	public void setContentWithJson(JSONObject object) {
@@ -82,20 +82,20 @@ public class ImageModel {
 		this.addDate = addDate;
 	}
 
-	public String getImageWidth() {
+	public int getImageWidth() {
 		return imageWidth;
 	}
 
 	public void setImageWidth(String imageWidth) {
-		this.imageWidth = imageWidth;
+		this.imageWidth = Integer.parseInt(imageWidth);
 	}
 
-	public String getImageHheight() {
+	public int getImageHheight() {
 		return imageHheight;
 	}
 
 	public void setImageHheight(String imageHheight) {
-		this.imageHheight = imageHheight;
+		this.imageHheight = Integer.parseInt(imageHheight);
 	}
 
 }

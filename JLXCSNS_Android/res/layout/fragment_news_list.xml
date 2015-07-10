@@ -16,7 +16,6 @@
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
-        android:scrollbars="none"
         android:smoothScrollbar="true" />
 
 </LinearLayout>

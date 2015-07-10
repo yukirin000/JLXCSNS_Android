@@ -7,7 +7,7 @@ import com.jlxc.app.base.model.NewsItemModel;
 import com.jlxc.app.base.model.NewsItemModel.BodyItem;
 import com.jlxc.app.base.model.NewsItemModel.LikeListItem;
 import com.jlxc.app.base.model.NewsItemModel.OperateItem;
-import com.jlxc.app.base.model.NewsItemModel.ReplyItem;
+import com.jlxc.app.base.model.NewsItemModel.CommentItem;
 import com.jlxc.app.base.model.NewsItemModel.TitleItem;
 import com.jlxc.app.base.model.NewsModel;
 
@@ -15,20 +15,19 @@ import com.jlxc.app.base.model.NewsModel;
  * 将新闻的数据进行转换
  * */
 public class NewsToItem {
-	public static List<NewsItemModel> newsToItems(
-			List<NewsModel> orgDataList) {
+	public static List<NewsItemModel> newsToItems(List<NewsModel> orgDataList) {
 		LinkedList<NewsItemModel> itemList = new LinkedList<NewsItemModel>();
 		for (NewsModel newsMd : orgDataList) {
 			itemList.add(createTitle(newsMd));
 			itemList.add(createBody(newsMd));
 			itemList.add(createOperate(newsMd));
 			itemList.add(createLikeList(newsMd));
-			itemList.add(createReply(newsMd));
+			itemList.add(createComment(newsMd));
 		}
 		return itemList;
 	}
 
-	//提取新闻中的头部信息
+	// 提取新闻中的头部信息
 	private static NewsItemModel createTitle(NewsModel news) {
 		TitleItem item = new TitleItem();
 		try {
@@ -45,7 +44,7 @@ public class NewsToItem {
 		return (NewsItemModel) item;
 	}
 
-	//提取新闻中的操作信息
+	// 提取新闻中的操作信息
 	private static NewsItemModel createOperate(NewsModel news) {
 		OperateItem item = new OperateItem();
 		try {
@@ -59,7 +58,7 @@ public class NewsToItem {
 		return (NewsItemModel) item;
 	}
 
-	//提取新闻中的主题信息
+	// 提取新闻中的主题信息
 	private static NewsItemModel createBody(NewsModel news) {
 		BodyItem item = new BodyItem();
 		try {
@@ -74,7 +73,7 @@ public class NewsToItem {
 		return (NewsItemModel) item;
 	}
 
-	//提取新闻中的点赞信息
+	// 提取新闻中的点赞信息
 	private static NewsItemModel createLikeList(NewsModel news) {
 		LikeListItem item = new LikeListItem();
 		try {
@@ -87,13 +86,12 @@ public class NewsToItem {
 		return (NewsItemModel) item;
 	}
 
-	//提取新闻中的评论信息
-	private static NewsItemModel createReply(NewsModel news) {
-		ReplyItem item = new ReplyItem();
+	// 提取新闻中的评论信息
+	private static NewsItemModel createComment(NewsModel news) {
+		CommentItem item = new CommentItem();
 		try {
-			item.setItemType(NewsItemModel.REPLY);
-
-			item.setReplyList(news.getReplyList());
+			item.setItemType(NewsItemModel.COMMENT);
+			item.setCommentList(news.getCommentList());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");
 		}
