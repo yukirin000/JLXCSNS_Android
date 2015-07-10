@@ -30,6 +30,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -53,8 +54,6 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	public static final int CAMERA_SELECT = 4;// 相册选取
 	public static final int GET_DEPARTMENT_REQUEST_CODE = 5;
 	public static final String IMAGE_UNSPECIFIED = "image/*";
-	//是否有图片 默认没有
-	private boolean hasImage = false;
 	
 	//图片名字
 	private String headImageName;
@@ -119,17 +118,20 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		showLoading("信息上传中，请稍候...", false);
 		RequestParams params = new RequestParams();
 		//如果选择头像了
-		if (hasImage) {
-			//bitmap获取
-			headImageView.setDrawingCacheEnabled(true);
-	        Bitmap bitmap = Bitmap.createBitmap(headImageView.getDrawingCache());
-	        headImageView.setDrawingCacheEnabled(false);	
-	        String photoName = getPhotoFileName();
-			//图片保存到本地
-			FileUtil.savePic(Bitmap.createBitmap(bitmap), FileUtil.HEAD_PIC_PATH, photoName, 100);
+		//bitmap获取
+//		headImageView.setDrawingCacheEnabled(true);
+//        Bitmap bitmap = Bitmap.createBitmap(headImageView.getDrawingCache());
+//        headImageView.setDrawingCacheEnabled(false);	
+//        String photoName = getPhotoFileName();
+//		//图片保存到本地
+//		FileUtil.savePic(Bitmap.createBitmap(bitmap), FileUtil.HEAD_PIC_PATH, photoName, 100);
+		
+		final File imageFile = new File(FileUtil.HEAD_PIC_PATH+headImageName);
+		if (imageFile.exists()) {
 			//图片
-			params.addBodyParameter("image", new File(FileUtil.HEAD_PIC_PATH, photoName));
+			params.addBodyParameter("image", imageFile);			
 		}
+			
 		params.addBodyParameter("uid", userModel.getUid()+"");
 //		params.addBodyParameter("uid", "1");
 		String sex = "0";
@@ -168,6 +170,12 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 							//跳到主页
 							Intent intent = new Intent(RegisterInformationActivity.this, NextActivity.class);
 							startActivityWithRight(intent);
+							
+							//删除缓存
+							if (imageFile.exists()) {
+								imageFile.delete();
+							}
+							
 							break;
 						case JLXCConst.STATUS_FAIL:
 							hideLoading();
@@ -245,19 +253,29 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	                break;
 	            case PHOTORESOULT:// 返回的结果
 	                if (data != null){
-	                	// 设置为有图片
-	                	hasImage = true;
-	                	// 图片裁切后的结果
-	        			Bundle bundle = data.getExtras();
-	        			Bitmap bitmap = (Bitmap) bundle.get("data");
-	        			headImageView.setImageBitmap(bitmap);// 将图片显示在ImageView里
-	        			if (null != bitmap && null != headImageName) {
+//	                	// 设置为有图片
+//	                	// 图片裁切后的结果
+//	        			Bundle bundle = data.getExtras();
+//	        			Bitmap bitmap = (Bitmap) bundle.get("data");
+//	        			headImageView.setImageBitmap(bitmap);// 将图片显示在ImageView里
+//	        			if (null != bitmap && null != headImageName) {
+//		    				//删除临时文件
+//		        			File file = new File(FileUtil.TEMP_PATH+headImageName);
+//		    				if (file.exists()) {
+//		    					file.delete();
+//		    				}	
+//	        			}
+	        			
+	        			if (null != headImageName) {
+	        				BitmapManager.getInstance().getBitmapUtils(this, false, false)
+	        				.display(headImageView, FileUtil.HEAD_PIC_PATH+headImageName);
 		    				//删除临时文件
 		        			File file = new File(FileUtil.TEMP_PATH+headImageName);
 		    				if (file.exists()) {
 		    					file.delete();
 		    				}	
-	        			}	        			
+		    				uploadInformation();
+	        			}	 
 	                }
 	                break;
 	            }
@@ -265,6 +283,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	 }
 	//开启缩放
 	 public void startPhotoZoom(Uri uri) {
+		 
 			Intent intent = new Intent("com.android.camera.action.CROP");
 			intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
 			intent.putExtra("crop", "true");
@@ -272,9 +291,15 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 			intent.putExtra("aspectX", 1);
 			intent.putExtra("aspectY", 1);
 			// outputX outputY 是裁剪图片宽高
-			intent.putExtra("outputX", 300);
-			intent.putExtra("outputY", 300);
+			intent.putExtra("outputX", 960);
+			intent.putExtra("outputY", 960);
+			intent.putExtra("scale", true);
+			intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+			intent.putExtra("noFaceDetection", true); // no face detection
 			intent.putExtra("return-data", true);
+			File tmpFile = new File(FileUtil.HEAD_PIC_PATH+headImageName);
+			//地址
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tmpFile));
 			startActivityForResult(intent, PHOTORESOULT);
 	 }
 

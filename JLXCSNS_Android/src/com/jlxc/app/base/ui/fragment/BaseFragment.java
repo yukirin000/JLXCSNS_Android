@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,5 +176,11 @@ public abstract class BaseFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
+	}
+	
+	public int[] getScreenSize() {
+		DisplayMetrics dm = new DisplayMetrics();
+		getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+		return new int[] { dm.widthPixels, dm.heightPixels };
 	}
 }

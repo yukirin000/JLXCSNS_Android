@@ -1,12 +1,15 @@
-package com.jlxc.app.personal.ui.fragment;
+package com.jlxc.app.personal.ui.activity;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.jlxc.app.R;
+import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
@@ -20,7 +23,18 @@ public class PersonalSignActivity extends BaseActivityWithTopBar {
 		
 		switch (view.getId()) {
 		case R.id.base_ll_right_btns:
+			
+			if (signEditText.getText().toString().length()>60) {
+				
+				ToastUtil.show(this, "签名不能超过60字╮(╯_╰)╭");
+				return;
+			}
+			
+			Intent intent = new Intent();
+			intent.putExtra("sign", signEditText.getText().toString());
+			setResult(100, intent);
 			finishWithRight();
+			
 			break;
 		case R.id.personal_sign_activity:
 			//收键盘

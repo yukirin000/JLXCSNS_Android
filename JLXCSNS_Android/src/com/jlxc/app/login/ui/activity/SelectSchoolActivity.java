@@ -88,6 +88,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	private boolean isPullDowm = false;
 	// 上次查询的结果数
 	private int lastCount = 0;
+	
+	//注册的时候使用或者修改信息的时候使用
+	private boolean notRegister;
 
 	@OnClick({ R.id.base_tv_back, R.id.root_layout })
 	public void viewCickListener(View view) {
@@ -121,6 +124,11 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
+		//设置是否是注册进入的
+		Intent intent = getIntent();
+		setNotRegister(intent.getBooleanExtra("notRegister", false));
+		//初始化listView
 		initListViewSet();
 		// 设置为底部刷新模式
 		schoolListView.setMode(Mode.BOTH);
@@ -228,10 +236,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 				updateUserSchool(schoolAdapter.getItem(position - 1)
 						.getSchoolName(), schoolAdapter.getItem(position - 1)
 						.getSchoolCode());
-				// 跳转到下一页面
-				Intent intent = new Intent(SelectSchoolActivity.this,
-						RegisterInformationActivity.class);
-				startActivityWithRight(intent);
 			}
 		});
 
@@ -333,7 +337,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	/**
 	 * 上传学校数据
 	 * */
-	private void updateUserSchool(String schoolName, String schoolCode) {
+	private void updateUserSchool(final String schoolName, final String schoolCode) {
 		final UserModel userModel = UserManager.getInstance().getUser();
 		LogUtils.i("用户id：" + userModel.getUid() + " schoolName:" + schoolName
 				+ " schoolCode:" + schoolCode);
@@ -342,7 +346,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("uid", userModel.getUid() + "");
 		params.addBodyParameter("school", schoolName);
 		params.addBodyParameter("school_code", schoolCode);
-
+		
 		HttpManager.post(JLXCConst.CHANGE_SCHOOL, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
@@ -352,6 +356,17 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
+							//设置数据 
+							userModel.setSchool(schoolName);
+							userModel.setSchool_code(schoolCode);
+							if (isNotRegister()) {
+								finishWithRight();
+							}else {
+								//注册进来的 跳转到下一页面
+								Intent intent = new Intent(SelectSchoolActivity.this,
+										RegisterInformationActivity.class);
+								startActivityWithRight(intent);
+							}
 							LogUtils.i("学校上传成功");
 						}
 
@@ -466,5 +481,13 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			return true;
 		} else
 			return super.onKeyDown(keyCode, event);
+	}
+	
+	public boolean isNotRegister() {
+		return notRegister;
+	}
+
+	public void setNotRegister(boolean notRegister) {
+		this.notRegister = notRegister;
 	}
 }

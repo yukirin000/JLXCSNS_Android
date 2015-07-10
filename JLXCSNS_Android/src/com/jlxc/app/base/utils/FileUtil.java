@@ -778,8 +778,8 @@ public class FileUtil {
 			// 一定都会大于等于目标的宽和高。
 			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
 		}
-		Log.d("kkk", "originWidth" + width + " originHeight" + height + " reqWidth" + reqWidth + " reqHeight"
-				+ reqHeight + " sampleSize" + inSampleSize);
+//		Log.d("kkk", "originWidth" + width + " originHeight" + height + " reqWidth" + reqWidth + " reqHeight"
+//				+ reqHeight + " sampleSize" + inSampleSize);
 		return inSampleSize;
 	}
 

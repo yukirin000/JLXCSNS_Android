@@ -46,6 +46,9 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 
 	public static final int TAKE_PHOTO = 1;// 拍照
 	public static final int ALBUM_SELECT = 2;// 相册选取
+	public static final int PHOTO_ZOOM = 3; // 缩放
+	public static final int PHOTO_RESOULT = 4;// 结果
+	
 	public static final int LOCATION_SELECT = 100;// 地理位置返回
 	public static final String IMAGE_UNSPECIFIED = "image/*";
 		
