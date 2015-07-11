@@ -33,6 +33,7 @@ public class NewsToItem {
 		try {
 			item.setItemType(NewsItemModel.TITLE);
 
+			item.setNewsID(news.getNewsID());
 			item.setHeadImage(news.getUserHeadImage());
 			item.setHeadSubImage(news.getUserHeadSubImage());
 			item.setUserName(news.getUserName());
@@ -50,6 +51,8 @@ public class NewsToItem {
 		try {
 			item.setItemType(NewsItemModel.OPERATE);
 
+			item.setNewsID(news.getNewsID());
+			LogUtils.i("-----,动态ID" + news.getNewsID());
 			item.setReplyCount(news.getCommentQuantity());
 			item.setLikeCount(news.getLikeQuantity());
 		} catch (Exception e) {
@@ -64,6 +67,7 @@ public class NewsToItem {
 		try {
 			item.setItemType(NewsItemModel.BODY);
 
+			item.setNewsID(news.getNewsID());
 			item.setNewsContent(news.getNewsContent());
 			item.setImageNewsList(news.getImageNewsList());
 			item.setLocation(news.getLocation());
@@ -79,6 +83,7 @@ public class NewsToItem {
 		try {
 			item.setItemType(NewsItemModel.LIKELIST);
 
+			item.setNewsID(news.getNewsID());
 			item.setLikeHeadListimage(news.getLikeHeadListimage());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");
@@ -90,6 +95,7 @@ public class NewsToItem {
 	private static NewsItemModel createComment(NewsModel news) {
 		CommentItem item = new CommentItem();
 		try {
+			item.setNewsID(news.getNewsID());
 			item.setItemType(NewsItemModel.COMMENT);
 			item.setCommentList(news.getCommentList());
 		} catch (Exception e) {

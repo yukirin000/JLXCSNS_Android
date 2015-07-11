@@ -22,6 +22,8 @@ public class NewsItemModel {
 	public static final int LIKELIST = 3;
 	// 评论部分
 	public static final int COMMENT = 4;
+	// 动态的id
+	private String newsID="";
 	// 当前的item类型
 	private int itemType;
 
@@ -46,6 +48,14 @@ public class NewsItemModel {
 			LogUtils.e("items type error");
 			break;
 		}
+	}
+
+	public String getNewsID() {
+		return newsID;
+	}
+
+	public void setNewsID(String newsID) {
+		this.newsID = newsID;
 	}
 
 	/**
@@ -150,26 +160,34 @@ public class NewsItemModel {
 	public static class OperateItem extends NewsItemModel {
 
 		// 评论数
-		private String replyCount;
+		private int replyCount;
 		// 点赞数
-		private String likeCount;
+		private int likeCount;
 		// 是否已赞
 		private boolean isLike = false;
 
-		public String getReplyCount() {
+		public int getReplyCount() {
 			return replyCount;
 		}
 
 		public void setReplyCount(String replyCount) {
-			this.replyCount = replyCount;
+			try {
+				this.replyCount = Integer.parseInt(replyCount);
+			} catch (Exception e) {
+				LogUtils.e("评论数据格式错误.");
+			}
 		}
 
-		public String getLikeCount() {
+		public int getLikeCount() {
 			return likeCount;
 		}
 
 		public void setLikeCount(String likeCount) {
-			this.likeCount = likeCount;
+			try {
+				this.likeCount = Integer.parseInt(likeCount);
+			} catch (Exception e) {
+				LogUtils.e("点赞数据格式错误.");
+			}
 		}
 
 		public boolean getIsLike() {
