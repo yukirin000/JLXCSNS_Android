@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
-
+    
+    
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="UselessParent" >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,25 +26,15 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/abc_ab_bottom_solid_light_holo" />
 
-                <TextView
-                    android:id="@+id/card_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/return_image_view"
+                    android:layout_width="30dip"
+                    android:layout_height="30dip"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="18dp"
                     android:layout_marginTop="14dp"
-                    android:text="名片" />
-
-                <TextView
-                    android:id="@+id/setting_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="24dp"
-                    android:layout_marginTop="14dp"
-                    android:text="设置" />
+                    android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
                 <com.jlxc.app.base.ui.view.CircularImageView
                     android:id="@+id/head_image_view"
@@ -57,9 +46,48 @@
                     android:src="@drawable/icon_selfinfo_sel" />
 
             </RelativeLayout>
-			<!-- 我的相片 -->
+            <!-- 发消息添加按钮 -->
             <LinearLayout
-                android:id="@+id/my_image_layout"
+                android:layout_width="match_parent"
+                android:layout_height="40dip" 
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/send_message_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/send_message_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="发消息" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/add_friend_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/add_friend_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="添加" />
+                </LinearLayout>
+
+            </LinearLayout>
+            
+			<!-- TA的相片 -->
+            <LinearLayout
+                android:id="@+id/his_image_layout"
                 android:layout_width="match_parent"
                 android:layout_height="50dip" 
                 android:orientation="horizontal"
@@ -68,9 +96,9 @@
                     android:layout_marginLeft="15dip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="我的相片" />
+                    android:text="TA的相片" />
                 <com.jlxc.app.base.ui.view.NoScrollGridView
-                    android:id="@+id/my_image_grid_view"
+                    android:id="@+id/his_image_grid_view"
                     android:layout_marginLeft="5dip"
                     android:layout_marginTop="5dip"
                     android:layout_marginBottom="2dip"
@@ -79,15 +107,15 @@
                     android:numColumns="3" >
                 </com.jlxc.app.base.ui.view.NoScrollGridView>
                 <TextView
-                    android:id="@+id/my_image_count_text_view"
+                    android:id="@+id/his_image_count_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dip"
                      />
             </LinearLayout>
-            <!-- 最近来访 -->
+            <!-- TA的好友 -->
             <LinearLayout
-                android:id="@+id/visit_layout"
+                android:id="@+id/his_friend_layout"
                 android:layout_width="match_parent"
                 android:layout_height="50dip" 
                 android:orientation="horizontal"
@@ -96,9 +124,9 @@
                     android:layout_marginLeft="15dip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="最近来访" />
+                    android:text="TA的好友" />
                 <com.jlxc.app.base.ui.view.NoScrollGridView
-                    android:id="@+id/visit_grid_view"
+                    android:id="@+id/his_friend_grid_view"
                     android:layout_marginTop="5dip"
                     android:layout_marginBottom="2dip"
                     android:layout_marginLeft="5dip"
@@ -107,41 +135,46 @@
                     android:numColumns="3" >
                 </com.jlxc.app.base.ui.view.NoScrollGridView>
                 <TextView
-                    android:id="@+id/visit_count_text_view"
+                    android:id="@+id/his_friend_count_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dip"
                     />
             </LinearLayout>
-            <!-- 我的好友 -->
+            <!-- 共同好友和访客 -->
             <LinearLayout
-                android:id="@+id/friend_layout"
                 android:layout_width="match_parent"
-                android:layout_height="50dip" 
+                android:layout_height="40dip" 
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                <TextView
-                    android:layout_marginLeft="15dip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="我的好友" />
-                <com.jlxc.app.base.ui.view.NoScrollGridView
-                    android:id="@+id/friend_grid_view"
-                    android:layout_marginTop="5dip"
-                    android:layout_marginBottom="2dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_width="200dip"
+                 <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:numColumns="3" >
-                </com.jlxc.app.base.ui.view.NoScrollGridView>
-                <TextView
-                    android:id="@+id/friend_count_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dip"
-                   />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/common_friend_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="共同好友" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/visit_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="访客" />
+                </LinearLayout>
             </LinearLayout>
-            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dip"
@@ -310,5 +343,6 @@
             
         </LinearLayout>
     </ScrollView>
+    
 
 </LinearLayout>

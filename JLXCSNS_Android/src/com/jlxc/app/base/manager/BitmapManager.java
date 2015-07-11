@@ -29,7 +29,6 @@ public class BitmapManager {
 			bmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 			bmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
 			bmpUtils.configDiskCacheEnabled(isEnableDiskCache);
-			
 		}
 		return bmpUtils;
 	}

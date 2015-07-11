@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    
+    <RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
+	    <ImageView
+	        android:id="@+id/head_image_view"
+	        android:layout_width="50dip"
+	        android:layout_height="50dip"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_marginLeft="10dp"
+	        android:src="@drawable/abc_ab_bottom_solid_light_holo" />
+	
+	    <TextView
+	        android:id="@+id/name_text_view"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignTop="@+id/head_image_view"
+	        android:layout_marginTop="3dip"
+	        android:layout_marginLeft="16dp"
+	        android:layout_toRightOf="@+id/head_image_view"
+	        android:text="测试姓名" />
+	
+	    <TextView
+	        android:id="@+id/sign_text_view"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/name_text_view"
+	        android:layout_alignBottom="@id/head_image_view"
+	        android:layout_marginBottom="1dip"
+	        android:text="签名在这里" />
+	
+	    <TextView
+	        android:id="@+id/time_text_view"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/name_text_view"
+	        android:layout_alignBottom="@+id/name_text_view"
+	        android:layout_marginLeft="10dp"
+	        android:layout_toRightOf="@+id/name_text_view"
+	        android:text="时间在这里" />
+	</RelativeLayout>
+    
+</LinearLayout>
+

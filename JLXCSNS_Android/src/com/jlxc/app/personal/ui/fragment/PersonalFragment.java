@@ -1,9 +1,14 @@
 package com.jlxc.app.personal.ui.fragment;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,11 +19,10 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
@@ -31,6 +35,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.amap.api.services.core.t;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
@@ -47,7 +52,14 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
+import com.jlxc.app.personal.model.CityModel;
+import com.jlxc.app.personal.model.ProvinceModel;
 import com.jlxc.app.personal.ui.activity.PersonalSignActivity;
+import com.jlxc.app.personal.ui.activity.VisitListActivity;
+import com.jlxc.app.personal.ui.view.cityView.OnWheelChangedListener;
+import com.jlxc.app.personal.ui.view.cityView.WheelView;
+import com.jlxc.app.personal.ui.view.cityView.adapters.ArrayWheelAdapter;
+import com.jlxc.app.personal.utils.XmlParserHandler;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -68,6 +80,18 @@ public class PersonalFragment extends BaseFragment {
 	public static final int BACK_IMAGE = 2;// 背景
 	private int imageType;//点击的图片类型
 	
+	//省份数组
+	protected String[] mProvinceDatas;
+	//城市map
+	protected Map<String, String[]> mCitisDatasMap = new HashMap<String, String[]>();
+	//当前省份名
+	protected String mCurrentProviceName;
+	// 当前城市名
+	protected String mCurrentCityName;
+	private WheelView mViewProvince;
+	private WheelView mViewCity;
+	private Builder cityBuilder;
+	private LinearLayout linearLayout;
 	
 	//背景图
 	@ViewInject(R.id.back_image_View)
@@ -125,7 +149,7 @@ public class PersonalFragment extends BaseFragment {
 	private HelloHaAdapter<String> friendsAdapter;	
 	
     @OnClick(value={R.id.name_layout,R.id.sign_layout,R.id.birth_layout,R.id.sex_layout,
-			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_image_View})
+			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_image_View,R.id.visit_layout})
 	private void clickEvent(View view){
 		switch (view.getId()) {
 		//姓名
@@ -154,7 +178,13 @@ public class PersonalFragment extends BaseFragment {
 			break;
 		//城市
 		case R.id.city_layout:
-			
+			linearLayout = (LinearLayout) View.inflate(getActivity(), R.layout.wheel, null);
+			mViewProvince = (WheelView) linearLayout.findViewById(R.id.id_province);
+			mViewCity = (WheelView) linearLayout.findViewById(R.id.id_city);
+			cityBuilder.setView(linearLayout);
+			setUpListener();
+			setUpData();
+			cityBuilder.show();
 			break;
 		//头像点击
 		case R.id.head_image_view:
@@ -163,7 +193,6 @@ public class PersonalFragment extends BaseFragment {
 		 	Builder headAlertDialog = new AlertDialog.Builder(getActivity()).setNegativeButton("取消", null).setTitle("修改头像");
 		 	String[] headStrings = new String[]{"拍照","相册"}; 
 		 	headAlertDialog.setItems(headStrings, new OnClickListener() {
-				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					//设置为头像
@@ -195,7 +224,6 @@ public class PersonalFragment extends BaseFragment {
 		 	Builder backAlertDialog = new AlertDialog.Builder(getActivity()).setNegativeButton("取消", null).setTitle("修改背景");
 		 	String[] backStrings = new String[]{"拍照","相册"}; 
 		 	backAlertDialog.setItems(backStrings, new OnClickListener() {
-				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					//设置为头像
@@ -214,17 +242,20 @@ public class PersonalFragment extends BaseFragment {
 						Intent intentAlbum = new Intent(Intent.ACTION_GET_CONTENT);
 						intentAlbum.setType(IMAGE_UNSPECIFIED);
 						startActivityForResult(intentAlbum, ALBUM_SELECT);
-						
 					}
 				}
 			});
 		 	backAlertDialog.show();
-			break;				
-
+			break;	
+		case R.id.visit_layout:
+			//最近来访点击
+			Intent visitIntent = new Intent(getActivity(), VisitListActivity.class);
+			visitIntent.putExtra("uid", userModel.getUid());
+			startActivityWithRight(visitIntent);
+			break;
 		default:
 			break;
 		}
-		
 	}
 	
 	//////////////////////////////////life cycle/////////////////////////////////
@@ -255,21 +286,37 @@ public class PersonalFragment extends BaseFragment {
 		userModel.setUid(19);
 		userModel.setHead_image("2015-07-10/191436526857.png");
 		userModel.setBackground_image("2015-07-02/191435808476.png");
-																				
+		
 		//签名因为要跳到领一个页面 所以在只初始化一次
 		if (null == userModel.getSign() || "".equals(userModel.getSign())) {
 			signTextView.setText("暂无");
 		}else {
-			signTextView.setText(userModel.getSign());
+			signTextView.setText(userModel.getSign());  
 		}
 		
-		//http://192.168.1.100/jlxc_php/Uploads/2015-07-02/191435808476.png
 		//设置照片和背景图
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(getActivity(), true, true);
+//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), 0, true, true);
+		bitmapUtils = new BitmapUtils(getActivity());
+		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
+		bitmapUtils.configMemoryCacheEnabled(true);
+		bitmapUtils.configDiskCacheEnabled(true);		
+		bitmapUtils.configDefaultLoadFailedImage(R.drawable.ic_launcher);
+		
 		//头像 2015-07-07/01436273216_sub.jpg
 		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
 		//背景 2015-07-02/191435808476.png
 		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getBackground_image());
+		
+		//解析省份城市xml
+		initProvinceDatas();
+		cityBuilder = new AlertDialog.Builder(getActivity());
+		cityBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				cityTextView.setText(mCurrentProviceName+mCurrentCityName);
+				uploadInformation("city", mCurrentProviceName+","+mCurrentCityName);
+			}
+		});
 	}
 
 	@Override
@@ -285,7 +332,6 @@ public class PersonalFragment extends BaseFragment {
 	    //获取当前最近的三张状态图片
 		getNewsImages();
 		getVisitImages();
-
 		//姓名
 		if (null == userModel.getName() || "".equals(userModel.getName())) {
 			nameTextView.setText("暂无");
@@ -512,8 +558,7 @@ public class PersonalFragment extends BaseFragment {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
 				ImageView imageView = helper.getView(R.id.image_attrament);
-				BitmapManager.getInstance().getBitmapUtils(getActivity(), true, true)
-				.display(imageView, JLXCConst.ATTACHMENT_ADDR+item);
+				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item);
 			}
 		};
 		return adapter;
@@ -643,7 +688,6 @@ public class PersonalFragment extends BaseFragment {
 								
 							}
 						}
-
 						if (status == JLXCConst.STATUS_FAIL) {
 							ToastUtil.show(getActivity(),
 									jsonResponse
@@ -660,11 +704,9 @@ public class PersonalFragment extends BaseFragment {
 					}
 				}, null));
 		
-		
 //		 Class clazz = userModel.getClass(); 不使用反射 可原始处理 
 //	     Method m = clazz.getDeclaredMethod("setMsg", String.class);
 //	     m.invoke(userModel, "重新设置msg信息！"); 
-		
 	}
 	
 	private void uploadImage(final String path) {
@@ -757,6 +799,98 @@ public class PersonalFragment extends BaseFragment {
 		return result;
 	}
 	
+	
+	/**
+	 * XML解析
+	 */
+	
+    protected void initProvinceDatas()
+	{
+		List<ProvinceModel> provinceList = null;
+    	AssetManager asset = getActivity().getAssets();
+        try {
+        	//解析
+            InputStream input = asset.open("province_data.xml");
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser parser = spf.newSAXParser();
+			XmlParserHandler handler = new XmlParserHandler();
+			parser.parse(input, handler);
+			input.close();
+			provinceList = handler.getDataList();
+			if (provinceList!= null && !provinceList.isEmpty()) {
+				mCurrentProviceName = provinceList.get(0).getName();
+				List<CityModel> cityList = provinceList.get(0).getCityList();
+				if (cityList!= null && !cityList.isEmpty()) {
+					mCurrentCityName = cityList.get(0).getName();
+				}
+			}
+			mProvinceDatas = new String[provinceList.size()];
+        	for (int i=0; i< provinceList.size(); i++) {
+        		mProvinceDatas[i] = provinceList.get(i).getName();
+        		List<CityModel> cityList = provinceList.get(i).getCityList();
+        		String[] cityNames = new String[cityList.size()];
+        		for (int j=0; j< cityList.size(); j++) {
+        			cityNames[j] = cityList.get(j).getName();
+        		}
+        		mCitisDatasMap.put(provinceList.get(i).getName(), cityNames);
+        	}
+        	
+        } catch (Throwable e) {  
+            e.printStackTrace();  
+        } finally {
+        	
+        } 
+	}
+    
+    private void setUpListener() {
+    	// 省份改变
+    	mViewProvince.addChangingListener(new OnWheelChangedListener() {
+			@Override
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				updateCities();
+			}
+		});
+    	// 城市改变
+    	mViewCity.addChangingListener(new OnWheelChangedListener() {
+			@Override
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				updateAreas();
+			}
+		});
+    }
+	
+	private void setUpData() {
+		initProvinceDatas();
+		mViewProvince.setViewAdapter(new ArrayWheelAdapter<String>(getActivity(), mProvinceDatas));
+		mViewProvince.setVisibleItems(7);
+		mViewCity.setVisibleItems(7);
+		updateCities();
+		updateAreas();
+	}
+
+	/**
+	 * WheelView滚动省份变化
+	 */
+	private void updateAreas() {
+		int pCurrent = mViewCity.getCurrentItem();
+		mCurrentCityName = mCitisDatasMap.get(mCurrentProviceName)[pCurrent];
+	}
+
+	/**
+	 * WheelView滚动城市变化
+	 */
+	private void updateCities() {
+		int pCurrent = mViewProvince.getCurrentItem();
+		mCurrentProviceName = mProvinceDatas[pCurrent];
+		String[] cities = mCitisDatasMap.get(mCurrentProviceName);
+		if (cities == null) {
+			cities = new String[] { "" };
+		}
+		mViewCity.setViewAdapter(new ArrayWheelAdapter<String>(getActivity(), cities));
+		mViewCity.setCurrentItem(0);
+		updateAreas();
+	}
+    
 	////////////////////////getter setter/////////////////////
 	public HelloHaAdapter<String> getMyImageAdapter() {
 		return myImageAdapter;
