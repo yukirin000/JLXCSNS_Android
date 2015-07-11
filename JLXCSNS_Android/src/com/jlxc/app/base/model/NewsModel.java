@@ -59,7 +59,7 @@ public class NewsModel {
 				+ object.getString("head_image"));
 		setUserHeadSubImage(JLXCConst.ATTACHMENT_ADDR
 				+ object.getString("head_sub_image"));
-		setNewsID(object.getString("add_date"));
+		setNewsID(object.getString("id"));
 		setNewsContent(object.getString("content_text"));
 		setLocation(object.getString("location"));
 		setCommentQuantity(object.getString("comment_quantity"));

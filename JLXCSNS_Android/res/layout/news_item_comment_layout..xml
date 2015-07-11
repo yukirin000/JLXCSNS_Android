@@ -24,7 +24,8 @@
                     android:id="@+id/txt_comment_nameA"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="昵称：" />
+                    android:text="昵称："
+                    android:textColor="#1111FF" />
 
                 <TextView
                     android:id="@+id/txt_comment_contentA"
@@ -42,7 +43,8 @@
                     android:id="@+id/txt_comment_nameB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="昵称：" />
+                    android:text="昵称："
+                    android:textColor="#1111FF" />
 
                 <TextView
                     android:id="@+id/txt_comment_contentB"
@@ -60,7 +62,8 @@
                     android:id="@+id/txt_comment_nameC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="昵称：" />
+                    android:text="昵称："
+                    android:textColor="#1111FF" />
 
                 <TextView
                     android:id="@+id/txt_comment_contentC"
