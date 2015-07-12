@@ -1,6 +1,5 @@
 package com.jlxc.app.base.ui.activity;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -8,7 +7,6 @@ import android.view.View;
 import com.jlxc.app.R;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.ui.view.PinchImageView;
-import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 

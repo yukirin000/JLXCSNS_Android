@@ -25,14 +25,18 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
+import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class OtherPersonalActivity extends BaseActivity{
 
+	public final static String INTENT_KEY = "uid";
+	
 	//背景图
 	@ViewInject(R.id.back_image_View)
 	private ImageView backImageView;
@@ -96,6 +100,35 @@ public class OtherPersonalActivity extends BaseActivity{
 	private HelloHaAdapter<String> hisFriendAdapter;
 	//查看的用户id
 	private int uid;
+	//查看的用户模型
+	private UserModel otherUserModel;
+	
+	@OnClick({R.id.head_image_view, R.id.visit_button, R.id.common_friend_button})
+	private void clickEvent(View view){
+		switch (view.getId()) {
+		case R.id.head_image_view:
+			//头像
+			Intent headIntent = new Intent(this, BigImgLookActivity.class);
+			headIntent.putExtra(BigImgLookActivity.INTENT_KEY, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_image());
+			startActivityWithBottom(headIntent);
+			break;
+		case R.id.visit_button:
+			//来访
+			Intent visitIntent = new Intent(this, VisitListActivity.class);
+			visitIntent.putExtra(VisitListActivity.INTENT_KEY, otherUserModel.getUid());
+			startActivityWithRight(visitIntent);
+			break;			
+		case R.id.common_friend_button:
+			//共同好友
+			Intent commonIntent = new Intent(this, CommonFriendsActivity.class);
+			commonIntent.putExtra(CommonFriendsActivity.INTENT_KEY, otherUserModel.getUid());
+			startActivityWithRight(commonIntent);
+			
+			break;
+		default:
+			break;
+		}
+	}
 	
 	@Override
 	public int setLayoutId() {
@@ -106,7 +139,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	@Override
 	protected void setUpView() {
 		Intent intent = getIntent();
-		uid = intent.getIntExtra("uid", 0);
+		uid = intent.getIntExtra(INTENT_KEY, 0);
 		
 		/////////////////////////测试数据//////////////////////
 		uid = 19;
@@ -151,7 +184,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		return adapter;
 	}
 	
-	 //获取当前最近的三张最近来访人的头像	
+	 //获取用户信息	
 	private void getPersonalInformation(){
 		
 		String path = JLXCConst.PERSONAL_INFORMATION+"?"+"uid="+uid+"&current_id="+UserManager.getInstance().getUser().getUid();
@@ -167,20 +200,6 @@ public class OtherPersonalActivity extends BaseActivity{
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							handleData(jResult);
-//								//数据处理
-//								JSONArray array = jResult.getJSONArray(JLXCConst.HTTP_LIST);
-//								List<String> headImageList = new ArrayList<String>();
-//								for (int i = 0; i < array.size(); i++) {
-//									JSONObject object = (JSONObject) array.get(i);
-//									headImageList.add(object.getString("head_sub_image"));
-//								}
-//								//人数
-//								int visitCount = jResult.getIntValue("visit_count");
-//								if (visitCount > 0) {
-////									visitCountTextView.setText(visitCount+"");
-//								}else {
-////									visitCountTextView.setText("");
-//								}
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -201,7 +220,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	//处理数据
 	private void handleData(JSONObject jsonObject) {
 		
-		UserModel otherUserModel = new UserModel();		
+		otherUserModel = new UserModel();		
 		otherUserModel.setContentWithJson(jsonObject);
 		
 		//姓名
@@ -241,7 +260,7 @@ public class OtherPersonalActivity extends BaseActivity{
 			cityTextView.setText(otherUserModel.getCity());
 		}	
 		//头像
-		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_image());
+		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_sub_image());
 		//背景
 		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getBackground_image());
 		
@@ -292,7 +311,6 @@ public class OtherPersonalActivity extends BaseActivity{
 				addFriendLayout.setVisibility(View.GONE);
 			}
 		}
-		
 		
 	}
 

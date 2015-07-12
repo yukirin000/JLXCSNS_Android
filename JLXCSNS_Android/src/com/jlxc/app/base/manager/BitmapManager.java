@@ -22,15 +22,20 @@ public class BitmapManager {
 	}
 
 	public BitmapUtils getBitmapUtils(Context context,boolean isEnableMemoryCache, boolean isEnableDiskCache) {
-		if (null == bmpUtils) {
-			bmpUtils = new BitmapUtils(context);
-			// bmpUtils = new BitmapUtils(context, diskCachePath)
-//			bmpUtils.configDefaultLoadFailedImage(loadFailImage);
-			bmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
-			bmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
-			bmpUtils.configDiskCacheEnabled(isEnableDiskCache);
-		}
-		return bmpUtils;
+//		if (null == bmpUtils) {
+//			bmpUtils = new BitmapUtils(context);
+//			// bmpUtils = new BitmapUtils(context, diskCachePath)
+////			bmpUtils.configDefaultLoadFailedImage(loadFailImage);
+//			bmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+//			bmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
+//			bmpUtils.configDiskCacheEnabled(isEnableDiskCache);
+//		}
+		//不适用单例utils
+		BitmapUtils newBmpUtils = new BitmapUtils(context);
+		newBmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+		newBmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
+		newBmpUtils.configDiskCacheEnabled(isEnableDiskCache);
+		return newBmpUtils;
 	}
 	/**
 	 * 获取头像时使用
@@ -40,14 +45,23 @@ public class BitmapManager {
 	 * @return
 	 */
 	public BitmapUtils getHeadPicBitmapUtils(Context context,int loadFailImage,boolean isEnableMemoryCache, boolean isEnableDiskCache){
-		if(null == headPicBmpUtils){
-//			headPicBmpUtils = new BitmapUtils(context,FileUtil.HEAD_PIC_PATH);
-			headPicBmpUtils = new BitmapUtils(context);
-		}
-		headPicBmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
-		headPicBmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
-		headPicBmpUtils.configDiskCacheEnabled(isEnableDiskCache);
-		headPicBmpUtils.configDefaultLoadFailedImage(loadFailImage);
+//		if(null == headPicBmpUtils){
+////			headPicBmpUtils = new BitmapUtils(context,FileUtil.HEAD_PIC_PATH);
+//			headPicBmpUtils = new BitmapUtils(context);
+//		}
+//		headPicBmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+//		headPicBmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
+//		headPicBmpUtils.configDiskCacheEnabled(isEnableDiskCache);
+//		headPicBmpUtils.configDefaultLoadFailedImage(loadFailImage);
+		
+		//不适用单例utils
+		BitmapUtils newHeadPicBmpUtils = new BitmapUtils(context);
+		newHeadPicBmpUtils.configDefaultLoadFailedImage(loadFailImage);
+		newHeadPicBmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+		newHeadPicBmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
+		newHeadPicBmpUtils.configDiskCacheEnabled(isEnableDiskCache);
+		return newHeadPicBmpUtils;
+		
 //		headPicBmpUtils.configDefaultLoadingImage(bitmap)
 		
 //		headPicBmpUtils.configDiskCacheFileNameGenerator(new FileNameGenerator() {
@@ -58,7 +72,8 @@ public class BitmapManager {
 //				return arg0.substring(arg0.lastIndexOf("/") + 1);
 //			}
 //		});
-		return headPicBmpUtils;
 	}
 
+
+	
 }

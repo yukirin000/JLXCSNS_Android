@@ -47,6 +47,7 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 public class VisitListActivity extends BaseActivityWithTopBar {
 
+	public final static String INTENT_KEY = "uid";
 	//下拉列表
 	@ViewInject(R.id.visit_refresh_list)
 	private PullToRefreshListView visitListView;
@@ -76,7 +77,7 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		// TODO Auto-generated method stub
 		Intent intent = getIntent();
-		uid = intent.getIntExtra("uid", 0);
+		uid = intent.getIntExtra(INTENT_KEY, 0);
 		
 		bitmapUtils = new BitmapUtils(this);
 		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
