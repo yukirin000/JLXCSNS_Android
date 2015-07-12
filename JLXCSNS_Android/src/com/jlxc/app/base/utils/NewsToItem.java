@@ -52,7 +52,7 @@ public class NewsToItem {
 			item.setItemType(NewsItemModel.OPERATE);
 
 			item.setNewsID(news.getNewsID());
-			LogUtils.i("-----,动态ID" + news.getNewsID());
+			item.setIsLike(news.getIsLike());
 			item.setReplyCount(news.getCommentQuantity());
 			item.setLikeCount(news.getLikeQuantity());
 		} catch (Exception e) {
