@@ -101,9 +101,15 @@ public class NewsModel {
 
 		Map<String, String> tempMap = new HashMap<String, String>();
 		JSONObject typeObject = (JSONObject) object.get("type");
-		tempMap.put("type", typeObject.getString("type"));
-		tempMap.put("fid", typeObject.getString("fid"));
-		tempMap.put("content", typeObject.getString("content"));
+		if (object.containsKey("type")) {
+			tempMap.put("type", typeObject.getString("type"));
+		}
+		if (object.containsKey("fid")) {
+			tempMap.put("fid", typeObject.getString("fid"));
+		}
+		if (object.containsKey("content")) {
+			tempMap.put("content", typeObject.getString("content"));
+		}
 		setTYPE(tempMap);
 
 	}

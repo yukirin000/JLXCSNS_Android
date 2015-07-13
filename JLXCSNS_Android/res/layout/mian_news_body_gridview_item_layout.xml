@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.jlxc.app.base.ui.view.NoScrollGridView
-        android:id="@+id/like_list_gridview"
+    <ImageView
+        android:id="@+id/iv_mian_body_gridview_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:horizontalSpacing="2dp"
-        android:numColumns="11"
-        android:padding="10dp"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
         android:src="@drawable/ic_launcher" />
 
 </LinearLayout>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_campus_head_name"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/xianjian01"
+        android:gravity="center"
+        android:text="深圳市高级中学"
+        android:textColor="#101010"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tv_person_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#B0B0B0"
+        android:text="这个学校的学生"
+        android:textColor="#101010" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <com.jlxc.app.base.ui.view.NoScrollGridView
+            android:id="@+id/gv_school_person"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:horizontalSpacing="4dp"
+            android:numColumns="5"
+            android:padding="10dp"
+            android:src="@drawable/ic_launcher" >
+        </com.jlxc.app.base.ui.view.NoScrollGridView>
+
+        <ImageView
+            android:id="@+id/txt_campus_all_alumnus"
+            android:layout_width="0dp"
+            android:padding="10dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ic_launcher" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_news_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#B0B0B0"
+        android:text="动态列表"
+        android:textColor="#101010" />
+
+</LinearLayout>

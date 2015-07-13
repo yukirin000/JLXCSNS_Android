@@ -23,20 +23,20 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.CommentModel;
 import com.jlxc.app.base.model.ImageModel;
 import com.jlxc.app.base.model.LikeModel;
-import com.jlxc.app.base.model.NewsItemModel;
+import com.jlxc.app.base.model.ItemModel;
 import com.jlxc.app.base.model.UserModel;
-import com.jlxc.app.base.model.NewsItemModel.BodyItem;
-import com.jlxc.app.base.model.NewsItemModel.LikeListItem;
-import com.jlxc.app.base.model.NewsItemModel.OperateItem;
-import com.jlxc.app.base.model.NewsItemModel.CommentItem;
-import com.jlxc.app.base.model.NewsItemModel.TitleItem;
+import com.jlxc.app.base.model.ItemModel.BodyItem;
+import com.jlxc.app.base.model.ItemModel.LikeListItem;
+import com.jlxc.app.base.model.ItemModel.OperateItem;
+import com.jlxc.app.base.model.ItemModel.CommentItem;
+import com.jlxc.app.base.model.ItemModel.TitleItem;
 import com.jlxc.app.base.model.NewsModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.NewsToItem;
+import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.BitmapUtils;
@@ -82,13 +82,13 @@ public class NewsListFragment extends BaseFragment {
 	// 原始数据源
 	private List<NewsModel> listItem = new ArrayList<NewsModel>();
 	// item数据源
-	private List<NewsItemModel> itemDataList = null;
+	private List<ItemModel> itemDataList = null;
 	// 动态列表适配器
-	private HelloHaAdapter<NewsItemModel> newsAdapter = null;
+	private HelloHaAdapter<ItemModel> newsAdapter = null;
 	// 动态的图片适配器
 	private HelloHaAdapter<ImageModel> newsGVAdapter;
 	// 使支持多种item
-	private MultiItemTypeSupport<NewsItemModel> multiItemTypeSupport = null;
+	private MultiItemTypeSupport<ItemModel> multiItemTypeSupport = null;
 	// 上下文信息
 	private Context mContext;
 	// bitmap的处理
@@ -120,7 +120,7 @@ public class NewsListFragment extends BaseFragment {
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.fragment_news_list;
+		return R.layout.fragment_mian_news_layout;
 	}
 
 	@Override
@@ -150,26 +150,26 @@ public class NewsListFragment extends BaseFragment {
 	 * listView 支持多种item的设置
 	 * */
 	private void multiItemTypeSet() {
-		multiItemTypeSupport = new MultiItemTypeSupport<NewsItemModel>() {
+		multiItemTypeSupport = new MultiItemTypeSupport<ItemModel>() {
 
 			@Override
-			public int getLayoutId(int position, NewsItemModel itemData) {
+			public int getLayoutId(int position, ItemModel itemData) {
 				int layoutId = 0;
 				switch (itemData.getItemType()) {
-				case NewsItemModel.TITLE:
-					layoutId = R.layout.news_item_title_layout;
+				case ItemModel.TITLE:
+					layoutId = R.layout.mian_news_item_title_layout;
 					break;
-				case NewsItemModel.BODY:
-					layoutId = R.layout.news_item_body_layout;
+				case ItemModel.BODY:
+					layoutId = R.layout.main_news_item_body_layout;
 					break;
-				case NewsItemModel.OPERATE:
-					layoutId = R.layout.news_item_operate_layout;
+				case ItemModel.OPERATE:
+					layoutId = R.layout.mian_news_item_operate_layout;
 					break;
-				case NewsItemModel.LIKELIST:
-					layoutId = R.layout.news_item_likelist_layout;
+				case ItemModel.LIKELIST:
+					layoutId = R.layout.mian_news_item_likelist_layout;
 					break;
-				case NewsItemModel.COMMENT:
-					layoutId = R.layout.news_item_comment_layout;
+				case ItemModel.COMMENT:
+					layoutId = R.layout.mian_news_item_comment_layout;
 					break;
 				default:
 					break;
@@ -179,27 +179,27 @@ public class NewsListFragment extends BaseFragment {
 
 			@Override
 			public int getViewTypeCount() {
-				return NewsItemModel.TYPE_COUNT;
+				return ItemModel.NEWS_ITEM_TYPE_COUNT;
 			}
 
 			@Override
-			public int getItemViewType(int postion, NewsItemModel itemData) {
+			public int getItemViewType(int postion, ItemModel itemData) {
 				int itemtype = 0;
 				switch (itemData.getItemType()) {
-				case NewsItemModel.TITLE:
-					itemtype = NewsItemModel.TITLE;
+				case ItemModel.TITLE:
+					itemtype = ItemModel.TITLE;
 					break;
-				case NewsItemModel.BODY:
-					itemtype = NewsItemModel.BODY;
+				case ItemModel.BODY:
+					itemtype = ItemModel.BODY;
 					break;
-				case NewsItemModel.OPERATE:
-					itemtype = NewsItemModel.OPERATE;
+				case ItemModel.OPERATE:
+					itemtype = ItemModel.OPERATE;
 					break;
-				case NewsItemModel.LIKELIST:
-					itemtype = NewsItemModel.LIKELIST;
+				case ItemModel.LIKELIST:
+					itemtype = ItemModel.LIKELIST;
 					break;
-				case NewsItemModel.COMMENT:
-					itemtype = NewsItemModel.COMMENT;
+				case ItemModel.COMMENT:
+					itemtype = ItemModel.COMMENT;
 					break;
 				default:
 					break;
@@ -251,27 +251,27 @@ public class NewsListFragment extends BaseFragment {
 		/**
 		 * adapter的设置
 		 * */
-		newsAdapter = new HelloHaAdapter<NewsItemModel>(mContext, itemDataList,
+		newsAdapter = new HelloHaAdapter<ItemModel>(mContext, itemDataList,
 				multiItemTypeSupport) {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
-					NewsItemModel item) {
+					ItemModel item) {
 
 				switch (helper.layoutId) {
-				case R.layout.news_item_title_layout:
+				case R.layout.mian_news_item_title_layout:
 					setTitleItemView(helper, item);
 					break;
-				case R.layout.news_item_body_layout:
+				case R.layout.main_news_item_body_layout:
 					setBodyItemView(helper, item);
 					break;
-				case R.layout.news_item_operate_layout:
+				case R.layout.mian_news_item_operate_layout:
 					setOperateItemView(helper, item);
 					break;
-				case R.layout.news_item_likelist_layout:
+				case R.layout.mian_news_item_likelist_layout:
 					setLikeListItemView(helper, item);
 					break;
-				case R.layout.news_item_comment_layout:
+				case R.layout.mian_news_item_comment_layout:
 					setComentItemView(helper, item);
 					break;
 
@@ -335,7 +335,7 @@ public class NewsListFragment extends BaseFragment {
 		likeItemClickListener = new LikeGridViewItemClick();
 		initBitmapUtils();
 		listItem = getLastData();
-		itemDataList = NewsToItem.newsToItems(listItem);
+		itemDataList = DataToItem.newsDataToItems(listItem);
 
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
@@ -424,11 +424,11 @@ public class NewsListFragment extends BaseFragment {
 	 * titleItem的数据绑定与设置
 	 * */
 	private void setTitleItemView(HelloHaBaseAdapterHelper helper,
-			NewsItemModel item) {
+			ItemModel item) {
 		TitleItem titleData = (TitleItem) item;
 
 		// 设置头像
-		ImageView imgView = helper.getView(R.id.img_user_head);
+		ImageView imgView = helper.getView(R.id.img_mian_news_user_head);
 		// 设置图片
 		LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
 		laParams.width = laParams.height = (screenWidth) / 6;
@@ -436,13 +436,13 @@ public class NewsListFragment extends BaseFragment {
 		imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 		bitmapUtils.configDefaultBitmapMaxSize((screenWidth) / 4,
 				(screenWidth) / 4);
-		helper.setImageUrl(R.id.img_user_head, bitmapUtils,
+		helper.setImageUrl(R.id.img_mian_news_user_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
 		// 设置用户名,发布的时间，标签
-		helper.setText(R.id.txt_user_name, titleData.getUserName());
-		helper.setText(R.id.txt_publish_time,
+		helper.setText(R.id.txt_main_news_user_name, titleData.getUserName());
+		helper.setText(R.id.txt_main_news_publish_time,
 				TimeHandle.getShowTimeFormat(titleData.getSendTime()));
-		helper.setText(R.id.txt_user_tag, titleData.getUserTag());
+		helper.setText(R.id.txt_main_news_user_tag, titleData.getUserTag());
 
 		// 设置事件监听
 		final int postion = helper.getPosition();
@@ -453,28 +453,27 @@ public class NewsListFragment extends BaseFragment {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
-		helper.setOnClickListener(R.id.img_user_head, listener);
-		helper.setOnClickListener(R.id.txt_user_name, listener);
+		helper.setOnClickListener(R.id.img_mian_news_user_head, listener);
+		helper.setOnClickListener(R.id.txt_main_news_user_name, listener);
 	}
 
 	/**
 	 * 设置新闻主题item
 	 * */
-	private void setBodyItemView(HelloHaBaseAdapterHelper helper,
-			NewsItemModel item) {
+	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
 		BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 
 		// 绑定图片显示
 		if (pictureList.size() == 0) {
 			// 没有图片的情况
-			helper.setVisible(R.id.gv_news_body_image, false);
-			helper.setVisible(R.id.iv_news_body_picture, false);
+			helper.setVisible(R.id.gv_mian_news_body_image, false);
+			helper.setVisible(R.id.iv_mian_news_body_picture, false);
 		} else if (pictureList.size() == 1) {
 			// 只有一张图片的情况
-			helper.setVisible(R.id.gv_news_body_image, false);
-			helper.setVisible(R.id.iv_news_body_picture, true);
-			ImageView imgView = helper.getView(R.id.iv_news_body_picture);
+			helper.setVisible(R.id.gv_mian_news_body_image, false);
+			helper.setVisible(R.id.iv_mian_news_body_picture, true);
+			ImageView imgView = helper.getView(R.id.iv_mian_news_body_picture);
 			ImageModel imageModel = pictureList.get(0);
 			LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
 			if (imageModel.getImageHheight() >= imageModel.getImageWidth()) {
@@ -491,7 +490,7 @@ public class NewsListFragment extends BaseFragment {
 			imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 			bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
 					screenWidth * 4 / 5);
-			helper.setImageUrl(R.id.iv_news_body_picture, bitmapUtils,
+			helper.setImageUrl(R.id.iv_mian_news_body_picture, bitmapUtils,
 					imageModel.getURL(), new NewsBitmapLoadCallBack());
 
 			// 设置点击事件
@@ -505,19 +504,19 @@ public class NewsListFragment extends BaseFragment {
 			});
 		} else {
 			// 多张图片以九宫格显示
-			helper.setVisible(R.id.gv_news_body_image, true);
-			helper.setVisible(R.id.iv_news_body_picture, false);
+			helper.setVisible(R.id.gv_mian_news_body_image, true);
+			helper.setVisible(R.id.iv_mian_news_body_picture, false);
 			NoScrollGridView bodyGridView = (NoScrollGridView) helper
-					.getView(R.id.gv_news_body_image);
+					.getView(R.id.gv_mian_news_body_image);
 			newsGVAdapter = new HelloHaAdapter<ImageModel>(mContext,
-					R.layout.news_body_gridview_item_layout, pictureList) {
+					R.layout.mian_news_body_gridview_item_layout, pictureList) {
 				@Override
 				protected void convert(HelloHaBaseAdapterHelper helper,
 						ImageModel item) {
 					// 设置显示图片的imageView大小
 					int desSize = (screenWidth - 20) / 3;
 					ImageView imgView = helper
-							.getView(R.id.iv_body_gridview_item);
+							.getView(R.id.iv_mian_body_gridview_item);
 					LayoutParams laParams = (LayoutParams) imgView
 							.getLayoutParams();
 					laParams.width = laParams.height = desSize;
@@ -525,8 +524,9 @@ public class NewsListFragment extends BaseFragment {
 					imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 					bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
 							screenWidth);
-					helper.setImageUrl(R.id.iv_body_gridview_item, bitmapUtils,
-							item.getSubURL(), new NewsBitmapLoadCallBack());
+					helper.setImageUrl(R.id.iv_mian_body_gridview_item,
+							bitmapUtils, item.getSubURL(),
+							new NewsBitmapLoadCallBack());
 				}
 			};
 			bodyGridView.setAdapter(newsGVAdapter);
@@ -539,17 +539,18 @@ public class NewsListFragment extends BaseFragment {
 
 		// 设置 文字内容
 		if (bodyData.getNewsContent().equals("")) {
-			helper.setVisible(R.id.txt_news_content, false);
+			helper.setVisible(R.id.txt_main_news_content, false);
 		} else {
-			helper.setVisible(R.id.txt_news_content, true);
-			helper.setText(R.id.txt_news_content, bodyData.getNewsContent());
+			helper.setVisible(R.id.txt_main_news_content, true);
+			helper.setText(R.id.txt_main_news_content,
+					bodyData.getNewsContent());
 		}
 		// 设置地理位置
 		if (bodyData.getLocation().equals("")) {
-			helper.setVisible(R.id.txt_news_location, false);
+			helper.setVisible(R.id.txt_main_news_location, false);
 		} else {
-			helper.setVisible(R.id.txt_news_location, true);
-			helper.setText(R.id.txt_news_location, bodyData.getLocation());
+			helper.setVisible(R.id.txt_main_news_location, true);
+			helper.setText(R.id.txt_main_news_location, bodyData.getLocation());
 		}
 	}
 
@@ -557,13 +558,13 @@ public class NewsListFragment extends BaseFragment {
 	 * 设置操作部分item
 	 * */
 	private void setOperateItemView(HelloHaBaseAdapterHelper helper,
-			NewsItemModel item) {
+			ItemModel item) {
 		OperateItem opData = (OperateItem) item;
-		helper.setText(R.id.btn_reply, "评论 " + opData.getReplyCount());
+		helper.setText(R.id.btn_mian_reply, "评论 " + opData.getReplyCount());
 		if (opData.getIsLike()) {
-			helper.setText(R.id.btn_like, "已赞 " + opData.getLikeCount());
+			helper.setText(R.id.btn_mian_like, "已赞 " + opData.getLikeCount());
 		} else {
-			helper.setText(R.id.btn_like, "点赞 " + opData.getLikeCount());
+			helper.setText(R.id.btn_mian_like, "点赞 " + opData.getLikeCount());
 		}
 		// 设置事件监听
 		final int postion = helper.getPosition();
@@ -574,26 +575,28 @@ public class NewsListFragment extends BaseFragment {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
-		helper.setOnClickListener(R.id.btn_reply, listener);
-		helper.setOnClickListener(R.id.btn_like, listener);
+		helper.setOnClickListener(R.id.btn_mian_reply, listener);
+		helper.setOnClickListener(R.id.btn_mian_like, listener);
 	}
 
 	/**
 	 * 设置点赞部分item
 	 * */
 	private void setLikeListItemView(HelloHaBaseAdapterHelper helper,
-			NewsItemModel item) {
+			ItemModel item) {
 		LikeListItem lkData = (LikeListItem) item;
 		List<LikeModel> lkImageList = lkData.getLikeHeadListimage();
 
 		// 点赞头像的显示
 		HelloHaAdapter<LikeModel> likeGVAdapter = new HelloHaAdapter<LikeModel>(
-				mContext, R.layout.news_like_gridview_item_layout, lkImageList) {
+				mContext, R.layout.mian_news_like_gridview_item_layout,
+				lkImageList) {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					LikeModel item) {
 				// 设置头像imageview的尺寸
-				ImageView imgView = helper.getView(R.id.iv_like_gridview_item);
+				ImageView imgView = helper
+						.getView(R.id.iv_mian_like_gridview_item);
 				LayoutParams laParams = (LayoutParams) imgView
 						.getLayoutParams();
 				laParams.width = laParams.height = (screenWidth) / 12;
@@ -605,17 +608,17 @@ public class NewsListFragment extends BaseFragment {
 				// 绑定图片
 				if (helper.getPosition() < MAX_LIKE_COUNT) {
 					bitmapUtils.configDefaultBitmapMaxSize(30, 30);
-					helper.setImageUrl(R.id.iv_like_gridview_item, bitmapUtils,
-							item.getHeadSubImage(),
+					helper.setImageUrl(R.id.iv_mian_like_gridview_item,
+							bitmapUtils, item.getHeadSubImage(),
 							new NewsBitmapLoadCallBack());
 				} else if (10 == helper.getPosition()) {
-					helper.setImageResource(R.id.iv_like_gridview_item,
+					helper.setImageResource(R.id.iv_mian_like_gridview_item,
 							R.drawable.ic_launcher);
 				}
 			}
 		};
 		likeGridView = (NoScrollGridView) helper
-				.getView(R.id.like_list_gridview);
+				.getView(R.id.gv_mian_Like_list);
 		likeGridView.setAdapter(likeGVAdapter);
 		likeGridView.setOnItemClickListener(likeItemClickListener);
 	}
@@ -624,7 +627,7 @@ public class NewsListFragment extends BaseFragment {
 	 * 设置回复评论item
 	 * */
 	private void setComentItemView(HelloHaBaseAdapterHelper helper,
-			NewsItemModel item) {
+			ItemModel item) {
 		CommentItem itemData = (CommentItem) item;
 		// 所有的评论数据
 		List<CommentModel> commentList = itemData.getCommentList();
@@ -789,11 +792,12 @@ public class NewsListFragment extends BaseFragment {
 			tempNews.setContentWithJson(newsObj);
 			newDatas.add(tempNews);
 		}
-		latestTimesTamp = newDatas.get(0).getTimesTamp();
 		if (isPullDowm) {
-			newsAdapter.replaceAll(NewsToItem.newsToItems(newDatas));
+			// 更新时间戳
+			latestTimesTamp = newDatas.get(0).getTimesTamp();
+			newsAdapter.replaceAll(DataToItem.newsDataToItems(newDatas));
 		} else {
-			newsAdapter.addAll(NewsToItem.newsToItems(newDatas));
+			newsAdapter.addAll(DataToItem.newsDataToItems(newDatas));
 		}
 		dataList.clear();
 	}
@@ -806,10 +810,10 @@ public class NewsListFragment extends BaseFragment {
 		@Override
 		public void onClick(View view, int postion, int viewID) {
 			switch (viewID) {
-			case R.id.img_user_head:
-			case R.id.txt_user_name:
+			case R.id.img_mian_news_user_head:
+			case R.id.txt_main_news_user_name:
 				TitleItem titleData = (TitleItem) newsAdapter.getItem(postion);
-				if (R.id.img_user_head == viewID) {
+				if (R.id.img_mian_news_user_head == viewID) {
 					ToastUtil
 							.show(mContext, "点击了头像:" + titleData.getUserName());
 				} else {
@@ -817,7 +821,7 @@ public class NewsListFragment extends BaseFragment {
 				}
 				break;
 
-			case R.id.iv_news_body_picture:
+			case R.id.iv_mian_news_body_picture:
 				BodyItem bodyData = (BodyItem) newsAdapter.getItem(postion);
 				String path = bodyData.getNewsImageListList().get(0).getURL();
 				// 跳转到图片详情页面
@@ -826,11 +830,11 @@ public class NewsListFragment extends BaseFragment {
 				startActivity(intent);
 				break;
 
-			case R.id.btn_reply:
-			case R.id.btn_like:
+			case R.id.btn_mian_reply:
+			case R.id.btn_mian_like:
 				OperateItem operateData = (OperateItem) newsAdapter
 						.getItem(postion);
-				if (R.id.btn_reply == viewID) {
+				if (R.id.btn_mian_reply == viewID) {
 					ToastUtil.show(mContext,
 							"评论次数:" + operateData.getReplyCount());
 				} else {

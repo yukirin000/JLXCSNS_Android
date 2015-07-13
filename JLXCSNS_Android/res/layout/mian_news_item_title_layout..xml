@@ -8,7 +8,7 @@
     <!-- 用户头像 -->
 
     <ImageView
-        android:id="@+id/img_user_head"
+        android:id="@+id/img_mian_news_user_head"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_launcher" />
@@ -21,7 +21,7 @@
         <!-- 昵称 -->
 
         <TextView
-            android:id="@+id/txt_user_name"
+            android:id="@+id/txt_main_news_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
@@ -31,7 +31,7 @@
         <!-- 标签 -->
 
         <TextView
-            android:id="@+id/txt_user_tag"
+            android:id="@+id/txt_main_news_user_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
@@ -46,7 +46,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/txt_publish_time"
+            android:id="@+id/txt_main_news_publish_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
