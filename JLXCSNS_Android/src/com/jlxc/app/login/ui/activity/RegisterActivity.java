@@ -21,6 +21,7 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -157,7 +158,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 					@Override
 					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
+						super.onSuccess(jsonResponse, flag); 
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
@@ -168,7 +169,11 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);
 							ToastUtil.show(RegisterActivity.this, "修改成功");
-
+							
+							//跳转主页
+							Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
+							startActivity(intent);
+							
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -214,6 +219,9 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							UserManager.getInstance().setUser(userMd);
 
 							ToastUtil.show(RegisterActivity.this, "注册成功");
+							//跳转主页
+							Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
+							startActivity(intent);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {

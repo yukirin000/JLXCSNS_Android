@@ -15,6 +15,7 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -88,7 +89,11 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 					UserManager.getInstance().getUser().setContentWithJson(result);
 					Toast.makeText(SecondLoginActivity.this, "登录成功",
 							Toast.LENGTH_SHORT).show();
-					break;
+					//跳转主页
+					Intent intent = new Intent(SecondLoginActivity.this, MainTabActivity.class);
+					startActivity(intent);
+					
+					break; 
 				case JLXCConst.STATUS_FAIL:
 					hideLoading();
 					Toast.makeText(SecondLoginActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE),
@@ -156,10 +161,11 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
-		
 		//设置用户名
 		Intent intent =	getIntent();
 		setUsername(intent.getStringExtra("username"));
+		
+		passwordEt.setText("123456");
 		
 	}
 

@@ -6,7 +6,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.jlxc.app.R;
-import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -25,7 +24,6 @@ public class PersonalSignActivity extends BaseActivityWithTopBar {
 		case R.id.base_ll_right_btns:
 			
 			if (signEditText.getText().toString().length()>60) {
-				
 				ToastUtil.show(this, "签名不能超过60字╮(╯_╰)╭");
 				return;
 			}

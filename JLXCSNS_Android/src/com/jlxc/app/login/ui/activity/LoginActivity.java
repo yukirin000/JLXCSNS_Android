@@ -1,34 +1,23 @@
 package com.jlxc.app.login.ui.activity;
 
-import java.util.Map;
-
 import android.annotation.SuppressLint;
-import android.app.DownloadManager.Request;
 import android.content.Intent;
-import android.support.v7.appcompat.R.string;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
-import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -46,7 +35,6 @@ public class LoginActivity extends BaseActivity {
 	//布局文件
 	@ViewInject(R.id.login_activity)
 	private LinearLayout loginLayout;
-	
 	
 	@OnClick(value={R.id.loginRegisterBtn,R.id.login_activity})
 	public void loginOrRegisterClick(View v) {
@@ -90,7 +78,6 @@ public class LoginActivity extends BaseActivity {
 				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
-//					LogUtils.i(jsonResponse.toJSONString(), 1);
 					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
 					//登录
 			        int loginDirection    = 1;
@@ -99,7 +86,6 @@ public class LoginActivity extends BaseActivity {
 			        int direction = result.getIntValue("direction");
 		            if (direction == loginDirection) {
 		            	hideLoading();
-//		            	LogUtils.i("跳转到登录", 1); 
 		            	//跳转
 		            	Intent intent = new Intent(LoginActivity.this, SecondLoginActivity.class);
 		            	intent.putExtra("username", username);
@@ -107,7 +93,6 @@ public class LoginActivity extends BaseActivity {
 		            }
 		            
 		            if (direction == registerDirection) {
-//		            	LogUtils.i("跳转到注册", 1);
 		            	//发送验证码
 		            	sendVerify(username);
 		            }
@@ -196,6 +181,9 @@ public class LoginActivity extends BaseActivity {
 
 	@Override
 	protected void setUpView() {
+		
+		////////////////////////测试数据//////////////////////////
+		usernameEt.setText("13736661234");
 	}
 
 }

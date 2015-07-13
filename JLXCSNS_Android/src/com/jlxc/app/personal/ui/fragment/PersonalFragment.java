@@ -23,8 +23,10 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,13 +37,11 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.amap.api.services.core.t;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -282,10 +282,8 @@ public class PersonalFragment extends BaseFragment {
 		visitGridView.setEnabled(false);
 		friendsGridView.setEnabled(false);
 		
-		userModel = UserManager.getInstance().getUser();
-		userModel.setUid(19);
-		userModel.setHead_image("2015-07-10/191436526857.png");
-		userModel.setBackground_image("2015-07-02/191435808476.png");
+		userModel = UserManager.getInstance().getUser(); 
+		LogUtils.i(""+UserManager.getInstance().getUser().getUid(), 1);
 		
 		//签名因为要跳到领一个页面 所以在只初始化一次
 		if (null == userModel.getSign() || "".equals(userModel.getSign())) {
@@ -301,11 +299,6 @@ public class PersonalFragment extends BaseFragment {
 		bitmapUtils.configMemoryCacheEnabled(true);
 		bitmapUtils.configDiskCacheEnabled(true);		
 		bitmapUtils.configDefaultLoadFailedImage(R.drawable.ic_launcher);
-		
-		//头像 2015-07-07/01436273216_sub.jpg
-		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
-		//背景 2015-07-02/191435808476.png
-		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getBackground_image());
 		
 		//解析省份城市xml
 		initProvinceDatas();
@@ -328,10 +321,15 @@ public class PersonalFragment extends BaseFragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
 	    //获取当前最近的三张状态图片
 		getNewsImages();
 		getVisitImages();
+		
+		//头像 2015-07-07/01436273216_sub.jpg
+		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
+		//背景 2015-07-02/191435808476.png
+		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getBackground_image());
+		
 		//姓名
 		if (null == userModel.getName() || "".equals(userModel.getName())) {
 			nameTextView.setText("暂无");
@@ -568,6 +566,7 @@ public class PersonalFragment extends BaseFragment {
 	private void getNewsImages(){
 		
 		String path = JLXCConst.GET_NEWS_IMAGES+"?"+"uid="+UserManager.getInstance().getUser().getUid();
+		
 		HttpManager.get(path,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
@@ -677,7 +676,8 @@ public class PersonalFragment extends BaseFragment {
 								userModel.setName(value);
 							}else if ("sign".equals(field)) {
 								//签名
-								userModel.setSign(value);			
+								userModel.setSign(value);	
+								signTextView.setText(value);
 							}else if ("birthday".equals(field)) {
 								//生日
 								userModel.setBirthday(value);
@@ -889,6 +889,29 @@ public class PersonalFragment extends BaseFragment {
 		mViewCity.setViewAdapter(new ArrayWheelAdapter<String>(getActivity(), cities));
 		mViewCity.setCurrentItem(0);
 		updateAreas();
+	}
+	
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		outState.putSerializable("user", userModel);
+	}
+	
+	@Override
+	public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewStateRestored(savedInstanceState);
+		
+		if (null != savedInstanceState) {
+			if ( null != savedInstanceState.getSerializable("user")) {
+				userModel = (UserModel) savedInstanceState.getSerializable("user");
+				UserManager.getInstance().setUser(userModel);
+			}
+		}
+		
+		
 	}
     
 	////////////////////////getter setter/////////////////////

@@ -1,9 +1,15 @@
 package com.jlxc.app.base.model;
 
+import java.io.Serializable;
+
 import com.alibaba.fastjson.JSONObject;
 
-public class UserModel {
+public class UserModel implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//用户id
 	private int uid;
 	//用户名
