@@ -1,9 +1,7 @@
 package com.jlxc.app.personal.ui.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import android.R.integer;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,9 +9,9 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
@@ -23,7 +21,6 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.CommentModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
@@ -66,21 +63,24 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 		commonAdapter = new HelloHaAdapter<CommonFriendsModel>(this, R.layout.common_friends_image_layout) {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
-					CommonFriendsModel item) {
+					final CommonFriendsModel item) {
 				ImageView headimImageView = helper.getView(R.id.image_item);
 				bitmapUtils.display(headimImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+				
+				LinearLayout linearLayout = (LinearLayout) helper.getView();
+				linearLayout.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						//跳转到其他人页面
+						Intent intent = new Intent(CommonFriendsActivity.this, OtherPersonalActivity.class);
+						intent.putExtra(OtherPersonalActivity.INTENT_KEY, item.getFriend_id());
+						startActivityWithRight(intent);
+					}
+				});
+				
 			}
 		};
 		commonGridView.setAdapter(commonAdapter);
-		commonGridView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				
-				LogUtils.i(""+position, 1);
-			}
-		});
 	}
 
 	//获取数据

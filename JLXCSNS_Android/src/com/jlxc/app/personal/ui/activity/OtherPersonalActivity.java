@@ -3,8 +3,6 @@ package com.jlxc.app.personal.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
@@ -27,6 +25,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -103,7 +102,8 @@ public class OtherPersonalActivity extends BaseActivity{
 	//查看的用户模型
 	private UserModel otherUserModel;
 	
-	@OnClick({R.id.head_image_view, R.id.visit_button, R.id.common_friend_button})
+	@OnClick({R.id.head_image_view, R.id.visit_button, R.id.common_friend_button, R.id.his_friend_layout, 
+			R.id.return_image_view})
 	private void clickEvent(View view){
 		switch (view.getId()) {
 		case R.id.head_image_view:
@@ -117,13 +117,23 @@ public class OtherPersonalActivity extends BaseActivity{
 			Intent visitIntent = new Intent(this, VisitListActivity.class);
 			visitIntent.putExtra(VisitListActivity.INTENT_KEY, otherUserModel.getUid());
 			startActivityWithRight(visitIntent);
-			break;			
+			break;	
+		case R.id.his_friend_layout:
+			//他的好友
+			Intent otherFriendIntent = new Intent(this, OtherPeopleFriendsActivity.class);
+			otherFriendIntent.putExtra(OtherPeopleFriendsActivity.INTENT_KEY, otherUserModel.getUid());
+			startActivityWithRight(otherFriendIntent);
+			break;
+			
 		case R.id.common_friend_button:
 			//共同好友
 			Intent commonIntent = new Intent(this, CommonFriendsActivity.class);
 			commonIntent.putExtra(CommonFriendsActivity.INTENT_KEY, otherUserModel.getUid());
 			startActivityWithRight(commonIntent);
-			
+			break;
+		case R.id.return_image_view:
+			//返回
+			finishWithRight();
 			break;
 		default:
 			break;
@@ -140,12 +150,6 @@ public class OtherPersonalActivity extends BaseActivity{
 	protected void setUpView() {
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
-		
-		/////////////////////////测试数据//////////////////////
-		uid = 19;
-		UserManager.getInstance().getUser().setUid(19);
-		/////////////////////////测试数据//////////////////////
-		
 		//初始化adapter
 		hisImageAdapter = initAdapter();
 		hisFriendAdapter = initAdapter();
@@ -306,7 +310,11 @@ public class OtherPersonalActivity extends BaseActivity{
 			addFriendButton.setEnabled(false);
 			sendMessageButton.setEnabled(false);
 		}else {
-			boolean isFriend = jsonObject.getBoolean("isFriend");
+			
+			boolean isFriend = false;
+			if (jsonObject.getInteger("isFriend") > 0) {
+				isFriend = true;
+			}
 			if (isFriend) {
 				addFriendLayout.setVisibility(View.GONE);
 			}
