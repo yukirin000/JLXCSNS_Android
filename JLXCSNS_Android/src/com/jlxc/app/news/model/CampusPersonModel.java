@@ -1,9 +1,9 @@
-package com.jlxc.app.base.model;
+package com.jlxc.app.news.model;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class SchoolPersonModel {
+public class CampusPersonModel {
 
 	// 发布的动态数量
 	private String newsCount;

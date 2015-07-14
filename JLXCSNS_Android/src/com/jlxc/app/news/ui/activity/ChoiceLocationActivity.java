@@ -40,10 +40,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
-import com.jlxc.app.base.model.SchoolModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.news.model.SchoolModel;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AMapLocationListener, OnPoiSearchListener 

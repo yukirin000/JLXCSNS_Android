@@ -1,4 +1,4 @@
-package com.jlxc.app.base.model;
+package com.jlxc.app.news.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +14,25 @@ public class ItemModel {
 	public static final int NEWS_ITEM_TYPE_COUNT = 5;
 	// 校园item的种类数
 	public static final int CAMPUS_ITEM_TYPE_COUNT = 5;
-	// 表示头部
-	public static final int TITLE = 0;
-	// 表示动态主体
-	public static final int BODY = 1;
-	// 表示互动操作相关（评论、点赞等）
-	public static final int OPERATE = 2;
-	// 点赞部分
-	public static final int LIKELIST = 3;
-	// 评论部分
-	public static final int COMMENT = 4;
-	// 校园的头部
+	// 动态详情item的种类数
+	public static final int NEWS_DETAIL_ITEM_TYPE_COUNT = 4;
+	// 表示动态各item
+	public static final int NEWS_TITLE = 0;
+	public static final int NEWS_BODY = 1;
+	public static final int NEWS_LIKELIST = 2;
+	public static final int NEWS_COMMENT = 3;
+	public static final int NEWS_OPERATE = 4;
+	// 表示校园各item
+	public static final int CAMPUS_TITLE = 0;
+	public static final int CAMPUS_BODY = 1;
+	public static final int CAMPUS_OPERATE = 2;
+	public static final int CAMPUS_LIKELIST = 3;
 	public static final int CAMPUS_HEAD = 4;
+	// 表示动态详情各item
+	public static final int NEWS_DETAIL_TITLE = 0;
+	public static final int NEWS_DETAIL_BODY = 1;
+	public static final int NEWS_DETAIL_LIKELIST = 2;
+	public static final int NEWS_DETAIL_COMMENT = 3;
 	// 动态的id
 	private String newsID = "";
 	// 当前的item类型
@@ -40,11 +47,11 @@ public class ItemModel {
 	 * */
 	public void setItemType(int type) {
 		switch (type) {
-		case ItemModel.TITLE:
-		case ItemModel.BODY:
-		case ItemModel.OPERATE:
-		case ItemModel.LIKELIST:
-		case ItemModel.COMMENT:
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
 			itemType = type;
 			break;
 
@@ -77,6 +84,8 @@ public class ItemModel {
 		private String sendTime;
 		// 显示的标签
 		private String userTag;
+		// 显示是否已赞
+		private boolean isLike;
 
 		public String getHeadSubImage() {
 			return headSubImage;
@@ -116,6 +125,18 @@ public class ItemModel {
 
 		public void setUserTag(String userTag) {
 			this.userTag = userTag;
+		}
+
+		public boolean getIsLike() {
+			return isLike;
+		}
+
+		public void setIsLike(String isLike) {
+			if (isLike.equals("0")) {
+				this.isLike = false;
+			} else {
+				this.isLike = true;
+			}
 		}
 
 	}
@@ -227,10 +248,10 @@ public class ItemModel {
 	/**
 	 * 评论列表部分
 	 * */
-	public static class CommentItem extends ItemModel {
+	public static class CommentListItem extends ItemModel {
 
 		// 评论列表
-		private List<CommentModel> commentList = new ArrayList<CommentModel>();// 评论列表
+		private List<CommentModel> commentList = new ArrayList<CommentModel>();
 
 		public List<CommentModel> getCommentList() {
 			return commentList;
@@ -242,19 +263,36 @@ public class ItemModel {
 	}
 
 	/**
+	 * 评论列表部分
+	 * */
+	public static class CommentItem extends ItemModel {
+
+		// 评论列表
+		private CommentModel commentData = new CommentModel();
+
+		public CommentModel getCommentModel() {
+			return commentData;
+		}
+
+		public void setComment(CommentModel cmt) {
+			this.commentData = cmt;
+		}
+	}
+
+	/**
 	 * 校园的头部
 	 * */
 	public static class CampusHeadItem extends ItemModel {
 
 		private String schoolName;
 		// 学校的人列表
-		private List<SchoolPersonModel> personList = new ArrayList<SchoolPersonModel>();
+		private List<CampusPersonModel> personList = new ArrayList<CampusPersonModel>();
 
-		public List<SchoolPersonModel> getPersonList() {
+		public List<CampusPersonModel> getPersonList() {
 			return personList;
 		}
 
-		public void setPersonList(List<SchoolPersonModel> List) {
+		public void setPersonList(List<CampusPersonModel> List) {
 			this.personList = List;
 		}
 
@@ -266,5 +304,4 @@ public class ItemModel {
 			this.schoolName = schoolName;
 		}
 	}
-
 }

@@ -20,17 +20,7 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.CommentModel;
-import com.jlxc.app.base.model.ImageModel;
-import com.jlxc.app.base.model.LikeModel;
-import com.jlxc.app.base.model.ItemModel;
 import com.jlxc.app.base.model.UserModel;
-import com.jlxc.app.base.model.ItemModel.BodyItem;
-import com.jlxc.app.base.model.ItemModel.LikeListItem;
-import com.jlxc.app.base.model.ItemModel.OperateItem;
-import com.jlxc.app.base.model.ItemModel.CommentItem;
-import com.jlxc.app.base.model.ItemModel.TitleItem;
-import com.jlxc.app.base.model.NewsModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
@@ -39,6 +29,16 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.news.model.CommentModel;
+import com.jlxc.app.news.model.ImageModel;
+import com.jlxc.app.news.model.ItemModel;
+import com.jlxc.app.news.model.LikeModel;
+import com.jlxc.app.news.model.NewsModel;
+import com.jlxc.app.news.model.ItemModel.BodyItem;
+import com.jlxc.app.news.model.ItemModel.CommentListItem;
+import com.jlxc.app.news.model.ItemModel.LikeListItem;
+import com.jlxc.app.news.model.ItemModel.OperateItem;
+import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.PauseOnScrollListener;
@@ -72,7 +72,7 @@ public class NewsListFragment extends BaseFragment {
 
 	// 动态显示的评论数量
 	private int NEWS_COMMENT_NUM = 3;
-	// 最多电子书
+	// 最多点赞数
 	private int MAX_LIKE_COUNT = 10;
 	// 用户实例
 	private UserModel userModel;
@@ -156,19 +156,19 @@ public class NewsListFragment extends BaseFragment {
 			public int getLayoutId(int position, ItemModel itemData) {
 				int layoutId = 0;
 				switch (itemData.getItemType()) {
-				case ItemModel.TITLE:
+				case ItemModel.NEWS_TITLE:
 					layoutId = R.layout.mian_news_item_title_layout;
 					break;
-				case ItemModel.BODY:
+				case ItemModel.NEWS_BODY:
 					layoutId = R.layout.main_news_item_body_layout;
 					break;
-				case ItemModel.OPERATE:
+				case ItemModel.NEWS_OPERATE:
 					layoutId = R.layout.mian_news_item_operate_layout;
 					break;
-				case ItemModel.LIKELIST:
+				case ItemModel.NEWS_LIKELIST:
 					layoutId = R.layout.mian_news_item_likelist_layout;
 					break;
-				case ItemModel.COMMENT:
+				case ItemModel.NEWS_COMMENT:
 					layoutId = R.layout.mian_news_item_comment_layout;
 					break;
 				default:
@@ -186,20 +186,20 @@ public class NewsListFragment extends BaseFragment {
 			public int getItemViewType(int postion, ItemModel itemData) {
 				int itemtype = 0;
 				switch (itemData.getItemType()) {
-				case ItemModel.TITLE:
-					itemtype = ItemModel.TITLE;
+				case ItemModel.NEWS_TITLE:
+					itemtype = ItemModel.NEWS_TITLE;
 					break;
-				case ItemModel.BODY:
-					itemtype = ItemModel.BODY;
+				case ItemModel.NEWS_BODY:
+					itemtype = ItemModel.NEWS_BODY;
 					break;
-				case ItemModel.OPERATE:
-					itemtype = ItemModel.OPERATE;
+				case ItemModel.NEWS_OPERATE:
+					itemtype = ItemModel.NEWS_OPERATE;
 					break;
-				case ItemModel.LIKELIST:
-					itemtype = ItemModel.LIKELIST;
+				case ItemModel.NEWS_LIKELIST:
+					itemtype = ItemModel.NEWS_LIKELIST;
 					break;
-				case ItemModel.COMMENT:
-					itemtype = ItemModel.COMMENT;
+				case ItemModel.NEWS_COMMENT:
+					itemtype = ItemModel.NEWS_COMMENT;
 					break;
 				default:
 					break;
@@ -458,7 +458,7 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
-	 * 设置新闻主题item
+	 * 设置新闻主体item
 	 * */
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
 		BodyItem bodyData = (BodyItem) item;
@@ -628,7 +628,7 @@ public class NewsListFragment extends BaseFragment {
 	 * */
 	private void setComentItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
-		CommentItem itemData = (CommentItem) item;
+		CommentListItem itemData = (CommentListItem) item;
 		// 所有的评论数据
 		List<CommentModel> commentList = itemData.getCommentList();
 
@@ -855,7 +855,7 @@ public class NewsListFragment extends BaseFragment {
 			case R.id.txt_comment_contentA:
 			case R.id.txt_comment_contentB:
 			case R.id.txt_comment_contentC:
-				CommentItem commentData = (CommentItem) newsAdapter
+				CommentListItem commentData = (CommentListItem) newsAdapter
 						.getItem(postion);
 				for (int iCount = 0; iCount < NEWS_COMMENT_NUM; ++iCount) {
 					if (viewID == commentViewList.get(iCount).get("NAME")) {

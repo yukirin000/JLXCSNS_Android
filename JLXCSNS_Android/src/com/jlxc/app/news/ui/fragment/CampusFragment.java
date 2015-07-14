@@ -1,30 +1,27 @@
 package com.jlxc.app.news.ui.fragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
@@ -32,28 +29,26 @@ import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
-import com.jlxc.app.base.model.CampusModel;
-import com.jlxc.app.base.model.CommentModel;
-import com.jlxc.app.base.model.ImageModel;
-import com.jlxc.app.base.model.ItemModel.CampusHeadItem;
-import com.jlxc.app.base.model.LikeModel;
-import com.jlxc.app.base.model.ItemModel;
-import com.jlxc.app.base.model.NewsModel;
-import com.jlxc.app.base.model.SchoolPersonModel;
 import com.jlxc.app.base.model.UserModel;
-import com.jlxc.app.base.model.ItemModel.BodyItem;
-import com.jlxc.app.base.model.ItemModel.CommentItem;
-import com.jlxc.app.base.model.ItemModel.LikeListItem;
-import com.jlxc.app.base.model.ItemModel.OperateItem;
-import com.jlxc.app.base.model.ItemModel.TitleItem;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
+import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.news.model.CampusPersonModel;
+import com.jlxc.app.news.model.ImageModel;
+import com.jlxc.app.news.model.ItemModel;
+import com.jlxc.app.news.model.ItemModel.BodyItem;
+import com.jlxc.app.news.model.ItemModel.CampusHeadItem;
+import com.jlxc.app.news.model.ItemModel.LikeListItem;
+import com.jlxc.app.news.model.ItemModel.OperateItem;
+import com.jlxc.app.news.model.ItemModel.TitleItem;
+import com.jlxc.app.news.model.LikeModel;
+import com.jlxc.app.news.model.NewsModel;
+import com.jlxc.app.news.ui.activity.CampusAllPerson;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.PauseOnScrollListener;
@@ -117,6 +112,12 @@ public class CampusFragment extends BaseFragment {
 		init();
 		multiItemTypeSet();
 		newsListViewSet();
+
+		// 进入本页面时请求数据
+		currentPage = 1;
+		isPullDowm = true;
+		getCampusData(String.valueOf(userModel.getUid()),
+				String.valueOf(currentPage), userModel.getSchool_code(), "");
 	}
 
 	/**
@@ -129,16 +130,16 @@ public class CampusFragment extends BaseFragment {
 			public int getLayoutId(int position, ItemModel itemData) {
 				int layoutId = 0;
 				switch (itemData.getItemType()) {
-				case ItemModel.TITLE:
+				case ItemModel.CAMPUS_TITLE:
 					layoutId = R.layout.campus_news_item_title_layout;
 					break;
-				case ItemModel.BODY:
+				case ItemModel.CAMPUS_BODY:
 					layoutId = R.layout.campus_news_item_body_layout;
 					break;
-				case ItemModel.OPERATE:
+				case ItemModel.CAMPUS_OPERATE:
 					layoutId = R.layout.campus_news_item_operate_layout;
 					break;
-				case ItemModel.LIKELIST:
+				case ItemModel.CAMPUS_LIKELIST:
 					layoutId = R.layout.campus_news_item_likelist_layout;
 					break;
 				case ItemModel.CAMPUS_HEAD:
@@ -159,17 +160,17 @@ public class CampusFragment extends BaseFragment {
 			public int getItemViewType(int postion, ItemModel itemData) {
 				int itemtype = 0;
 				switch (itemData.getItemType()) {
-				case ItemModel.TITLE:
-					itemtype = ItemModel.TITLE;
+				case ItemModel.CAMPUS_TITLE:
+					itemtype = ItemModel.CAMPUS_TITLE;
 					break;
-				case ItemModel.BODY:
-					itemtype = ItemModel.BODY;
+				case ItemModel.CAMPUS_BODY:
+					itemtype = ItemModel.CAMPUS_BODY;
 					break;
-				case ItemModel.OPERATE:
-					itemtype = ItemModel.OPERATE;
+				case ItemModel.CAMPUS_OPERATE:
+					itemtype = ItemModel.CAMPUS_OPERATE;
 					break;
-				case ItemModel.LIKELIST:
-					itemtype = ItemModel.LIKELIST;
+				case ItemModel.CAMPUS_LIKELIST:
+					itemtype = ItemModel.CAMPUS_LIKELIST;
 					break;
 				case ItemModel.CAMPUS_HEAD:
 					itemtype = ItemModel.CAMPUS_HEAD;
@@ -536,7 +537,7 @@ public class CampusFragment extends BaseFragment {
 	}
 
 	/**
-	 * 设置回复评论item
+	 * 设置头部item
 	 * */
 	private void setCampusHeadView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
@@ -544,15 +545,15 @@ public class CampusFragment extends BaseFragment {
 		CampusHeadItem headData = (CampusHeadItem) item;
 		helper.setText(R.id.tv_campus_head_name, userModel.getSchool());
 
-		List<SchoolPersonModel> personList = headData.getPersonList();
+		List<CampusPersonModel> personList = headData.getPersonList();
 
-		HelloHaAdapter<SchoolPersonModel> personGVAdapter = new HelloHaAdapter<SchoolPersonModel>(
+		HelloHaAdapter<CampusPersonModel> personGVAdapter = new HelloHaAdapter<CampusPersonModel>(
 				mContext, R.layout.campus_head_person_gridview_item_layout,
 				personList) {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
-					SchoolPersonModel item) { // 设置头像imageview的尺寸
+					CampusPersonModel item) { 
 				ImageView imgView = helper
 						.getView(R.id.iv_campus_person_gridview_item);
 				LayoutParams laParams = (LayoutParams) imgView
@@ -576,6 +577,17 @@ public class CampusFragment extends BaseFragment {
 		headPersonGridView.setAdapter(personGVAdapter);
 		PersonGridViewItemClick personItemClickListener = new PersonGridViewItemClick();
 		headPersonGridView.setOnItemClickListener(personItemClickListener);
+
+		// 查看所有的校友
+		final int postion = helper.getPosition();
+		OnClickListener listener = new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				itemViewClickListener.onClick(view, postion, view.getId());
+			}
+		};
+		helper.setOnClickListener(R.id.txt_campus_all_alumnus, listener);
 	}
 
 	/**
@@ -700,18 +712,17 @@ public class CampusFragment extends BaseFragment {
 			tempNews.setContentWithJson(newsObj);
 			newsList.add(tempNews);
 		}
-		List<SchoolPersonModel> personList = new ArrayList<SchoolPersonModel>();
+		List<CampusPersonModel> personList = new ArrayList<CampusPersonModel>();
 		if (isPullDowm) {
 			// 解析校园的人
 			for (JSONObject personObj : JPersonList) {
-				SchoolPersonModel tempPerson = new SchoolPersonModel();
+				CampusPersonModel tempPerson = new CampusPersonModel();
 				tempPerson.setContentWithJson(personObj);
 				personList.add(tempPerson);
 			}
 			latestTimesTamp = newsList.get(0).getTimesTamp();
-			List<ItemModel> tt = DataToItem.campusDataToItems(newsList,
-					personList);
-			newsAdapter.replaceAll(tt);
+			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
+					personList));
 		} else {
 			newsAdapter.addAll(DataToItem.campusDataToItems(newsList,
 					personList));
@@ -771,6 +782,14 @@ public class CampusFragment extends BaseFragment {
 				}
 				break;
 
+			case R.id.txt_campus_all_alumnus:
+				// 跳转到所有好友列表页面
+				Intent personIntent = new Intent(mContext,
+						CampusAllPerson.class);
+				personIntent
+						.putExtra("School_Code", userModel.getSchool_code());
+				startActivityWithRight(personIntent);
+				break;
 			default:
 				break;
 			}
@@ -888,8 +907,10 @@ public class CampusFragment extends BaseFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			SchoolPersonModel personModel = (SchoolPersonModel) parent
+			CampusPersonModel personModel = (CampusPersonModel) parent
 					.getAdapter().getItem(position);
+
+			// 跳转至个人主页
 			ToastUtil.show(mContext, "UserID:" + personModel.getUserId());
 		}
 	}

@@ -1,4 +1,7 @@
-package com.jlxc.app.base.model;
+package com.jlxc.app.news.model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
@@ -21,8 +24,11 @@ public class CommentModel {
 	private String commentContent;
 	// 评论的点赞量
 	private String likeQuantity;
+	// 子评论列表
+	private List<SubCommentModel> subCommentList = new ArrayList<SubCommentModel>();;
 
 	// 内容注入
+	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
 		setCommentID(object.getString("id"));
 		setSubmitterName(object.getString("name"));
@@ -33,6 +39,18 @@ public class CommentModel {
 		setUserId(object.getString("user_id"));
 		setCommentContent(object.getString("comment_content"));
 		setLikeQuantity(object.getString("like_quantity"));
+		// 子评论的转换
+		if (object.containsKey("secondComment")) {
+			List<JSONObject> JSubCommentObj = (List<JSONObject>) object
+					.get("secondComment");
+			List<SubCommentModel> subCmtList = new ArrayList<SubCommentModel>();
+			for (JSONObject cmtObject : JSubCommentObj) {
+				SubCommentModel subSmtTemp = new SubCommentModel();
+				subSmtTemp.setContentWithJson(cmtObject);
+				subCmtList.add(subSmtTemp);
+			}
+			setSubCommentList(subCmtList);
+		}
 	}
 
 	public String getCommentID() {
@@ -97,6 +115,14 @@ public class CommentModel {
 
 	public void setLikeQuantity(String likeQuantity) {
 		this.likeQuantity = likeQuantity;
+	}
+
+	public List<SubCommentModel> getSubCommentList() {
+		return subCommentList;
+	}
+
+	public void setSubCommentList(List<SubCommentModel> subCommentList) {
+		this.subCommentList = subCommentList;
 	}
 
 }

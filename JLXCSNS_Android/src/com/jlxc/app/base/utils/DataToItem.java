@@ -3,16 +3,17 @@ package com.jlxc.app.base.utils;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.jlxc.app.base.model.CampusModel;
-import com.jlxc.app.base.model.ItemModel;
-import com.jlxc.app.base.model.ItemModel.BodyItem;
-import com.jlxc.app.base.model.ItemModel.LikeListItem;
-import com.jlxc.app.base.model.ItemModel.OperateItem;
-import com.jlxc.app.base.model.ItemModel.CommentItem;
-import com.jlxc.app.base.model.ItemModel.TitleItem;
-import com.jlxc.app.base.model.ItemModel.CampusHeadItem;
-import com.jlxc.app.base.model.NewsModel;
-import com.jlxc.app.base.model.SchoolPersonModel;
+import com.jlxc.app.news.model.CampusPersonModel;
+import com.jlxc.app.news.model.CommentModel;
+import com.jlxc.app.news.model.ItemModel;
+import com.jlxc.app.news.model.ItemModel.BodyItem;
+import com.jlxc.app.news.model.ItemModel.CampusHeadItem;
+import com.jlxc.app.news.model.ItemModel.CommentItem;
+import com.jlxc.app.news.model.ItemModel.CommentListItem;
+import com.jlxc.app.news.model.ItemModel.LikeListItem;
+import com.jlxc.app.news.model.ItemModel.OperateItem;
+import com.jlxc.app.news.model.ItemModel.TitleItem;
+import com.jlxc.app.news.model.NewsModel;
 
 /**
  * 将新闻的数据进行转换
@@ -22,25 +23,25 @@ public class DataToItem {
 	public static List<ItemModel> newsDataToItems(List<NewsModel> orgDataList) {
 		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
 		for (NewsModel newsMd : orgDataList) {
-			itemList.add(createTitle(newsMd));
+			itemList.add(createNewsTitle(newsMd));
 			itemList.add(createBody(newsMd));
 			itemList.add(createOperate(newsMd));
 			itemList.add(createLikeList(newsMd));
-			itemList.add(createComment(newsMd));
+			itemList.add(createCommentList(newsMd));
 		}
 		return itemList;
 	}
 
 	// 将数据转换为校园item形式的数据
 	public static List<ItemModel> campusDataToItems(List<NewsModel> newsData,
-			List<SchoolPersonModel> personData) {
+			List<CampusPersonModel> personData) {
 		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
 		if (personData.size() > 0) {
 			itemList.addFirst(createCampusHead(personData));
 		}
 
 		for (NewsModel newsMd : newsData) {
-			itemList.add(createTitle(newsMd));
+			itemList.add(createNewsTitle(newsMd));
 			itemList.add(createBody(newsMd));
 			itemList.add(createOperate(newsMd));
 			itemList.add(createLikeList(newsMd));
@@ -48,11 +49,26 @@ public class DataToItem {
 		return itemList;
 	}
 
+	/**
+	 * 将动态详细装换为item类型
+	 * */
+	public static List<ItemModel> newsDetailToItems(NewsModel newsData) {
+		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
+		itemList.add(createNewsTitle(newsData));
+		itemList.add(createBody(newsData));
+		itemList.add(createLikeList(newsData));
+		List<CommentModel> cmtList = newsData.getCommentList();
+		for (CommentModel cmtMd : cmtList) {
+			itemList.add(createComment(cmtMd));
+		}
+		return itemList;
+	}
+
 	// 提取新闻中的头部信息
-	private static ItemModel createTitle(NewsModel news) {
+	private static ItemModel createNewsTitle(NewsModel news) {
 		TitleItem item = new TitleItem();
 		try {
-			item.setItemType(ItemModel.TITLE);
+			item.setItemType(ItemModel.NEWS_TITLE);
 
 			item.setNewsID(news.getNewsID());
 			item.setHeadImage(news.getUserHeadImage());
@@ -60,8 +76,9 @@ public class DataToItem {
 			item.setUserName(news.getUserName());
 			item.setSendTime(news.getSendTime());
 			item.setUserTag(news.getUserSchool());
+			item.setIsLike(news.getIsLike());
 		} catch (Exception e) {
-			LogUtils.e("createTitle error.");
+			LogUtils.e("createNewsTitle error.");
 		}
 		return (ItemModel) item;
 	}
@@ -70,7 +87,7 @@ public class DataToItem {
 	private static ItemModel createOperate(NewsModel news) {
 		OperateItem item = new OperateItem();
 		try {
-			item.setItemType(ItemModel.OPERATE);
+			item.setItemType(ItemModel.NEWS_OPERATE);
 
 			item.setNewsID(news.getNewsID());
 			item.setIsLike(news.getIsLike());
@@ -82,11 +99,11 @@ public class DataToItem {
 		return (ItemModel) item;
 	}
 
-	// 提取新闻中的主题信息
+	// 提取新闻中的主体信息
 	private static ItemModel createBody(NewsModel news) {
 		BodyItem item = new BodyItem();
 		try {
-			item.setItemType(ItemModel.BODY);
+			item.setItemType(ItemModel.NEWS_BODY);
 
 			item.setNewsID(news.getNewsID());
 			item.setNewsContent(news.getNewsContent());
@@ -102,7 +119,7 @@ public class DataToItem {
 	private static ItemModel createLikeList(NewsModel news) {
 		LikeListItem item = new LikeListItem();
 		try {
-			item.setItemType(ItemModel.LIKELIST);
+			item.setItemType(ItemModel.NEWS_LIKELIST);
 
 			item.setNewsID(news.getNewsID());
 			item.setLikeHeadListimage(news.getLikeHeadListimage());
@@ -112,12 +129,12 @@ public class DataToItem {
 		return (ItemModel) item;
 	}
 
-	// 提取新闻中的评论信息
-	private static ItemModel createComment(NewsModel news) {
-		CommentItem item = new CommentItem();
+	// 提取新闻中的评论列表信息
+	private static ItemModel createCommentList(NewsModel news) {
+		CommentListItem item = new CommentListItem();
 		try {
 			item.setNewsID(news.getNewsID());
-			item.setItemType(ItemModel.COMMENT);
+			item.setItemType(ItemModel.NEWS_COMMENT);
 			item.setCommentList(news.getCommentList());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");
@@ -126,7 +143,19 @@ public class DataToItem {
 	}
 
 	// 提取新闻中的评论信息
-	private static ItemModel createCampusHead(List<SchoolPersonModel> personData) {
+	private static ItemModel createComment(CommentModel cmt) {
+		CommentItem item = new CommentItem();
+		try {
+			item.setItemType(ItemModel.NEWS_DETAIL_COMMENT);
+			item.setComment(cmt);
+		} catch (Exception e) {
+			LogUtils.e("createBody error.");
+		}
+		return (ItemModel) item;
+	}
+
+	// 提取校园头部
+	private static ItemModel createCampusHead(List<CampusPersonModel> personData) {
 		CampusHeadItem item = new CampusHeadItem();
 		try {
 			item.setItemType(ItemModel.CAMPUS_HEAD);

@@ -1,4 +1,4 @@
-package com.jlxc.app.base.model;
+package com.jlxc.app.news.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ public class CampusModel {
 
 	// 校园动态列表
 	private List<NewsModel> campusNewsList;
-	// 校园动态列表
-	private List<SchoolPersonModel> personList;
+	// 校园的人
+	private List<CampusPersonModel> personList;
 
 	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
@@ -26,9 +26,9 @@ public class CampusModel {
 
 		// 校园的人转换
 		List<JSONObject> JPersonObj = (List<JSONObject>) object.get("info");
-		List<SchoolPersonModel> personList = new ArrayList<SchoolPersonModel>();
+		List<CampusPersonModel> personList = new ArrayList<CampusPersonModel>();
 		for (JSONObject personObject : JPersonObj) {
-			SchoolPersonModel personTemp = new SchoolPersonModel();
+			CampusPersonModel personTemp = new CampusPersonModel();
 			personTemp.setContentWithJson(personObject);
 			personList.add(personTemp);
 		}
@@ -43,11 +43,11 @@ public class CampusModel {
 		this.campusNewsList = campusNewsList;
 	}
 
-	public List<SchoolPersonModel> getPersonList() {
+	public List<CampusPersonModel> getPersonList() {
 		return personList;
 	}
 
-	public void setPersonList(List<SchoolPersonModel> personList) {
+	public void setPersonList(List<CampusPersonModel> personList) {
 		this.personList = personList;
 	}
 

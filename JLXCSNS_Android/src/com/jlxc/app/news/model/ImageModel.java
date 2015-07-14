@@ -1,4 +1,4 @@
-package com.jlxc.app.base.model;
+package com.jlxc.app.news.model;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;

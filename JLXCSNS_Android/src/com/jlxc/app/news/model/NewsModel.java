@@ -1,4 +1,4 @@
-package com.jlxc.app.base.model;
+package com.jlxc.app.news.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
