@@ -1,15 +1,12 @@
 package com.jlxc.app.base.ui.activity;
 
-import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient.ConnectCallback;
-import io.rong.imlib.RongIMClient.ErrorCode;
 
 import com.jlxc.app.R;
-import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
+import com.jlxc.app.news.ui.fragment.CampusFragment;
 import com.jlxc.app.news.ui.fragment.NewsListFragment;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -46,7 +43,7 @@ public class MainTabActivity extends BaseActivity {
 
 		initTab();
 		
-		initRong();
+//		initRong();
 	}
 
 	public void initTab() {
@@ -66,34 +63,34 @@ public class MainTabActivity extends BaseActivity {
 		}
 	}
 	
-	//初始化融云
-	private void initRong(){
-		String token = "";
-		UserModel userModel = UserManager.getInstance().getUser();
-		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
-			token = userModel.getIm_token();
-		}
-		RongIM.connect(token, new ConnectCallback() {
-
-			@Override 
-			public void onError(ErrorCode arg0) {
-				Toast.makeText(MainTabActivity.this, "connect onError", Toast.LENGTH_SHORT).show();
-			}
-
-			@Override
-			public void onSuccess(String arg0) {
-				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
-				RongCloudEvent.getInstance().setOtherListener();
-			}
-
-			@Override
-			public void onTokenIncorrect() {
-				// TODO Auto-generated method stub
-				
-			}
-
-		});
-	}
+//	//初始化融云
+//	private void initRong(){
+//		String token = "";
+//		UserModel userModel = UserManager.getInstance().getUser();
+//		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
+//			token = userModel.getIm_token();
+//		}
+//		RongIM.connect(token, new ConnectCallback() {
+//
+//			@Override 
+//			public void onError(ErrorCode arg0) {
+//				Toast.makeText(MainTabActivity.this, "connect onError", Toast.LENGTH_SHORT).show();
+//			}
+//
+//			@Override
+//			public void onSuccess(String arg0) {
+//				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
+//				RongCloudEvent.getInstance().setOtherListener();
+//			}
+//
+//			@Override
+//			public void onTokenIncorrect() {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//		});
+//	}
 
 	/**
 	 */

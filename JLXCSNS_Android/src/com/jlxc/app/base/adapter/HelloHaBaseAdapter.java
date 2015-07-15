@@ -167,6 +167,14 @@ public abstract class HelloHaBaseAdapter<T, H extends HelloHaBaseAdapterHelper>
 		data.set(index, elem);
 		notifyDataSetChanged();
 	}
+	
+	/**
+	 * 插入某一元素
+	 * */
+	public void insert(int index, T elem) {
+		data.add(index, elem);
+		notifyDataSetChanged();
+	}
 
 	/**
 	 * 移除某一元素

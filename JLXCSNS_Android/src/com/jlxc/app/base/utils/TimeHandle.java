@@ -69,4 +69,13 @@ public class TimeHandle {
 		return decTime;
 	}
 
+	/**
+	 * 当前系统的时间
+	 * */
+
+	public static String getCurrentDataStr() {
+		SimpleDateFormat sDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+		return sDateFormat.format(new java.util.Date());
+	}
 }

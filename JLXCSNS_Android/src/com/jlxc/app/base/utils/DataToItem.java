@@ -143,7 +143,7 @@ public class DataToItem {
 	}
 
 	// 提取新闻中的评论信息
-	private static ItemModel createComment(CommentModel cmt) {
+	public static ItemModel createComment(CommentModel cmt) {
 		CommentItem item = new CommentItem();
 		try {
 			item.setItemType(ItemModel.NEWS_DETAIL_COMMENT);
