@@ -14,6 +14,9 @@ public interface JLXCConst {
 	public static final String HTTP_LIST = "list";// 返回值列表
 
 	public static final int PAGE_SIZE = 10;
+	
+	//IM和推送 公用前缀
+	public static final String JLXC = "jlxc";// 返回值列表
 
 	// 匹配网页
 	public static final String URL_PATTERN = "[http|https]+[://]+[0-9A-Za-z:/[-]_#[?][=][.][&]]*";
@@ -97,5 +100,25 @@ public interface JLXCConst {
 	public static final String GET_COMMON_FRIENDS_LIST = DOMIN + "/getCommonFriendsList";
 	//举报用户
 	public static final String REPORT_OFFENCE = DOMIN + "/reportOffence";
+	//////////////////////////////////////////IM模块//////////////////////////////////////////
+	//添加好友
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/addFriend
+	public static final String Add_FRIEND = DOMIN + "/addFriend";
+	//删除好友
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/deleteFriend
+	public static final String DELETE_FRIEND = DOMIN + "/deleteFriend";
+	//添加好友备注
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/addRemark
+	public static final String ADD_REMARK = DOMIN + "/addRemark";
+	//获取图片和名字
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/getImageAndName
+	public static final String GET_IMAGE_AND_NAME = DOMIN + "/getImageAndName";
+	//是否同步好友
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/NeedSyncFriends
+	public static final String NEED_SYNC_FRIENDS = DOMIN + "/needSyncFriends";
+	//获取好友列表
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/getFriendsList
+	public static final String GET_FRIENDS_LIST = DOMIN + "/getFriendsList";
+	
 	
 }

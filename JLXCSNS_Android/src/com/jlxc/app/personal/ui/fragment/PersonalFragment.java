@@ -910,8 +910,6 @@ public class PersonalFragment extends BaseFragment {
 				UserManager.getInstance().setUser(userModel);
 			}
 		}
-		
-		
 	}
     
 	////////////////////////getter setter/////////////////////

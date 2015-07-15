@@ -60,20 +60,27 @@ public class DBManager {
 	}
 	
 	//执行
-	public void excute(String sql) {
-		SQLiteDatabase db = helper.getWritableDatabase();
-		db.execSQL(sql);
-		db.close();
+	public int excute(String sql) {
+		try {
+			SQLiteDatabase db = helper.getWritableDatabase();
+			db.execSQL(sql);
+			db.close();	
+			return 1;
+		} catch (Exception e) {
+		}
+		return 0;
 	}
 	
 	//查询
 	public Cursor query(String sql) {
 		SQLiteDatabase db = helper.getReadableDatabase();
 		Cursor cursor = db.rawQuery(sql, null);
+		
 		return cursor;
 //		查询完毕手动关闭
+//		db.close(); //这里因为场景问题 没有关闭db只关闭了cursor 以后处理
 //		cursor.close();
-//		db.close();
+
 	}
 	
 	@SuppressLint("SdCardPath") 

@@ -120,7 +120,6 @@ public class JLXCUtils {
         return "";  
     }  
 	
-	
 	// 使用系统当前日期加以调整作为照片的名称
     @SuppressLint("SimpleDateFormat") 
     public static String getPhotoFileName() {
