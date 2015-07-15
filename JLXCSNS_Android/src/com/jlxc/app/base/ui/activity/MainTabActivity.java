@@ -1,7 +1,15 @@
 package com.jlxc.app.base.ui.activity;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient.ConnectCallback;
+import io.rong.imlib.RongIMClient.ErrorCode;
+
 import com.jlxc.app.R;
+import com.jlxc.app.base.helper.RongCloudEvent;
+import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
+import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.ui.fragment.NewsListFragment;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -13,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 
 public class MainTabActivity extends BaseActivity {
@@ -23,19 +32,21 @@ public class MainTabActivity extends BaseActivity {
 
 	private LayoutInflater layoutInflater;
 
-	private Class<?> fragmentArray[] = { NewsListFragment.class,
+	private Class<?> fragmentArray[] = { NewsListFragment.class,MessageMainFragment.class,
 			PersonalFragment.class };
 
-	private int mImageViewArray[] = { R.drawable.tab_home_btn,
+	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_home_btn,
 			R.drawable.tab_message_btn };
 
-	private String mTextviewArray[] = { "主页", "我" };
+	private String mTextviewArray[] = { "主页", "消息", "我" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		initTab();
+		
+		initRong();
 	}
 
 	public void initTab() {
@@ -53,6 +64,35 @@ public class MainTabActivity extends BaseActivity {
 			mTabHost.getTabWidget().getChildAt(i)
 					.setBackgroundResource(R.drawable.selector_tab_background);
 		}
+	}
+	
+	//初始化融云
+	private void initRong(){
+		String token = "";
+		UserModel userModel = UserManager.getInstance().getUser();
+		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
+			token = userModel.getIm_token();
+		}
+		RongIM.connect(token, new ConnectCallback() {
+
+			@Override 
+			public void onError(ErrorCode arg0) {
+				Toast.makeText(MainTabActivity.this, "connect onError", Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onSuccess(String arg0) {
+				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
+				RongCloudEvent.getInstance().setOtherListener();
+			}
+
+			@Override
+			public void onTokenIncorrect() {
+				// TODO Auto-generated method stub
+				
+			}
+
+		});
 	}
 
 	/**
