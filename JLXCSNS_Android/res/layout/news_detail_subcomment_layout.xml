@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/subcomment_root_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_click_selector"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/txt_sub_comment_by_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="朱旺"
+                android:textColor="#1010A0" />
+
+            <TextView
+                android:id="@+id/txt_operate_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="回复:" />
+
+            <TextView
+                android:id="@+id/txt_by_sub_comment_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="孙圣光"
+                android:textColor="#1010A0" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_sub_comment_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="哈哈哈哈 ，你是个傻逼" />
+
+        <View
+            android:id="@+id/view_sub_listview_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0" />
+    </LinearLayout>
+
+</LinearLayout>

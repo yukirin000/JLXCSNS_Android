@@ -54,17 +54,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listview_news_detail_sub_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:background="#D0D0D0"
-        android:scrollbars="none" >
-    </ListView>
-
     <View
         android:id="@+id/view_listview_divider"
         android:layout_width="match_parent"
