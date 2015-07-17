@@ -15,7 +15,7 @@ public class ItemModel {
 	// 校园item的种类数
 	public static final int CAMPUS_ITEM_TYPE_COUNT = 5;
 	// 动态详情item的种类数
-	public static final int NEWS_DETAIL_ITEM_TYPE_COUNT = 4;
+	public static final int NEWS_DETAIL_ITEM_TYPE_COUNT = 5;
 	// 表示动态各item
 	public static final int NEWS_TITLE = 0;
 	public static final int NEWS_BODY = 1;
@@ -33,6 +33,7 @@ public class ItemModel {
 	public static final int NEWS_DETAIL_BODY = 1;
 	public static final int NEWS_DETAIL_LIKELIST = 2;
 	public static final int NEWS_DETAIL_COMMENT = 3;
+	public static final int NEWS_DETAIL_SUB_COMMENT = 4;
 	// 动态的id
 	private String newsID = "";
 	// 当前的item类型
@@ -302,6 +303,23 @@ public class ItemModel {
 
 		public void setSchoolName(String schoolName) {
 			this.schoolName = schoolName;
+		}
+	}
+
+	/**
+	 * 子评论item数据
+	 * */
+	public static class SubCommentItem extends ItemModel {
+
+		// 子评论对象
+		private SubCommentModel subCommentModel;
+
+		public SubCommentModel getSubCommentModel() {
+			return subCommentModel;
+		}
+
+		public void setSubCommentModel(SubCommentModel subCommentModel) {
+			this.subCommentModel = subCommentModel;
 		}
 	}
 }

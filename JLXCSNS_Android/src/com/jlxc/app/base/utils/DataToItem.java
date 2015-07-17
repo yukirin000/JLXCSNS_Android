@@ -12,8 +12,10 @@ import com.jlxc.app.news.model.ItemModel.CommentItem;
 import com.jlxc.app.news.model.ItemModel.CommentListItem;
 import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.ItemModel.OperateItem;
+import com.jlxc.app.news.model.ItemModel.SubCommentItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.NewsModel;
+import com.jlxc.app.news.model.SubCommentModel;
 
 /**
  * 将新闻的数据进行转换
@@ -50,7 +52,7 @@ public class DataToItem {
 	}
 
 	/**
-	 * 将动态详细装换为item类型
+	 * 将动态详细数据转换为item类型数据
 	 * */
 	public static List<ItemModel> newsDetailToItems(NewsModel newsData) {
 		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
@@ -60,6 +62,10 @@ public class DataToItem {
 		List<CommentModel> cmtList = newsData.getCommentList();
 		for (CommentModel cmtMd : cmtList) {
 			itemList.add(createComment(cmtMd));
+			List<SubCommentModel> subCmtList = cmtMd.getSubCommentList();
+			for (SubCommentModel subCmtMd : subCmtList) {
+				itemList.add(createSubComment(subCmtMd, newsData.getNewsID()));
+			}
 		}
 		return itemList;
 	}
@@ -149,7 +155,7 @@ public class DataToItem {
 			item.setItemType(ItemModel.NEWS_DETAIL_COMMENT);
 			item.setComment(cmt);
 		} catch (Exception e) {
-			LogUtils.e("createBody error.");
+			LogUtils.e("create comment error.");
 		}
 		return (ItemModel) item;
 	}
@@ -162,7 +168,20 @@ public class DataToItem {
 			// 校园头部动态ID
 			item.setPersonList(personData);
 		} catch (Exception e) {
-			LogUtils.e("createBody error.");
+			LogUtils.e("create Campus Head error.");
+		}
+		return (ItemModel) item;
+	}
+
+	// 提取动态数据中的子评论信息
+	public static ItemModel createSubComment(SubCommentModel cmt, String newsID) {
+		SubCommentItem item = new SubCommentItem();
+		try {
+			item.setItemType(ItemModel.NEWS_DETAIL_SUB_COMMENT);
+			item.setNewsID(newsID);
+			item.setSubCommentModel(cmt);
+		} catch (Exception e) {
+			LogUtils.e("create subcomment item error.");
 		}
 		return (ItemModel) item;
 	}

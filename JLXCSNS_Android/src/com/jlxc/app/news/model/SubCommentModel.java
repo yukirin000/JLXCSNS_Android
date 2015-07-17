@@ -4,27 +4,54 @@ import com.alibaba.fastjson.JSONObject;
 
 public class SubCommentModel {
 
+	// 子评论的id
 	private String subID;
-	private String commentName;
+	// 评论者的名字
+	private String publishName;
+	// 顶部的评论id
 	private String topCommentId;
+	// 被回复者的id
 	private String replyUid;
+	// 被回复飞评论id
 	private String replyCommentId;
+	// 被回复者的名字
 	private String replyName;
+	// 添加的日期
 	private String addData;
-	private String UserId;
+	// 发布者的名字
+	private String publisId;
+	// 发布的内容
 	private String commentContent;
 
 	// 内容注入
 	public void setContentWithJson(JSONObject object) {
-		setSubID(object.getString("id"));
-		setCommentName(object.getString("name"));
-		setTopCommentId(object.getString("top_comment_id"));
-		setReplyUid(object.getString("reply_uid"));
-		setReplyCommentId(object.getString("reply_comment_id"));
-		setReplyName(object.getString("reply_name"));
-		setAddData(object.getString("add_date"));
-		setUserId(object.getString("user_id"));
-		setCommentContent(object.getString("comment_content"));
+		if (object.containsKey("id")) {
+			setSubID(object.getString("id"));
+		}
+		if (object.containsKey("name")) {
+			setPublishName(object.getString("name"));
+		}
+		if (object.containsKey("top_comment_id")) {
+			setTopCommentId(object.getString("top_comment_id"));
+		}
+		if (object.containsKey("reply_uid")) {
+			setReplyUid(object.getString("reply_uid"));
+		}
+		if (object.containsKey("reply_comment_id")) {
+			setReplyCommentId(object.getString("reply_comment_id"));
+		}
+		if (object.containsKey("reply_name")) {
+			setReplyName(object.getString("reply_name"));
+		}
+		if (object.containsKey("add_date")) {
+			setAddData(object.getString("add_date"));
+		}
+		if (object.containsKey("user_id")) {
+			setPublishId(object.getString("user_id"));
+		}
+		if (object.containsKey("comment_content")) {
+			setCommentContent(object.getString("comment_content"));
+		}
 	}
 
 	public String getSubID() {
@@ -35,12 +62,12 @@ public class SubCommentModel {
 		this.subID = subID;
 	}
 
-	public String getCommentName() {
-		return commentName;
+	public String getPublishName() {
+		return publishName;
 	}
 
-	public void setCommentName(String commentName) {
-		this.commentName = commentName;
+	public void setPublishName(String publishName) {
+		this.publishName = publishName;
 	}
 
 	public String getTopCommentId() {
@@ -83,12 +110,12 @@ public class SubCommentModel {
 		this.addData = addData;
 	}
 
-	public String getUserId() {
-		return UserId;
+	public String getPublishId() {
+		return publisId;
 	}
 
-	public void setUserId(String userId) {
-		UserId = userId;
+	public void setPublishId(String userId) {
+		publisId = userId;
 	}
 
 	public String getCommentContent() {

@@ -30,15 +30,32 @@ public class CommentModel {
 	// 内容注入
 	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
-		setCommentID(object.getString("id"));
-		setSubmitterName(object.getString("name"));
-		setHeadImage(JLXCConst.ATTACHMENT_ADDR + object.getString("head_image"));
-		setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
-				+ object.getString("head_sub_image"));
-		setAddDate(object.getString("add_date"));
-		setUserId(object.getString("user_id"));
-		setCommentContent(object.getString("comment_content"));
-		setLikeQuantity(object.getString("like_quantity"));
+		if (object.containsKey("id")) {
+			setCommentID(object.getString("id"));
+		}
+		if (object.containsKey("name")) {
+			setSubmitterName(object.getString("name"));
+		}
+		if (object.containsKey("head_image")) {
+			setHeadImage(JLXCConst.ATTACHMENT_ADDR
+					+ object.getString("head_image"));
+		}
+		if (object.containsKey("head_sub_image")) {
+			setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
+					+ object.getString("head_sub_image"));
+		}
+		if (object.containsKey("add_date")) {
+			setAddDate(object.getString("add_date"));
+		}
+		if (object.containsKey("user_id")) {
+			setUserId(object.getString("user_id"));
+		}
+		if (object.containsKey("comment_content")) {
+			setCommentContent(object.getString("comment_content"));
+		}
+		if (object.containsKey("like_quantity")) {
+			setLikeQuantity(object.getString("like_quantity"));
+		}
 		// 子评论的转换
 		if (object.containsKey("secondComment")) {
 			List<JSONObject> JSubCommentObj = (List<JSONObject>) object

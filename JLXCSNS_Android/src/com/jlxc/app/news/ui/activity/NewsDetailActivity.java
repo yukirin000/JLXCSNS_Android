@@ -3,15 +3,10 @@ package com.jlxc.app.news.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.conn.OperatedClientConnection;
-
-import android.R.integer;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,25 +35,24 @@ import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
-import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
-import com.jlxc.app.base.ui.activity.MainTabActivity;
+import com.jlxc.app.base.ui.view.KeyboardLayout;
+import com.jlxc.app.base.ui.view.KeyboardLayout.onKeyboardsChangeListener;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.login.ui.activity.RegisterActivity;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.ItemModel;
 import com.jlxc.app.news.model.ItemModel.BodyItem;
 import com.jlxc.app.news.model.ItemModel.CommentItem;
 import com.jlxc.app.news.model.ItemModel.LikeListItem;
+import com.jlxc.app.news.model.ItemModel.SubCommentItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
@@ -74,6 +68,10 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
+	// 评论的类型
+	private final static int Input_Type_Comment = 0;
+	private final static int Input_Type_SubComment = 1;
+	private final static int Input_Type_SubReply = 2;
 	// 最多点赞数
 	private int MAX_LIKE_COUNT = 10;
 	// 主listview
@@ -109,12 +107,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private NoScrollGridView likeGridView;
 	// 点击点赞头像监听
 	private LikeGridViewItemClick likeItemClickListener;
-	// 点击二级评论监听
-	private SubCmtListViewItemClick subCmtItemClickListener;
 	// 评论的内容
-	private String commentContent;
+	private String commentContent = "";
 	// 评论操作类
 	private CommentOperate commentOperate;
+	// 当前的操作的评论对象
+	private CommentModel currentCommentModel;
+	// 当前的操作的子评论对象
+	private SubCommentModel currentSubCmtModel;
+	// 评论的类型
+	private int commentType = 0;
 
 	@Override
 	public int setLayoutId() {
@@ -134,15 +136,63 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			public void onClick(View v) {
 				if (commentContent.length() > 0) {
 					String tempContent = commentContent;
-					commentOperate.addCommentRefresh("",
-							TimeHandle.getCurrentDataStr(),
-							String.valueOf(userModel.getUid()), tempContent,
-							"0", false);
-					uploadCommentData(String.valueOf(userModel.getUid()),
-							newsID, tempContent);
+					// 清空输入内容
+					commentEditText.setText("");
+					commentEditText.setHint("来条神评论...");
+					// 隐藏输入键盘
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(NewsDetailActivity.this
+							.getCurrentFocus().getWindowToken(),
+							InputMethodManager.HIDE_NOT_ALWAYS);
+
+					// 根据评论类型进行评论
+					switch (commentType) {
+					case Input_Type_Comment:
+						CommentModel temMode = new CommentModel();
+						temMode.setCommentContent(tempContent);
+						temMode.setAddDate(TimeHandle.getCurrentDataStr());
+						// 将数据更新至UI
+						commentOperate.addCommentRefresh(temMode, false);
+						// 将数据更新至服务器
+						uploadCommentData(temMode);
+						break;
+
+					case Input_Type_SubComment:
+						SubCommentModel tempMd = new SubCommentModel();
+						tempMd.setCommentContent(tempContent);
+						tempMd.setReplyUid(currentCommentModel.getUserId());
+						tempMd.setReplyName(currentCommentModel
+								.getSubmitterName());
+						tempMd.setReplyCommentId(currentCommentModel
+								.getCommentID());
+						tempMd.setTopCommentId(currentCommentModel
+								.getCommentID());
+						// 更新UI
+						commentOperate.addSubCommentRefresh(tempMd, false);
+						// 提交至服务器
+						uploadSubCommentData(tempMd);
+						break;
+					case Input_Type_SubReply:
+						// 发布子回复
+						SubCommentModel tpMold = new SubCommentModel();
+						tpMold.setCommentContent(tempContent);
+						tpMold.setReplyUid(currentSubCmtModel.getPublishId());
+						tpMold.setReplyName(currentSubCmtModel.getPublishName());
+						tpMold.setReplyCommentId(currentSubCmtModel.getSubID());
+						tpMold.setTopCommentId(currentSubCmtModel
+								.getTopCommentId());
+						// 更新UI
+						commentOperate.addSubCommentRefresh(tpMold, false);
+						// 提交至服务器
+						uploadSubCommentData(tpMold);
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		});
+
 		// 监听输入框文本的变化
 		commentEditText.addTextChangedListener(new TextWatcher() {
 
@@ -161,6 +211,22 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			public void afterTextChanged(Editable s) {
 			}
 		});
+
+		// 监听软键盘是否打开
+		((KeyboardLayout) findViewById(R.id.news_detail_root_view))
+				.setOnkeyboarddStateListener(new onKeyboardsChangeListener() {
+
+					@Override
+					public void onKeyBoardStateChange(int state) {
+						if (KeyboardLayout.KEYBOARD_STATE_HIDE == state) {
+							// 软键盘隐藏时
+							if (commentContent.length() <= 0) {
+								commentType = Input_Type_Comment;
+								commentEditText.setHint("是时候来条神评论了...");
+							}
+						}
+					}
+				});
 	}
 
 	/**
@@ -177,14 +243,14 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		// Intent intent = this.getIntent();
 		// Bundle bundle = intent.getExtras();
 		// newsID = bundle.getString("News_ID");
-		newsID = "63";
+		newsID = "72";
 
 		dataList = new ArrayList<ItemModel>();
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
 		likeItemClickListener = new LikeGridViewItemClick();
-		subCmtItemClickListener = new SubCmtListViewItemClick();
 		commentOperate = new CommentOperate();
+		likeOperate = new LikeCancelOperate();
 		initBitmapUtils();
 
 		// 获取屏幕尺寸
@@ -228,6 +294,9 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				case ItemModel.NEWS_DETAIL_COMMENT:
 					layoutId = R.layout.news_detail_comment_layout;
 					break;
+				case ItemModel.NEWS_DETAIL_SUB_COMMENT:
+					layoutId = R.layout.news_detail_subcomment_layout;
+					break;
 				default:
 					break;
 				}
@@ -254,6 +323,9 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					break;
 				case ItemModel.NEWS_DETAIL_COMMENT:
 					itemtype = ItemModel.NEWS_DETAIL_COMMENT;
+					break;
+				case ItemModel.NEWS_DETAIL_SUB_COMMENT:
+					itemtype = ItemModel.NEWS_DETAIL_SUB_COMMENT;
 					break;
 				default:
 					break;
@@ -288,6 +360,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					public void onPullUpToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
 
+						// 上拉
 						/*
 						 * getNewsDetailData(String.valueOf(userModel.getUid()),
 						 * newsID);
@@ -318,9 +391,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				case R.layout.news_detail_comment_layout:
 					setComentItemView(helper, item);
 					break;
+				case R.layout.news_detail_subcomment_layout:
+					setSubComentItemView(helper, item);
+					break;
 
 				default:
-					LogUtils.i("helper.layoutId=" + helper.layoutId);
 					break;
 				}
 			}
@@ -360,8 +435,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserTag());
 		if (titleData.getIsLike()) {
 			helper.setText(R.id.btn_news_detail_like, "已赞 ");
+			likeOperate.lastSeverLikeState = true;
 		} else {
 			helper.setText(R.id.btn_news_detail_like, "点赞 ");
+			likeOperate.lastSeverLikeState = false;
 		}
 
 		// 设置事件监听
@@ -531,9 +608,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void setComentItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		CommentModel comment = ((CommentItem) item).getCommentModel();
-		List<SubCommentModel> subcmtList = comment.getSubCommentList();
-		// 回复评论layout
-		LinearLayout replyCmt = helper.getView(R.id.reply_head_layout);
 		// 设置评论者的头像
 		ImageView imgView = helper.getView(R.id.iv_comment_head);
 		LinearLayout.LayoutParams laParams = (LinearLayout.LayoutParams) imgView
@@ -552,29 +626,37 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				comment.getSubmitterName());
 		helper.setText(R.id.txt_news_detail_comment_content,
 				comment.getCommentContent());
-		// 设置子评论列表
-		HelloHaAdapter<SubCommentModel> subCommentListAdapter = new HelloHaAdapter<SubCommentModel>(
-				NewsDetailActivity.this,
-				R.layout.news_detail_subcomment_listview_item, subcmtList) {
-			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper,
-					SubCommentModel item) {
-				helper.setText(R.id.txt_sub_comment_by_name,
-						item.getCommentName());
-				helper.setText(R.id.txt_by_sub_comment_name,
-						item.getReplyName());
-				helper.setText(R.id.txt_sub_comment_content,
-						item.getCommentContent());
-			}
-		};
-		ListView subCommitListView = (ListView) helper
-				.getView(R.id.listview_news_detail_sub_comment);
-		subCommitListView.setAdapter(subCommentListAdapter);
-		subCommitListView.setOnItemClickListener(subCmtItemClickListener);
 
-		// 设置点击事件
+		// 设置评论item的点击事件
+		LinearLayout replyCmt = helper.getView(R.id.reply_head_layout);
 		final int postion = helper.getPosition();
 		replyCmt.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				itemViewClickListener.onClick(view, postion, view.getId());
+			}
+		});
+	}
+
+	/**
+	 * 设置子评论item
+	 * */
+	private void setSubComentItemView(HelloHaBaseAdapterHelper helper,
+			ItemModel item) {
+		SubCommentModel subCmtModel = ((SubCommentItem) item)
+				.getSubCommentModel();
+
+		helper.setText(R.id.txt_sub_comment_by_name,
+				subCmtModel.getPublishName());
+		helper.setText(R.id.txt_by_sub_comment_name, subCmtModel.getReplyName());
+		helper.setText(R.id.txt_sub_comment_content,
+				subCmtModel.getCommentContent());
+
+		// 设置评论item的点击事件
+		LinearLayout subCmtLayout = helper.getView(R.id.subcomment_root_view);
+		final int postion = helper.getPosition();
+		subCmtLayout.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
@@ -599,7 +681,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void getNewsDetailData(String uid, String newsId) {
 		String path = JLXCConst.NEWS_DETAIL + "?" + "news_id=" + newsId
 				+ "&user_id=" + uid;
-		LogUtils.i("数据接口是：" + path);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -637,14 +718,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	/**
 	 * 发送一级评论
 	 * */
-	private void uploadCommentData(String userId, String NewsID,
-			String commentContent) {
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", userId);
-		params.addBodyParameter("news_id", NewsID);
-		params.addBodyParameter("comment_content", commentContent);
+	private void uploadCommentData(CommentModel cmtMode) {
 
-		LogUtils.i("input commentContent=" + commentContent);
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("user_id", String.valueOf(userModel.getUid()));
+		params.addBodyParameter("news_id", newsID);
+		params.addBodyParameter("comment_content", cmtMode.getCommentContent());
+
 		HttpManager.post(JLXCConst.SEND_COMMENT, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
@@ -658,17 +738,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 							// 刷新列表
 							JSONObject JResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
-							String commentID = JResult.getString("id");
-							String addData = JResult.getString("add_date");
-							String Uid = JResult.getString("user_id");
-							String contentStr = JResult
-									.getString("comment_content");
-							String lkQuantity = JResult
-									.getString("like_quantity");
-
+							CommentModel temMode = new CommentModel();
+							temMode.setContentWithJson(JResult);
 							// 评论成功后再次刷新
-							commentOperate.addCommentRefresh(commentID,
-									addData, Uid, contentStr, lkQuantity, true);
+							commentOperate.addCommentRefresh(temMode, true);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -693,20 +766,24 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	/**
 	 * 发送二级评论
 	 * */
-	private void sendSubCommentData(String userId, String newsId,
-			String commentContent, String replyUID, String replyCommentId,
-			String topCommentID) {
-
-		showLoading("评论中^_^", false);
+	private void uploadSubCommentData(SubCommentModel subModle) {
 		RequestParams params = new RequestParams();
-		params.addBodyParameter("uid", userId);
-		params.addBodyParameter("news_id", "");
-		params.addBodyParameter("comment_content", commentContent);
+		params.addBodyParameter("user_id", String.valueOf(userModel.getUid()));
+		params.addBodyParameter("news_id", newsID);
+		params.addBodyParameter("comment_content", subModle.getCommentContent());
+		params.addBodyParameter("reply_uid", subModle.getReplyUid());
+		params.addBodyParameter("reply_comment_id",
+				subModle.getReplyCommentId());
+		params.addBodyParameter("top_comment_id", subModle.getTopCommentId());
 
-		LogUtils.i("----uid=" + userId + " news_id=" + "" + " comment_content="
-				+ commentContent);
+		LogUtils.i("**** reply_uid=" + subModle.getReplyUid()
+				+ " top_comment_id=" + subModle.getTopCommentId()
+				+ " reply_comment_id=" + subModle.getReplyCommentId()
+				+ "user_id=" + userModel.getUid() + "news_id=" + newsID
+				+ "comment_content=" + subModle.getCommentContent());
 
-		HttpManager.post(JLXCConst.SEND_COMMENT, params,
+		final String replyToName = subModle.getReplyName();
+		HttpManager.post(JLXCConst.SEND_SECOND_COMMENT, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
 					@Override
@@ -715,12 +792,18 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							hideLoading();
 							// 刷新列表
+							JSONObject JResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+
+							SubCommentModel tempMd = new SubCommentModel();
+							tempMd.setContentWithJson(JResult);
+							tempMd.setReplyName(replyToName);
+							commentOperate.addSubCommentRefresh(tempMd, true);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							hideLoading();
+							commentOperate.Revoked();
 							ToastUtil.show(NewsDetailActivity.this,
 									jsonResponse
 											.getString(JLXCConst.HTTP_MESSAGE));
@@ -731,12 +814,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						hideLoading();
+						commentOperate.Revoked();
 						ToastUtil
 								.show(NewsDetailActivity.this, "竟然评论失败，请检查网络!");
 					}
 				}, null));
-
 	}
 
 	/**
@@ -747,8 +829,43 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("cid", CID);
 		params.addBodyParameter("news_id", newsID);
 
-		LogUtils.i("CID=" + CID);
 		HttpManager.post(JLXCConst.DELETE_COMMENT, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							ToastUtil.show(NewsDetailActivity.this, "删除成功");
+						}
+
+						if (status == JLXCConst.STATUS_FAIL) {
+							commentOperate.Revoked();
+							ToastUtil.show(NewsDetailActivity.this, "删除失败");
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						commentOperate.Revoked();
+						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败，请检查网络");
+					}
+				}, null));
+	}
+
+	/**
+	 * 删除二级评论
+	 * */
+	private void deleteSubCommentData(String CID, String newsID) {
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("cid", CID);
+		params.addBodyParameter("news_id", newsID);
+
+		HttpManager.post(JLXCConst.DELETE_SECOND_COMMENT, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
 					@Override
@@ -810,24 +927,28 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			case R.id.btn_news_detail_like:
 				TitleItem operateData = (TitleItem) detailAdapter
 						.getItem(postion);
-				likeOperate = new LikeCancelOperate(view, postion);
+				likeOperate.setOperateData(view, postion);
 				if (operateData.getIsLike()) {
 					likeOperate.Cancel();
-					likeNetOperate(operateData.getNewsID(), "0");
+					if (likeOperate.lastSeverLikeState) {
+						likeNetOperate(operateData.getNewsID(), "0");
+					}
 				} else {
 					likeOperate.Like();
-					likeNetOperate(operateData.getNewsID(), "1");
+					if (!likeOperate.lastSeverLikeState) {
+						likeNetOperate(operateData.getNewsID(), "1");
+					}
 				}
 				break;
 
 			case R.id.reply_head_layout:
-				final int location = postion;
-				// 当前一条的item数据
-				final CommentModel cmtModel = ((CommentItem) detailAdapter
+				commentOperate.setPostion(postion);
+				// 当前的item数据
+				currentCommentModel = ((CommentItem) detailAdapter
 						.getItem(postion)).getCommentModel();
-				if (cmtModel.getUserId().equals(
+				if (currentCommentModel.getUserId().equals(
 						String.valueOf(userModel.getUid()))) {
-					// 删除评论
+					// 如果是自己发布的评论，则删除评论
 					CharSequence[] items = { "删除评论" };
 					new AlertDialog.Builder(NewsDetailActivity.this).setItems(
 							items, new DialogInterface.OnClickListener() {
@@ -835,35 +956,78 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									commentOperate.setPostion(location);
 									commentOperate.deleteCommentRefresh();
-									deleteCommentData(cmtModel.getCommentID(),
+									deleteCommentData(
+											currentCommentModel.getCommentID(),
 											newsID);
 								}
 
 							}).show();
 				} else {
+					// 发布回复别人的评论
+					commentEditText.requestFocus();
+					commentEditText.setHint("回复："
+							+ currentCommentModel.getSubmitterName());
+					commentType = Input_Type_SubComment;
+					InputMethodManager imm = (InputMethodManager) commentEditText
+							.getContext().getSystemService(
+									Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
 				}
 
 				break;
+
+			// 点击了子评论
+			case R.id.subcomment_root_view:
+				commentOperate.setPostion(postion);
+				// 当前的item数据
+				currentSubCmtModel = ((SubCommentItem) detailAdapter
+						.getItem(postion)).getSubCommentModel();
+
+				if (currentSubCmtModel.getPublishId().equals(
+						String.valueOf(userModel.getUid()))) {
+					// 如果是自己发布的评论，则删除评论
+					CharSequence[] items = { "删除评论" };
+					new AlertDialog.Builder(NewsDetailActivity.this).setItems(
+							items, new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									commentOperate.deleteSubCommentRefresh();
+									deleteSubCommentData(
+											currentSubCmtModel.getSubID(),
+											newsID);
+								}
+
+							}).show();
+				} else {
+					// 找到topComment
+					int index = postion;
+					while (index >= 0) {
+						if (ItemModel.NEWS_DETAIL_COMMENT == detailAdapter
+								.getItem(index).getItemType()) {
+							break;
+						}
+						--index;
+					}
+					currentCommentModel = ((CommentItem) detailAdapter
+							.getItem(index)).getCommentModel();
+
+					commentEditText.requestFocus();
+					commentEditText.setHint("回复："
+							+ currentSubCmtModel.getPublishName());
+					commentType = Input_Type_SubReply;
+					InputMethodManager imm = (InputMethodManager) commentEditText
+							.getContext().getSystemService(
+									Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+				}
+				break;
+
 			default:
 				break;
 			}
-		}
-	}
-
-	/**
-	 * 二级评论点击监听
-	 */
-	public class SubCmtListViewItemClick implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			SubCommentModel subCmtUser = (SubCommentModel) parent.getAdapter()
-					.getItem(position);
-			ToastUtil.show(NewsDetailActivity.this,
-					"UserID:" + subCmtUser.getSubID());
 		}
 	}
 
@@ -904,101 +1068,60 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 点赞操作网络请求
 	 */
 	private void likeNetOperate(String newsId, String likeOrCancel) {
-		// 参数设置
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("news_id", newsId);
-		params.addBodyParameter("isLike", likeOrCancel);
-		params.addBodyParameter("user_id", String.valueOf(userModel.getUid()));
-		params.addBodyParameter("is_second", "0");
+		if (!likeOperate.isLikeUpload) {
+			likeOperate.isLikeUpload = true;
+			if (likeOrCancel.equals("1")) {
+				likeOperate.lastSeverLikeState = true;
+			} else {
+				likeOperate.lastSeverLikeState = false;
+			}
+			// 参数设置
+			RequestParams params = new RequestParams();
+			params.addBodyParameter("news_id", newsId);
+			params.addBodyParameter("isLike", likeOrCancel);
+			params.addBodyParameter("user_id",
+					String.valueOf(userModel.getUid()));
+			params.addBodyParameter("is_second", "0");
 
-		HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+			HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
+					new JsonRequestCallBack<String>(
+							new LoadDataHandler<String>() {
 
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
+								@Override
+								public void onSuccess(JSONObject jsonResponse,
+										String flag) {
+									super.onSuccess(jsonResponse, flag);
+									int status = jsonResponse
+											.getInteger(JLXCConst.HTTP_STATUS);
+									if (status == JLXCConst.STATUS_SUCCESS) {
+										likeOperate.isLikeUpload = false;
+									}
 
-						}
+									if (status == JLXCConst.STATUS_FAIL) {
+										// 失败则取消操作
+										likeOperate.Revoked();
+										ToastUtil
+												.show(NewsDetailActivity.this,
+														jsonResponse
+																.getString(JLXCConst.HTTP_MESSAGE));
+										likeOperate.lastSeverLikeState = !likeOperate.lastSeverLikeState;
+										likeOperate.isLikeUpload = false;
+									}
+								}
 
-						if (status == JLXCConst.STATUS_FAIL) {
-							// 失败则取消操作
-							likeOperate.Revoked();
-							ToastUtil.show(NewsDetailActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						// 失败则取消操作
-						likeOperate.Revoked();
-						ToastUtil.show(NewsDetailActivity.this,
-								"卧槽，竟然操作失败，检查下网络");
-					}
-
-				}, null));
-
-	}
-
-	/**
-	 * listview滑动时获取listview的游标
-	 * */
-	private int getPositionInNewCursor(int newCursorCount, int firstVisiblePos,
-			ListView listView) {
-		if (firstVisiblePos == 0) {
-			firstVisiblePos += 1;
+								@Override
+								public void onFailure(HttpException arg0,
+										String arg1, String flag) {
+									super.onFailure(arg0, arg1, flag);
+									// 失败则取消操作
+									likeOperate.Revoked();
+									ToastUtil.show(NewsDetailActivity.this,
+											"卧槽，竟然操作失败，检查下网络");
+									likeOperate.lastSeverLikeState = !likeOperate.lastSeverLikeState;
+									likeOperate.isLikeUpload = false;
+								}
+							}, null));
 		}
-
-		int headerCount = listView.getHeaderViewsCount();
-		int newCursorPos = newCursorCount - listView.getAdapter().getCount()
-				+ firstVisiblePos - headerCount;
-
-		return newCursorPos;
-	}
-
-	/***
-	 * 获取偏移量
-	 */
-	private int getOffsetY(Cursor cursor, int firstVisiblePos,
-			int newCursorPosition,ListView listView) {
-		int y;
-
-		View firstVisibleItem = null;
-		if (firstVisiblePos == 0) {
-			firstVisibleItem = listView.getChildAt(1);
-		} else {
-			firstVisibleItem = listView.getChildAt(0);
-		}
-		y = firstVisibleItem.getTop();
-
-		View timeView = firstVisibleItem.findViewById(R.id.time_text_view);
-		if (timeView != null && timeView.getVisibility() == View.VISIBLE) {
-
-			Cursor curItem = (Cursor) listView.getAdapter().getItem(newCursorPosition);
-			Cursor preItem = (Cursor) listView.getAdapter().getItem(newCursorPosition - 1);
-			// if (curItem != null || preItem != null) {
-			// long curTimeStamp = curItem
-			// .getLong(MessagesProjection.JEDI_CREATE_DATE_INDX);
-			// long preTimeStamp = preItem
-			// .getLong(MessagesProjection.JEDI_CREATE_DATE_INDX);
-			//
-			// if (Math.abs(curTimeStamp - preTimeStamp) <=
-			// SHOW_TIME_STAMP_TEN_MINS) {
-			// LayoutParams param = (LinearLayout.LayoutParams) mTimeView
-			// .getLayoutParams();
-			// y += mTimeView.getHeight() + param.topMargin
-			// + param.bottomMargin;
-			// }
-			// }
-		}
-
-		return y;
 	}
 
 	/**
@@ -1015,10 +1138,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		private final static int Delete_Sub_Comment = 3;
 		// 操作的位置
 		private int oprtPostion;
+		// 第一条可见的位置
+		private int firstVisiblePostion;
 		// 操作的item的值
 		private ItemModel oprtItem;
 		// 操作的类型
-		private int oprtType = 0;
+		private int LastOperateType = -1;
 		// 当前操作的item离顶部的距离
 		private int opertItemToTop = 0;
 
@@ -1029,86 +1154,118 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		/**
 		 * 更新一级评论列表
 		 * */
-		public void addCommentRefresh(String commentID, String addData,
-				String Uid, String content, String lkQuantity,
+		public void addCommentRefresh(CommentModel cmtModel,
 				boolean isNetFeedback) {
 			// 自动显示最后一条
 			newsDetailListView.getRefreshableView().setTranscriptMode(
 					ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 			if (isNetFeedback) {
+				// 是不是网络回调
 				detailAdapter.remove(oprtItem);
 				newsDetailListView.getRefreshableView().setTranscriptMode(
 						ListView.TRANSCRIPT_MODE_DISABLED);
 			}
-			oprtType = Add_Comment;
+			LastOperateType = Add_Comment;
 
 			// 新建一条评论对象
-			CommentModel newCmtModel = new CommentModel();
-			newCmtModel.setCommentID(commentID);
-			newCmtModel.setSubmitterName(userModel.getUsername());
-			newCmtModel.setHeadImage(userModel.getHead_image());
-			newCmtModel.setHeadSubImage(userModel.getHead_sub_image());
-			newCmtModel.setAddDate(addData);
-			newCmtModel.setUserId(Uid);
-			newCmtModel.setCommentContent(content);
-			newCmtModel.setLikeQuantity(lkQuantity);
+			cmtModel.setSubmitterName(userModel.getUsername());
+			cmtModel.setHeadImage(userModel.getHead_image());
+			cmtModel.setHeadSubImage(userModel.getHead_sub_image());
 			List<SubCommentModel> subCmtList = new ArrayList<SubCommentModel>();
-			newCmtModel.setSubCommentList(subCmtList);
-			oprtItem = DataToItem.createComment(newCmtModel);
+			cmtModel.setSubCommentList(subCmtList);
+			oprtItem = DataToItem.createComment(cmtModel);
 			detailAdapter.add(oprtItem);
-			// 清空输入内容
-			commentEditText.setText("");
-			commentEditText.setHint("来条神评论...");
-			// 隐藏输入键盘
-			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(NewsDetailActivity.this
-					.getCurrentFocus().getWindowToken(),
-					InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 
 		/**
 		 * 删除一级评论刷新
 		 * */
 		public void deleteCommentRefresh() {
-			oprtType = Delete_Comment;
+			LastOperateType = Delete_Comment;
 			oprtItem = (CommentItem) detailAdapter.getItem(oprtPostion);
-			int firstVisible = newsDetailListView.getRefreshableView()
+			// 保存当前第一个可见的item的索引和偏移量
+			firstVisiblePostion = newsDetailListView.getRefreshableView()
 					.getFirstVisiblePosition();
-			opertItemToTop = newsDetailListView.getChildAt(
-					oprtPostion - firstVisible).getTop();
+			View view = newsDetailListView.getChildAt(0);
+			opertItemToTop = (view == null) ? 0 : view.getTop();
 			detailAdapter.remove(oprtPostion);
 		}
 
 		/**
 		 * 添加二级评论刷新
+		 * 
+		 * @param replyCommentId
+		 *            :被回复的评论ID
+		 * @param topCommentId
+		 *            ：顶部的评论ID
+		 * @param replyUid
+		 *            ：被回复者的ID
+		 * @param userId
+		 *            :回复者的ID
 		 * */
-		private void addSubCommentRefresh(String uid, String newsId) {
+		private void addSubCommentRefresh(SubCommentModel subModel,
+				boolean isNetFeedback) {
+			LastOperateType = Add_Sub_Comment;
 
+			// 找到需要插入的位置
+			int index = oprtPostion + 1;
+			while (index < detailAdapter.getCount()) {
+				if (ItemModel.NEWS_DETAIL_COMMENT == detailAdapter.getItem(
+						index).getItemType()) {
+					break;
+				}
+				index++;
+			}
+			// 设置发布的人的信息
+			subModel.setPublishName(userModel.getUsername());
+			subModel.setPublishId(String.valueOf(userModel.getUid()));
+			if (isNetFeedback) {
+				detailAdapter.remove(oprtItem);
+				// 中间多隔了一条数据
+				index--;
+			}
+			// 滚动到添加的评论处
+			if (android.os.Build.VERSION.SDK_INT >= 8) {
+				newsDetailListView.getRefreshableView().smoothScrollToPosition(
+						index);
+			} else {
+				newsDetailListView.getRefreshableView().setSelection(index);
+			}
+
+			oprtItem = DataToItem.createSubComment(subModel, newsID);
+			detailAdapter.insert(index, oprtItem);
 		}
 
 		/**
 		 * 删除二级评论刷新
 		 * */
-		private void deleteSubCommentRefresh(String uid, String newsId) {
-
+		private void deleteSubCommentRefresh() {
+			LastOperateType = Delete_Sub_Comment;
+			oprtItem = (SubCommentItem) detailAdapter.getItem(oprtPostion);
+			// 保存当前第一个可见的item的索引和偏移量
+			firstVisiblePostion = newsDetailListView.getRefreshableView()
+					.getFirstVisiblePosition();
+			View view = newsDetailListView.getChildAt(0);
+			opertItemToTop = (view == null) ? 0 : view.getTop();
+			detailAdapter.remove(oprtPostion);
 		}
 
 		/**
 		 * 撤销上次操作
 		 * */
 		public void Revoked() {
-			switch (oprtType) {
+			switch (LastOperateType) {
 			case Add_Comment:
+			case Add_Sub_Comment:
 				detailAdapter.remove(oprtItem);
 				break;
+
 			case Delete_Comment:
-				detailAdapter.insert(oprtPostion, oprtItem);
-				newsDetailListView.getRefreshableView().setSelectionFromTop(
-						oprtPostion, opertItemToTop);
-				break;
-			case Add_Sub_Comment:
-				break;
 			case Delete_Sub_Comment:
+				detailAdapter.insert(oprtPostion, oprtItem);
+				// 恢复上次的位置
+				newsDetailListView.getRefreshableView().setSelectionFromTop(
+						firstVisiblePostion, opertItemToTop);
 				break;
 
 			default:
@@ -1123,11 +1280,19 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * @author luis
 	 */
 	private class LikeCancelOperate {
+		// 是否正在上传点赞数据
+		public boolean isLikeUpload = false;
+		// 上次点赞的状态
+		public boolean lastSeverLikeState = false;
+		// 点赞的控件
 		private View view;
+		// 点赞的位置
 		private int postion;
+		// 记录上传的操作类型
 		private boolean isLikeOperate = false;
 
-		public LikeCancelOperate(View view, int postion) {
+		// 设置操作的数据
+		public void setOperateData(View view, int postion) {
 			this.view = view;
 			this.postion = postion;
 		}
