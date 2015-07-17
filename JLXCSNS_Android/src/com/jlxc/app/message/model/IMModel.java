@@ -90,7 +90,7 @@ public class IMModel {
 	//查出所有已经添加的群组 (好友列表)
 	public static List<IMModel> findHasAddAll() {
 		String sql = "SELECT * FROM jlxc_group WHERE type=1 AND currentState=1" +
-			     "AND owner='"+UserManager.getInstance().getUser().getUid()+"' ORDER BY id DESC";
+			     " AND owner='"+UserManager.getInstance().getUser().getUid()+"' ORDER BY id DESC";
 		return findBySql(sql);
 	}
 	//从数据库中查出新的朋友群组 最近的三条没有被添加的人
@@ -140,12 +140,12 @@ public class IMModel {
 			imModel.setTargetId(cursor.getString(1));
 			imModel.setTitle(cursor.getString(2));
 			imModel.setType(cursor.getInt(3));
-			imModel.setRemark(cursor.getString(5));
-			imModel.setAvatarPath(cursor.getString(6));
-			imModel.setCurrentState(cursor.getInt(7));
-			imModel.setIsRead(cursor.getInt(8));
-			imModel.setIsNew(cursor.getInt(9));
-			imModel.setAddDate(cursor.getString(10));
+			imModel.setRemark(cursor.getString(4));
+			imModel.setAvatarPath(cursor.getString(5));
+			imModel.setCurrentState(cursor.getInt(6));
+			imModel.setIsRead(cursor.getInt(7));
+			imModel.setIsNew(cursor.getInt(8));
+			imModel.setAddDate(cursor.getString(9));
 			list.add(imModel);
 		}
 		cursor.close();

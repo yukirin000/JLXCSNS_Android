@@ -35,7 +35,17 @@
                     android:layout_marginLeft="18dp"
                     android:layout_marginTop="14dp"
                     android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
-
+                
+				<TextView
+                    android:id="@+id/setting_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginTop="14dp"
+                    android:text="设置" />
+                
                 <com.jlxc.app.base.ui.view.CircularImageView
                     android:id="@+id/head_image_view"
                     android:layout_width="70dip"

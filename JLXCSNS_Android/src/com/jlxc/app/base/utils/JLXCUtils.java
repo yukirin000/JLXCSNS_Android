@@ -8,6 +8,7 @@ import java.util.Date;
 
 import com.jlxc.app.base.manager.UserManager;
 
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.util.Base64;
 import android.util.Log;
@@ -128,4 +129,22 @@ public class JLXCUtils {
         return fileName + ".jpg";
     }
 	
+    //字符串转换数字
+    public static int stringToInt(String string) {
+    	
+    	int intValue = 0;
+    	for (int i = 0; i < string.length(); i++) {
+			char c = string.charAt(i);
+			if ('0' <= c && c <= '9') {
+				intValue *= 10;
+				int tmpValue = c-'0';
+				intValue += tmpValue;
+			}else {
+				break;
+			}
+		}
+    	
+    	return intValue;
+    }
+    
 }
