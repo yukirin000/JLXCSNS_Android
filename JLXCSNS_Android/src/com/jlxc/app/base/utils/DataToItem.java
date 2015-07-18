@@ -25,11 +25,11 @@ public class DataToItem {
 	public static List<ItemModel> newsDataToItems(List<NewsModel> orgDataList) {
 		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
 		for (NewsModel newsMd : orgDataList) {
-			itemList.add(createNewsTitle(newsMd));
-			itemList.add(createBody(newsMd));
-			itemList.add(createOperate(newsMd));
-			itemList.add(createLikeList(newsMd));
-			itemList.add(createCommentList(newsMd));
+			itemList.add(createNewsTitle(newsMd, ItemModel.NEWS_TITLE));
+			itemList.add(createBody(newsMd, ItemModel.NEWS_BODY));
+			itemList.add(createOperate(newsMd, ItemModel.NEWS_OPERATE));
+			itemList.add(createLikeList(newsMd, ItemModel.NEWS_LIKELIST));
+			itemList.add(createCommentList(newsMd, ItemModel.NEWS_COMMENT));
 		}
 		return itemList;
 	}
@@ -39,14 +39,15 @@ public class DataToItem {
 			List<CampusPersonModel> personData) {
 		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
 		if (personData.size() > 0) {
-			itemList.addFirst(createCampusHead(personData));
+			itemList.addFirst(createCampusHead(personData,
+					ItemModel.CAMPUS_HEAD));
 		}
 
 		for (NewsModel newsMd : newsData) {
-			itemList.add(createNewsTitle(newsMd));
-			itemList.add(createBody(newsMd));
-			itemList.add(createOperate(newsMd));
-			itemList.add(createLikeList(newsMd));
+			itemList.add(createNewsTitle(newsMd, ItemModel.CAMPUS_TITLE));
+			itemList.add(createBody(newsMd, ItemModel.CAMPUS_BODY));
+			itemList.add(createOperate(newsMd, ItemModel.CAMPUS_OPERATE));
+			itemList.add(createLikeList(newsMd, ItemModel.CAMPUS_LIKELIST));
 		}
 		return itemList;
 	}
@@ -56,25 +57,26 @@ public class DataToItem {
 	 * */
 	public static List<ItemModel> newsDetailToItems(NewsModel newsData) {
 		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
-		itemList.add(createNewsTitle(newsData));
-		itemList.add(createBody(newsData));
-		itemList.add(createLikeList(newsData));
+		itemList.add(createNewsTitle(newsData, ItemModel.NEWS_DETAIL_TITLE));
+		itemList.add(createBody(newsData, ItemModel.NEWS_DETAIL_BODY));
+		itemList.add(createLikeList(newsData, ItemModel.NEWS_DETAIL_LIKELIST));
 		List<CommentModel> cmtList = newsData.getCommentList();
 		for (CommentModel cmtMd : cmtList) {
-			itemList.add(createComment(cmtMd));
+			itemList.add(createComment(cmtMd, ItemModel.NEWS_DETAIL_COMMENT));
 			List<SubCommentModel> subCmtList = cmtMd.getSubCommentList();
 			for (SubCommentModel subCmtMd : subCmtList) {
-				itemList.add(createSubComment(subCmtMd, newsData.getNewsID()));
+				itemList.add(createSubComment(subCmtMd, newsData.getNewsID(),
+						ItemModel.NEWS_DETAIL_SUB_COMMENT));
 			}
 		}
 		return itemList;
 	}
 
 	// 提取新闻中的头部信息
-	private static ItemModel createNewsTitle(NewsModel news) {
+	private static ItemModel createNewsTitle(NewsModel news, int Type) {
 		TitleItem item = new TitleItem();
 		try {
-			item.setItemType(ItemModel.NEWS_TITLE);
+			item.setItemType(Type);
 
 			item.setNewsID(news.getNewsID());
 			item.setHeadImage(news.getUserHeadImage());
@@ -83,6 +85,7 @@ public class DataToItem {
 			item.setSendTime(news.getSendTime());
 			item.setUserTag(news.getUserSchool());
 			item.setIsLike(news.getIsLike());
+			item.setUserID(news.getUid());
 		} catch (Exception e) {
 			LogUtils.e("createNewsTitle error.");
 		}
@@ -90,10 +93,10 @@ public class DataToItem {
 	}
 
 	// 提取新闻中的操作信息
-	private static ItemModel createOperate(NewsModel news) {
+	private static ItemModel createOperate(NewsModel news, int Type) {
 		OperateItem item = new OperateItem();
 		try {
-			item.setItemType(ItemModel.NEWS_OPERATE);
+			item.setItemType(Type);
 
 			item.setNewsID(news.getNewsID());
 			item.setIsLike(news.getIsLike());
@@ -106,10 +109,10 @@ public class DataToItem {
 	}
 
 	// 提取新闻中的主体信息
-	private static ItemModel createBody(NewsModel news) {
+	private static ItemModel createBody(NewsModel news, int Type) {
 		BodyItem item = new BodyItem();
 		try {
-			item.setItemType(ItemModel.NEWS_BODY);
+			item.setItemType(Type);
 
 			item.setNewsID(news.getNewsID());
 			item.setNewsContent(news.getNewsContent());
@@ -122,10 +125,10 @@ public class DataToItem {
 	}
 
 	// 提取新闻中的点赞信息
-	private static ItemModel createLikeList(NewsModel news) {
+	private static ItemModel createLikeList(NewsModel news, int Type) {
 		LikeListItem item = new LikeListItem();
 		try {
-			item.setItemType(ItemModel.NEWS_LIKELIST);
+			item.setItemType(Type);
 
 			item.setNewsID(news.getNewsID());
 			item.setLikeHeadListimage(news.getLikeHeadListimage());
@@ -136,11 +139,11 @@ public class DataToItem {
 	}
 
 	// 提取新闻中的评论列表信息
-	private static ItemModel createCommentList(NewsModel news) {
+	private static ItemModel createCommentList(NewsModel news, int Type) {
 		CommentListItem item = new CommentListItem();
 		try {
 			item.setNewsID(news.getNewsID());
-			item.setItemType(ItemModel.NEWS_COMMENT);
+			item.setItemType(Type);
 			item.setCommentList(news.getCommentList());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");
@@ -149,10 +152,10 @@ public class DataToItem {
 	}
 
 	// 提取新闻中的评论信息
-	public static ItemModel createComment(CommentModel cmt) {
+	public static ItemModel createComment(CommentModel cmt, int Type) {
 		CommentItem item = new CommentItem();
 		try {
-			item.setItemType(ItemModel.NEWS_DETAIL_COMMENT);
+			item.setItemType(Type);
 			item.setComment(cmt);
 		} catch (Exception e) {
 			LogUtils.e("create comment error.");
@@ -161,10 +164,11 @@ public class DataToItem {
 	}
 
 	// 提取校园头部
-	private static ItemModel createCampusHead(List<CampusPersonModel> personData) {
+	private static ItemModel createCampusHead(
+			List<CampusPersonModel> personData, int Type) {
 		CampusHeadItem item = new CampusHeadItem();
 		try {
-			item.setItemType(ItemModel.CAMPUS_HEAD);
+			item.setItemType(Type);
 			// 校园头部动态ID
 			item.setPersonList(personData);
 		} catch (Exception e) {
@@ -174,10 +178,11 @@ public class DataToItem {
 	}
 
 	// 提取动态数据中的子评论信息
-	public static ItemModel createSubComment(SubCommentModel cmt, String newsID) {
+	public static ItemModel createSubComment(SubCommentModel cmt,
+			String newsID, int Type) {
 		SubCommentItem item = new SubCommentItem();
 		try {
-			item.setItemType(ItemModel.NEWS_DETAIL_SUB_COMMENT);
+			item.setItemType(Type);
 			item.setNewsID(newsID);
 			item.setSubCommentModel(cmt);
 		} catch (Exception e) {

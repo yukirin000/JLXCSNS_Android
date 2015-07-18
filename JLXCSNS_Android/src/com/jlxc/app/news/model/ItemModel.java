@@ -85,6 +85,8 @@ public class ItemModel {
 		private String sendTime;
 		// 显示的标签
 		private String userTag;
+		// 显示用户的id
+		private String userID;
 		// 显示是否已赞
 		private boolean isLike;
 
@@ -138,6 +140,14 @@ public class ItemModel {
 			} else {
 				this.isLike = true;
 			}
+		}
+
+		public String getUserID() {
+			return userID;
+		}
+
+		public void setUserID(String userID) {
+			this.userID = userID;
 		}
 
 	}
