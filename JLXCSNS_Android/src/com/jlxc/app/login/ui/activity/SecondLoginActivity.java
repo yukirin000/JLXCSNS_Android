@@ -87,6 +87,9 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 					//登录成功用户信息注入
 					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
 					UserManager.getInstance().getUser().setContentWithJson(result);
+					//数据持久化
+					UserManager.getInstance().saveAndUpdate();
+					
 					Toast.makeText(SecondLoginActivity.this, "登录成功",
 							Toast.LENGTH_SHORT).show();
 					//跳转主页

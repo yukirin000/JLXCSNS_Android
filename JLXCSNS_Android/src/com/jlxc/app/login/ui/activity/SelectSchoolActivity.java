@@ -359,6 +359,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 							//设置数据 
 							userModel.setSchool(schoolName);
 							userModel.setSchool_code(schoolCode);
+							//数据持久化
+							UserManager.getInstance().saveAndUpdate();
+							
 							if (isNotRegister()) {
 								finishWithRight();
 							}else {

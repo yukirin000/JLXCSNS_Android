@@ -16,8 +16,12 @@ import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
+import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
+import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -184,6 +188,13 @@ public class LoginActivity extends BaseActivity {
 		
 		////////////////////////测试数据//////////////////////////
 		usernameEt.setText("13736661234");
+		UserModel userModel = UserManager.getInstance().getUser();
+		if (null != userModel.getUsername() && null != userModel.getLogin_token()) {
+			//跳转主页 自动登录
+			Intent intent = new Intent(this, MainTabActivity.class);
+			startActivity(intent);			
+		}
+
 	}
 
 }

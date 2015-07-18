@@ -164,6 +164,10 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 							userModel.setSex(sexValue);
 							userModel.setHead_image(jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("head_image"));
 							userModel.setHead_image(jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("head_sub_image"));
+							
+							//数据持久化
+							UserManager.getInstance().saveAndUpdate();
+							
 							//toast
 							Toast.makeText(RegisterInformationActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE), Toast.LENGTH_SHORT).show();
 							hideLoading();

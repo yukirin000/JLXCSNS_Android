@@ -169,7 +169,8 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);
 							ToastUtil.show(RegisterActivity.this, "修改成功");
-							
+							//数据持久化
+							UserManager.getInstance().saveAndUpdate();
 							//跳转主页
 							Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
 							startActivity(intent);
@@ -217,7 +218,8 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							UserModel userMd = new UserModel();
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);
-
+							//数据持久化
+							UserManager.getInstance().saveAndUpdate();
 							ToastUtil.show(RegisterActivity.this, "注册成功");
 							//跳转主页
 							Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);

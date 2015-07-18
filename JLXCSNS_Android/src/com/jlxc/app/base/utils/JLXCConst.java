@@ -4,7 +4,8 @@ public interface JLXCConst {
 
 	//	测试环境
 	public static final String DOMIN = "http://192.168.1.100/jlxc_php/index.php/Home/MobileApi";
-	public static final String ATTACHMENT_ADDR = "http://192.168.1.100/jlxc_php/Uploads/";	
+	public static final String ATTACHMENT_ADDR = "http://192.168.1.100/jlxc_php/Uploads/";
+	public static final String ROOT_PATH = "http://192.168.1.100/jlxc_php/";
 	
 	public static final int STATUS_SUCCESS = 1;// 接口返回成功
 	public static final int STATUS_FAIL = 0;// 接口返回失败
@@ -23,7 +24,7 @@ public interface JLXCConst {
 	// 匹配手机号
 	public static final String PHONENUMBER_PATTERN = "1[3|4|5|7|8|][0-9]{9}";
 	// 用户名匹配
-	public static final String USER_ACCOUNT_PATTERN = "^[a-z0-9]{6,20}+$";
+	public static final String USER_ACCOUNT_PATTERN = "^[a-zA-Z0-9]{6,20}+$";
 	// 匹配身份证号:15位 18位
 	public static final String ID_CARD = "^\\d{15}|^\\d{17}([0-9]|X|x)$";
 	// 姓名正则
@@ -119,6 +120,22 @@ public interface JLXCConst {
 	//获取好友列表
 	//http://localhost/jlxc_php/index.php/Home/MobileApi/getFriendsList
 	public static final String GET_FRIENDS_LIST = DOMIN + "/getFriendsList";
+	//////////////////////////////////////////发现模块//////////////////////////////////////////
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/getContactUser	
+	//获取联系人用户
+	public static final String GET_CONTACT_USER = DOMIN + "/getContactUser";
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/getSameSchoolList
+	//获取同校的人列表	
+	public static final String GET_SAME_SCHOOL_LIST = DOMIN + "/getSameSchoolList";
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/findUserList
+	//搜索用户列表	
+	public static final String FIND_USER_LIST = DOMIN + "/findUserList";
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/helloHaIdExists
+	//判断该哈哈号是否存在	
+	public static final String HELLOHA_ID_EXISTS = DOMIN + "/helloHaIdExists";
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/recommendFriendsList
+	//推荐的人列表	
+	public static final String RECOMMEND_FRIENDS_LIST = DOMIN + "/recommendFriendsList";
 	
 	
 }
