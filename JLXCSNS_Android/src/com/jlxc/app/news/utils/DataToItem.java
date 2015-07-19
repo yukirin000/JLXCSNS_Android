@@ -1,8 +1,9 @@
-package com.jlxc.app.base.utils;
+package com.jlxc.app.news.utils;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ItemModel;

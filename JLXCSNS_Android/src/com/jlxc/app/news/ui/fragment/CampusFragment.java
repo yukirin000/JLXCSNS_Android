@@ -35,8 +35,8 @@ import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
-import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -44,7 +44,6 @@ import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.ItemModel;
 import com.jlxc.app.news.model.ItemModel.BodyItem;
-import com.jlxc.app.news.model.ItemModel.CampusHeadItem;
 import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.ItemModel.OperateItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
@@ -52,6 +51,7 @@ import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
@@ -787,11 +787,7 @@ public class CampusFragment extends BaseFragment {
 							titleData.getNewsID());
 				} else {
 					// 跳转到用户的主页
-					Intent intentUsrMain = new Intent(mContext,
-							OtherPersonalActivity.class);
-					intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY,
-							titleData.getUserID());
-					startActivityWithRight(intentUsrMain);
+					JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				}
 				break;
 
@@ -991,11 +987,7 @@ public class CampusFragment extends BaseFragment {
 			CampusPersonModel personModel = (CampusPersonModel) parent
 					.getAdapter().getItem(position);
 			// 跳转到用户的主页
-			Intent intentToUsrMain = new Intent(mContext,
-					OtherPersonalActivity.class);
-			intentToUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY,
-					personModel.getUserId());
-			startActivityWithRight(intentToUsrMain);
+			JumpToHomepage(JLXCUtils.stringToInt(personModel.getUserId()));
 		}
 	}
 
@@ -1009,12 +1001,7 @@ public class CampusFragment extends BaseFragment {
 				long id) {
 			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
 					position);
-			// 跳转到用户的主页
-			Intent intentToUsrMain = new Intent(mContext,
-					OtherPersonalActivity.class);
-			intentToUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY,
-					likeUser.getUserID());
-			startActivityWithRight(intentToUsrMain);
+			JumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
 		}
 	}
 
@@ -1052,6 +1039,15 @@ public class CampusFragment extends BaseFragment {
 	}
 
 	/**
+	 * 跳转至用户的主页
+	 */
+	private void JumpToHomepage(int userID) {
+		Intent intentUsrMain = new Intent(mContext, OtherPersonalActivity.class);
+		intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, userID);
+		startActivityWithRight(intentUsrMain);
+	}
+
+	/**
 	 * 带返回结果的 右侧进入
 	 * 
 	 * @param intent
@@ -1074,10 +1070,22 @@ public class CampusFragment extends BaseFragment {
 	 * */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		//
-		newsDataList.set(indexAtNewsList, currentNews);
-		newsAdapter.replaceAll(DataToItem.campusDataToItems(newsDataList,
-				personList));
+		// 更新操作结果
+		switch (resultCode) {
+		case NewsDetailActivity.OPERATE_UPDATE:
+			newsDataList.set(indexAtNewsList, currentNews);
+			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsDataList,
+					personList));
+			break;
+		case NewsDetailActivity.OPERATE_DELETET:
+			newsDataList.remove(indexAtNewsList);
+			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsDataList,
+					personList));
+			break;
+		default:
+			break;
+		}
+
 		super.onActivityResult(requestCode, resultCode, intent);
 	}
 }

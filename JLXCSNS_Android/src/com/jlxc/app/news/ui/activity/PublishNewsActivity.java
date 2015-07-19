@@ -338,6 +338,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 							//toast
 							ToastUtil.show(PublishNewsActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 							hideLoading();
+							finishWithRight();
 							break;
 						case JLXCConst.STATUS_FAIL:
 							hideLoading();

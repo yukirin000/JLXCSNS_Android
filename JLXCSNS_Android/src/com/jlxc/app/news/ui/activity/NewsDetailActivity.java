@@ -25,6 +25,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.amap.api.location.core.e;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
@@ -43,8 +44,8 @@ import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.view.KeyboardLayout;
 import com.jlxc.app.base.ui.view.KeyboardLayout.onKeyboardsChangeListener;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
-import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -61,6 +62,9 @@ import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.SubCommentModel;
 import com.jlxc.app.news.ui.fragment.CampusFragment;
 import com.jlxc.app.news.ui.fragment.NewsListFragment;
+import com.jlxc.app.news.utils.DataToItem;
+import com.jlxc.app.news.utils.LikeOperate;
+import com.jlxc.app.news.utils.LikeOperate.LikeCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
@@ -70,18 +74,32 @@ import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
+	// 最多点赞数
+	private final static int MAX_LIKE_COUNT = 10;
+	// 上一activity传递过来的意图
+	private Intent intent;
+	// 意图参数键值
 	public final static String INTENT_KEY_CMT_STATE = "comment_state";
 	public final static String INTENT_KEY_LAST_ACTIVITY = "last_activity";
 	public final static String INTENT_KEY_CMT_ID = "comment_id";
+	public final static String INTENT_KEY_RESULT_TYPE = "back_result";
+	// 当前的操作类型
+	private int operateType = OPERATE_UPDATE;
+	// 操作类型
+	public final static int OPERATE_UPDATE = 0;
+	public final static int OPERATE_DELETET = 1;
 	// 评论的类型
 	private final static int Input_Type_Comment = 0;
+	// 子评论
 	private final static int Input_Type_SubComment = 1;
+	// 回复
 	private final static int Input_Type_SubReply = 2;
-	// 最多点赞数
-	private int MAX_LIKE_COUNT = 10;
+	// 评论的类型
+	private int commentType = Input_Type_Comment;
 	// 主listview
 	@ViewInject(R.id.news_detail_listView)
 	private PullToRefreshListView newsDetailListView;
@@ -109,8 +127,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private ItemViewClick itemViewClickListener;
 	// 点击图片监听
 	private ImageGridViewItemClick imageItemClickListener;
-	// 点赞操作类
-	private LikeCancelOperate likeOperate;
+	// 点赞操作类对象
+	private LikeOperate likeOperate;
 	// 点赞头像gridview
 	private NoScrollGridView likeGridView;
 	// 点赞适配器
@@ -125,10 +143,30 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private CommentModel currentCommentModel;
 	// 当前的操作的子评论对象
 	private SubCommentModel currentSubCmtModel;
-	// 评论的类型
-	private int commentType = 0;
 	// 是否是第一次请求数据
 	private boolean firstRequstData = true;
+
+	/**
+	 * 事件监听函数
+	 * */
+	@OnClick(value = { R.id.base_ll_right_btns, R.id.btn_comment_send })
+	private void clickEvent(View view) {
+		switch (view.getId()) {
+		// 删除动态
+		case R.id.base_ll_right_btns:
+			operateType = OPERATE_DELETET;
+			deleteCurrentNews();
+			break;
+
+		// 发布评论
+		case R.id.btn_comment_send:
+			operateType = OPERATE_UPDATE;
+			publishComment();
+			break;
+		default:
+			break;
+		}
+	}
 
 	@Override
 	public int setLayoutId() {
@@ -140,68 +178,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		init();
 		multiItemTypeSet();
 		listViewSet();
-
-		// 点击回复发送按钮
-		btnSendComment.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (commentContent.length() > 0) {
-					String tempContent = commentContent;
-					// 清空输入内容
-					commentEditText.setText("");
-					commentEditText.setHint("来条神评论...");
-					// 隐藏输入键盘
-					setKeyboardStatu(false);
-
-					// 根据评论类型进行评论
-					switch (commentType) {
-					case Input_Type_Comment:
-						CommentModel temMode = new CommentModel();
-						temMode.setCommentContent(tempContent);
-						temMode.setAddDate(TimeHandle.getCurrentDataStr());
-						// 将数据更新至UI
-						commentOperate.addCommentRefresh(temMode, false);
-						// 将数据更新至服务器
-						uploadCommentData(temMode);
-						break;
-
-					case Input_Type_SubComment:
-						SubCommentModel tempMd = new SubCommentModel();
-						tempMd.setCommentContent(tempContent);
-						tempMd.setReplyUid(currentCommentModel.getUserId());
-						tempMd.setReplyName(currentCommentModel
-								.getPublishName());
-						tempMd.setReplyCommentId(currentCommentModel
-								.getCommentID());
-						tempMd.setTopCommentId(currentCommentModel
-								.getCommentID());
-						// 更新UI
-						commentOperate.addSubCommentRefresh(tempMd, false);
-						// 提交至服务器
-						uploadSubCommentData(tempMd);
-						break;
-
-					case Input_Type_SubReply:
-						// 发布子回复
-						SubCommentModel tpMold = new SubCommentModel();
-						tpMold.setCommentContent(tempContent);
-						tpMold.setReplyUid(currentSubCmtModel.getPublishId());
-						tpMold.setReplyName(currentSubCmtModel.getPublishName());
-						tpMold.setReplyCommentId(currentSubCmtModel.getSubID());
-						tpMold.setTopCommentId(currentSubCmtModel
-								.getTopCommentId());
-						// 更新UI
-						commentOperate.addSubCommentRefresh(tpMold, false);
-						// 提交至服务器
-						uploadSubCommentData(tpMold);
-						break;
-					default:
-						break;
-					}
-				}
-			}
-		});
 
 		// 监听输入框文本的变化
 		commentEditText.addTextChangedListener(new TextWatcher() {
@@ -238,13 +214,18 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					}
 				});
 
+		intent = this.getIntent();
 		// 获取上一个activity的值
-		if (this.getIntent().getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
+		if (intent.getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
 				.equals("News_List_Fragment")) {
 			currentNews = NewsListFragment.currentNews;
-		} else if (this.getIntent().getExtras()
-				.getString(INTENT_KEY_LAST_ACTIVITY).equals("Campus_Fragment")) {
+		} else if (intent.getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
+				.equals("Campus_Fragment")) {
 			currentNews = CampusFragment.currentNews;
+		}
+		// 如果是自己发布的动态
+		if (currentNews.getUid().equals(String.valueOf(userModel.getUid()))) {
+			addRightBtn("删除");
 		}
 		// 获取上传的数据
 		detailAdapter.replaceAll(DataToItem.newsDetailToItems(currentNews));
@@ -264,7 +245,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		imageItemClickListener = new ImageGridViewItemClick();
 		likeItemClickListener = new LikeGridViewItemClick();
 		commentOperate = new CommentOperate();
-		likeOperate = new LikeCancelOperate();
+		likeOperate = new LikeOperate(NewsDetailActivity.this);
 		initBitmapUtils();
 
 		// 获取屏幕尺寸
@@ -277,7 +258,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 初始状态处理
 	 * */
 	private void stateHandel() {
-		Bundle bundle = this.getIntent().getExtras();
+		Bundle bundle = intent.getExtras();
 		if (bundle.getString(INTENT_KEY_CMT_STATE).equals("publish_comment")) {
 			// 发布评论
 			commentEditText.setFocusable(true);
@@ -517,10 +498,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserTag());
 		if (titleData.getIsLike()) {
 			helper.setText(R.id.btn_news_detail_like, "已赞 ");
-			likeOperate.lastSeverLikeState = true;
+			likeOperate.setlastSeverLikeState(true);
 		} else {
 			helper.setText(R.id.btn_news_detail_like, "点赞 ");
-			likeOperate.lastSeverLikeState = false;
+			likeOperate.setlastSeverLikeState(false);
 		}
 
 		// 设置事件监听
@@ -807,6 +788,71 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
+	 * 删除当前评论
+	 * */
+	private void deleteCurrentNews() {
+		final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
+		alterDialog.setMessage("真的狠心删除吗？");
+		alterDialog.setCancelable(true);
+
+		alterDialog.setPositiveButton("是的",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						deleteFromSever();
+					}
+				});
+		alterDialog.setNegativeButton("舍不得",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+		alterDialog.show();
+	}
+
+	/**
+	 * 从服务器上删除
+	 * */
+	private void deleteFromSever() {
+
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("news_id", currentNews.getNewsID());
+
+		HttpManager.post(JLXCConst.DELETE_NEWS, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							ToastUtil.show(NewsDetailActivity.this, "删除成功");
+							// 返回上一页
+							setResult(OPERATE_DELETET, intent);
+							finishWithRight();
+						}
+
+						if (status == JLXCConst.STATUS_FAIL) {
+							ToastUtil.show(NewsDetailActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						ToastUtil
+								.show(NewsDetailActivity.this, "竟然删除失败，请检查网络!");
+					}
+				}, null));
+	}
+
+	/**
 	 * 发送一级评论
 	 * */
 	private void uploadCommentData(CommentModel cmtMode) {
@@ -825,7 +871,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							hideLoading();
 							// 刷新列表
 							JSONObject JResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
@@ -978,6 +1023,60 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				}, null));
 	}
 
+	// 点击回复发送按钮
+	private void publishComment() {
+		if (commentContent.length() > 0) {
+			String tempContent = commentContent;
+			// 清空输入内容
+			commentEditText.setText("");
+			commentEditText.setHint("来条神评论...");
+			// 隐藏输入键盘
+			setKeyboardStatu(false);
+
+			// 根据评论类型进行评论
+			switch (commentType) {
+			case Input_Type_Comment:
+				CommentModel temMode = new CommentModel();
+				temMode.setCommentContent(tempContent);
+				temMode.setAddDate(TimeHandle.getCurrentDataStr());
+				// 将数据更新至UI
+				commentOperate.addCommentRefresh(temMode, false);
+				// 将数据更新至服务器
+				uploadCommentData(temMode);
+				break;
+
+			case Input_Type_SubComment:
+				SubCommentModel tempMd = new SubCommentModel();
+				tempMd.setCommentContent(tempContent);
+				tempMd.setReplyUid(currentCommentModel.getUserId());
+				tempMd.setReplyName(currentCommentModel.getPublishName());
+				tempMd.setReplyCommentId(currentCommentModel.getCommentID());
+				tempMd.setTopCommentId(currentCommentModel.getCommentID());
+				// 更新UI
+				commentOperate.addSubCommentRefresh(tempMd, false);
+				// 提交至服务器
+				uploadSubCommentData(tempMd);
+				break;
+
+			case Input_Type_SubReply:
+				// 发布子回复
+				SubCommentModel tpMold = new SubCommentModel();
+				tpMold.setCommentContent(tempContent);
+				tpMold.setReplyUid(currentSubCmtModel.getPublishId());
+				tpMold.setReplyName(currentSubCmtModel.getPublishName());
+				tpMold.setReplyCommentId(currentSubCmtModel.getSubID());
+				tpMold.setTopCommentId(currentSubCmtModel.getTopCommentId());
+				// 更新UI
+				commentOperate.addSubCommentRefresh(tpMold, false);
+				// 提交至服务器
+				uploadSubCommentData(tpMold);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	/**
 	 * view点击事件
 	 * */
@@ -990,13 +1089,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			case R.id.txt_news_detail_user_name:
 				TitleItem titleData = (TitleItem) detailAdapter
 						.getItem(postion);
-				if (R.id.img_news_detail_user_head == viewID) {
-					ToastUtil.show(NewsDetailActivity.this, "点击了头像:"
-							+ titleData.getUserName());
-				} else {
-					ToastUtil.show(NewsDetailActivity.this,
-							"" + titleData.getUserName());
-				}
+				JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				break;
 
 			case R.id.iv_news_detail_body_picture:
@@ -1010,19 +1103,41 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				break;
 
 			case R.id.btn_news_detail_like:
-				TitleItem operateData = (TitleItem) detailAdapter
+				final TitleItem operateData = (TitleItem) detailAdapter
 						.getItem(postion);
-				likeOperate.setOperateData(view, postion);
+				final View oprtView = view;
+				likeOperate.setOperateData(likeGVAdapter,
+						currentNews.getNewsID());
+				likeOperate.setLikeListener(new LikeCallBack() {
+
+					@Override
+					public void onOperateStart(boolean isLike) {
+						operateType = OPERATE_UPDATE;
+						if (isLike) {
+							((Button) oprtView).setText("已赞");
+							operateData.setIsLike("1");
+						} else {
+							((Button) oprtView).setText("点赞");
+							operateData.setIsLike("0");
+						}
+					}
+
+					@Override
+					public void onOperateFail(boolean isLike) {
+						if (isLike) {
+							((Button) oprtView).setText("点赞");
+							operateData.setIsLike("0");
+						} else {
+							((Button) oprtView).setText("已赞");
+							operateData.setIsLike("1");
+						}
+					}
+				});
+				
 				if (operateData.getIsLike()) {
 					likeOperate.Cancel();
-					if (likeOperate.lastSeverLikeState) {
-						likeNetOperate(operateData.getNewsID(), "0");
-					}
 				} else {
 					likeOperate.Like();
-					if (!likeOperate.lastSeverLikeState) {
-						likeNetOperate(operateData.getNewsID(), "1");
-					}
 				}
 				break;
 
@@ -1122,11 +1237,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
 					position);
 			// 跳转到用户的主页
-			Intent intentUsrMain = new Intent(NewsDetailActivity.this,
-					OtherPersonalActivity.class);
-			intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY,
-					likeUser.getUserID());
-			startActivityWithRight(intentUsrMain);
+			JumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
 		}
 	}
 
@@ -1145,66 +1256,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					BigImgLookActivity.class);
 			intent.putExtra("filePath", currentImgPath);
 			startActivity(intent);
-		}
-	}
-
-	/***
-	 * 点赞操作网络请求
-	 */
-	private void likeNetOperate(String newsId, String likeOrCancel) {
-		if (!likeOperate.isLikeUpload) {
-			likeOperate.isLikeUpload = true;
-			if (likeOrCancel.equals("1")) {
-				likeOperate.lastSeverLikeState = true;
-			} else {
-				likeOperate.lastSeverLikeState = false;
-			}
-			// 参数设置
-			RequestParams params = new RequestParams();
-			params.addBodyParameter("news_id", newsId);
-			params.addBodyParameter("isLike", likeOrCancel);
-			params.addBodyParameter("user_id",
-					String.valueOf(userModel.getUid()));
-			params.addBodyParameter("is_second", "0");
-
-			HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
-					new JsonRequestCallBack<String>(
-							new LoadDataHandler<String>() {
-
-								@Override
-								public void onSuccess(JSONObject jsonResponse,
-										String flag) {
-									super.onSuccess(jsonResponse, flag);
-									int status = jsonResponse
-											.getInteger(JLXCConst.HTTP_STATUS);
-									if (status == JLXCConst.STATUS_SUCCESS) {
-										likeOperate.isLikeUpload = false;
-									}
-
-									if (status == JLXCConst.STATUS_FAIL) {
-										// 失败则取消操作
-										likeOperate.Revoked();
-										ToastUtil
-												.show(NewsDetailActivity.this,
-														jsonResponse
-																.getString(JLXCConst.HTTP_MESSAGE));
-										likeOperate.lastSeverLikeState = !likeOperate.lastSeverLikeState;
-										likeOperate.isLikeUpload = false;
-									}
-								}
-
-								@Override
-								public void onFailure(HttpException arg0,
-										String arg1, String flag) {
-									super.onFailure(arg0, arg1, flag);
-									// 失败则取消操作
-									likeOperate.Revoked();
-									ToastUtil.show(NewsDetailActivity.this,
-											"卧槽，竟然操作失败，检查下网络");
-									likeOperate.lastSeverLikeState = !likeOperate.lastSeverLikeState;
-									likeOperate.isLikeUpload = false;
-								}
-							}, null));
 		}
 	}
 
@@ -1251,7 +1302,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 			LastOperateType = Add_Comment;
 
-			LogUtils.i("-----------userModel.getName()=" + userModel.getName());
 			// 新建一条评论对象
 			cmtModel.setPublishName(userModel.getName());
 			cmtModel.setHeadSubImage(userModel.getHead_sub_image());
@@ -1361,86 +1411,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
-	 * 点赞或取消
-	 * 
-	 * @author luis
-	 */
-	private class LikeCancelOperate {
-		// 是否正在上传点赞数据
-		public boolean isLikeUpload = false;
-		// 上次点赞的状态
-		public boolean lastSeverLikeState = false;
-		// 点赞的控件
-		private View view;
-		// 点赞的位置
-		private int postion;
-		// 记录上传的操作类型
-		private boolean isLikeOperate = false;
-
-		// 设置操作的数据
-		public void setOperateData(View view, int postion) {
-			this.view = view;
-			this.postion = postion;
-		}
-
-		/**
-		 * 点赞操作函数
-		 * */
-		public void Like() {
-			isLikeOperate = true;
-			TitleItem likeData = (TitleItem) detailAdapter.getItem(postion);
-			((Button) view).setText("已赞");
-			likeData.setIsLike("1");
-
-			LikeModel myModel = new LikeModel();
-			myModel.setUserID(String.valueOf(userModel.getUid()));
-			myModel.setHeadImage(userModel.getHead_image());
-			myModel.setHeadSubImage(userModel.getHead_sub_image());
-			try {
-				likeGVAdapter.addToFirst(myModel);
-			} catch (Exception e) {
-				ToastUtil.show(NewsDetailActivity.this, "发生了点小故障 (・ˍ・*)");
-			}
-		}
-
-		/**
-		 * 取消点赞
-		 * */
-		public void Cancel() {
-			isLikeOperate = false;
-			TitleItem likeData = (TitleItem) detailAdapter.getItem(postion);
-			likeData.setIsLike("0");
-			((Button) view).setText("点赞");
-			// 移除头像
-			try {
-				for (int index = 0; index < likeGVAdapter.getCount(); ++index) {
-					if (likeGVAdapter.getItem(index).getUserID()
-							.equals(String.valueOf(userModel.getUid()))) {
-						likeGVAdapter.remove(index);
-						break;
-					} else {
-						LogUtils.e("点赞数据发生了错误.");
-					}
-				}
-			} catch (Exception e) {
-				ToastUtil.show(NewsDetailActivity.this, "发生了点小故障 (・ˍ・*)");
-			}
-
-		}
-
-		/**
-		 * 撤销上次操作
-		 * */
-		public void Revoked() {
-			if (isLikeOperate) {
-				this.Cancel();
-			} else {
-				this.Like();
-			}
-		}
-	}
-
-	/**
 	 * listview点击事件接口,用于区分不同view的点击事件
 	 * 
 	 * @author Alan
@@ -1483,50 +1453,66 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		}
 	}
 
-	// 保存数据
+	/**
+	 * 跳转至用户的主页
+	 */
+	private void JumpToHomepage(int userID) {
+		Intent intentUsrMain = new Intent(NewsDetailActivity.this,
+				OtherPersonalActivity.class);
+		intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, userID);
+		startActivityWithRight(intentUsrMain);
+	}
+
+	/**
+	 * 返回时保存修改的数据
+	 * */
 	@Override
 	public void onPause() {
-		String isLike = "0";
-		int likeCount = 0;
-		int cmtCount = 0;
-		// 更新数据
-		List<LikeModel> newlkList = new ArrayList<LikeModel>();
-		for (int index = 0; index < likeGVAdapter.getCount(); index++) {
-			newlkList.add(likeGVAdapter.getItem(index));
-			if (likeGVAdapter.getItem(index).getUserID()
-					.equals(String.valueOf(userModel.getUid()))) {
-				isLike = "1";
+		if (OPERATE_UPDATE == operateType) {
+			setResult(OPERATE_UPDATE, intent);
+			String isLike = "0";
+			int likeCount = 0;
+			int cmtCount = 0;
+			// 更新数据
+			List<LikeModel> newlkList = new ArrayList<LikeModel>();
+			for (int index = 0; index < likeGVAdapter.getCount(); index++) {
+				newlkList.add(likeGVAdapter.getItem(index));
+				if (likeGVAdapter.getItem(index).getUserID()
+						.equals(String.valueOf(userModel.getUid()))) {
+					isLike = "1";
+				}
+				likeCount++;
 			}
-			likeCount++;
-		}
 
-		List<CommentModel> newCmtList = new ArrayList<CommentModel>();
-		for (int index = 0; index < detailAdapter.getCount(); index++) {
-			if (ItemModel.NEWS_DETAIL_COMMENT == detailAdapter.getItem(index)
-					.getItemType()) {
-				newCmtList.add(((CommentItem) detailAdapter.getItem(index))
-						.getCommentModel());
+			List<CommentModel> newCmtList = new ArrayList<CommentModel>();
+			for (int index = 0; index < detailAdapter.getCount(); index++) {
+				if (ItemModel.NEWS_DETAIL_COMMENT == detailAdapter.getItem(
+						index).getItemType()) {
+					newCmtList.add(((CommentItem) detailAdapter.getItem(index))
+							.getCommentModel());
+				}
+			}
+			cmtCount = detailAdapter.getCount() - 3;
+			if (intent.getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
+					.equals("News_List_Fragment")) {
+				NewsListFragment.currentNews.setIsLike(isLike);
+				NewsListFragment.currentNews.setLikeQuantity(String
+						.valueOf(likeCount));
+				NewsListFragment.currentNews.setCommentQuantity(String
+						.valueOf(cmtCount));
+				NewsListFragment.currentNews.setLikeHeadListimage(newlkList);
+				NewsListFragment.currentNews.setCommentList(newCmtList);
+			} else if (intent.getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
+					.equals("Campus_Fragment")) {
+				CampusFragment.currentNews.setIsLike(isLike);
+				CampusFragment.currentNews.setLikeQuantity(String
+						.valueOf(likeCount));
+				CampusFragment.currentNews.setCommentQuantity(String
+						.valueOf(cmtCount));
+				CampusFragment.currentNews.setLikeHeadListimage(newlkList);
+				CampusFragment.currentNews.setCommentList(newCmtList);
 			}
 		}
-		cmtCount = detailAdapter.getCount() - 3;
-		if (this.getIntent().getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
-				.equals("News_List_Fragment")) {
-			NewsListFragment.currentNews.setIsLike(isLike);
-			NewsListFragment.currentNews.setLikeQuantity(String.valueOf(likeCount));
-			NewsListFragment.currentNews.setCommentQuantity(String
-					.valueOf(cmtCount));
-			NewsListFragment.currentNews.setLikeHeadListimage(newlkList);
-			NewsListFragment.currentNews.setCommentList(newCmtList);
-		} else if (this.getIntent().getExtras()
-				.getString(INTENT_KEY_LAST_ACTIVITY).equals("Campus_Fragment")) {
-			CampusFragment.currentNews.setIsLike(isLike);
-			CampusFragment.currentNews.setLikeQuantity(String.valueOf(likeCount));
-			CampusFragment.currentNews.setCommentQuantity(String
-					.valueOf(cmtCount));
-			CampusFragment.currentNews.setLikeHeadListimage(newlkList);
-			CampusFragment.currentNews.setCommentList(newCmtList);
-		}
-		
 		super.onPause();
 	}
 }

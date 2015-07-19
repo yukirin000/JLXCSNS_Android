@@ -25,8 +25,8 @@ import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.DataToItem;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CommentModel;
@@ -40,6 +40,7 @@ import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.ItemModel.OperateItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
@@ -61,6 +62,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -74,10 +76,6 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 public class NewsListFragment extends BaseFragment {
-
-	// 回传数据键值
-	public final static String INTENT_KEY_LIKE_LIST = "like_list";
-	public final static String INTENT_KEY_COMMENT_LIST = "comment_list";
 
 	// 动态显示的评论数量
 	private int NEWS_COMMENT_NUM = 3;
@@ -816,12 +814,7 @@ public class NewsListFragment extends BaseFragment {
 							titleData.getNewsID());
 
 				} else {
-					// 跳转到用户的主页
-					Intent intentUsrMain = new Intent(mContext,
-							OtherPersonalActivity.class);
-					intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY,
-							titleData.getUserID());
-					startActivityWithRight(intentUsrMain);
+					JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				}
 				break;
 
@@ -855,6 +848,8 @@ public class NewsListFragment extends BaseFragment {
 			case R.id.btn_mian_reply:
 			case R.id.btn_mian_like:
 			case R.id.layout_news_detail_rootview:
+			
+				
 				OperateItem operateData = (OperateItem) newsAdapter
 						.getItem(postion);
 				if (R.id.layout_news_detail_rootview == viewID) {
@@ -904,14 +899,8 @@ public class NewsListFragment extends BaseFragment {
 						.getItem(postion);
 				for (int iCount = 0; iCount < NEWS_COMMENT_NUM; ++iCount) {
 					if (viewID == commentViewList.get(iCount).get("NAME")) {
-						// 跳转到用户的主页
-						Intent intentUsrMain = new Intent(mContext,
-								OtherPersonalActivity.class);
-						intentUsrMain.putExtra(
-								OtherPersonalActivity.INTENT_KEY, commentData
-										.getCommentList().get(iCount)
-										.getUserId());
-						startActivityWithRight(intentUsrMain);
+						JumpToHomepage(JLXCUtils.stringToInt(commentData
+								.getCommentList().get(iCount).getUserId()));
 					} else if (viewID == commentViewList.get(iCount).get(
 							"CONTENT")) {
 						if (!commentData.getCommentList().get(iCount)
@@ -1070,12 +1059,7 @@ public class NewsListFragment extends BaseFragment {
 				long id) {
 			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
 					position);
-			// 跳转到用户的主页
-			Intent intentUsrMain = new Intent(mContext,
-					OtherPersonalActivity.class);
-			intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY,
-					likeUser.getUserID());
-			startActivityWithRight(intentUsrMain);
+			JumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
 		}
 	}
 
@@ -1113,6 +1097,15 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
+	 * 跳转至用户的主页
+	 */
+	private void JumpToHomepage(int userID) {
+		Intent intentUsrMain = new Intent(mContext, OtherPersonalActivity.class);
+		intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, userID);
+		startActivityWithRight(intentUsrMain);
+	}
+
+	/**
 	 * 带返回结果的 右侧进入
 	 * 
 	 * @param intent
@@ -1135,9 +1128,18 @@ public class NewsListFragment extends BaseFragment {
 	 * */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		//
-		newsList.set(indexAtNewsList, currentNews);
-		newsAdapter.replaceAll(DataToItem.newsDataToItems(newsList));
+		switch (resultCode) {
+		case NewsDetailActivity.OPERATE_UPDATE:
+			newsList.set(indexAtNewsList, currentNews);
+			newsAdapter.replaceAll(DataToItem.newsDataToItems(newsList));
+			break;
+		case NewsDetailActivity.OPERATE_DELETET:
+			newsList.remove(indexAtNewsList);
+			newsAdapter.replaceAll(DataToItem.newsDataToItems(newsList));
+			break;
+		default:
+			break;
+		}
 		super.onActivityResult(requestCode, resultCode, intent);
 	}
 }
