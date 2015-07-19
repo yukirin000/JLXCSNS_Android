@@ -218,6 +218,16 @@
 		        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
 		    </intent-filter>
 		</receiver>
+		
+		<receiver android:name="com.jlxc.app.base.receiver.PushReceiver">
+              <intent-filter>
+                <action android:name="io.yunba.android.MESSAGE_RECEIVED_ACTION" />
+                <action android:name="io.yunba.android.PRESENCE_RECEIVED_ACTION" />
+                <action android:name="io.yunba.android.MESSAGE_CONNECTED_ACTION" />
+                <action android:name="io.yunba.android.MESSAGE_DISCONNECTED_ACTION" />
+                <category android:name="com.jlxc.app" />
+            </intent-filter>
+         </receiver>
         
     </application>
 
