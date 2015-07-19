@@ -1,12 +1,12 @@
 package com.jlxc.app.base.app;
 
 import io.rong.imkit.RongIM;
+import io.yunba.android.manager.YunBaManager;
 
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.DBManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.utils.FileUtil;
-import com.jlxc.app.base.utils.LogUtils;
 
 import android.app.Application;
 
@@ -35,6 +35,8 @@ public class JLXCApplication extends Application {
 		FileUtil.makeDirs(); 
 		//融云初始化
 		RongIM.init(this);
+		//云巴初始化
+		YunBaManager.start(getApplicationContext());
 		// 融云SDK事件监听处理
         RongCloudEvent.init(this);
         //初始化用户模型

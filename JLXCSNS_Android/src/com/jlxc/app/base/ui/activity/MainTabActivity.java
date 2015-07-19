@@ -1,8 +1,12 @@
 package com.jlxc.app.base.ui.activity;
 
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient.ConnectCallback;
 import io.rong.imlib.RongIMClient.ErrorCode;
+import io.yunba.android.manager.YunBaManager;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.RongCloudEvent;
@@ -10,7 +14,9 @@ import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
+import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.ui.fragment.CampusFragment;
@@ -22,12 +28,16 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Process;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,7 +106,80 @@ public class MainTabActivity extends BaseActivity {
 
 		});
 	}
-
+	//初始化云巴
+	private void initYunBa(){
+//		registerMessageRecevier();
+		final UserModel userModel = UserManager.getInstance().getUser();
+		if (userModel.getUid() != 0) {
+			YunBaManager.subscribe(this, new String[]{JLXCConst.JLXC+userModel.getUid()}, new IMqttActionListener() {
+				@Override
+				public void onSuccess(IMqttToken arg0) {
+					LogUtils.i("yunba success"+JLXCConst.JLXC+userModel.getUid(), 1);
+					Looper.prepare();
+					Toast.makeText(MainTabActivity.this, "yunba success", Toast.LENGTH_SHORT).show();
+					Looper.loop();
+				}
+				@Override
+				public void onFailure(IMqttToken arg0, Throwable arg1) {
+					Looper.prepare();
+					Toast.makeText(MainTabActivity.this, "yunba failr", Toast.LENGTH_SHORT).show();
+					Looper.loop();
+				}
+			});
+		}
+		
+	}
+	
+//	private MessageReceiver mMessageReceiver;
+//	//注册通知
+//	private void registerMessageRecevier() {
+//		mMessageReceiver = new MessageReceiver();
+//		IntentFilter filter = new IntentFilter();
+//		filter.addAction(YunBaManager.MESSAGE_RECEIVED_ACTION);
+//		filter.addCategory(getPackageName());
+//		registerReceiver(mMessageReceiver, filter);
+//		
+//		IntentFilter filterCon = new IntentFilter();
+//		filterCon.addAction(YunBaManager.MESSAGE_CONNECTED_ACTION);
+//		filterCon.addCategory(getPackageName());
+//		registerReceiver(mMessageReceiver, filterCon);
+//		
+//		IntentFilter filterDis = new IntentFilter();
+//		filterDis.addAction(YunBaManager.MESSAGE_DISCONNECTED_ACTION);
+//		filterDis.addCategory(getPackageName());
+//		registerReceiver(mMessageReceiver, filterDis);
+//		
+//		IntentFilter pres = new IntentFilter();
+//		pres.addAction(YunBaManager.PRESENCE_RECEIVED_ACTION);
+//		pres.addCategory(getPackageName());
+//		registerReceiver(mMessageReceiver, pres);
+//	}
+//	
+//	public class MessageReceiver extends BroadcastReceiver {
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			LogUtils.i(intent.getAction(), 1);
+//			
+//			if (YunBaManager.MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+//				String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
+//				String msg = intent.getStringExtra(YunBaManager.MQTT_MSG);
+//				StringBuilder showMsg = new StringBuilder();
+//				showMsg.append("[Message] ").append(YunBaManager.MQTT_TOPIC)
+//						.append(" = ").append(topic).append(" ,")
+//						.append(YunBaManager.MQTT_MSG).append(" = ").append(msg);	
+//				LogUtils.i(showMsg.toString(), 1);
+//				
+//			} else if(YunBaManager.MESSAGE_CONNECTED_ACTION.equals(intent.getAction())) {
+//				
+//			} else if(YunBaManager.MESSAGE_DISCONNECTED_ACTION.equals(intent.getAction())) {
+//				
+//			} else if (YunBaManager.PRESENCE_RECEIVED_ACTION.equals(intent.getAction())) {
+//				
+//			}
+//		}
+//	}
+	
 	/**
 	 */
 	@SuppressLint("InflateParams")
@@ -123,8 +206,12 @@ public class MainTabActivity extends BaseActivity {
 
 	@Override
 	protected void setUpView() {
+		//初始化tab
 		initTab();
+		//初始化融云
 		initRong();
+		//初始化云巴
+		initYunBa();
 	}
 	
 	@Override

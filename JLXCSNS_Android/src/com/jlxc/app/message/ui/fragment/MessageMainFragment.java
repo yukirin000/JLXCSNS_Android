@@ -14,10 +14,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
@@ -29,22 +33,29 @@ public class MessageMainFragment extends BaseFragment {
 
 	@ViewInject(R.id.vPager)
 	private ViewPager mPager;//页卡内容
-	@ViewInject(R.id.text1)
-	private TextView t1;
-	@ViewInject(R.id.text2)
-    private TextView t2;
-//    private ImageView cursor;// 动画图片
+	//会话tab
+	@ViewInject(R.id.conversation_text_view)
+	private TextView conversationTextView;
+	//通知tab
+	@ViewInject(R.id.notify_text_view)
+    private TextView notifyTextView;
+	@ViewInject(R.id.img_cursor)
+    private ImageView cursor;// 动画图片
     private int offset = 0;// 动画图片偏移量
-//    private int currIndex = 0;// 当前页卡编号
+    private int currIndex = 0;// 当前页卡编号
     private int bmpW;// 动画图片宽度
+	// 横线图片宽度
+	private int cursorWidth;
+	// 屏幕的尺寸
+	private int screenWidth = 0, screenHeight = 0;
 	
-	@OnClick({R.id.text1,R.id.text2})
+	@OnClick({R.id.conversation_text_view,R.id.notify_text_view})
     private void clickEvent(View view) {
 		switch (view.getId()) {
-		case R.id.text1:
+		case R.id.conversation_text_view:
 			mPager.setCurrentItem(0);
 			break;
-		case R.id.text2:
+		case R.id.notify_text_view:
 			mPager.setCurrentItem(1);				
 			break;
 		default:
@@ -68,20 +79,41 @@ public class MessageMainFragment extends BaseFragment {
 	@Override
 	public void setUpViews(View rootView) {
 		// TODO Auto-generated method stub
-
-		InitViewPager();
+		initImage();
+		initViewPager();
 	}
 	
+	/*
+	 * 初始化图片的位移像素
+	 */
+	public void initImage() {
+		
+		// 获取屏幕尺寸
+		DisplayMetrics displayMet = getResources().getDisplayMetrics();
+		screenWidth = displayMet.widthPixels;
+		screenHeight = displayMet.heightPixels;
+		
+		cursorWidth = 60;
+		int cursorheight = 10;
 
+		offset = (screenWidth / 2 - cursorWidth) / 2;
+		// 设置游标的尺寸与位置
+		LayoutParams cursorParams = (LayoutParams) cursor
+				.getLayoutParams();
+		cursorParams.width = cursorWidth;
+		cursorParams.height = cursorheight;
+		cursorParams.leftMargin = offset;
+		cursor.setLayoutParams(cursorParams);
+		cursor.setScaleType(ImageView.ScaleType.FIT_XY);
+	}
+	
 	/**
      * 初始化ViewPager
      */
     @SuppressLint("InflateParams") 
-    private void InitViewPager() {
-        LayoutInflater mInflater = getActivity().getLayoutInflater();
-        
+    private void initViewPager() {
+    	
         mPager.setAdapter(new MessageFragmentPagerAdapter(getChildFragmentManager()));;
-//        mPager.setAdapter(new MyPagerAdapter(listViews));
         mPager.setCurrentItem(0);
         mPager.setOnPageChangeListener(new MyOnPageChangeListener());
     }
@@ -161,7 +193,7 @@ public class MessageMainFragment extends BaseFragment {
                         fragment = listFragment;
                     break;
                 case 1:
-                	fragment = new FragmentPage1();
+                	fragment = new NotifyNewsFragment();
                     break;
 
             }
@@ -180,48 +212,32 @@ public class MessageMainFragment extends BaseFragment {
 */
     public class MyOnPageChangeListener implements OnPageChangeListener {
 
-        int one = offset * 2 + bmpW;// 页卡1 -> 页卡2 偏移量
-        int two = one * 2;// 页卡1 -> 页卡3 偏移量
+    	int one = offset * 2 + cursorWidth;// 页卡1 -> 页卡2 偏移量
+		float lastpostion = 0;
 
-        @Override
-        public void onPageSelected(int arg0) {
-//        	Animation animation = null;
-//            switch (arg0) {
-//            case 0:
-//                if (currIndex == 1) {
-//                    animation = new TranslateAnimation(one, 0, 0, 0);
-//                } else if (currIndex == 2) {
-//                    animation = new TranslateAnimation(two, 0, 0, 0);
-//                }
-//                break;
-//            case 1:
-//                if (currIndex == 0) {
-//                    animation = new TranslateAnimation(offset, one, 0, 0);
-//                } else if (currIndex == 2) {
-//                    animation = new TranslateAnimation(two, one, 0, 0);
-//                }
-//                break;
-//            case 2:
-//                if (currIndex == 0) {
-//                    animation = new TranslateAnimation(offset, two, 0, 0);
-//                } else if (currIndex == 1) {
-//                    animation = new TranslateAnimation(one, two, 0, 0);
-//                }
-//                break;
-//            }
-//            currIndex = arg0;
-//            animation.setFillAfter(true);// True:图片停在动画结束位置
-//            animation.setDuration(300);
-//            cursor.startAnimation(animation);
-        }
+		public void onPageScrollStateChanged(int index) {
+			currIndex = index;
+		}
 
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
+		// CurrentTab:当前页面序号
+		// OffsetPercent:当前页面偏移的百分比
+		// offsetPixel:当前页面偏移的像素位置
+		public void onPageScrolled(int CurrentTab, float OffsetPercent,
+				int offsetPixel) {
+			// 下标的移动动画
+			Animation animation = new TranslateAnimation(one * lastpostion, one
+					* (CurrentTab + OffsetPercent), 0, 0);
 
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-        }
+			lastpostion = OffsetPercent + CurrentTab;
+			// True:图片停在动画结束位置
+			animation.setFillAfter(true);
+			animation.setDuration(300);
+			cursor.startAnimation(animation);
+		}
+
+		public void onPageSelected(int arg0) {
+
+		}
     }
 
 }
