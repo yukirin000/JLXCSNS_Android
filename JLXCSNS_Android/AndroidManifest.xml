@@ -3,19 +3,18 @@
     package="com.jlxc.app"
     android:versionCode="1"
     android:versionName="1.0" >
-    
+
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    
-	<uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-	<uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-	
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+
     <!-- 获取机型信息权限 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -34,7 +33,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-	<uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -48,9 +47,10 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="ab92e548a0429b832749d8067cb47998"/>
-        
-        <!-- <activity
+            android:value="ab92e548a0429b832749d8067cb47998" />
+
+        <!--
+        <activity
             android:name="com.jlxc.app.demo.ui.activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
@@ -58,39 +58,58 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> -->
-        <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity"></activity>
-        <activity android:name="com.jlxc.app.login.ui.activity.LoginActivity" 
-                  android:launchMode="singleTask">
+        </activity>
+        -->
+        <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity" >
+        </activity>
+        <activity
+            android:name="com.jlxc.app.login.ui.activity.LoginActivity"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.jlxc.app.base.ui.activity.MainTabActivity"  ></activity>
-        
-        <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity"></activity>
-        <activity android:name="com.jlxc.app.login.ui.activity.RegisterActivity" ></activity>
-        <activity android:name="com.jlxc.app.login.ui.activity.RegisterInformationActivity"/>
-        <activity android:name="com.jlxc.app.base.ui.activity.BigImgLookActivity"/>
-        <activity android:name="com.jlxc.app.news.ui.activity.ChoiceLocationActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.PersonalSignActivity"></activity>
-        <activity android:name="com.jlxc.app.login.ui.activity.SelectSchoolActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.VisitListActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.CommonFriendsActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.OtherPersonalActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.OtherPeopleFriendsActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.FriendListActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.FriendSettingActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.PersonalSettingActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.AccountSettingActivity"></activity>
-        <activity android:name="com.jlxc.app.personal.ui.activity.MyCardActivity"></activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.CampusAllPerson" ></activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.NewsDetailActivity" ></activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.PublishNewsActivity" ></activity>
-        
-        
+        <activity android:name="com.jlxc.app.base.ui.activity.MainTabActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.RegisterActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.RegisterInformationActivity" />
+        <activity android:name="com.jlxc.app.base.ui.activity.BigImgLookActivity" />
+        <activity android:name="com.jlxc.app.news.ui.activity.ChoiceLocationActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.PersonalSignActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.SelectSchoolActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.VisitListActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.CommonFriendsActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.OtherPersonalActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.OtherPeopleFriendsActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.FriendListActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.FriendSettingActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.PersonalSettingActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.AccountSettingActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.MyCardActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.CampusAllPersonActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.NewsDetailActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.PublishNewsActivity" >
+        </activity>
+
         <!-- 会话 Activity -->
         <activity
             android:name="com.jlxc.app.message.ui.activity.ConversationActivity"
@@ -106,10 +125,11 @@
                     android:scheme="rong" />
             </intent-filter>
         </activity>
-        
+
         <!-- <activity android:name="com.jlxc.app.login.ui.activity.RegisterInformationActivity" > -->
         <!-- </activity> -->
-        
+
+
         <!-- begin imlib request -->
 
         <activity
@@ -208,7 +228,8 @@
             android:name="RONG_CLOUD_APP_KEY"
             android:value="lmxuhwagx83id" />
         <!-- end -->
-        
+
+
         <!-- 云巴部分 -->
 		<meta-data android:name="YUNBA_APPKEY" android:value="55ab4554c75ecd535d69b955" />
 		<service android:name="io.yunba.android.core.YunBaService"> </service>
@@ -231,5 +252,5 @@
         
     </application>
 
-</manifest>
 
+</manifest>

@@ -2,7 +2,7 @@ package com.jlxc.app.news.ui.activity;
 
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 
-public class AllLikePerson extends BaseActivityWithTopBar{
+public class AllLikePersonActivity extends BaseActivityWithTopBar{
 
 	@Override
 	public int setLayoutId() {

@@ -44,7 +44,7 @@ import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
-public class CampusAllPerson extends BaseActivityWithTopBar {
+public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 
 	// 学校的人gridview
 	@ViewInject(R.id.gv_school_all_person)
@@ -82,7 +82,7 @@ public class CampusAllPerson extends BaseActivityWithTopBar {
 	private void setRightBtn() {
 		CharSequence[] items = { "只看帅哥", "只看美女", "全部都看" };
 		final Builder filterDialog = new AlertDialog.Builder(
-				CampusAllPerson.this).setItems(items,
+				CampusAllPersonActivity.this).setItems(items,
 				new DialogInterface.OnClickListener() {
 
 					@Override
@@ -150,7 +150,7 @@ public class CampusAllPerson extends BaseActivityWithTopBar {
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(CampusAllPerson.this);
+		bitmapUtils = new BitmapUtils(CampusAllPersonActivity.this);
 		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
@@ -162,7 +162,7 @@ public class CampusAllPerson extends BaseActivityWithTopBar {
 	 */
 	private void GridViewSetup() {
 		personAdapter = new HelloHaAdapter<CampusPersonModel>(
-				CampusAllPerson.this,
+				CampusAllPersonActivity.this,
 				R.layout.campus_person_gridview_item_layout, personList) {
 
 			@Override
@@ -238,7 +238,7 @@ public class CampusAllPerson extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(CampusAllPerson.this, jsonResponse
+							ToastUtil.show(CampusAllPersonActivity.this, jsonResponse
 									.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
@@ -247,7 +247,7 @@ public class CampusAllPerson extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(CampusAllPerson.this, "网络有毒=_=");
+						ToastUtil.show(CampusAllPersonActivity.this, "网络有毒=_=");
 					}
 
 				}, null));
@@ -264,7 +264,7 @@ public class CampusAllPerson extends BaseActivityWithTopBar {
 			CampusPersonModel personModel = (CampusPersonModel) parent
 					.getAdapter().getItem(position);
 
-			ToastUtil.show(CampusAllPerson.this,
+			ToastUtil.show(CampusAllPersonActivity.this,
 					"UserID:" + personModel.getUserId());
 		}
 	}

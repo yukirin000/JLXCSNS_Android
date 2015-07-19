@@ -59,6 +59,7 @@ import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.SubCommentModel;
+import com.jlxc.app.news.ui.fragment.CampusFragment;
 import com.jlxc.app.news.ui.fragment.NewsListFragment;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
@@ -73,6 +74,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
 	public final static String INTENT_KEY_CMT_STATE = "comment_state";
+	public final static String INTENT_KEY_LAST_ACTIVITY = "last_activity";
 	public final static String INTENT_KEY_CMT_ID = "comment_id";
 	// 评论的类型
 	private final static int Input_Type_Comment = 0;
@@ -236,7 +238,14 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					}
 				});
 
-		currentNews = NewsListFragment.currentNews;
+		// 获取上一个activity的值
+		if (this.getIntent().getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
+				.equals("News_List_Fragment")) {
+			currentNews = NewsListFragment.currentNews;
+		} else if (this.getIntent().getExtras()
+				.getString(INTENT_KEY_LAST_ACTIVITY).equals("Campus_Fragment")) {
+			currentNews = CampusFragment.currentNews;
+		}
 		// 获取上传的数据
 		detailAdapter.replaceAll(DataToItem.newsDetailToItems(currentNews));
 		// 更新数据
@@ -276,7 +285,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			commentEditText.requestFocus();
 			commentType = Input_Type_Comment;
 			setKeyboardStatu(true);
-		} else if (bundle.getString(INTENT_KEY_CMT_STATE).equals("publish_Reply")) {
+		} else if (bundle.getString(INTENT_KEY_CMT_STATE).equals(
+				"publish_Reply")) {
 			// 直接回复评论
 			String cmtId = bundle.getString(INTENT_KEY_CMT_ID);
 
@@ -1241,8 +1251,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 			LastOperateType = Add_Comment;
 
-			LogUtils.i("-----------userModel.getName()="
-					+ userModel.getName());
+			LogUtils.i("-----------userModel.getName()=" + userModel.getName());
 			// 新建一条评论对象
 			cmtModel.setPublishName(userModel.getName());
 			cmtModel.setHeadSubImage(userModel.getHead_sub_image());
@@ -1474,6 +1483,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		}
 	}
 
+	// 保存数据
 	@Override
 	public void onPause() {
 		String isLike = "0";
@@ -1499,12 +1509,24 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 		}
 		cmtCount = detailAdapter.getCount() - 3;
-		NewsListFragment.currentNews.setIsLike(isLike);
-		NewsListFragment.currentNews.setLikeQuantity(String.valueOf(likeCount));
-		NewsListFragment.currentNews.setCommentQuantity(String
-				.valueOf(cmtCount));
-		NewsListFragment.currentNews.setLikeHeadListimage(newlkList);
-		NewsListFragment.currentNews.setCommentList(newCmtList);
+		if (this.getIntent().getExtras().getString(INTENT_KEY_LAST_ACTIVITY)
+				.equals("News_List_Fragment")) {
+			NewsListFragment.currentNews.setIsLike(isLike);
+			NewsListFragment.currentNews.setLikeQuantity(String.valueOf(likeCount));
+			NewsListFragment.currentNews.setCommentQuantity(String
+					.valueOf(cmtCount));
+			NewsListFragment.currentNews.setLikeHeadListimage(newlkList);
+			NewsListFragment.currentNews.setCommentList(newCmtList);
+		} else if (this.getIntent().getExtras()
+				.getString(INTENT_KEY_LAST_ACTIVITY).equals("Campus_Fragment")) {
+			CampusFragment.currentNews.setIsLike(isLike);
+			CampusFragment.currentNews.setLikeQuantity(String.valueOf(likeCount));
+			CampusFragment.currentNews.setCommentQuantity(String
+					.valueOf(cmtCount));
+			CampusFragment.currentNews.setLikeHeadListimage(newlkList);
+			CampusFragment.currentNews.setCommentList(newCmtList);
+		}
+		
 		super.onPause();
 	}
 }
