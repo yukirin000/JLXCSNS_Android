@@ -82,7 +82,7 @@
         <activity android:name="com.jlxc.app.personal.ui.activity.PersonalSettingActivity"></activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.AccountSettingActivity"></activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.MyCardActivity"></activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.CampusAllPerson" >
+        <activity android:name="com.jlxc.app.news.ui.activity.CampusAllPersonActivity" >
         </activity>
         <activity android:name="com.jlxc.app.news.ui.activity.NewsDetailActivity" >
         </activity>
