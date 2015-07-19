@@ -4,6 +4,10 @@
     android:versionCode="1"
     android:versionName="1.0" >
     
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -82,10 +86,9 @@
         <activity android:name="com.jlxc.app.personal.ui.activity.PersonalSettingActivity"></activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.AccountSettingActivity"></activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.MyCardActivity"></activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.CampusAllPerson" >
-        </activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.NewsDetailActivity" >
-        </activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.CampusAllPerson" ></activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.NewsDetailActivity" ></activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.PublishNewsActivity" ></activity>
         
         
         <!-- 会话 Activity -->
@@ -205,7 +208,16 @@
             android:name="RONG_CLOUD_APP_KEY"
             android:value="lmxuhwagx83id" />
         <!-- end -->
-
+        
+        <!-- 云巴部分 -->
+		<meta-data android:name="YUNBA_APPKEY" android:value="55ab4554c75ecd535d69b955" />
+		<service android:name="io.yunba.android.core.YunBaService"> </service>
+		<receiver android:name="io.yunba.android.core.YunBaReceiver">
+		    <intent-filter>
+		        <action android:name="android.intent.action.USER_PRESENT" />
+		        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+		    </intent-filter>
+		</receiver>
         
     </application>
 
