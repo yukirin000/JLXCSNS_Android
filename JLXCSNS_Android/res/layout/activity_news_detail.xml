@@ -31,6 +31,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="0dp"
         android:background="#C0C0C0"
+        android:focusable="true"
         android:padding="5dp" >
 
         <EditText
@@ -39,8 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="8"
             android:hint="来条神评论..." >
-
-            <requestFocus />
         </EditText>
 
         <Button

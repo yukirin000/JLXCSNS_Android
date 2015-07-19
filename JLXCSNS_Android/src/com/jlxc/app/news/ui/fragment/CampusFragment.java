@@ -74,7 +74,7 @@ public class CampusFragment extends BaseFragment {
 	// 动态的图片适配器
 	private HelloHaAdapter<ImageModel> newsGVAdapter;
 	// 使支持多种item
-	private MultiItemTypeSupport<ItemModel> multiItemTypeSupport = null;
+	private MultiItemTypeSupport<ItemModel> multiItemTypeCampus = null;
 	// 上下文信息
 	private Context mContext;
 	// bitmap的处理
@@ -124,7 +124,7 @@ public class CampusFragment extends BaseFragment {
 	 * listView 支持多种item的设置
 	 * */
 	private void multiItemTypeSet() {
-		multiItemTypeSupport = new MultiItemTypeSupport<ItemModel>() {
+		multiItemTypeCampus = new MultiItemTypeSupport<ItemModel>() {
 
 			@Override
 			public int getLayoutId(int position, ItemModel itemData) {
@@ -153,7 +153,7 @@ public class CampusFragment extends BaseFragment {
 
 			@Override
 			public int getViewTypeCount() {
-				return ItemModel.NEWS_ITEM_TYPE_COUNT;
+				return ItemModel.CAMPUS_ITEM_TYPE_COUNT;
 			}
 
 			@Override
@@ -228,7 +228,7 @@ public class CampusFragment extends BaseFragment {
 		 * adapter的设置
 		 * */
 		newsAdapter = new HelloHaAdapter<ItemModel>(mContext, itemDataList,
-				multiItemTypeSupport) {
+				multiItemTypeCampus) {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
@@ -553,7 +553,7 @@ public class CampusFragment extends BaseFragment {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
-					CampusPersonModel item) { 
+					CampusPersonModel item) {
 				ImageView imgView = helper
 						.getView(R.id.iv_campus_person_gridview_item);
 				LayoutParams laParams = (LayoutParams) imgView
@@ -601,7 +601,6 @@ public class CampusFragment extends BaseFragment {
 					+ userID + "&page=" + desPage + "&school_code="
 					+ schoolCode + "&frist_time=" + lastTime;
 
-			LogUtils.i("path=" + path);
 			HttpManager.get(path, new JsonRequestCallBack<String>(
 					new LoadDataHandler<String>() {
 

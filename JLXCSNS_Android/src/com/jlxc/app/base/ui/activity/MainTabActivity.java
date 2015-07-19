@@ -14,6 +14,7 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.ui.fragment.CampusFragment;
+import com.jlxc.app.news.ui.fragment.MainPageFragment;
 import com.jlxc.app.news.ui.fragment.NewsListFragment;
 import com.jlxc.app.personal.ui.activity.AccountSettingActivity;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
@@ -43,7 +44,7 @@ public class MainTabActivity extends BaseActivity {
 
 	private LayoutInflater layoutInflater;
 
-	private Class<?> fragmentArray[] = { NewsListFragment.class,MessageMainFragment.class,
+	private Class<?> fragmentArray[] = { MainPageFragment.class,
 			PersonalFragment.class };
 
 	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_home_btn,
