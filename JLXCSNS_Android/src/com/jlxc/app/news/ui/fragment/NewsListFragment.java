@@ -402,17 +402,17 @@ public class NewsListFragment extends BaseFragment {
 		List<CommentModel> cmtList = new ArrayList<CommentModel>();
 		CommentModel tempCmt = new CommentModel();
 		tempCmt.setCommentContent("哈哈哈哈哈0");
-		tempCmt.setSubmitterName("朱旺:");
+		tempCmt.setPublishName("朱旺:");
 		cmtList.add(tempCmt);
 		//
 		tempCmt = new CommentModel();
 		tempCmt.setCommentContent("哈哈哈哈哈1");
-		tempCmt.setSubmitterName("朱旺:");
+		tempCmt.setPublishName("朱旺:");
 		cmtList.add(tempCmt);
 		//
 		tempCmt = new CommentModel();
 		tempCmt.setCommentContent("哈哈哈哈哈2");
-		tempCmt.setSubmitterName("朱旺:");
+		tempCmt.setPublishName("朱旺:");
 		cmtList.add(tempCmt);
 		newsData.setCommentList(cmtList);
 
@@ -672,7 +672,7 @@ public class NewsListFragment extends BaseFragment {
 						.intValue(), true);
 				// 绑定数据
 				helper.setText(commentViewList.get(iCount).get("NAME")
-						.intValue(), commentList.get(iCount).getSubmitterName()
+						.intValue(), commentList.get(iCount).getPublishName()
 						+ ":");
 				helper.setText(commentViewList.get(iCount).get("CONTENT")
 						.intValue(), commentList.get(iCount)
@@ -852,7 +852,7 @@ public class NewsListFragment extends BaseFragment {
 					Intent intentToNewsDetail = new Intent(mContext,
 							NewsDetailActivity.class);
 					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_COMMENT,
+							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"CLOSE_KEY_BOARD");
 					startActivityWithRightForResult(intentToNewsDetail,
 							titleData.getNewsID());
@@ -884,7 +884,7 @@ public class NewsListFragment extends BaseFragment {
 					Intent intentToNewsDetail = new Intent(mContext,
 							NewsDetailActivity.class);
 					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_COMMENT,
+							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"CLOSE_KEY_BOARD");
 					startActivityWithRightForResult(intentToNewsDetail,
 							bodyData.getNewsID());
@@ -901,7 +901,7 @@ public class NewsListFragment extends BaseFragment {
 					Intent intentToNewsDetail = new Intent(mContext,
 							NewsDetailActivity.class);
 					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_COMMENT,
+							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"CLOSE_KEY_BOARD");
 					startActivityWithRightForResult(intentToNewsDetail,
 							operateData.getNewsID());
@@ -910,7 +910,7 @@ public class NewsListFragment extends BaseFragment {
 					Intent intentToNewsDetail = new Intent(mContext,
 							NewsDetailActivity.class);
 					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_COMMENT,
+							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"publish_comment");
 					startActivityWithRightForResult(intentToNewsDetail,
 							operateData.getNewsID());
@@ -954,12 +954,12 @@ public class NewsListFragment extends BaseFragment {
 							Intent intentToNewsDetail = new Intent(mContext,
 									NewsDetailActivity.class);
 							intentToNewsDetail.putExtra(
-									NewsDetailActivity.INTENT_KEY_COMMENT,
+									NewsDetailActivity.INTENT_KEY_CMT_STATE,
 									"publish_Reply");
 							intentToNewsDetail.putExtra(
-									NewsDetailActivity.INTENT_KEY_USERID,
+									NewsDetailActivity.INTENT_KEY_CMT_ID,
 									commentData.getCommentList().get(iCount)
-											.getUserId());
+											.getCommentID());
 							startActivityWithRightForResult(intentToNewsDetail,
 									commentData.getNewsID());
 						} else {
@@ -967,7 +967,7 @@ public class NewsListFragment extends BaseFragment {
 							Intent intentToNewsDetail = new Intent(mContext,
 									NewsDetailActivity.class);
 							intentToNewsDetail.putExtra(
-									NewsDetailActivity.INTENT_KEY_COMMENT,
+									NewsDetailActivity.INTENT_KEY_CMT_STATE,
 									"CLOSE_KEY_BOARD");
 							startActivityWithRightForResult(intentToNewsDetail,
 									commentData.getNewsID());

@@ -72,8 +72,8 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
-	public final static String INTENT_KEY_COMMENT = "comment_state";
-	public final static String INTENT_KEY_USERID = "user_id";
+	public final static String INTENT_KEY_CMT_STATE = "comment_state";
+	public final static String INTENT_KEY_CMT_ID = "comment_id";
 	// 评论的类型
 	private final static int Input_Type_Comment = 0;
 	private final static int Input_Type_SubComment = 1;
@@ -169,7 +169,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						tempMd.setCommentContent(tempContent);
 						tempMd.setReplyUid(currentCommentModel.getUserId());
 						tempMd.setReplyName(currentCommentModel
-								.getSubmitterName());
+								.getPublishName());
 						tempMd.setReplyCommentId(currentCommentModel
 								.getCommentID());
 						tempMd.setTopCommentId(currentCommentModel
@@ -269,16 +269,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * */
 	private void stateHandel() {
 		Bundle bundle = this.getIntent().getExtras();
-		if (bundle.getString(INTENT_KEY_COMMENT).equals("publish_comment")) {
+		if (bundle.getString(INTENT_KEY_CMT_STATE).equals("publish_comment")) {
 			// 发布评论
 			commentEditText.setFocusable(true);
 			commentEditText.setFocusableInTouchMode(true);
 			commentEditText.requestFocus();
 			commentType = Input_Type_Comment;
 			setKeyboardStatu(true);
-		} else if (bundle.getString(INTENT_KEY_COMMENT).equals("publish_Reply")) {
+		} else if (bundle.getString(INTENT_KEY_CMT_STATE).equals("publish_Reply")) {
 			// 直接回复评论
-			String userId = bundle.getString(INTENT_KEY_USERID);
+			String cmtId = bundle.getString(INTENT_KEY_CMT_ID);
 
 			LogUtils.i("dataList.size()=" + dataList.size());
 			for (int index = 0; index < dataList.size(); ++index) {
@@ -288,16 +288,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				if (ItemModel.NEWS_DETAIL_COMMENT == itemType) {
 					currentCommentModel = ((CommentItem) tempItemModel)
 							.getCommentModel();
-					if (currentCommentModel.getUserId().equals(userId)) {
+					if (currentCommentModel.getCommentID().equals(cmtId)) {
 						commentEditText.setHint("回复："
-								+ currentCommentModel.getSubmitterName());
+								+ currentCommentModel.getPublishName());
 						commentType = Input_Type_SubComment;
 						break;
 					}
 				} else if (ItemModel.NEWS_DETAIL_SUB_COMMENT == itemType) {
 					currentSubCmtModel = ((SubCommentItem) tempItemModel)
 							.getSubCommentModel();
-					if (currentSubCmtModel.getPublishId().equals(userId)) {
+					if (currentSubCmtModel.getSubID().equals(cmtId)) {
 						commentEditText.setHint("回复："
 								+ currentSubCmtModel.getPublishName());
 						commentType = Input_Type_SubReply;
@@ -694,7 +694,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.txt_news_detail_comment_time,
 				TimeHandle.getShowTimeFormat(comment.getAddDate()));
 		helper.setText(R.id.txt_news_detail_comment_name,
-				comment.getSubmitterName());
+				comment.getPublishName());
 		helper.setText(R.id.txt_news_detail_comment_content,
 				comment.getCommentContent());
 
@@ -1042,7 +1042,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					// 发布回复别人的评论
 					commentEditText.requestFocus();
 					commentEditText.setHint("回复："
-							+ currentCommentModel.getSubmitterName());
+							+ currentCommentModel.getPublishName());
 					commentType = Input_Type_SubComment;
 					// 显示键盘
 					setKeyboardStatu(true);
@@ -1241,9 +1241,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 			LastOperateType = Add_Comment;
 
+			LogUtils.i("-----------userModel.getName()="
+					+ userModel.getName());
 			// 新建一条评论对象
-			cmtModel.setSubmitterName(userModel.getUsername());
-			cmtModel.setHeadImage(userModel.getHead_image());
+			cmtModel.setPublishName(userModel.getName());
 			cmtModel.setHeadSubImage(userModel.getHead_sub_image());
 			List<SubCommentModel> subCmtList = new ArrayList<SubCommentModel>();
 			cmtModel.setSubCommentList(subCmtList);
@@ -1292,7 +1293,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				index++;
 			}
 			// 设置发布的人的信息
-			subModel.setPublishName(userModel.getUsername());
+			subModel.setPublishName(subModel.getPublishName());
 			subModel.setPublishId(String.valueOf(userModel.getUid()));
 			if (isNetFeedback) {
 				detailAdapter.remove(oprtItem);

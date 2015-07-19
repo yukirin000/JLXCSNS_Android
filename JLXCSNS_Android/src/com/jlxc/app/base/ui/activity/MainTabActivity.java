@@ -5,8 +5,8 @@ import com.jlxc.app.R;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
-import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.ui.fragment.CampusFragment;
+import com.jlxc.app.news.ui.fragment.MainPageFragment;
 import com.jlxc.app.news.ui.fragment.NewsListFragment;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -29,7 +29,7 @@ public class MainTabActivity extends BaseActivity {
 
 	private LayoutInflater layoutInflater;
 
-	private Class<?> fragmentArray[] = { NewsListFragment.class,MessageMainFragment.class,
+	private Class<?> fragmentArray[] = { MainPageFragment.class,
 			PersonalFragment.class };
 
 	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_home_btn,

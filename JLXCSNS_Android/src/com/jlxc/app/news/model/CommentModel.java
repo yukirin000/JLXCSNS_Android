@@ -11,7 +11,7 @@ public class CommentModel {
 	// 评论的id
 	private String commentID;
 	// 评论者的名字
-	private String submitterName;
+	private String publishName;
 	// 评论者的头像全图
 	private String headImage;
 	// 评论者的头像缩略图
@@ -34,7 +34,7 @@ public class CommentModel {
 			setCommentID(object.getString("id"));
 		}
 		if (object.containsKey("name")) {
-			setSubmitterName(object.getString("name"));
+			setPublishName(object.getString("name"));
 		}
 		if (object.containsKey("head_image")) {
 			setHeadImage(JLXCConst.ATTACHMENT_ADDR
@@ -78,12 +78,12 @@ public class CommentModel {
 		this.commentID = commentID;
 	}
 
-	public String getSubmitterName() {
-		return submitterName;
+	public String getPublishName() {
+		return publishName;
 	}
 
-	public void setSubmitterName(String submitterName) {
-		this.submitterName = submitterName;
+	public void setPublishName(String publishName) {
+		this.publishName = publishName;
 	}
 
 	public String getHeadImage() {
