@@ -42,6 +42,7 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -52,8 +53,14 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
+import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.model.CityModel;
 import com.jlxc.app.personal.model.ProvinceModel;
+import com.jlxc.app.personal.ui.activity.AccountSettingActivity;
+import com.jlxc.app.personal.ui.activity.ContactFriendListActivity;
+import com.jlxc.app.personal.ui.activity.FriendListActivity;
+import com.jlxc.app.personal.ui.activity.MyCardActivity;
+import com.jlxc.app.personal.ui.activity.PersonalSettingActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSignActivity;
 import com.jlxc.app.personal.ui.activity.VisitListActivity;
 import com.jlxc.app.personal.ui.view.cityView.OnWheelChangedListener;
@@ -116,7 +123,7 @@ public class PersonalFragment extends BaseFragment {
 	private GridView friendsGridView;
 	//我的好友数量
 	@ViewInject(R.id.friend_count_text_view)
-	private TextView myFriendsCountTextView;
+	private TextView friendsCountTextView;
 	
 	//姓名
 	@ViewInject(R.id.name_text_view)
@@ -146,10 +153,11 @@ public class PersonalFragment extends BaseFragment {
 	//最近来访adapter
 	private HelloHaAdapter<String> visitAdapter;
 	//好友adapter
-	private HelloHaAdapter<String> friendsAdapter;	
+	private HelloHaAdapter<IMModel> friendsAdapter;	
 	
     @OnClick(value={R.id.name_layout,R.id.sign_layout,R.id.birth_layout,R.id.sex_layout,
-			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_image_View,R.id.visit_layout})
+			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_image_View
+			,R.id.visit_layout, R.id.friend_layout, R.id.setting_Button, R.id.card_Button})
 	private void clickEvent(View view){
 		switch (view.getId()) {
 		//姓名
@@ -250,8 +258,23 @@ public class PersonalFragment extends BaseFragment {
 		case R.id.visit_layout:
 			//最近来访点击
 			Intent visitIntent = new Intent(getActivity(), VisitListActivity.class);
-			visitIntent.putExtra("uid", userModel.getUid());
+			visitIntent.putExtra(VisitListActivity.INTENT_KEY, userModel.getUid());
 			startActivityWithRight(visitIntent);
+			break;
+		case R.id.friend_layout:
+			//我的好友列表
+			Intent friendIntent = new Intent(getActivity(), FriendListActivity.class);
+			startActivityWithRight(friendIntent);
+			break;
+		case R.id.setting_Button:
+			//设置
+			Intent setIntent = new Intent(getActivity(), PersonalSettingActivity.class);
+			startActivityWithRight(setIntent);
+			break;
+		case R.id.card_Button:
+			//设置
+			Intent cardIntent = new Intent(getActivity(), MyCardActivity.class);
+			startActivityWithRight(cardIntent);
 			break;
 		default:
 			break;
@@ -271,7 +294,13 @@ public class PersonalFragment extends BaseFragment {
 		//初始化adapter
 		myImageAdapter = initAdapter();
 		visitAdapter = initAdapter();
-		friendsAdapter = initAdapter();
+		friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(), R.layout.attrament_image) {
+			@Override
+			protected void convert(HelloHaBaseAdapterHelper helper, IMModel item) {
+				ImageView imageView = helper.getView(R.id.image_attrament);
+				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
+			}
+		};
 		
 		//设置adapter
 		myImageGridView.setAdapter(myImageAdapter);
@@ -293,12 +322,7 @@ public class PersonalFragment extends BaseFragment {
 		}
 		
 		//设置照片和背景图
-//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), 0, true, true);
-		bitmapUtils = new BitmapUtils(getActivity());
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
-		bitmapUtils.configMemoryCacheEnabled(true);
-		bitmapUtils.configDiskCacheEnabled(true);		
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.ic_launcher);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.ic_launcher, true, true);
 		
 		//解析省份城市xml
 		initProvinceDatas();
@@ -321,9 +345,6 @@ public class PersonalFragment extends BaseFragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-	    //获取当前最近的三张状态图片
-		getNewsImages();
-		getVisitImages();
 		
 		//头像 2015-07-07/01436273216_sub.jpg
 		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
@@ -365,7 +386,28 @@ public class PersonalFragment extends BaseFragment {
 			cityTextView.setText("暂无");
 		}else {
 			cityTextView.setText(userModel.getCity());
-		}		
+		}	
+		
+	    //获取当前最近的三张状态图片
+		getNewsImages();
+		getVisitImages();
+		
+		//好友
+		List<IMModel> listModels = IMModel.findHasAddAll();
+		List<IMModel> userModels = new ArrayList<IMModel>();
+		//取前三个
+		for (int i = 0; i < listModels.size(); i++) {
+			if (i==3) {
+				break;
+			}
+			userModels.add(listModels.get(i));
+		}
+		friendsAdapter.replaceAll(userModels);
+		if (listModels.size() > 0) {
+			friendsCountTextView.setText(""+listModels.size());
+		}else {
+			friendsCountTextView.setText("");
+		}
 	}
 
 	@Override
@@ -684,9 +726,9 @@ public class PersonalFragment extends BaseFragment {
 							}else if ("sex".equals(field)) {
 								//性别
 								userModel.setSex(Integer.parseInt(value));			
-							}else if ("name".equals(field)) {
-								
 							}
+							//本地持久化
+							UserManager.getInstance().saveAndUpdate();
 						}
 						if (status == JLXCConst.STATUS_FAIL) {
 							ToastUtil.show(getActivity(),
@@ -752,7 +794,9 @@ public class PersonalFragment extends BaseFragment {
 								bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
 							}
 							ToastUtil.show(getActivity(),jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-							
+							//本地持久化
+							UserManager.getInstance().saveAndUpdate();
+							//删除临时文件
 							File tmpFile =new File(path);
 							if (tmpFile.exists()) {
 								tmpFile.delete();
@@ -892,25 +936,25 @@ public class PersonalFragment extends BaseFragment {
 	}
 	
 	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
-		super.onSaveInstanceState(outState);
-		outState.putSerializable("user", userModel);
-	}
-	
-	@Override
-	public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onViewStateRestored(savedInstanceState);
-		
-		if (null != savedInstanceState) {
-			if ( null != savedInstanceState.getSerializable("user")) {
-				userModel = (UserModel) savedInstanceState.getSerializable("user");
-				UserManager.getInstance().setUser(userModel);
-			}
-		}
-	}
+//	@Override
+//	public void onSaveInstanceState(Bundle outState) {
+//		// TODO Auto-generated method stub
+//		super.onSaveInstanceState(outState);
+//		outState.putSerializable("user", userModel);
+//	}
+//	
+//	@Override
+//	public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+//		// TODO Auto-generated method stub
+//		super.onViewStateRestored(savedInstanceState);
+//		
+//		if (null != savedInstanceState) {
+//			if ( null != savedInstanceState.getSerializable("user")) {
+//				userModel = (UserModel) savedInstanceState.getSerializable("user");
+//				UserManager.getInstance().setUser(userModel);
+//			}
+//		}
+//	}
     
 	////////////////////////getter setter/////////////////////
 	public HelloHaAdapter<String> getMyImageAdapter() {
@@ -929,11 +973,11 @@ public class PersonalFragment extends BaseFragment {
 		this.visitAdapter = visitAdapter;
 	}
 
-	public HelloHaAdapter<String> getFriendsAdapter() {
+	public HelloHaAdapter<IMModel> getFriendsAdapter() {
 		return friendsAdapter;
 	}
 
-	public void setFriendsAdapter(HelloHaAdapter<String> friendsAdapter) {
+	public void setFriendsAdapter(HelloHaAdapter<IMModel> friendsAdapter) {
 		this.friendsAdapter = friendsAdapter;
 	}
 

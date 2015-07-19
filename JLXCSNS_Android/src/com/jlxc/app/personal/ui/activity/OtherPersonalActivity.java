@@ -1,8 +1,14 @@
 package com.jlxc.app.personal.ui.activity;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.Conversation;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
@@ -25,10 +31,11 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.message.model.IMModel;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
@@ -42,6 +49,9 @@ public class OtherPersonalActivity extends BaseActivity{
 	//头像
 	@ViewInject(R.id.head_image_view)
 	private ImageView headImageView;	
+	//设置按钮
+	@ViewInject(R.id.setting_Button)
+	private TextView setting_text_view;
 	//TA的相片grid
 	@ViewInject(R.id.his_image_grid_view)
 	private GridView hisImageGridView;
@@ -103,7 +113,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	private UserModel otherUserModel;
 	
 	@OnClick({R.id.head_image_view, R.id.visit_button, R.id.common_friend_button, R.id.his_friend_layout, 
-			R.id.return_image_view})
+			R.id.return_image_view,R.id.send_message_btn, R.id.add_friend_button, R.id.setting_Button})
 	private void clickEvent(View view){
 		switch (view.getId()) {
 		case R.id.head_image_view:
@@ -111,6 +121,13 @@ public class OtherPersonalActivity extends BaseActivity{
 			Intent headIntent = new Intent(this, BigImgLookActivity.class);
 			headIntent.putExtra(BigImgLookActivity.INTENT_KEY, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_image());
 			startActivityWithBottom(headIntent);
+			break;
+		case R.id.setting_Button:
+			//设置点击
+			Intent settingIntent = new Intent(this, FriendSettingActivity.class);
+			settingIntent.putExtra(FriendSettingActivity.INTENT_FUID, otherUserModel.getUid());
+			settingIntent.putExtra(FriendSettingActivity.INTENT_NAME, otherUserModel.getName());
+			startActivityWithRight(settingIntent);
 			break;
 		case R.id.visit_button:
 			//来访
@@ -124,7 +141,6 @@ public class OtherPersonalActivity extends BaseActivity{
 			otherFriendIntent.putExtra(OtherPeopleFriendsActivity.INTENT_KEY, otherUserModel.getUid());
 			startActivityWithRight(otherFriendIntent);
 			break;
-			
 		case R.id.common_friend_button:
 			//共同好友
 			Intent commonIntent = new Intent(this, CommonFriendsActivity.class);
@@ -134,6 +150,14 @@ public class OtherPersonalActivity extends BaseActivity{
 		case R.id.return_image_view:
 			//返回
 			finishWithRight();
+			break;
+		case R.id.send_message_btn:
+			//发送消息
+			sendMessage();
+			break;
+		case R.id.add_friend_button:
+			//添加好友
+			addFriend();
 			break;
 		default:
 			break;
@@ -188,7 +212,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		return adapter;
 	}
 	
-	 //获取用户信息	
+	//获取用户信息	
 	private void getPersonalInformation(){
 		
 		String path = JLXCConst.PERSONAL_INFORMATION+"?"+"uid="+uid+"&current_id="+UserManager.getInstance().getUser().getUid();
@@ -226,7 +250,6 @@ public class OtherPersonalActivity extends BaseActivity{
 		
 		otherUserModel = new UserModel();		
 		otherUserModel.setContentWithJson(jsonObject);
-		
 		//姓名
 		if (null == otherUserModel.getName() || "".equals(otherUserModel.getName())) {
 			nameTextView.setText("暂无");
@@ -309,6 +332,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		if (UserManager.getInstance().getUser().getUid() == uid) {
 			addFriendButton.setEnabled(false);
 			sendMessageButton.setEnabled(false);
+			setting_text_view.setVisibility(View.GONE);
 		}else {
 			
 			boolean isFriend = false;
@@ -317,9 +341,102 @@ public class OtherPersonalActivity extends BaseActivity{
 			}
 			if (isFriend) {
 				addFriendLayout.setVisibility(View.GONE);
+				setting_text_view.setVisibility(View.VISIBLE);
+			}else {
+				addFriendLayout.setVisibility(View.VISIBLE);
+				setting_text_view.setVisibility(View.GONE);
 			}
 		}
-		
 	}
+	
+	//发送消息
+	private void sendMessage() {
+		IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
+		//如果存在更新
+		if (null != imModel) {
+			imModel.setTitle(otherUserModel.getName());
+			imModel.setAvatarPath(otherUserModel.getHead_image());
+			imModel.update();
+		}else {
+			imModel = new IMModel();
+			imModel.setType(IMModel.ConversationType_PRIVATE);
+			imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+			imModel.setTitle(otherUserModel.getName());
+			imModel.setAvatarPath(otherUserModel.getHead_image());
+			imModel.setIsNew(1);
+			imModel.setIsRead(1);
+			imModel.setCurrentState(IMModel.GroupNotAdd);
+			imModel.setOwner(UserManager.getInstance().getUser().getUid());
+			imModel.save();
+		}
+		//启动聊天
+		RongIM.getInstance().startConversation
+		(OtherPersonalActivity.this, Conversation.ConversationType.PRIVATE, imModel.getTargetId(), imModel.getTitle());
+	}
+	
+	//添加好友
+	private void addFriend() {
+		
+		new AlertDialog.Builder(this).setTitle("确定要添加好友吗？").setNegativeButton("取消", null)
+						.setPositiveButton("确定", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// 参数设置
+								RequestParams params = new RequestParams();
+								params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+								params.addBodyParameter("friend_id", otherUserModel.getUid()+"");
+								
+								showLoading("添加中^_^", false);
+								HttpManager.post(JLXCConst.Add_FRIEND, params,
+										new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
+											@Override
+											public void onSuccess(JSONObject jsonResponse, String flag) {
+												super.onSuccess(jsonResponse, flag);
+												hideLoading();
+												int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+												ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+												
+												//本地数据持久化
+												IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
+												//如果存在更新
+												if (null != imModel) {
+													imModel.setTitle(otherUserModel.getName());
+													imModel.setAvatarPath(otherUserModel.getHead_image());
+													imModel.setIsNew(0);
+													imModel.setIsRead(1);
+													imModel.setCurrentState(IMModel.GroupHasAdd);
+													imModel.update();
+												}else {
+													imModel = new IMModel();
+													imModel.setType(IMModel.ConversationType_PRIVATE);
+													imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+													imModel.setTitle(otherUserModel.getName());
+													imModel.setAvatarPath(otherUserModel.getHead_image());
+													imModel.setIsNew(0);
+													imModel.setIsRead(1);
+													imModel.setCurrentState(IMModel.GroupHasAdd);
+													imModel.setOwner(UserManager.getInstance().getUser().getUid());
+													imModel.save();
+												}
+												
+												if (status == JLXCConst.STATUS_SUCCESS) {
+													//成功隐藏 
+													addFriendLayout.setVisibility(View.GONE);
+												}
+											}
+
+											@Override
+											public void onFailure(HttpException arg0, String arg1,
+													String flag) {
+												super.onFailure(arg0, arg1, flag);
+												hideLoading();
+												ToastUtil.show(OtherPersonalActivity.this,
+														"网络异常");
+											}
+										}, null));
+								
+							}
+						}).show();
+	}
 }
