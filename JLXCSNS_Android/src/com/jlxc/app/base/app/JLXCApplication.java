@@ -1,6 +1,10 @@
 package com.jlxc.app.base.app;
 
+import io.rong.imkit.RongIM;
+
+import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.DBManager;
+import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.LogUtils;
 
@@ -29,6 +33,12 @@ public class JLXCApplication extends Application {
 		DBManager.getInstance(); 
 		//FileUtils初始化
 		FileUtil.makeDirs(); 
+		//融云初始化
+		RongIM.init(this);
+		// 融云SDK事件监听处理
+        RongCloudEvent.init(this);
+        //初始化用户模型
+        UserManager.getInstance().getUser();
 	}  
 
 ////	private void init() {
