@@ -29,7 +29,7 @@ public class MainTabActivity extends BaseActivity {
 
 	private LayoutInflater layoutInflater;
 
-	private Class<?> fragmentArray[] = { MainPageFragment.class,
+	private Class<?> fragmentArray[] = { MainPageFragment.class, MessageMainFragment.class,
 			PersonalFragment.class };
 
 	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_home_btn,
