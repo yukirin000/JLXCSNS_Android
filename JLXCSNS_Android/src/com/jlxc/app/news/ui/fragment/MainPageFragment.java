@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,6 +22,8 @@ import android.widget.LinearLayout.LayoutParams;
 import com.jlxc.app.R;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.news.ui.activity.PublishNewsActivity;
+import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class MainPageFragment extends BaseFragment {
@@ -67,7 +70,15 @@ public class MainPageFragment extends BaseFragment {
 
 	@Override
 	public void setUpViews(View rootView) {
-
+		imagePublish.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intentUsrMain = new Intent(mContext,
+						PublishNewsActivity.class);
+				startActivityWithRight(intentUsrMain);
+			}
+		});
 	}
 
 	/**

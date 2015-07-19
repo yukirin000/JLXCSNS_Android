@@ -23,6 +23,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
+import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.DataToItem;
@@ -128,7 +129,7 @@ public class NewsListFragment extends BaseFragment {
 	// 当前操作的动态
 	public static NewsModel currentNews;
 	// 当前操作的位置
-	public int indexAtNewsList = 0;
+	private int indexAtNewsList = 0;
 
 	@Override
 	public int setLayoutId() {
@@ -336,22 +337,18 @@ public class NewsListFragment extends BaseFragment {
 	 * */
 	private void init() {
 		mContext = this.getActivity().getApplicationContext();
-		// userModel = UserManager.getInstance().getUser();
-		/********** 测试用户 ************/
-		userModel = new UserModel();
-		userModel.setUid(21);
-		userModel.setName("朱旺");
-		userModel
-				.setHead_sub_image("http://192.168.1.100/jlxc_php/Uploads/2015-07-01/191435720077_sub.png");
-		UserManager.getInstance().setUser(userModel);
+		userModel = UserManager.getInstance().getUser();
 
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
 		likeItemClickListener = new LikeGridViewItemClick();
 		initBitmapUtils();
-		newsList = getLastData();
-		itemDataList = DataToItem.newsDataToItems(newsList);
-
+		/******** 首次获取数据 *********/
+		currentPage = 1;
+		isPullDowm = true;
+		getNewsData(String.valueOf(userModel.getUid()),
+				String.valueOf(currentPage), "");
+		/*************************/
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
@@ -365,58 +362,6 @@ public class NewsListFragment extends BaseFragment {
 	 * */
 	private List<NewsModel> getLastData() {
 		List<NewsModel> lastDataList = new ArrayList<NewsModel>();
-		String path1 = "http://192.168.1.100/jlxc_php/Uploads/2015-06-30/401435667218_sub.png";
-		String path2 = "http://192.168.1.100/jlxc_php/Uploads/2015-07-01/191435720077_sub.png";
-		String path3 = "http://192.168.1.100/jlxc_php/Uploads/2015-07-01/191435720077.png";
-
-		NewsModel newsData = new NewsModel();
-		newsData.setUserName("朱旺");
-		newsData.setUserHeadSubImage(path1);
-		newsData.setSendTime("12:11");
-		newsData.setUserSchool("罗湖中学");
-		newsData.setNewsContent("哈哈哈哈哈哈哈哈哈");
-		// 内容图片
-		List<ImageModel> imgList = new ArrayList<ImageModel>();
-		ImageModel tmpImg = new ImageModel();
-		tmpImg.setSubURL(path2);
-		tmpImg.setURL(path3);
-		tmpImg.setImageWidth("563");
-		tmpImg.setImageHheight("374");
-		imgList.add(tmpImg);
-		newsData.setImageNewsList(imgList);
-		newsData.setLocation("北京");
-
-		newsData.setCommentQuantity("15");
-		newsData.setLikeQuantity("20");
-		newsData.setTimesTamp("1436366057");
-		latestTimesTamp = "1436366057";
-
-		// 点赞
-		List<LikeModel> lkList = new ArrayList<LikeModel>();
-		LikeModel tmphead = new LikeModel();
-		tmphead.setHeadSubImage(path2);
-		lkList.add(tmphead);
-		newsData.setLikeHeadListimage(lkList);
-
-		// 评论列表
-		List<CommentModel> cmtList = new ArrayList<CommentModel>();
-		CommentModel tempCmt = new CommentModel();
-		tempCmt.setCommentContent("哈哈哈哈哈0");
-		tempCmt.setPublishName("朱旺:");
-		cmtList.add(tempCmt);
-		//
-		tempCmt = new CommentModel();
-		tempCmt.setCommentContent("哈哈哈哈哈1");
-		tempCmt.setPublishName("朱旺:");
-		cmtList.add(tempCmt);
-		//
-		tempCmt = new CommentModel();
-		tempCmt.setCommentContent("哈哈哈哈哈2");
-		tempCmt.setPublishName("朱旺:");
-		cmtList.add(tempCmt);
-		newsData.setCommentList(cmtList);
-
-		lastDataList.add(newsData);
 		return lastDataList;
 	}
 
@@ -524,6 +469,7 @@ public class NewsListFragment extends BaseFragment {
 			helper.setVisible(R.id.iv_mian_news_body_picture, false);
 			NoScrollGridView bodyGridView = (NoScrollGridView) helper
 					.getView(R.id.gv_mian_news_body_image);
+
 			newsGVAdapter = new HelloHaAdapter<ImageModel>(mContext,
 					R.layout.mian_news_body_gridview_item_layout, pictureList) {
 				@Override
@@ -551,6 +497,15 @@ public class NewsListFragment extends BaseFragment {
 			 * 点击图片事件
 			 * */
 			bodyGridView.setOnItemClickListener(imageItemClickListener);
+			// 点击空白区域时将事件传回给父控件
+			bodyGridView
+					.setOnTouchInvalidPositionListener(new OnTouchInvalidPositionListener() {
+
+						@Override
+						public boolean onTouchInvalidPosition(int motionEvent) {
+							return false;
+						}
+					});
 		}
 
 		// 创建点击事件监听对象
@@ -854,6 +809,9 @@ public class NewsListFragment extends BaseFragment {
 					intentToNewsDetail.putExtra(
 							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"CLOSE_KEY_BOARD");
+					intentToNewsDetail.putExtra(
+							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
+							"News_List_Fragment");
 					startActivityWithRightForResult(intentToNewsDetail,
 							titleData.getNewsID());
 
@@ -886,6 +844,9 @@ public class NewsListFragment extends BaseFragment {
 					intentToNewsDetail.putExtra(
 							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"CLOSE_KEY_BOARD");
+					intentToNewsDetail.putExtra(
+							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
+							"News_List_Fragment");
 					startActivityWithRightForResult(intentToNewsDetail,
 							bodyData.getNewsID());
 				}
@@ -903,6 +864,9 @@ public class NewsListFragment extends BaseFragment {
 					intentToNewsDetail.putExtra(
 							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"CLOSE_KEY_BOARD");
+					intentToNewsDetail.putExtra(
+							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
+							"News_List_Fragment");
 					startActivityWithRightForResult(intentToNewsDetail,
 							operateData.getNewsID());
 				} else if (R.id.btn_mian_reply == viewID) {
@@ -912,6 +876,9 @@ public class NewsListFragment extends BaseFragment {
 					intentToNewsDetail.putExtra(
 							NewsDetailActivity.INTENT_KEY_CMT_STATE,
 							"publish_comment");
+					intentToNewsDetail.putExtra(
+							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
+							"News_List_Fragment");
 					startActivityWithRightForResult(intentToNewsDetail,
 							operateData.getNewsID());
 				} else {
@@ -960,6 +927,10 @@ public class NewsListFragment extends BaseFragment {
 									NewsDetailActivity.INTENT_KEY_CMT_ID,
 									commentData.getCommentList().get(iCount)
 											.getCommentID());
+							intentToNewsDetail
+									.putExtra(
+											NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
+											"News_List_Fragment");
 							startActivityWithRightForResult(intentToNewsDetail,
 									commentData.getNewsID());
 						} else {
@@ -969,6 +940,10 @@ public class NewsListFragment extends BaseFragment {
 							intentToNewsDetail.putExtra(
 									NewsDetailActivity.INTENT_KEY_CMT_STATE,
 									"CLOSE_KEY_BOARD");
+							intentToNewsDetail
+									.putExtra(
+											NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
+											"News_List_Fragment");
 							startActivityWithRightForResult(intentToNewsDetail,
 									commentData.getNewsID());
 						}
@@ -1156,7 +1131,7 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
-	 * 上一个Activity结束时调用
+	 * 上一个Activity返回结束时调用
 	 * */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
