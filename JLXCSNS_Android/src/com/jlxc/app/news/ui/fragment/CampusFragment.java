@@ -878,7 +878,7 @@ public class CampusFragment extends BaseFragment {
 	 * 
 	 * @author Alan
 	 */
-	private class LikeCancel {
+	public class LikeCancel {
 		private View view;
 		private int postion;
 		private boolean isLikeOperate = false;

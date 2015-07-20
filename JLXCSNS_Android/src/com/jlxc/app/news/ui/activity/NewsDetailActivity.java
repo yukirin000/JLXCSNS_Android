@@ -690,15 +690,17 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				comment.getCommentContent());
 
 		// 设置评论item的点击事件
-		LinearLayout replyCmt = helper.getView(R.id.reply_head_layout);
 		final int postion = helper.getPosition();
-		replyCmt.setOnClickListener(new OnClickListener() {
+		OnClickListener listener = new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
-		});
+		};
+		helper.setOnClickListener(R.id.iv_comment_head, listener);
+		helper.setOnClickListener(R.id.reply_head_layout, listener);
+		helper.setOnClickListener(R.id.txt_news_detail_comment_name, listener);
 	}
 
 	/**
@@ -716,15 +718,17 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				subCmtModel.getCommentContent());
 
 		// 设置评论item的点击事件
-		LinearLayout subCmtLayout = helper.getView(R.id.subcomment_root_view);
 		final int postion = helper.getPosition();
-		subCmtLayout.setOnClickListener(new OnClickListener() {
+		OnClickListener listener = new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
-		});
+		};
+		helper.setOnClickListener(R.id.subcomment_root_view, listener);
+		helper.setOnClickListener(R.id.txt_sub_comment_by_name, listener);
+		helper.setOnClickListener(R.id.txt_by_sub_comment_name, listener);
 	}
 
 	/**
@@ -1133,7 +1137,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						}
 					}
 				});
-				
+
 				if (operateData.getIsLike()) {
 					likeOperate.Cancel();
 				} else {
@@ -1142,82 +1146,105 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				break;
 
 			case R.id.reply_head_layout:
-				commentOperate.setPostion(postion);
-				// 当前的item数据
+			case R.id.iv_comment_head:
+			case R.id.txt_news_detail_comment_name:
 				currentCommentModel = ((CommentItem) detailAdapter
 						.getItem(postion)).getCommentModel();
-				if (currentCommentModel.getUserId().equals(
-						String.valueOf(userModel.getUid()))) {
-					// 如果是自己发布的评论，则删除评论
-					CharSequence[] items = { "删除评论" };
-					new AlertDialog.Builder(NewsDetailActivity.this).setItems(
-							items, new DialogInterface.OnClickListener() {
+				if (viewID == R.id.reply_head_layout) {
+					commentOperate.setPostion(postion);
+					if (currentCommentModel.getUserId().equals(
+							String.valueOf(userModel.getUid()))) {
+						// 如果是自己发布的评论，则删除评论
+						CharSequence[] items = { "删除评论" };
+						new AlertDialog.Builder(NewsDetailActivity.this)
+								.setItems(items,
+										new DialogInterface.OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									commentOperate.deleteCommentRefresh();
-									deleteCommentData(
-											currentCommentModel.getCommentID(),
-											currentNews.getNewsID());
-								}
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												commentOperate
+														.deleteCommentRefresh();
+												deleteCommentData(
+														currentCommentModel
+																.getCommentID(),
+														currentNews.getNewsID());
+											}
 
-							}).show();
+										}).show();
+					} else {
+						// 发布回复别人的评论
+						commentEditText.requestFocus();
+						commentEditText.setHint("回复："
+								+ currentCommentModel.getPublishName());
+						commentType = Input_Type_SubComment;
+						// 显示键盘
+						setKeyboardStatu(true);
+					}
 				} else {
-					// 发布回复别人的评论
-					commentEditText.requestFocus();
-					commentEditText.setHint("回复："
-							+ currentCommentModel.getPublishName());
-					commentType = Input_Type_SubComment;
-					// 显示键盘
-					setKeyboardStatu(true);
+					JumpToHomepage(JLXCUtils.stringToInt(currentCommentModel
+							.getUserId()));
 				}
 
 				break;
 
 			// 点击了子评论
 			case R.id.subcomment_root_view:
-				commentOperate.setPostion(postion);
-				// 当前的item数据
+			case R.id.txt_sub_comment_by_name:
+			case R.id.txt_by_sub_comment_name:
 				currentSubCmtModel = ((SubCommentItem) detailAdapter
 						.getItem(postion)).getSubCommentModel();
+				if (viewID == R.id.subcomment_root_view) {
+					commentOperate.setPostion(postion);
+					if (currentSubCmtModel.getPublishId().equals(
+							String.valueOf(userModel.getUid()))) {
+						// 如果是自己发布的评论，则删除评论
+						CharSequence[] items = { "删除评论" };
+						new AlertDialog.Builder(NewsDetailActivity.this)
+								.setItems(items,
+										new DialogInterface.OnClickListener() {
 
-				if (currentSubCmtModel.getPublishId().equals(
-						String.valueOf(userModel.getUid()))) {
-					// 如果是自己发布的评论，则删除评论
-					CharSequence[] items = { "删除评论" };
-					new AlertDialog.Builder(NewsDetailActivity.this).setItems(
-							items, new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												commentOperate
+														.deleteSubCommentRefresh();
+												deleteSubCommentData(
+														currentSubCmtModel
+																.getSubID(),
+														currentNews.getNewsID());
+											}
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									commentOperate.deleteSubCommentRefresh();
-									deleteSubCommentData(
-											currentSubCmtModel.getSubID(),
-											currentNews.getNewsID());
-								}
-
-							}).show();
-				} else {
-					// 找到topComment
-					int index = postion;
-					while (index >= 0) {
-						if (ItemModel.NEWS_DETAIL_COMMENT == detailAdapter
-								.getItem(index).getItemType()) {
-							break;
+										}).show();
+					} else {
+						// 找到topComment
+						int index = postion;
+						while (index >= 0) {
+							if (ItemModel.NEWS_DETAIL_COMMENT == detailAdapter
+									.getItem(index).getItemType()) {
+								break;
+							}
+							--index;
 						}
-						--index;
-					}
-					currentCommentModel = ((CommentItem) detailAdapter
-							.getItem(index)).getCommentModel();
+						currentCommentModel = ((CommentItem) detailAdapter
+								.getItem(index)).getCommentModel();
 
-					commentEditText.requestFocus();
-					commentEditText.setHint("回复："
-							+ currentSubCmtModel.getPublishName());
-					commentType = Input_Type_SubReply;
-					setKeyboardStatu(true);
+						commentEditText.requestFocus();
+						commentEditText.setHint("回复："
+								+ currentSubCmtModel.getPublishName());
+						commentType = Input_Type_SubReply;
+						setKeyboardStatu(true);
+					}
+				} else if (viewID == R.id.txt_sub_comment_by_name) {
+					JumpToHomepage(JLXCUtils.stringToInt(currentSubCmtModel
+							.getPublishId()));
+				} else {
+					JumpToHomepage(JLXCUtils.stringToInt(currentSubCmtModel
+							.getReplyUid()));
 				}
+
 				break;
 
 			default:

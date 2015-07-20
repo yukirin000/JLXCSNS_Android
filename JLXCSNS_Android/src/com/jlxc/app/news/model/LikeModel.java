@@ -11,6 +11,8 @@ public class LikeModel {
 	private String headImage;
 	// 点赞占的头像缩略图
 	private String headSubImage;
+	// 点赞者的名字
+	private String name;
 
 	// 内容注入
 	public void setContentWithJson(JSONObject object) {
@@ -18,6 +20,9 @@ public class LikeModel {
 		setHeadImage(JLXCConst.ATTACHMENT_ADDR + object.getString("head_image"));
 		setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
 				+ object.getString("head_sub_image"));
+		if (object.containsKey("name")) {
+			setName(object.getString("name"));
+		}
 	}
 
 	public String getUserID() {
@@ -42,6 +47,14 @@ public class LikeModel {
 
 	public void setHeadSubImage(String headSubImage) {
 		this.headSubImage = headSubImage;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

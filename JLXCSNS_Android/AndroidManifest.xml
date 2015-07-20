@@ -109,6 +109,8 @@
         </activity>
         <activity android:name="com.jlxc.app.news.ui.activity.PublishNewsActivity" >
         </activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.AllLikePersonActivity" >
+        </activity>
 
         <!-- 会话 Activity -->
         <activity
