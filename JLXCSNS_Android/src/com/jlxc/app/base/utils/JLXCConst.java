@@ -18,7 +18,15 @@ public interface JLXCConst {
 	
 	//IM和推送 公用前缀
 	public static final String JLXC = "jlxc";// 返回值列表
-
+	
+	//broadCast
+	//状态回复消息或点赞或者新好友 
+	public static final String BROADCAST_NEW_MESSAGE_PUSH = "com.jlxc.broadcastreceiver.newsPush";
+	// tab栏徽标更新通知
+	public static final String BROADCAST_TAB_BADGE = "com.jlxc.broadcastreceiver.tabBadge";
+	// 消息顶部更新
+	public static final String BROADCAST_MESSAGE_REFRESH = "com.jlxc.broadcastreceiver.messageRefresh";	
+	
 	// 匹配网页
 	public static final String URL_PATTERN = "[http|https]+[://]+[0-9A-Za-z:/[-]_#[?][=][.][&]]*";
 	// 匹配手机号

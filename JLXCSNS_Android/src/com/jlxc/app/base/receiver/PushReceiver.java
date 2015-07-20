@@ -20,39 +20,47 @@ public class PushReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		
 		if (YunBaManager.MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
-			String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
-		    //如果不是自己订阅的则不接收
-			if (!topic.equals(JLXCConst.JLXC+UserManager.getInstance().getUser().getUid())) {
-		        return;
-			}
-			String msg = intent.getStringExtra(YunBaManager.MQTT_MSG);
-			StringBuilder showMsg = new StringBuilder();
-			showMsg.append("[Message] ").append(YunBaManager.MQTT_TOPIC)
-					.append(" = ").append(topic).append(" ,")
-						.append(YunBaManager.MQTT_MSG).append(" = ").append(msg);	
-			Log.i("MainTabActivity", showMsg.toString());
-			//json解析
-			JSONObject obj = JSON.parseObject(msg);	
-			int type = obj.getIntValue("type");
-			switch (type) {
-			case NewsPushModel.PushAddFriend:
-				//添加好友信息
-				handleNewFriend(obj, context);
-				break;
-			case NewsPushModel.PushNewsAnwser:
-	            //如果是状态回复消息
-				handleNewsPush(obj, context);
-				break;
-			case NewsPushModel.PushSecondComment:
-	            //如果是二级回复消息
-				handleNewsPush(obj, context);
-				break;
-			case NewsPushModel.PushLikeNews:
-	            //如果是点赞			
-				handleNewsPush(obj, context);
-				break;
-			default:
-				break;
+			
+			try {
+				String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
+			    //如果不是自己订阅的则不接收
+				if (!topic.equals(JLXCConst.JLXC+UserManager.getInstance().getUser().getUid())) {
+			        return;
+				}
+				String msg = intent.getStringExtra(YunBaManager.MQTT_MSG);
+				StringBuilder showMsg = new StringBuilder();
+				showMsg.append("[Message] ").append(YunBaManager.MQTT_TOPIC)
+						.append(" = ").append(topic).append(" ,")
+							.append(YunBaManager.MQTT_MSG).append(" = ").append(msg);	
+				LogUtils.i(showMsg.toString(),1);
+				//json解析
+				JSONObject obj = JSON.parseObject(msg);
+				if (obj == null) {
+					return;
+				}
+				int type = obj.getIntValue("type");
+				switch (type) {
+				case NewsPushModel.PushAddFriend:
+					//添加好友信息
+					handleNewFriend(obj, context);
+					break;
+				case NewsPushModel.PushNewsAnwser:
+		            //如果是状态回复消息
+					handleNewsPush(obj, context);
+					break;
+				case NewsPushModel.PushSecondComment:
+		            //如果是二级回复消息
+					handleNewsPush(obj, context);
+					break;
+				case NewsPushModel.PushLikeNews:
+		            //如果是点赞			
+					handleNewsPush(obj, context);
+					break;
+				default:
+					break;
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 			
 		} else if(YunBaManager.MESSAGE_CONNECTED_ACTION.equals(intent.getAction())) {
@@ -85,13 +93,15 @@ public class PushReceiver extends BroadcastReceiver {
 			imModel.setIsRead(0);
 			imModel.setOwner(UserManager.getInstance().getUser().getUid());
 			imModel.save();
+			
+			//发送通知
+			Intent newsGroupIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
+			context.sendBroadcast(newsGroupIntent);
 		}
-//	        //发送通知
-//	        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_NEW_GROUP object:group];
-//	    }
-//	    
-//	    //徽标跟新
-//	    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_TAB_BADGE object:nil];
+		
+		//徽标更新
+		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+		context.sendBroadcast(tabIntent);
 	}
 	
 	//新闻回复点赞到来 处理消息
@@ -113,8 +123,16 @@ public class PushReceiver extends BroadcastReceiver {
 		pushModel.setOwner(UserManager.getInstance().getUser().getUid());
 		pushModel.save();
 		
-//		Intent intent = new Intent("com.test.broadcast");
-//		context.sendBroadcast(intent);
+		//发送通知
+		Intent newsPushIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
+		context.sendBroadcast(newsPushIntent);
+		//徽标更新
+		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+		context.sendBroadcast(tabIntent);
+		//顶部更新
+		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
+		context.sendBroadcast(messageIntent);
+		
 	}
 	
 	//send msg to MainActivity

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -24,7 +25,9 @@ import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.jlxc.app.R;
+import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
+import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.demo.ui.fragment.FragmentPage1;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
@@ -217,6 +220,18 @@ public class MessageMainFragment extends BaseFragment {
 
 		public void onPageScrollStateChanged(int index) {
 			currIndex = index;
+
+			if (index == 1) {
+				//设置已读
+				NewsPushModel.setIsRead();
+			}
+			
+			//通知刷新
+			Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+			getActivity().sendBroadcast(tabIntent);
+			Intent messageIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
+			getActivity().sendBroadcast(messageIntent);
+			
 		}
 
 		// CurrentTab:当前页面序号
