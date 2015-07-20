@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <!-- 主页点赞头像列表 -->
+
     <com.jlxc.app.base.ui.view.NoScrollGridView
         android:id="@+id/gv_mian_Like_list"
         android:layout_width="match_parent"

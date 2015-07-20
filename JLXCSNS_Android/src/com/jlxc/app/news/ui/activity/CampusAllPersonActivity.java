@@ -28,9 +28,11 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CampusPersonModel;
+import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
@@ -232,8 +234,9 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(CampusAllPersonActivity.this, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
+							ToastUtil.show(CampusAllPersonActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 
@@ -258,8 +261,10 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 			CampusPersonModel personModel = (CampusPersonModel) parent
 					.getAdapter().getItem(position);
 
-			ToastUtil.show(CampusAllPersonActivity.this,
-					"UserID:" + personModel.getUserId());
+			Intent intentUsrMain = new Intent(CampusAllPersonActivity.this,
+					OtherPersonalActivity.class);
+			intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, JLXCUtils.stringToInt(personModel.getUserId()));
+			startActivityWithRight(intentUsrMain);
 		}
 	}
 

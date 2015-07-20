@@ -1,6 +1,11 @@
 package com.jlxc.app.news.utils;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 
@@ -31,7 +36,7 @@ public class LikeOperate {
 	// 上次点赞的状态
 	private boolean severIsLike = false;
 	// 记录上次的操作类型
-	private boolean isLikeOperate = false;
+	private boolean lastOperateIsLike = false;
 	// 动态id
 	private String newsID;
 	// 回调接口
@@ -53,14 +58,18 @@ public class LikeOperate {
 			String newsId) {
 		this.likeGVAdapter = gvAdapter;
 		this.newsID = newsId;
+		if (null == likeGVAdapter) {
+			LogUtils.e("点赞adpter为空");
+		}
 	}
 
 	/**
 	 * 点赞操作函数
 	 * */
 	public void Like() {
-		isLikeOperate = true;
-		callInterface.onOperateStart(isLikeOperate);
+		LogUtils.i("点赞");
+		lastOperateIsLike = true;
+		callInterface.onOperateStart(lastOperateIsLike);
 
 		LikeModel myModel = new LikeModel();
 		myModel.setUserID(String.valueOf(userModel.getUid()));
@@ -68,26 +77,28 @@ public class LikeOperate {
 		myModel.setHeadSubImage(userModel.getHead_sub_image());
 		try {
 			likeGVAdapter.addToFirst(myModel);
+			LogUtils.i("-----添加头像");
 		} catch (Exception e) {
 			ToastUtil.show(mContext, "发生了点小故障 (・ˍ・*)");
 		}
-		if (!severIsLike) {
-			likeNetOperate(newsID, "1");
-		}
+
+		likeNetOperate(newsID, "1");
 	}
 
 	/**
 	 * 取消点赞
 	 * */
 	public void Cancel() {
-		isLikeOperate = false;
-		callInterface.onOperateStart(isLikeOperate);
+		LogUtils.i("取消点赞");
+		lastOperateIsLike = false;
+		callInterface.onOperateStart(lastOperateIsLike);
 		// 移除头像
 		try {
 			for (int index = 0; index < likeGVAdapter.getCount(); ++index) {
 				if (likeGVAdapter.getItem(index).getUserID()
 						.equals(String.valueOf(userModel.getUid()))) {
 					likeGVAdapter.remove(index);
+					LogUtils.i("-----移除头像");
 					break;
 				} else {
 					LogUtils.e("点赞数据发生了错误.");
@@ -96,16 +107,14 @@ public class LikeOperate {
 		} catch (Exception e) {
 			ToastUtil.show(mContext, "发生了点小故障 (・ˍ・*)");
 		}
-		if (severIsLike) {
-			likeNetOperate(newsID, "0");
-		}
+		likeNetOperate(newsID, "0");
 	}
 
 	/**
 	 * 撤销上次操作
 	 * */
 	public void Revoked() {
-		if (isLikeOperate) {
+		if (lastOperateIsLike) {
 			this.Cancel();
 		} else {
 			this.Like();
@@ -154,12 +163,11 @@ public class LikeOperate {
 
 									if (status == JLXCConst.STATUS_FAIL) {
 										// 失败则取消上次操作
-										callInterface.onOperateFail(isLikeOperate);
+										callInterface
+												.onOperateFail(lastOperateIsLike);
 										Revoked();
-										ToastUtil.show(
-												mContext,
-												jsonResponse
-														.getString(JLXCConst.HTTP_MESSAGE));
+										LogUtils.e(jsonResponse
+												.getString(JLXCConst.HTTP_MESSAGE));
 										severIsLike = !severIsLike;
 										isLikeUpload = false;
 									}
@@ -170,13 +178,16 @@ public class LikeOperate {
 										String arg1, String flag) {
 									super.onFailure(arg0, arg1, flag);
 									// 失败则取消上次操作
-									callInterface.onOperateFail(isLikeOperate);
+									callInterface
+											.onOperateFail(lastOperateIsLike);
 									Revoked();
 									ToastUtil.show(mContext, "卧槽，竟然操作失败，检查下网络");
 									severIsLike = !severIsLike;
 									isLikeUpload = false;
 								}
 							}, null));
+		} else {
+			LogUtils.e("正在传输数据 ");
 		}
 	}
 
