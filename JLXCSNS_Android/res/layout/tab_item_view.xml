@@ -28,7 +28,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_unread"
+        android:id="@+id/unread_text_view"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_gravity="center_horizontal"

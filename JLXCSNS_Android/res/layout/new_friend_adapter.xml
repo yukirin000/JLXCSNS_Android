@@ -37,10 +37,13 @@
 	        android:layout_marginBottom="5dip"
 	        android:text="2015-05-05" /> -->
 
-	    <Button
-	        android:id="@+id/add_button"
+	    <TextView
+	        android:background="@color/color_3"
+	        android:padding="5dip"
+	        android:id="@+id/add_text_view"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:layout_marginRight="10dip"
 	        android:layout_alignParentRight="true"
 	        android:layout_centerVertical="true"
 	        android:text="添加" />

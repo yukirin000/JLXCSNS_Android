@@ -397,30 +397,30 @@ public class OtherPersonalActivity extends BaseActivity{
 												int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 												ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 												
-												//本地数据持久化
-												IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
-												//如果存在更新
-												if (null != imModel) {
-													imModel.setTitle(otherUserModel.getName());
-													imModel.setAvatarPath(otherUserModel.getHead_image());
-													imModel.setIsNew(0);
-													imModel.setIsRead(1);
-													imModel.setCurrentState(IMModel.GroupHasAdd);
-													imModel.update();
-												}else {
-													imModel = new IMModel();
-													imModel.setType(IMModel.ConversationType_PRIVATE);
-													imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
-													imModel.setTitle(otherUserModel.getName());
-													imModel.setAvatarPath(otherUserModel.getHead_image());
-													imModel.setIsNew(0);
-													imModel.setIsRead(1);
-													imModel.setCurrentState(IMModel.GroupHasAdd);
-													imModel.setOwner(UserManager.getInstance().getUser().getUid());
-													imModel.save();
-												}
-												
 												if (status == JLXCConst.STATUS_SUCCESS) {
+													//本地数据持久化
+													IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
+													//如果存在更新
+													if (null != imModel) {
+														imModel.setTitle(otherUserModel.getName());
+														imModel.setAvatarPath(otherUserModel.getHead_image());
+														imModel.setIsNew(0);
+														imModel.setIsRead(1);
+														imModel.setCurrentState(IMModel.GroupHasAdd);
+														imModel.update();
+													}else {
+														imModel = new IMModel();
+														imModel.setType(IMModel.ConversationType_PRIVATE);
+														imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+														imModel.setTitle(otherUserModel.getName());
+														imModel.setAvatarPath(otherUserModel.getHead_image());
+														imModel.setIsNew(0);
+														imModel.setIsRead(1);
+														imModel.setCurrentState(IMModel.GroupHasAdd);
+														imModel.setOwner(UserManager.getInstance().getUser().getUid());
+														imModel.save();
+													}
+													
 													//成功隐藏 
 													addFriendLayout.setVisibility(View.GONE);
 												}

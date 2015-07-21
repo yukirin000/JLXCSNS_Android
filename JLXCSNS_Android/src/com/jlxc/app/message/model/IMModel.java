@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import com.jlxc.app.base.manager.DBManager;
 import com.jlxc.app.base.manager.UserManager;
@@ -73,6 +74,7 @@ public class IMModel {
 	//删除数据
 	public void remove() {
 		String sql = "DELETE FROM jlxc_group WHERE groupId='"+targetId+"' AND owner='"+owner+"'";
+		Log.i("NewFriendsActivity", sql);
 		DBManager.getInstance().excute(sql);
 	}
 //	//查询全部数据
@@ -145,7 +147,8 @@ public class IMModel {
 			imModel.setCurrentState(cursor.getInt(6));
 			imModel.setIsRead(cursor.getInt(7));
 			imModel.setIsNew(cursor.getInt(8));
-			imModel.setAddDate(cursor.getString(9));
+			imModel.setOwner(cursor.getInt(9));
+			imModel.setAddDate(cursor.getString(10));
 			list.add(imModel);
 		}
 		cursor.close();

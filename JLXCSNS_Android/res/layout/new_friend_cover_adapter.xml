@@ -24,13 +24,13 @@
                 android:layout_marginLeft="5dip"
                 android:text="新的请求" />
 
-            <GridView
+            <com.jlxc.app.base.ui.view.TouchInterceptGridView
                 android:id="@+id/new_friends_grid_view"
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dip"
                 android:numColumns="3" >
-            </GridView>
+            </com.jlxc.app.base.ui.view.TouchInterceptGridView>
 
             <TextView
                 android:id="@+id/unread_text_view"
