@@ -111,6 +111,10 @@
         </activity>
         <activity android:name="com.jlxc.app.news.ui.activity.AllLikePersonActivity" >
         </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.MyNewsListActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.message.ui.activity.NewFriendsActivity" >
+        </activity>
 
         <!-- 会话 Activity -->
         <activity

@@ -33,12 +33,16 @@ public class PushReceiver extends BroadcastReceiver {
 						.append(" = ").append(topic).append(" ,")
 							.append(YunBaManager.MQTT_MSG).append(" = ").append(msg);	
 				LogUtils.i(showMsg.toString(),1);
+				
+//				[[Message] topic = jlxc1 ,message = {"type":4,"content":{"uid":"19","name":"刚刚","comment_content":"","head_image":"2015-07-11/191436584006_sub.jpg","news_id":"97","news_content":"high","news_image":"","news_user_name":"测试名","push_time":"2015-07-21 13:49:53"}}]callTraceStack:[PushReceiver.java:35:onReceive()<--]
+
 				//json解析
 				JSONObject obj = JSON.parseObject(msg);
 				if (obj == null) {
 					return;
 				}
 				int type = obj.getIntValue("type");
+				LogUtils.i(type+"",1);
 				switch (type) {
 				case NewsPushModel.PushAddFriend:
 					//添加好友信息
@@ -113,7 +117,7 @@ public class PushReceiver extends BroadcastReceiver {
 		pushModel.setName(pushObject.getString("name"));
 		pushModel.setHead_image(pushObject.getString("head_image"));
 		pushModel.setComment_content(pushObject.getString("comment_content"));
-		pushModel.setType(pushObject.getIntValue("type"));
+		pushModel.setType(jsonObject.getIntValue("type"));
 		pushModel.setNews_id(pushObject.getIntValue("news_id"));
 		pushModel.setNews_content(pushObject.getString("news_content"));
 		pushModel.setNews_image(pushObject.getString("news_image"));

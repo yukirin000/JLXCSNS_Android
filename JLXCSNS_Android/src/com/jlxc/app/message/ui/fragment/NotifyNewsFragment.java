@@ -1,20 +1,14 @@
 package com.jlxc.app.message.ui.fragment;
 
-import io.rong.imlib.RongIMClient;
-import io.rong.imlib.model.Conversation.ConversationType;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -24,26 +18,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
-import com.jlxc.app.base.adapter.MultiItemTypeSupport;
-import com.jlxc.app.base.helper.JsonRequestCallBack;
-import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
-import com.jlxc.app.base.manager.HttpManager;
-import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
-import com.jlxc.app.personal.ui.activity.FriendSettingActivity;
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class NotifyNewsFragment extends BaseFragment {
@@ -153,7 +138,9 @@ public class NotifyNewsFragment extends BaseFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-//				NewsPushModel newsPushModel = newsAdapter.getItem(position);
+				NewsPushModel newsPushModel = newsAdapter.getItem(position-1);
+				
+				
 			}
 		});
 		
@@ -167,9 +154,9 @@ public class NotifyNewsFragment extends BaseFragment {
 				new AlertDialog.Builder(getActivity()).setTitle("确定要删除吗").setPositiveButton("确定", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						NewsPushModel newsPushModel = newsAdapter.getItem(position);
+						NewsPushModel newsPushModel = newsAdapter.getItem(position-1);
 						newsPushModel.remove();
-						refreshList();
+						refreshList(); 
 					}
 				}).setNegativeButton("取消", null).show();
 				
