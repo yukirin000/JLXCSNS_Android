@@ -5,13 +5,17 @@ import com.jlxc.app.R;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
+import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.message.model.IMModel;
+import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
@@ -31,6 +35,7 @@ import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Group;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.UserInfo;
+import io.rong.message.ImageMessage;
 import io.rong.notification.PushNotificationMessage;
 
 /**
@@ -211,6 +216,10 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
     @Override
     public boolean onReceived(Message message, int left) {
 
+		//顶部更新
+		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
+		mContext.sendBroadcast(messageIntent);
+    	
 //        MessageContent messageContent = message.getContent();
 //
 //        if (messageContent instanceof TextMessage) {//文本消息
@@ -416,8 +425,9 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
      */
     @Override
     public boolean onUserPortraitClick(Context context, Conversation.ConversationType conversationType, UserInfo user) {
-        Log.d(TAG, "onUserPortraitClick");
-
+    	Intent intent = new Intent(context, OtherPersonalActivity.class);
+    	intent.putExtra(OtherPersonalActivity.INTENT_KEY, JLXCUtils.stringToInt(user.getUserId().replace(JLXCConst.JLXC, "")));
+    	context.startActivity(intent);
         /**
          * demo 代码  开发者需替换成自己的代码。
          */
@@ -445,8 +455,14 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
      */
     @Override
     public boolean onMessageClick(Context context, View view, Message message) {
-        Log.d(TAG, "onMessageClick");
-
+        //图片点击
+        if (message.getContent() instanceof ImageMessage) {
+        	ImageMessage imageMessage = (ImageMessage) message.getContent();
+        	 Uri imageUri = (imageMessage.getLocalUri() == null ? imageMessage.getRemoteUri() : imageMessage.getLocalUri());
+        	 Intent intent = new Intent(context, BigImgLookActivity.class);
+        	 intent.putExtra(BigImgLookActivity.INTENT_KEY, imageUri.toString());
+        	 context.startActivity(intent);
+        }
 //        /**
 //         * demo 代码  开发者需替换成自己的代码。
 //         */

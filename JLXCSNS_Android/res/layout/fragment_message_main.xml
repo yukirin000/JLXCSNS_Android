@@ -23,23 +23,55 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
+                <RelativeLayout 
+                android:id="@+id/conversation_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0">
                 <TextView
                     android:id="@+id/conversation_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
                     android:text="会话"
                     android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/conversation_unread_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@id/conversation_text_view"
+                    android:textColor="@color/color_3"
+                    android:text="99"
+                    android:textSize="10sp" />   
+                </RelativeLayout>
+                
+                <RelativeLayout 
+                android:id="@+id/notify_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0">
 
                 <TextView
                     android:id="@+id/notify_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
                     android:text="通知"
                     android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/notify_unread_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@id/notify_text_view"
+                    android:text="99"
+                    android:textColor="@color/color_3"
+                    android:textSize="10sp" />
+
+                </RelativeLayout>
+                
             </LinearLayout>
 
             <LinearLayout

@@ -12,7 +12,6 @@ import io.yunba.android.manager.YunBaManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class PushReceiver extends BroadcastReceiver {
 
@@ -34,8 +33,6 @@ public class PushReceiver extends BroadcastReceiver {
 							.append(YunBaManager.MQTT_MSG).append(" = ").append(msg);	
 				LogUtils.i(showMsg.toString(),1);
 				
-//				[[Message] topic = jlxc1 ,message = {"type":4,"content":{"uid":"19","name":"刚刚","comment_content":"","head_image":"2015-07-11/191436584006_sub.jpg","news_id":"97","news_content":"high","news_image":"","news_user_name":"测试名","push_time":"2015-07-21 13:49:53"}}]callTraceStack:[PushReceiver.java:35:onReceive()<--]
-
 				//json解析
 				JSONObject obj = JSON.parseObject(msg);
 				if (obj == null) {
@@ -78,7 +75,8 @@ public class PushReceiver extends BroadcastReceiver {
 	
 	//处理新好友通知
 	private void handleNewFriend(JSONObject jsonObject, Context context) {
-		IMModel imModel = IMModel.findByGroupId(jsonObject.getString("uid"));
+		JSONObject pushObject = jsonObject.getJSONObject("content");
+		IMModel imModel = IMModel.findByGroupId(pushObject.getString("uid"));
 		if (null != imModel) {
 			//存在 加好友 但是有新朋友
 			if (imModel.getCurrentState() == IMModel.GroupNotAdd) {
@@ -88,10 +86,10 @@ public class PushReceiver extends BroadcastReceiver {
 		}else {
 			imModel = new IMModel();
 			//保存群组信息
-			imModel.setType(jsonObject.getIntValue("type"));
-			imModel.setTargetId(jsonObject.getString("uid"));
-			imModel.setTitle(jsonObject.getString("name"));
-			imModel.setAvatarPath(jsonObject.getString("avatar"));
+			imModel.setType(pushObject.getIntValue("type"));
+			imModel.setTargetId(pushObject.getString("uid"));
+			imModel.setTitle(pushObject.getString("name"));
+			imModel.setAvatarPath(pushObject.getString("avatar"));
 			imModel.setIsNew(1);
 			imModel.setCurrentState(IMModel.GroupNotAdd);
 			imModel.setIsRead(0);
@@ -101,6 +99,9 @@ public class PushReceiver extends BroadcastReceiver {
 			//发送通知
 			Intent newsGroupIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
 			context.sendBroadcast(newsGroupIntent);
+			//顶部更新
+			Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
+			context.sendBroadcast(messageIntent);
 		}
 		
 		//徽标更新

@@ -3,11 +3,12 @@ package com.jlxc.app.message.ui.fragment;
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imlib.model.Conversation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -16,7 +17,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -26,9 +26,11 @@ import android.widget.LinearLayout.LayoutParams;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.model.NewsPushModel;
+import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.demo.ui.fragment.FragmentPage1;
+import com.jlxc.app.message.model.IMModel;
+import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
@@ -36,12 +38,12 @@ public class MessageMainFragment extends BaseFragment {
 
 	@ViewInject(R.id.vPager)
 	private ViewPager mPager;//页卡内容
-	//会话tab
-	@ViewInject(R.id.conversation_text_view)
-	private TextView conversationTextView;
-	//通知tab
-	@ViewInject(R.id.notify_text_view)
-    private TextView notifyTextView;
+	//会话未读tv
+	@ViewInject(R.id.conversation_unread_text_view)
+	private TextView conversationUnreadTextView;
+	//通知未读tv
+	@ViewInject(R.id.notify_unread_text_view)
+    private TextView notifyUnreadTextView;
 	@ViewInject(R.id.img_cursor)
     private ImageView cursor;// 动画图片
     private int offset = 0;// 动画图片偏移量
@@ -52,13 +54,13 @@ public class MessageMainFragment extends BaseFragment {
 	// 屏幕的尺寸
 	private int screenWidth = 0, screenHeight = 0;
 	
-	@OnClick({R.id.conversation_text_view,R.id.notify_text_view})
+	@OnClick({R.id.conversation_layout,R.id.notify_layout})
     private void clickEvent(View view) {
 		switch (view.getId()) {
-		case R.id.conversation_text_view:
+		case R.id.conversation_layout:
 			mPager.setCurrentItem(0);
 			break;
-		case R.id.notify_text_view:
+		case R.id.notify_layout:
 			mPager.setCurrentItem(1);				
 			break;
 		default:
@@ -84,6 +86,7 @@ public class MessageMainFragment extends BaseFragment {
 		// TODO Auto-generated method stub
 		initImage();
 		initViewPager();
+		registerNotify();
 	}
 	
 	/*
@@ -120,56 +123,6 @@ public class MessageMainFragment extends BaseFragment {
         mPager.setCurrentItem(0);
         mPager.setOnPageChangeListener(new MyOnPageChangeListener());
     }
-    
-    /**
-     * ViewPager适配器
-*/
-    public class MyPagerAdapter extends PagerAdapter {
-        public List<View> mListViews;
-        
-        public MyPagerAdapter(List<View> mListViews) {
-            this.mListViews = mListViews;
-        }
-
-        @Override
-        public void destroyItem(View arg0, int arg1, Object arg2) {
-            ((ViewPager) arg0).removeView(mListViews.get(arg1));
-        }
-
-        @Override
-        public void finishUpdate(View arg0) {
-        }
-
-        @Override
-        public int getCount() {
-            return mListViews.size();
-        }
-
-        @Override
-        public Object instantiateItem(View arg0, int arg1) {
-            ((ViewPager) arg0).addView(mListViews.get(arg1), 0);
-            return mListViews.get(arg1);
-        }
-
-        @Override
-        public boolean isViewFromObject(View arg0, Object arg1) {
-            return arg0 == (arg1);
-        }
-
-        @Override
-        public void restoreState(Parcelable arg0, ClassLoader arg1) {
-        }
-
-        @Override
-        public Parcelable saveState() {
-            return null;
-        }
-
-        @Override
-        public void startUpdate(View arg0) {
-        }
-    }
-    
     
     private class MessageFragmentPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
 
@@ -220,18 +173,14 @@ public class MessageMainFragment extends BaseFragment {
 
 		public void onPageScrollStateChanged(int index) {
 			currIndex = index;
-
-			if (index == 1) {
-				//设置已读
-				NewsPushModel.setIsRead();
-			}
+			//设置已读
+			NewsPushModel.setIsRead();
 			
 			//通知刷新
 			Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
 			getActivity().sendBroadcast(tabIntent);
-			Intent messageIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
-			getActivity().sendBroadcast(messageIntent);
-			
+			//自己也刷新
+			refreshMessage();
 		}
 
 		// CurrentTab:当前页面序号
@@ -254,5 +203,52 @@ public class MessageMainFragment extends BaseFragment {
 
 		}
     }
+    
+	private NewMessageReceiver newMessageReceiver;
+	//注册通知
+	private void registerNotify(){
+		//刷新顶部tab
+		newMessageReceiver = new NewMessageReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				//刷新顶部tab
+				refreshMessage();
+			}
+		};
+		IntentFilter intentFilter = new IntentFilter(JLXCConst.BROADCAST_MESSAGE_REFRESH);
+		getActivity().registerReceiver(newMessageReceiver, intentFilter);
+	}
+	
+	//刷新顶部栏
+	private void refreshMessage() {
+
+	    //新好友请求未读
+		int newFriendsCount = IMModel.unReadNewFriendsCount();
+	    //未读推送
+		int newsUnreadCount = NewsPushModel.findUnreadCount().size();
+		int pushCount = newFriendsCount + newsUnreadCount;
+	    //聊天未读
+		int IMUnreadCount = MainTabActivity.imUnreadCount;
+	    //徽标 最多显示99
+	    if (pushCount > 99) {
+	        pushCount = 99;
+	    }
+	    if (pushCount < 1) {
+	    	notifyUnreadTextView.setVisibility(View.GONE);
+	    }else{
+	    	notifyUnreadTextView.setVisibility(View.VISIBLE);
+	    	notifyUnreadTextView.setText(""+pushCount);
+	    }
+	    
+	    if (IMUnreadCount > 99) {
+	        IMUnreadCount = 99;
+	    }
+	    if (IMUnreadCount < 1) {
+	    	conversationUnreadTextView.setVisibility(View.GONE);
+	    }else{
+	    	conversationUnreadTextView.setVisibility(View.VISIBLE);
+	    	conversationUnreadTextView.setText(""+IMUnreadCount);
+	    }
+	}
 
 }

@@ -6,38 +6,35 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient.ConnectCallback;
 import io.rong.imlib.RongIMClient.ErrorCode;
+import io.rong.imlib.model.Conversation;
 import io.yunba.android.manager.YunBaManager;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.login.ui.activity.LoginActivity;
+import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
-import com.jlxc.app.news.ui.fragment.CampusFragment;
+import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
 import com.jlxc.app.news.ui.fragment.MainPageFragment;
-import com.jlxc.app.news.ui.fragment.NewsListFragment;
-import com.jlxc.app.personal.ui.activity.AccountSettingActivity;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.support.v4.app.FragmentTabHost;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +58,8 @@ public class MainTabActivity extends BaseActivity {
 			R.drawable.tab_message_btn };
 
 	private String mTextviewArray[] = { "主页", "消息", "我" };
+	//im未读数量
+	public static int imUnreadCount;
 	
 	public void initTab() {
 
@@ -77,6 +76,21 @@ public class MainTabActivity extends BaseActivity {
 			mTabHost.getTabWidget().getChildAt(i)
 					.setBackgroundResource(R.drawable.selector_tab_background);
 		}
+		//设置im未读监听
+		final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
+                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
+                Conversation.ConversationType.APP_PUBLIC_SERVICE, Conversation.ConversationType.PUBLIC_SERVICE};
+		Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
+            }
+        }, 500);
+		
+		//注册通知
+		registerNotify();
+		refreshTab();
 	}
 	
 	//初始化融云
@@ -251,8 +265,57 @@ public class MainTabActivity extends BaseActivity {
 			return super.onKeyDown(keyCode, event);
 	}
 	
+	////////////////////////////////private method////////////////////////////////
+	private NewMessageReceiver newMessageReceiver;
+	//注册通知
+	private void registerNotify(){
+		//刷新tab
+		newMessageReceiver = new NewMessageReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				//刷新tab
+				refreshTab();
+			}
+		};
+		IntentFilter intentFilter = new IntentFilter(JLXCConst.BROADCAST_TAB_BADGE);
+		registerReceiver(newMessageReceiver, intentFilter);
+	}
+	
+	//刷新tab 未读标志
+	private void refreshTab() {
+		View messageView = mTabHost.getTabWidget().getChildAt(1);
+		TextView unreadTextView = (TextView) messageView.findViewById(R.id.unread_text_view);
+	    //聊天页面
+	    //新好友请求未读
+		int newFriendsCount = IMModel.unReadNewFriendsCount();
+	    //徽标 最多显示99
+	    //未读推送
+		int newsUnreadCount = NewsPushModel.findUnreadCount().size();
+		int total = newsUnreadCount+newFriendsCount+imUnreadCount;
+	    if (total > 99) {
+	        total = 99;
+	    }
+	    unreadTextView.setText(total+"");
+	    if (total == 0) {
+			unreadTextView.setVisibility(View.GONE);
+		}else {
+			unreadTextView.setVisibility(View.VISIBLE);
+		}
+	}
+	
+	//im未读监听器
+	public RongIM.OnReceiveUnreadCountChangedListener mCountListener = new RongIM.OnReceiveUnreadCountChangedListener() {
+        @Override
+        public void onMessageIncreased(int count) {
+            imUnreadCount = count;
+            refreshTab();
+        }
+    };
+	
+	//杀死进程
 	public static void killThisPackageIfRunning(final Context context, String packageName) {
         android.app.ActivityManager activityManager = (android.app.ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         activityManager.killBackgroundProcesses(packageName);
     }
+	
 }
