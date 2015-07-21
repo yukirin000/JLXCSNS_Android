@@ -1,10 +1,16 @@
 package com.jlxc.app.news.model;
 
+import java.io.Serializable;
+
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class ImageModel {
+public class ImageModel implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1628730232453437535L;
 	// 图片id
 	private String imageId;
 	// 图片的类型
