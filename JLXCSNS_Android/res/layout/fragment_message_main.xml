@@ -42,6 +42,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@id/conversation_text_view"
                     android:textColor="@color/color_3"
+                    android:visibility="gone"
                     android:text="99"
                     android:textSize="10sp" />   
                 </RelativeLayout>
@@ -66,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@id/notify_text_view"
+                    android:visibility="gone"
                     android:text="99"
                     android:textColor="@color/color_3"
                     android:textSize="10sp" />
