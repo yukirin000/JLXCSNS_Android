@@ -1,10 +1,16 @@
 package com.jlxc.app.news.model;
 
+import java.io.Serializable;
+
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class LikeModel {
+public class LikeModel implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 263009424634441987L;
 	// 点赞者的id
 	private String userID;
 	// 点赞占的头像全图

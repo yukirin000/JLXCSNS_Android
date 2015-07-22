@@ -1,13 +1,18 @@
 package com.jlxc.app.news.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 
-public class CommentModel {
+public class CommentModel implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1450887079414216891L;
 	// 评论的id
 	private String commentID;
 	// 评论者的名字

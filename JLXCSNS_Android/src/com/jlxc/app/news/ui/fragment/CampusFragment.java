@@ -43,6 +43,7 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.ItemModel;
+import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.model.ItemModel.BodyItem;
 import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.ItemModel.OperateItem;
@@ -72,7 +73,7 @@ public class CampusFragment extends BaseFragment {
 	@ViewInject(R.id.campus_listview)
 	private PullToRefreshListView campusListView;
 	// 原始数据源
-	private List<NewsModel> newsDataList = new ArrayList<NewsModel>();
+	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
 	private List<ItemModel> itemDataList = null;
 	// 动态列表适配器
@@ -744,12 +745,12 @@ public class CampusFragment extends BaseFragment {
 				tempPerson.setContentWithJson(personObj);
 				personList.add(tempPerson);
 			}
-			this.newsDataList = newsList;
+			this.newsList = newsList;
 			latestTimesTamp = newsList.get(0).getTimesTamp();
 			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
 					personList));
 		} else {
-			this.newsDataList.addAll(newsList);
+			this.newsList.addAll(newsList);
 			newsAdapter.addAll(DataToItem.campusDataToItems(newsList,
 					personList));
 		}
@@ -775,16 +776,8 @@ public class CampusFragment extends BaseFragment {
 				TitleItem titleData = (TitleItem) newsAdapter.getItem(postion);
 				if (R.id.layout_campus_title_rootview == viewID) {
 					// 跳转到动态详情
-					Intent intentToNewsDetail = new Intent(mContext,
-							NewsDetailActivity.class);
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_CMT_STATE,
-							"CLOSE_KEY_BOARD");
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
-							"Campus_Fragment");
-					startActivityWithRightForResult(intentToNewsDetail,
-							titleData.getNewsID());
+					jumpToNewsDetail(titleData,
+							NewsOperateModel.KEY_BOARD_CLOSE, null);
 				} else {
 					// 跳转到用户的主页
 					JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
@@ -805,16 +798,8 @@ public class CampusFragment extends BaseFragment {
 					startActivity(intent);
 				} else {
 					// 跳转到动态详情
-					Intent intentToNewsDetail = new Intent(mContext,
-							NewsDetailActivity.class);
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_CMT_STATE,
-							"CLOSE_KEY_BOARD");
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
-							"Campus_Fragment");
-					startActivityWithRightForResult(intentToNewsDetail,
-							bodyData.getNewsID());
+					jumpToNewsDetail(bodyData,
+							NewsOperateModel.KEY_BOARD_CLOSE, null);
 				}
 				break;
 
@@ -825,28 +810,12 @@ public class CampusFragment extends BaseFragment {
 						.getItem(postion);
 				if (R.id.layout_campus_operate_root_view == viewID) {
 					// 跳转到动态详情
-					Intent intentToNewsDetail = new Intent(mContext,
-							NewsDetailActivity.class);
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_CMT_STATE,
-							"CLOSE_KEY_BOARD");
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
-							"Campus_Fragment");
-					startActivityWithRightForResult(intentToNewsDetail,
-							operateData.getNewsID());
+					jumpToNewsDetail(operateData,
+							NewsOperateModel.KEY_BOARD_CLOSE, null);
 				} else if (R.id.btn_campus_reply == viewID) {
 					// 跳转至评论页面并打开评论框
-					Intent intentToNewsDetail = new Intent(mContext,
-							NewsDetailActivity.class);
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_CMT_STATE,
-							"publish_comment");
-					intentToNewsDetail.putExtra(
-							NewsDetailActivity.INTENT_KEY_LAST_ACTIVITY,
-							"News_List_Fragment");
-					startActivityWithRightForResult(intentToNewsDetail,
-							operateData.getNewsID());
+					jumpToNewsDetail(operateData,
+							NewsOperateModel.KEY_BOARD_COMMENT, null);
 				} else {
 					likeOperate = new LikeCancel(view, postion);
 					if (operateData.getIsLike()) {
@@ -1047,20 +1016,59 @@ public class CampusFragment extends BaseFragment {
 		startActivityWithRight(intentUsrMain);
 	}
 
-	/**
-	 * 带返回结果的 右侧进入
-	 * 
-	 * @param intent
+	/***
+	 * 跳转至动态相详情
 	 */
-	public void startActivityWithRightForResult(Intent intent, String newsID) {
-		for (int index = 0; index < newsDataList.size(); index++) {
-			if (newsDataList.get(index).getNewsID().equals(newsID)) {
-				currentNews = newsDataList.get(index);
-				indexAtNewsList = index;
+	private void jumpToNewsDetail(ItemModel itemModel, int keyBoardMode,
+			String commentId) {
+		// 跳转到动态详情
+		Intent intentToNewsDetail = new Intent(mContext,
+				NewsDetailActivity.class);
+		switch (keyBoardMode) {
+		// 键盘关闭
+		case NewsOperateModel.KEY_BOARD_CLOSE:
+			intentToNewsDetail.putExtra(
+					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
+					NewsOperateModel.KEY_BOARD_CLOSE);
+			break;
+		// 键盘打开等待评论
+		case NewsOperateModel.KEY_BOARD_COMMENT:
+			intentToNewsDetail.putExtra(
+					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
+					NewsOperateModel.KEY_BOARD_COMMENT);
+			break;
+		// 键盘打开等待回复
+		case NewsOperateModel.KEY_BOARD_REPLY:
+			intentToNewsDetail.putExtra(
+					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
+					NewsOperateModel.KEY_BOARD_REPLY);
+			if (null != commentId) {
+				intentToNewsDetail.putExtra(
+						NewsOperateModel.INTENT_KEY_COMMENT_ID, commentId);
+			} else {
+				LogUtils.e("回复别人时必须要传递被评论的id.");
+			}
+			break;
+
+		default:
+			break;
+		}
+		// 当前操作的动态id
+		intentToNewsDetail.putExtra(NewsOperateModel.INTENT_KEY_NEWS_ID,
+				itemModel.getNewsID());
+
+		// 找到当前的操作对象
+		for (int index = 0; index < newsList.size(); ++index) {
+			if (newsList.get(index).getNewsID().equals(itemModel.getNewsID())) {
+				intentToNewsDetail.putExtra(
+						NewsOperateModel.INTENT_KEY_NEWS_OBJ,
+						newsList.get(index));
 				break;
 			}
 		}
-		startActivityForResult(intent, 0);
+
+		// 带有返回参数的跳转至动态详情
+		startActivityForResult(intentToNewsDetail, 0);
 		getActivity().overridePendingTransition(R.anim.push_right_in,
 				R.anim.push_right_out);
 	}
@@ -1071,20 +1079,20 @@ public class CampusFragment extends BaseFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// 更新操作结果
-		switch (resultCode) {
-		case NewsDetailActivity.OPERATE_UPDATE:
-			newsDataList.set(indexAtNewsList, currentNews);
-			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsDataList,
-					personList));
-			break;
-		case NewsDetailActivity.OPERATE_DELETET:
-			newsDataList.remove(indexAtNewsList);
-			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsDataList,
-					personList));
-			break;
-		default:
-			break;
-		}
+//		switch (resultCode) {
+//		case NewsDetailActivity.OPERATE_UPDATE:
+//			newsList.set(indexAtNewsList, currentNews);
+//			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
+//					personList));
+//			break;
+//		case NewsDetailActivity.OPERATE_DELETET:
+//			newsList.remove(indexAtNewsList);
+//			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
+//					personList));
+//			break;
+//		default:
+//			break;
+//		}
 
 		super.onActivityResult(requestCode, resultCode, intent);
 	}

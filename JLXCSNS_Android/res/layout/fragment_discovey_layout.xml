@@ -39,6 +39,19 @@
         </LinearLayout>
     </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/tv_discovey_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="搜索" />
+    </LinearLayout>
+    
     <!-- 发现listview -->
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView

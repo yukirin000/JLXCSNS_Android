@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_my_news_list_body_rootview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/txt_my_news_list_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容"
+        android:textColor="#6b717b"
+        android:textSize="13dp" />
+
+    <com.jlxc.app.base.ui.view.NoScrollGridView
+        android:id="@+id/gv_my_news_list_body_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:numColumns="3"
+        android:padding="10dp"
+        android:src="@drawable/ic_launcher"
+        android:verticalSpacing="5dp" >
+    </com.jlxc.app.base.ui.view.NoScrollGridView>
+
+    <!-- 只有一张图片时显示此imageview -->
+
+    <ImageView
+        android:id="@+id/iv_my_news_list_body_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/ic_launcher" />
+    <!-- 发布的位置 -->
+
+    <TextView
+        android:id="@+id/txt_my_news_list_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:text="地理位置" />
+
+</LinearLayout>

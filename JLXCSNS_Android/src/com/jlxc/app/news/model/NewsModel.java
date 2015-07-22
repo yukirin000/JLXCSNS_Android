@@ -1,5 +1,6 @@
 package com.jlxc.app.news.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +10,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 
-public class NewsModel {
+public class NewsModel implements Serializable {
+
+	/**
+	 * 序列号（activity之间传递的时候使用）
+	 */
+	private static final long serialVersionUID = 1994327813985826490L;
 
 	// 用户id
 	private String uid;
@@ -52,65 +58,102 @@ public class NewsModel {
 	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
 
-		setUid(object.getString("uid"));
-		setUserName(object.getString("name"));
-		setUserSchool(object.getString("school"));
-		setUserHeadImage(JLXCConst.ATTACHMENT_ADDR
-				+ object.getString("head_image"));
-		setUserHeadSubImage(JLXCConst.ATTACHMENT_ADDR
-				+ object.getString("head_sub_image"));
-		setNewsID(object.getString("id"));
-		setNewsContent(object.getString("content_text"));
-		setLocation(object.getString("location"));
-		setCommentQuantity(object.getString("comment_quantity"));
-		setBrowseQuantity(object.getString("browse_quantity"));
-		setLikeQuantity(object.getString("like_quantity"));
-		setSendTime(object.getString("add_date"));
-		setIsLike(object.getString("is_like"));
+		if (object.containsKey("uid")) {
+			setUid(object.getString("uid"));
+		}
+		if (object.containsKey("name")) {
+			setUserName(object.getString("name"));
+		}
+		if (object.containsKey("school")) {
+			setUserSchool(object.getString("school"));
+		}
+		if (object.containsKey("head_image")) {
+			setUserHeadImage(JLXCConst.ATTACHMENT_ADDR
+					+ object.getString("head_image"));
+		}
+		if (object.containsKey("head_sub_image")) {
+			setUserHeadSubImage(JLXCConst.ATTACHMENT_ADDR
+					+ object.getString("head_sub_image"));
+		}
+		if (object.containsKey("id")) {
+			setNewsID(object.getString("id"));
+		}
+		if (object.containsKey("content_text")) {
+			setNewsContent(object.getString("content_text"));
+		}
+		if (object.containsKey("location")) {
+			setLocation(object.getString("location"));
+		}
+		if (object.containsKey("comment_quantity")) {
+			setCommentQuantity(object.getString("comment_quantity"));
+		}
+		if (object.containsKey("browse_quantity")) {
+			setBrowseQuantity(object.getString("browse_quantity"));
+		}
+		if (object.containsKey("like_quantity")) {
+			setLikeQuantity(object.getString("like_quantity"));
+		}
+		if (object.containsKey("add_date")) {
+			setSendTime(object.getString("add_date"));
+		}
+		if (object.containsKey("is_like")) {
+			setIsLike(object.getString("is_like"));
+		}
 
 		// 图片的转换
-		List<JSONObject> JImageObj = (List<JSONObject>) object.get("images");
-		List<ImageModel> imgList = new ArrayList<ImageModel>();
-		for (JSONObject imgObject : JImageObj) {
-			ImageModel imgTemp = new ImageModel();
-			imgTemp.setContentWithJson(imgObject);
-			imgList.add(imgTemp);
+		if (object.containsKey("images")) {
+			List<JSONObject> JImageObj = (List<JSONObject>) object
+					.get("images");
+			List<ImageModel> imgList = new ArrayList<ImageModel>();
+			for (JSONObject imgObject : JImageObj) {
+				ImageModel imgTemp = new ImageModel();
+				imgTemp.setContentWithJson(imgObject);
+				imgList.add(imgTemp);
+			}
+			setImageNewsList(imgList);
 		}
-		setImageNewsList(imgList);
 
 		// 评论的转换
-		List<JSONObject> JCommentObj = (List<JSONObject>) object
-				.get("comments");
-		List<CommentModel> cmtList = new ArrayList<CommentModel>();
-		for (JSONObject cmtObject : JCommentObj) {
-			CommentModel cmtTemp = new CommentModel();
-			cmtTemp.setContentWithJson(cmtObject);
-			cmtList.add(cmtTemp);
+		if (object.containsKey("comments")) {
+			List<JSONObject> JCommentObj = (List<JSONObject>) object
+					.get("comments");
+			List<CommentModel> cmtList = new ArrayList<CommentModel>();
+			for (JSONObject cmtObject : JCommentObj) {
+				CommentModel cmtTemp = new CommentModel();
+				cmtTemp.setContentWithJson(cmtObject);
+				cmtList.add(cmtTemp);
+			}
+			setCommentList(cmtList);
 		}
-		setCommentList(cmtList);
 		// 点赞
-		List<JSONObject> JLikeObj = (List<JSONObject>) object.get("likes");
-		List<LikeModel> likeList = new ArrayList<LikeModel>();
-		for (JSONObject lkObject : JLikeObj) {
-			LikeModel lkTemp = new LikeModel();
-			lkTemp.setContentWithJson(lkObject);
-			likeList.add(lkTemp);
+		if (object.containsKey("likes")) {
+			List<JSONObject> JLikeObj = (List<JSONObject>) object.get("likes");
+			List<LikeModel> likeList = new ArrayList<LikeModel>();
+			for (JSONObject lkObject : JLikeObj) {
+				LikeModel lkTemp = new LikeModel();
+				lkTemp.setContentWithJson(lkObject);
+				likeList.add(lkTemp);
+			}
+			setLikeHeadListimage(likeList);
 		}
-		setLikeHeadListimage(likeList);
-		setTimesTamp(object.getString("add_time"));
+		if (object.containsKey("add_time")) {
+			setTimesTamp(object.getString("add_time"));
+		}
 
-		Map<String, String> tempMap = new HashMap<String, String>();
-		JSONObject typeObject = (JSONObject) object.get("type");
 		if (object.containsKey("type")) {
-			tempMap.put("type", typeObject.getString("type"));
+			Map<String, String> tempMap = new HashMap<String, String>();
+			JSONObject typeObject = (JSONObject) object.get("type");
+			if (object.containsKey("type")) {
+				tempMap.put("type", typeObject.getString("type"));
+			}
+			if (object.containsKey("fid")) {
+				tempMap.put("fid", typeObject.getString("fid"));
+			}
+			if (object.containsKey("content")) {
+				tempMap.put("content", typeObject.getString("content"));
+			}
+			setTYPE(tempMap);
 		}
-		if (object.containsKey("fid")) {
-			tempMap.put("fid", typeObject.getString("fid"));
-		}
-		if (object.containsKey("content")) {
-			tempMap.put("content", typeObject.getString("content"));
-		}
-		setTYPE(tempMap);
 
 	}
 
