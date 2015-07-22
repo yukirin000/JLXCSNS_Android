@@ -52,6 +52,7 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.discovery.ui.avtivity.QRCodeScanActivity;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.model.CityModel;
@@ -268,7 +269,8 @@ public class PersonalFragment extends BaseFragment {
 			break;
 		case R.id.setting_Button:
 			//设置
-			Intent setIntent = new Intent(getActivity(), PersonalSettingActivity.class);
+//			Intent setIntent = new Intent(getActivity(), PersonalSettingActivity.class);
+			Intent setIntent = new Intent(getActivity(), QRCodeScanActivity.class);
 			startActivityWithRight(setIntent);
 			break;
 		case R.id.card_Button:

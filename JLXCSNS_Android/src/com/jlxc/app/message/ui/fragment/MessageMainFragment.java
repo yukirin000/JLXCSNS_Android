@@ -87,6 +87,7 @@ public class MessageMainFragment extends BaseFragment {
 		initImage();
 		initViewPager();
 		registerNotify();
+		refreshMessage();
 	}
 	
 	/*

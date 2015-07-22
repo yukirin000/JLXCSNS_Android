@@ -36,4 +36,6 @@
     <string name="alert_finish">关闭</string>
     <!-- Alert -->
     
+    <string name="scan_text">将二维码放入框内, 即可自动扫描</string>
+    
 </resources>
