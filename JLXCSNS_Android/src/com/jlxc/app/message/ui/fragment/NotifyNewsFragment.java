@@ -116,9 +116,14 @@ public class NotifyNewsFragment extends BaseFragment {
 				}else {
 					helper.setText(R.id.content_text_view, item.getComment_content());
 				}
+				
+				String headString = item.getHead_image();
+				if (item.getHead_image().equals("null")) {
+					headString = "";
+				}
 				//头像
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_image());
+				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+headString);					
 				//有图片显示图片 没图片显示内容
 				ImageView newsImageView = helper.getView(R.id.news_image_view);
 				TextView newsTextView = helper.getView(R.id.news_text_view);
