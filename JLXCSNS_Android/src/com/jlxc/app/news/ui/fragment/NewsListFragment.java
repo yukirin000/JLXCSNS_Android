@@ -44,7 +44,9 @@ import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.LikeOperate;
+import com.jlxc.app.news.utils.LikeOperate.LikeCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
+import com.jlxc.app.personal.utils.NewsToItemData;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.PauseOnScrollListener;
@@ -68,6 +70,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnScrollChangedListener;
@@ -102,6 +105,8 @@ public class NewsListFragment extends BaseFragment {
 	private HelloHaAdapter<ItemModel> newsAdapter = null;
 	// 使支持多种item
 	private MultiItemTypeSupport<ItemModel> multiItemTypeSupport = null;
+	//
+	NoScrollGridView likeGridView;
 	// 上下文信息
 	private Context mContext;
 	// bitmap的处理
@@ -129,7 +134,7 @@ public class NewsListFragment extends BaseFragment {
 	// 点赞操作类
 	private LikeCancel likeOperate;
 	// 当前操作的动态
-	public static NewsModel currentNews;
+	private NewsModel currentNews;
 	// 当前操作的位置
 	private int indexAtNewsList = 0;
 
@@ -608,7 +613,7 @@ public class NewsListFragment extends BaseFragment {
 			}
 		};
 		// 点赞头像gridview
-		NoScrollGridView likeGridView = (NoScrollGridView) helper
+		likeGridView = (NoScrollGridView) helper
 				.getView(R.id.gv_mian_Like_list);
 		likeGridView.setAdapter(likeGVAdapter);
 		likeGridView.setOnItemClickListener(likeItemClickListener);
@@ -735,7 +740,7 @@ public class NewsListFragment extends BaseFragment {
 	 * 点赞操作
 	 */
 	private void likeNetOperate(String newsId, String likeOrCancel) {
-		// // 参数设置
+		// 参数设置
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("news_id", newsId);
 		params.addBodyParameter("isLike", likeOrCancel);
@@ -911,6 +916,19 @@ public class NewsListFragment extends BaseFragment {
 			default:
 				break;
 			}
+		}
+	}
+
+	private void updateSingleRow(ListView listView, String Newsid) {
+		if (listView != null) {
+			int start = listView.getFirstVisiblePosition();
+			for (int i = start, j = listView.getLastVisiblePosition(); i <= j; i++)
+				if (Newsid.equals(((NewsModel) listView.getItemAtPosition(i))
+						.getNewsID())) {
+					View view = listView.getChildAt(i - start);
+					listView.getAdapter().getView(i, view, listView);
+					break;
+				}
 		}
 	}
 
@@ -1114,12 +1132,13 @@ public class NewsListFragment extends BaseFragment {
 		intentToNewsDetail.putExtra(NewsOperateModel.INTENT_KEY_NEWS_ID,
 				itemModel.getNewsID());
 
-		// 找到当前的操作对象
+		// 找到当前的动态对象
 		for (int index = 0; index < newsList.size(); ++index) {
 			if (newsList.get(index).getNewsID().equals(itemModel.getNewsID())) {
 				intentToNewsDetail.putExtra(
 						NewsOperateModel.INTENT_KEY_NEWS_OBJ,
 						newsList.get(index));
+				indexAtNewsList = index;
 				break;
 			}
 		}
@@ -1134,19 +1153,28 @@ public class NewsListFragment extends BaseFragment {
 	 * 上一个Activity返回结束时调用
 	 * */
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-//		switch (resultCode) {
-//		case NewsDetailActivity.OPERATE_UPDATE:
-//			newsList.set(indexAtNewsList, currentNews);
-//			newsAdapter.replaceAll(DataToItem.newsDataToItems(newsList));
-//			break;
-//		case NewsDetailActivity.OPERATE_DELETET:
-//			newsList.remove(indexAtNewsList);
-//			newsAdapter.replaceAll(DataToItem.newsDataToItems(newsList));
-//			break;
-//		default:
-//			break;
-//		}
-		super.onActivityResult(requestCode, resultCode, intent);
+	public void onActivityResult(int requestCode, int resultCode,
+			Intent resultIntent) {
+		if (null != resultIntent) {
+			switch (resultCode) {
+			case NewsOperateModel.OPERATE_UPDATE:
+				if (resultIntent
+						.hasExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ)) {
+					NewsModel resultNews = (NewsModel) resultIntent
+							.getSerializableExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ);
+					newsList.set(indexAtNewsList, resultNews);
+					newsAdapter
+							.replaceAll(DataToItem.newsDataToItems(newsList));
+				}
+				break;
+			case NewsOperateModel.OPERATE_DELETET:
+				newsList.remove(indexAtNewsList);
+				newsAdapter.replaceAll(DataToItem.newsDataToItems(newsList));
+				break;
+			default:
+				break;
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, resultIntent);
 	}
 }

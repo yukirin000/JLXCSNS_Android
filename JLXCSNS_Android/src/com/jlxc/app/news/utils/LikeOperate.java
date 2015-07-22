@@ -1,13 +1,7 @@
 package com.jlxc.app.news.utils;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.view.View;
-import android.widget.Button;
+import android.text.StaticLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
@@ -26,7 +20,7 @@ import com.lidroid.xutils.http.RequestParams;
 public class LikeOperate {
 
 	// 对应的gridview适配器
-	private HelloHaAdapter<LikeModel> likeGVAdapter;
+	private static HelloHaAdapter<LikeModel> likeGVAdapter;
 	// 上行文信息
 	private Context mContext;
 	// 用户对象
@@ -56,7 +50,7 @@ public class LikeOperate {
 	 * */
 	public void setOperateData(HelloHaAdapter<LikeModel> gvAdapter,
 			String newsId) {
-		this.likeGVAdapter = gvAdapter;
+		LikeOperate.likeGVAdapter = gvAdapter;
 		this.newsID = newsId;
 		if (null == likeGVAdapter) {
 			LogUtils.e("点赞adpter为空");

@@ -1077,23 +1077,31 @@ public class CampusFragment extends BaseFragment {
 	 * 上一个Activity返回结束时调用
 	 * */
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	public void onActivityResult(int requestCode, int resultCode,
+			Intent resultIntent) {
 		// 更新操作结果
-//		switch (resultCode) {
-//		case NewsDetailActivity.OPERATE_UPDATE:
-//			newsList.set(indexAtNewsList, currentNews);
-//			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
-//					personList));
-//			break;
-//		case NewsDetailActivity.OPERATE_DELETET:
-//			newsList.remove(indexAtNewsList);
-//			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
-//					personList));
-//			break;
-//		default:
-//			break;
-//		}
+		if (null != resultIntent) {
+			switch (resultCode) {
+			case NewsOperateModel.OPERATE_UPDATE:
+				if (resultIntent
+						.hasExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ)) {
+					NewsModel resultNews = (NewsModel) resultIntent
+							.getSerializableExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ);
+					newsList.set(indexAtNewsList, resultNews);
+					newsAdapter.replaceAll(DataToItem.campusDataToItems(
+							newsList, personList));
+				}
+				break;
+			case NewsOperateModel.OPERATE_DELETET:
+				newsList.remove(indexAtNewsList);
+				newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
+						personList));
+				break;
+			default:
+				break;
+			}
+		}
 
-		super.onActivityResult(requestCode, resultCode, intent);
+		super.onActivityResult(requestCode, resultCode, resultIntent);
 	}
 }

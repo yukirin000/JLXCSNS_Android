@@ -1,9 +1,15 @@
 package com.jlxc.app.news.model;
 
+import java.io.Serializable;
+
 import com.alibaba.fastjson.JSONObject;
 
-public class SubCommentModel {
+public class SubCommentModel implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3721167041844355170L;
 	// 子评论的id
 	private String subID;
 	// 评论者的名字

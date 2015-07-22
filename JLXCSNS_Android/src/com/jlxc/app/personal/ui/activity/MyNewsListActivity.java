@@ -48,6 +48,7 @@ import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.personal.model.MyNewsListItemModel;
 import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsBodyItem;
 import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsOperateItem;
@@ -65,6 +66,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 //我的动态列表
 public class MyNewsListActivity extends BaseActivityWithTopBar {
 
+	//其他Activity传递进入的被查看的用户id
 	private final static String ITNET_KEY_UID = "user_id";
 	// 用户实例
 	private UserModel userModel;
@@ -73,7 +75,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	private PullToRefreshListView newsListView;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
-	// item数据源
+	// item类型数据
 	private List<MyNewsListItemModel> itemDataList = null;
 	// 动态列表适配器
 	private HelloHaAdapter<MyNewsListItemModel> newsAdapter = null;
@@ -282,8 +284,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			currentUid = bundle.getString(ITNET_KEY_UID);
 		}
 		/*** 测试 *****/
-		currentUid = "21";
-		userModel.setUid(20);
+//		currentUid = "21";
+//		userModel.setUid(21);
 
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
@@ -482,7 +484,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.btn_my_news_list_reply,
 				"评论 " + opData.getReplyCount());
 		if (opData.getIsLike()) {
-			helper.setText(R.id.btn_my_news_list_reply,
+			helper.setText(R.id.btn_my_news_list_like,
 					"已赞 " + opData.getLikeCount());
 		} else {
 			helper.setText(R.id.btn_my_news_list_like,
@@ -721,7 +723,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				} else if (R.id.btn_my_news_delete == viewID) {
 					deleteCurrentNews(titleData.getNewsID());
 				} else {
-					JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
+					jumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				}
 				break;
 
@@ -822,7 +824,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				long id) {
 			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
 					position);
-			JumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
+			jumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
 		}
 	}
 
@@ -862,7 +864,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	/**
 	 * 跳转至用户的主页
 	 */
-	private void JumpToHomepage(int userID) {
+	private void jumpToHomepage(int userID) {
 		Intent intentUsrMain = new Intent(MyNewsListActivity.this,
 				OtherPersonalActivity.class);
 		intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, userID);
@@ -872,8 +874,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	/***
 	 * 跳转至动态相详情
 	 */
-	private void jumpToNewsDetail(MyNewsListItemModel itemModel, int keyBoardMode,
-			String commentId) {
+	private void jumpToNewsDetail(MyNewsListItemModel itemModel,
+			int keyBoardMode, String commentId) {
 		// 跳转到动态详情
 		Intent intentToNewsDetail = new Intent(MyNewsListActivity.this,
 				NewsDetailActivity.class);
@@ -916,6 +918,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				intentToNewsDetail.putExtra(
 						NewsOperateModel.INTENT_KEY_NEWS_OBJ,
 						newsList.get(index));
+				indexAtNewsList = index;
 				break;
 			}
 		}
@@ -930,8 +933,28 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 上一个Activity返回结束时调用
 	 * */
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		super.onActivityResult(requestCode, resultCode, intent);
+	public void onActivityResult(int requestCode, int resultCode,
+			Intent resultIntent) {
+		if (null != resultIntent) {
+			switch (resultCode) {
+			case NewsOperateModel.OPERATE_UPDATE:
+				if (resultIntent
+						.hasExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ)) {
+					NewsModel resultNews = (NewsModel) resultIntent
+							.getSerializableExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ);
+					newsList.set(indexAtNewsList, resultNews);
+					newsAdapter.replaceAll(NewsToItemData.newsToItem(newsList));
+				}
+				break;
+			case NewsOperateModel.OPERATE_DELETET:
+				newsList.remove(indexAtNewsList);
+				newsAdapter.replaceAll(NewsToItemData.newsToItem(newsList));
+				break;
+			default:
+				break;
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, resultIntent);
 	}
 
 }
