@@ -79,7 +79,7 @@ public class CampusFragment extends BaseFragment {
 	// 动态列表适配器
 	private HelloHaAdapter<ItemModel> newsAdapter = null;
 	// 学校的人
-	List<CampusPersonModel> personList;
+	private List<CampusPersonModel> personList;
 	// 动态的图片适配器
 	private HelloHaAdapter<ImageModel> newsGVAdapter;
 	// 使支持多种item
@@ -125,9 +125,11 @@ public class CampusFragment extends BaseFragment {
 		init();
 		multiItemTypeSet();
 		newsListViewSet();
+	}
 
+	@Override
+	public void setUpViews(View rootView) {
 		// 进入本页面时请求数据
-		currentPage = 1;
 		isPullDowm = true;
 		getCampusData(String.valueOf(userModel.getUid()),
 				String.valueOf(currentPage), userModel.getSchool_code(), "");
@@ -210,6 +212,7 @@ public class CampusFragment extends BaseFragment {
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
+				userModel = UserManager.getInstance().getUser();
 				currentPage = 1;
 				isPullDowm = true;
 				getCampusData(String.valueOf(userModel.getUid()),
@@ -301,11 +304,6 @@ public class CampusFragment extends BaseFragment {
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		campusListView.setAdapter(newsAdapter);
-	}
-
-	@Override
-	public void setUpViews(View rootView) {
-
 	}
 
 	/**
@@ -746,13 +744,19 @@ public class CampusFragment extends BaseFragment {
 				personList.add(tempPerson);
 			}
 			this.newsList = newsList;
-			latestTimesTamp = newsList.get(0).getTimesTamp();
-			newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
-					personList));
+			if (newsList.size() > 0) {
+				latestTimesTamp = newsList.get(0).getTimesTamp();
+			}
+			if (null != itemDataList) {
+				itemDataList.clear();
+			}
+			itemDataList = DataToItem.campusDataToItems(newsList, personList);
+			newsAdapter.replaceAll(itemDataList);
 		} else {
 			this.newsList.addAll(newsList);
-			newsAdapter.addAll(DataToItem.campusDataToItems(newsList,
+			itemDataList.addAll(DataToItem.campusDataToItems(newsList,
 					personList));
+			newsAdapter.replaceAll(itemDataList);
 		}
 		if (null != JNewsList) {
 			JNewsList.clear();
