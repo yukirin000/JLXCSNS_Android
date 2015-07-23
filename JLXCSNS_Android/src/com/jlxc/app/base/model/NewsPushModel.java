@@ -6,6 +6,7 @@ import java.util.List;
 import android.database.Cursor;
 
 import com.jlxc.app.base.manager.DBManager;
+import com.jlxc.app.base.manager.UserManager;
 
 //该模型对应数据表 jlxc_news_push 该表中不存储类型为'添加好友'的推送类型
 public class NewsPushModel {
@@ -87,7 +88,8 @@ public class NewsPushModel {
 	 * @param pageCount 每页数据数
 	 */
 	public static List<NewsPushModel> findAll(){
-		String sql = "SELECT * FROM jlxc_news_push ORDER BY id DESC;";
+		String sql = "SELECT * FROM jlxc_news_push where owner="+UserManager.getInstance().getUser().getUid()
+				+" ORDER BY id DESC;";
 		return findBySql(sql);
 	}
 	
@@ -95,7 +97,8 @@ public class NewsPushModel {
 	 * 从数据库中查出所有某种类型未读的数据
 	 */
 	public static List<NewsPushModel> findUnreadCount(){
-		String sql = "SELECT * FROM jlxc_news_push WHERE is_read=0 ORDER BY id DESC;";
+		String sql = "SELECT * FROM jlxc_news_push WHERE owner="+UserManager.getInstance().getUser().getUid()
+				+" and is_read=0 ORDER BY id DESC;";
 		return findBySql(sql);
 	}
 	

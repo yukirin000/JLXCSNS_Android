@@ -177,6 +177,8 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 								newModel.setOwner(UserManager.getInstance().getUser().getUid());
 								newModel.save();
 							}
+							
+							refreshListView();
 						}
 					}
 

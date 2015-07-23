@@ -6,6 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 
 public class UserModel implements Serializable{
 
+	public static final int SexBoy = 0;
+	public static final int SexGirl = 1;
+	
 	/**
 	 * 
 	 */
