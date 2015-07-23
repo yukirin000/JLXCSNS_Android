@@ -18,6 +18,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.discovery.ui.fragment.DiscoveryFragment;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
@@ -49,15 +50,15 @@ public class MainTabActivity extends BaseActivity {
 	@ViewInject(android.R.id.tabhost)
 	private FragmentTabHost mTabHost;
 
-	private LayoutInflater layoutInflater;
+	private LayoutInflater layoutInflater; 
 
-	private Class<?> fragmentArray[] = { MainPageFragment.class, MessageMainFragment.class,
+	private Class<?> fragmentArray[] = { MainPageFragment.class, MessageMainFragment.class,DiscoveryFragment.class,
 			PersonalFragment.class };
 
-	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_home_btn,
+	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_home_btn,R.drawable.tab_home_btn,
 			R.drawable.tab_message_btn };
 
-	private String mTextviewArray[] = { "主页", "消息", "我" };
+	private String mTextviewArray[] = { "主页", "消息","发现", "我" };
 	//im未读数量
 	public static int imUnreadCount;
 	
