@@ -7,7 +7,7 @@ import com.jlxc.app.base.utils.LogUtils;
 public class RecommendItemData {
 
 	// item的种类数
-	public static final int RECOMMEND_ITEM_TYPE_COUNT = 5;
+	public static final int RECOMMEND_ITEM_TYPE_COUNT = 3;
 	// 表示推荐的人列表item
 	public static final int RECOMMEND_TITLE = 0;
 	public static final int RECOMMEND_INFO = 1;

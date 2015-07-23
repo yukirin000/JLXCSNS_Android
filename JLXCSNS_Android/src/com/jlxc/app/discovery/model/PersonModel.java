@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jlxc.app.base.utils.JLXCConst;
 
 public class PersonModel {
 
 	// 用户的id
-	private String uerId;
+	private String userId;
 	// 用户名
 	private String userName;
 	// 用户所在的学校
 	private String userSchool;
 	// 学校代码
-	private String schoolCoed;
+	private String schoolCode;
 	// 用户的头像
 	private String headImage;
 	// 头像的缩略图
@@ -40,10 +41,12 @@ public class PersonModel {
 			setSchoolCoed(object.getString("school_code"));
 		}
 		if (object.containsKey("head_image")) {
-			setHeadImage(object.getString("head_image"));
+			setHeadImage(JLXCConst.ATTACHMENT_ADDR
+					+ object.getString("head_image"));
 		}
 		if (object.containsKey("head_sub_image")) {
-			setHeadSubImage(object.getString("head_sub_image"));
+			setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
+					+ object.getString("head_sub_image"));
 		}
 
 		// 图片的转换
@@ -52,7 +55,8 @@ public class PersonModel {
 					.get("images");
 			List<String> imgList = new ArrayList<String>();
 			for (JSONObject imgObject : JImageObj) {
-				imgList.add(imgObject.getString("sub_url"));
+				imgList.add(JLXCConst.ATTACHMENT_ADDR
+						+ imgObject.getString("sub_url"));
 			}
 			setImageList(imgList);
 		}
@@ -64,12 +68,34 @@ public class PersonModel {
 		}
 	}
 
-	public String getUerId() {
-		return uerId;
+	// 重写hashCode方法
+	@Override
+	public int hashCode() {
+		return this.userId.hashCode();
 	}
 
-	public void setUerId(String uerId) {
-		this.uerId = uerId;
+	// 重写equals方法
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (null != obj && obj instanceof PersonModel) {
+			PersonModel p = (PersonModel) obj;
+			if (userId.equals(p.userId) && userName.equals(p.userName)
+					&& userSchool.equals(p.userSchool)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public String getUerId() {
+		return userId;
+	}
+
+	public void setUerId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getUserSchool() {
@@ -89,11 +115,11 @@ public class PersonModel {
 	}
 
 	public String getSchoolCoed() {
-		return schoolCoed;
+		return schoolCode;
 	}
 
-	public void setSchoolCoed(String schoolCoed) {
-		this.schoolCoed = schoolCoed;
+	public void setSchoolCoed(String schoolCode) {
+		this.schoolCode = schoolCode;
 	}
 
 	public String getHeadImage() {

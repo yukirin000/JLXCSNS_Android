@@ -3,6 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:id="@+id/liear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <com.jlxc.app.base.ui.view.NoScrollGridView
+                android:id="@+id/gv_recommend_photos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:numColumns="auto_fit"
+                android:stretchMode="spacingWidthUniform" >
+            </com.jlxc.app.base.ui.view.NoScrollGridView>
+        </LinearLayout>
+    </HorizontalScrollView>
 
 </LinearLayout>

@@ -919,19 +919,6 @@ public class NewsListFragment extends BaseFragment {
 		}
 	}
 
-	private void updateSingleRow(ListView listView, String Newsid) {
-		if (listView != null) {
-			int start = listView.getFirstVisiblePosition();
-			for (int i = start, j = listView.getLastVisiblePosition(); i <= j; i++)
-				if (Newsid.equals(((NewsModel) listView.getItemAtPosition(i))
-						.getNewsID())) {
-					View view = listView.getChildAt(i - start);
-					listView.getAdapter().getView(i, view, listView);
-					break;
-				}
-		}
-	}
-
 	/**
 	 * 点赞或取消
 	 * 
@@ -1010,9 +997,7 @@ public class NewsListFragment extends BaseFragment {
 
 	/**
 	 * listview点击事件接口,用于区分不同view的点击事件
-	 * 
 	 * @author Alan
-	 * 
 	 */
 	private interface ListItemClickHelp {
 		void onClick(View view, int postion, int viewID);
