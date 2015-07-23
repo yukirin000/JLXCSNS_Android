@@ -269,8 +269,7 @@ public class PersonalFragment extends BaseFragment {
 			break;
 		case R.id.setting_Button:
 			//设置
-//			Intent setIntent = new Intent(getActivity(), PersonalSettingActivity.class);
-			Intent setIntent = new Intent(getActivity(), QRCodeScanActivity.class);
+			Intent setIntent = new Intent(getActivity(), PersonalSettingActivity.class);
 			startActivityWithRight(setIntent);
 			break;
 		case R.id.card_Button:
