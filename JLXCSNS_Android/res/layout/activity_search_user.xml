@@ -21,6 +21,7 @@
 	        android:focusable="true"
 	        android:layout_margin="5dp"
 	       	android:imeOptions="actionSearch"
+			android:singleLine="true"
 	        android:hint="请输入搜索内容....."
 	        android:textSize="15sp" />
 	</LinearLayout>
