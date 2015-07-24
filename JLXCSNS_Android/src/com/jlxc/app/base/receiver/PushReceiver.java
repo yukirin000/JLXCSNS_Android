@@ -137,7 +137,6 @@ public class PushReceiver extends BroadcastReceiver {
 		//顶部更新
 		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
 		context.sendBroadcast(messageIntent);
-		
 	}
 	
 	//send msg to MainActivity

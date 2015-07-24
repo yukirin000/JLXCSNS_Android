@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -204,6 +205,7 @@ public class PersonalFragment extends BaseFragment {
 		 	headAlertDialog.setItems(headStrings, new OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					
 					//设置为头像
 					imageType = HEAD_IMAGE;
 					if (which == 0) {
@@ -235,6 +237,7 @@ public class PersonalFragment extends BaseFragment {
 		 	backAlertDialog.setItems(backStrings, new OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					
 					//设置为头像
 					imageType = BACK_IMAGE;
 					if (which == 0) {
@@ -415,7 +418,7 @@ public class PersonalFragment extends BaseFragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		
+		LogUtils.i("test11"+" "+ requestCode, 1);
 		//图片返回值
 		if (resultCode == Activity.RESULT_OK) {  
             String sdStatus = Environment.getExternalStorageState();  
@@ -431,15 +434,14 @@ public class PersonalFragment extends BaseFragment {
             		File tmpFile = new File(FileUtil.TEMP_PATH+tmpImageName);
             		startPhotoZoom(Uri.fromFile(tmpFile));	
 				}else {
-					
+						
 					// 图片压缩 
 					int[] screenSize = getScreenSize();
 					if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0], screenSize[1])) {
-						//FileUtil.BIG_IMAGE_PATH + tmpImageName
 						uploadImage(FileUtil.BIG_IMAGE_PATH+tmpImageName);
-					}
+					}	 
 				}
-                
+            	
                 break;
             case ALBUM_SELECT:// 当选择从本地获取图片时
                 // 做非空判断，当我们觉得不满意想重新剪裁的时候便不会报异常，下同
@@ -455,6 +457,19 @@ public class PersonalFragment extends BaseFragment {
 //    						bitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH + tmpImageName);
     						uploadImage(FileUtil.BIG_IMAGE_PATH+tmpImageName);
 						}
+//    					07-24 19:25:26.490: E/##KIT_io.rong.imkit.logic.MessageCounterLogic:registerMessageCounter(1728): RongIM.getInstance() :6
+
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): FATAL EXCEPTION: IPC_WORK
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): java.lang.NullPointerException
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Parcel.readException(Parcel.java:1437)
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Parcel.readException(Parcel.java:1385)
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at io.rong.imlib.ipc.remote.IHandler$Stub$Proxy.getUnreadCount(IHandler.java:950)
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at io.rong.imlib.RongIMClient$17.run(RongIMClient.java:1003)
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Handler.handleCallback(Handler.java:730)
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Handler.dispatchMessage(Handler.java:92)
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Looper.loop(Looper.java:137)
+//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.HandlerThread.run(HandlerThread.java:61)
+
 					}
                 }
                 break;
@@ -470,21 +485,22 @@ public class PersonalFragment extends BaseFragment {
 	    				//删除临时文件
 	        			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
 	    				if (file.exists()) {
-	    					file.delete();
+	    					file.delete(); 
 	    				}	
 	    				uploadImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
         			}	        			
                 }
                 break;
             }
-        }  
-		
-		//签名返回
-		if (resultCode == SIGN_RESOULT) {
-			String signString = data.getStringExtra("sign");
+        }else if (resultCode == SIGN_RESOULT) {
+        	//签名返回
+        	String signString = data.getStringExtra("sign");
 			signTextView.setText(signString);
 			uploadInformation("sign", signString);
-		}
+		}else {
+			tmpImageName = "";
+		}  
+		
 	}
 	
 	
@@ -504,7 +520,13 @@ public class PersonalFragment extends BaseFragment {
 			intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
 			intent.putExtra("noFaceDetection", true); // no face detection
 			intent.putExtra("return-data", true);
+			
+			File headDir = new File(FileUtil.HEAD_PIC_PATH);
+			if (!headDir.exists()) {
+				headDir.mkdir();
+			}
 			File tmpFile = new File(FileUtil.HEAD_PIC_PATH+tmpImageName);
+			
 			//地址
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tmpFile));
 			startActivityForResult(intent, PHOTO_RESOULT);
@@ -712,8 +734,6 @@ public class PersonalFragment extends BaseFragment {
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							//设置数据 
-							LogUtils.i(jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE),1);
 							if ("name".equals(field)) {
 								//姓名
 								userModel.setName(value);
@@ -752,6 +772,7 @@ public class PersonalFragment extends BaseFragment {
 //	     m.invoke(userModel, "重新设置msg信息！"); 
 	}
 	
+	//上传头像
 	private void uploadImage(final String path) {
 		
 		// 参数设置
@@ -929,33 +950,33 @@ public class PersonalFragment extends BaseFragment {
 		mCurrentProviceName = mProvinceDatas[pCurrent];
 		String[] cities = mCitisDatasMap.get(mCurrentProviceName);
 		if (cities == null) {
-			cities = new String[] { "" };
+			cities = new String[] { "" }; 
 		}
 		mViewCity.setViewAdapter(new ArrayWheelAdapter<String>(getActivity(), cities));
 		mViewCity.setCurrentItem(0);
-		updateAreas();
+		updateAreas(); 
 	}
 	
 	
-//	@Override
-//	public void onSaveInstanceState(Bundle outState) {
-//		// TODO Auto-generated method stub
-//		super.onSaveInstanceState(outState);
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub 
+		super.onSaveInstanceState(outState);
 //		outState.putSerializable("user", userModel);
-//	}
-//	
-//	@Override
-//	public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-//		// TODO Auto-generated method stub
-//		super.onViewStateRestored(savedInstanceState);
-//		
-//		if (null != savedInstanceState) {
-//			if ( null != savedInstanceState.getSerializable("user")) {
-//				userModel = (UserModel) savedInstanceState.getSerializable("user");
-//				UserManager.getInstance().setUser(userModel);
-//			}
-//		}
-//	}
+		outState.putSerializable("imageType", imageType);
+		outState.putSerializable("tmpImageName", tmpImageName);  
+	}
+	
+	@Override
+	public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewStateRestored(savedInstanceState);
+		
+		if (null != savedInstanceState) {
+			imageType = savedInstanceState.getInt("imageType");
+			tmpImageName = savedInstanceState.getString("tmpImageName");
+		}
+	}
     
 	////////////////////////getter setter/////////////////////
 	public HelloHaAdapter<String> getMyImageAdapter() {

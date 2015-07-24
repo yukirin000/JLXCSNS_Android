@@ -1,12 +1,12 @@
 package com.jlxc.app.personal.ui.activity;
 
+
 import io.rong.imkit.RongIM;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Process;
 import android.view.View;
 
 import com.jlxc.app.R;
@@ -37,8 +37,7 @@ public class AccountSettingActivity extends BaseActivityWithTopBar{
 
 	@Override
 	protected void setUpView() {
-		// TODO Auto-generated method stub
-		
+		 
 	}
 	
 	//退出

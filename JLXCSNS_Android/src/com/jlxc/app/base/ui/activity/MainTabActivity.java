@@ -1,5 +1,8 @@
 package com.jlxc.app.base.ui.activity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
@@ -9,6 +12,7 @@ import io.rong.imlib.RongIMClient.ErrorCode;
 import io.rong.imlib.model.Conversation;
 import io.yunba.android.manager.YunBaManager;
 
+import com.amap.api.services.core.bo;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.ActivityManager;
@@ -32,6 +36,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
@@ -59,6 +65,9 @@ public class MainTabActivity extends BaseActivity {
 			R.drawable.tab_message_btn };
 
 	private String mTextviewArray[] = { "主页", "消息","发现", "我" };
+//	//已经连接
+//	private boolean isConnect = false;
+	
 	//im未读数量
 	public static int imUnreadCount;
 	
@@ -77,25 +86,16 @@ public class MainTabActivity extends BaseActivity {
 			mTabHost.getTabWidget().getChildAt(i)
 					.setBackgroundResource(R.drawable.selector_tab_background);
 		}
-		//设置im未读监听
-		final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
-                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
-                Conversation.ConversationType.APP_PUBLIC_SERVICE, Conversation.ConversationType.PUBLIC_SERVICE};
-		Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
-            }
-        }, 500);
 		
 		//注册通知
 		registerNotify();
 		refreshTab();
 	}
 	
+	
 	//初始化融云
 	private void initRong(){
+		
 		String token = "";
 		UserModel userModel = UserManager.getInstance().getUser();
 		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
@@ -112,6 +112,18 @@ public class MainTabActivity extends BaseActivity {
 			public void onSuccess(String arg0) {
 				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
 				RongCloudEvent.getInstance().setOtherListener();
+				
+				//设置im未读监听
+				final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
+		                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
+		                Conversation.ConversationType.APP_PUBLIC_SERVICE, Conversation.ConversationType.PUBLIC_SERVICE};
+				Handler handler = new Handler();
+		        handler.postDelayed(new Runnable() {
+		            @Override
+		            public void run() {
+		                RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
+		            }
+		        }, 1000);
 			}
 
 			@Override
@@ -120,16 +132,18 @@ public class MainTabActivity extends BaseActivity {
 			}
 
 		});
+		
 	}
 	//初始化云巴
 	private void initYunBa(){
 //		registerMessageRecevier();
 		final UserModel userModel = UserManager.getInstance().getUser();
 		if (userModel.getUid() != 0) {
+			LogUtils.i("yunba test", 1);
 			YunBaManager.subscribe(this, new String[]{JLXCConst.JLXC+userModel.getUid()}, new IMqttActionListener() {
 				@Override
 				public void onSuccess(IMqttToken arg0) {
-					LogUtils.i("yunba success"+JLXCConst.JLXC+userModel.getUid(), 1);
+//					LogUtils.i("yunba success"+JLXCConst.JLXC+userModel.getUid(), 1);
 					Looper.prepare();
 					Toast.makeText(MainTabActivity.this, "yunba success", Toast.LENGTH_SHORT).show();
 					Looper.loop();
@@ -145,55 +159,6 @@ public class MainTabActivity extends BaseActivity {
 		
 	}
 	
-//	private MessageReceiver mMessageReceiver;
-//	//注册通知
-//	private void registerMessageRecevier() {
-//		mMessageReceiver = new MessageReceiver();
-//		IntentFilter filter = new IntentFilter();
-//		filter.addAction(YunBaManager.MESSAGE_RECEIVED_ACTION);
-//		filter.addCategory(getPackageName());
-//		registerReceiver(mMessageReceiver, filter);
-//		
-//		IntentFilter filterCon = new IntentFilter();
-//		filterCon.addAction(YunBaManager.MESSAGE_CONNECTED_ACTION);
-//		filterCon.addCategory(getPackageName());
-//		registerReceiver(mMessageReceiver, filterCon);
-//		
-//		IntentFilter filterDis = new IntentFilter();
-//		filterDis.addAction(YunBaManager.MESSAGE_DISCONNECTED_ACTION);
-//		filterDis.addCategory(getPackageName());
-//		registerReceiver(mMessageReceiver, filterDis);
-//		
-//		IntentFilter pres = new IntentFilter();
-//		pres.addAction(YunBaManager.PRESENCE_RECEIVED_ACTION);
-//		pres.addCategory(getPackageName());
-//		registerReceiver(mMessageReceiver, pres);
-//	}
-//	
-//	public class MessageReceiver extends BroadcastReceiver {
-//
-//		@Override
-//		public void onReceive(Context context, Intent intent) {
-//			LogUtils.i(intent.getAction(), 1);
-//			
-//			if (YunBaManager.MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
-//				String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
-//				String msg = intent.getStringExtra(YunBaManager.MQTT_MSG);
-//				StringBuilder showMsg = new StringBuilder();
-//				showMsg.append("[Message] ").append(YunBaManager.MQTT_TOPIC)
-//						.append(" = ").append(topic).append(" ,")
-//						.append(YunBaManager.MQTT_MSG).append(" = ").append(msg);	
-//				LogUtils.i(showMsg.toString(), 1);
-//				
-//			} else if(YunBaManager.MESSAGE_CONNECTED_ACTION.equals(intent.getAction())) {
-//				
-//			} else if(YunBaManager.MESSAGE_DISCONNECTED_ACTION.equals(intent.getAction())) {
-//				
-//			} else if (YunBaManager.PRESENCE_RECEIVED_ACTION.equals(intent.getAction())) {
-//				
-//			}
-//		}
-//	}
 	
 	/**
 	 */
@@ -221,10 +186,11 @@ public class MainTabActivity extends BaseActivity {
 
 	@Override
 	protected void setUpView() {
+		
 		//初始化tab
 		initTab();
 		//初始化融云
-		initRong();
+		initRong();			
 		//初始化云巴
 		initYunBa();
 	}
@@ -249,9 +215,16 @@ public class MainTabActivity extends BaseActivity {
 	            public void onClick(DialogInterface dialog, int which) {
 	                if (RongIM.getInstance() != null)
 	                    RongIM.getInstance().logout();
+	                if (null != newMessageReceiver) {
+	                	unregisterReceiver(newMessageReceiver);
+	                	newMessageReceiver = null;
+					}
 	                ActivityManager.getInstence().exitApplication();
-	                killThisPackageIfRunning(MainTabActivity.this, "com.jlxc.app");
-	                Process.killProcess(Process.myPid());
+//	                killThisPackageIfRunning(MainTabActivity.this, "com.jlxc.app");
+//	                Process.killProcess(Process.myPid());
+	                
+//	                finish();
+	                
 	            }
 	        });
 	        alterDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -265,6 +238,22 @@ public class MainTabActivity extends BaseActivity {
 		} else
 			return super.onKeyDown(keyCode, event);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		
+		if (null != newMessageReceiver) {
+			unregisterReceiver(newMessageReceiver);
+			newMessageReceiver = null;
+		}
+		
+		if (RongIM.getInstance() != null)
+            RongIM.getInstance().logout();
+		
+		Process.killProcess(Process.myPid());
+		super.onDestroy();  
+	}
+	
 	
 	////////////////////////////////private method////////////////////////////////
 	private NewMessageReceiver newMessageReceiver;
@@ -301,8 +290,33 @@ public class MainTabActivity extends BaseActivity {
 			unreadTextView.setVisibility(View.GONE);
 		}else {
 			unreadTextView.setVisibility(View.VISIBLE);
-		}
+		} 
 	}
+	
+//	@Override
+//	protected void onSaveInstanceState(Bundle outState) {
+//		// TODO Auto-generated method stub
+//		outState.putBoolean("isConnect", isConnect);
+//		LogUtils.i("on save" + " "+ isConnect, 1);
+//		
+//		super.onSaveInstanceState(outState);
+//	}
+	
+//	@Override
+//	public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+//		super.onConfigurationChanged(newConfig);
+//		
+//	};
+//	
+//	@Override
+//	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//		
+//		isConnect = savedInstanceState.getBoolean("isConnect");
+//		LogUtils.i("on restroe" + " "+ isConnect, 1);
+//		isConnect = true;
+//		
+//		super.onRestoreInstanceState(savedInstanceState);
+//	}
 	
 	//im未读监听器
 	public RongIM.OnReceiveUnreadCountChangedListener mCountListener = new RongIM.OnReceiveUnreadCountChangedListener() {

@@ -77,7 +77,7 @@ public class MessageMainFragment extends BaseFragment {
 
 	@Override
 	public void loadLayout(View rootView) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub 
 
 	}
 
@@ -87,7 +87,14 @@ public class MessageMainFragment extends BaseFragment {
 		initImage();
 		initViewPager();
 		registerNotify();
+		
+	}
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
 		refreshMessage();
+		super.onStart();
 	}
 	
 	/*

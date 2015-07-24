@@ -1,5 +1,6 @@
 package com.jlxc.app.base.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,8 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 
-import android.app.ProgressDialog;
+import com.amap.api.mapcore2d.da;
+import com.jlxc.app.base.app.JLXCApplication;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,13 +30,6 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.alibaba.fastjson.JSONObject;
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.exception.DbException;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.callback.RequestCallBack;
 
 
 /**
@@ -45,7 +43,7 @@ public class FileUtil {
 	public static boolean flag;
 	public static final String ROOT_PATH = getExternalStorageDirectory();
 	// 头像存放地址：/jlxc/headPic/icon.jpg
-	public static String HEAD_PIC_PATH = ROOT_PATH + "/jlxc/headPic/";
+	public static String HEAD_PIC_PATH = ROOT_PATH + "/jlxc/image/headPic/";
 	// 缩略图存放地址：/jlxc/image/subImage/bigImage_sub.jpg
 	public static final String CHAT_SUB_IMAGE_PATH = ROOT_PATH + "/jlxc/chat/image/subImage/";
 	// 大图存放地址：/jlxc/image/bigImage/bigImage.jpg
@@ -53,11 +51,14 @@ public class FileUtil {
 	// 语音存放地址：/jlxc/audio/audio.mp3
 	public static String CHAT_AUDIO_PATH = ROOT_PATH + "/jlxc/chat/audio/";
 
+	//图片根目录
+	public static final String IMAGE_ROOT_PATH = ROOT_PATH + "/jlxc/image/";
+	
 	public static String AUDIO_PATH = ROOT_PATH + "/jlxc/audio/";
 	public static String BIG_IMAGE_PATH = ROOT_PATH + "/jlxc/image/bigImage/";
 	public static String SUB_IMAGE_PATH = ROOT_PATH + "/jlxc/image/subImage/";
 	// 临时目录
-	public static final String TEMP_PATH = ROOT_PATH + "/jlxc/temp/";
+	public static final String TEMP_PATH = ROOT_PATH + "/jlxc/image/temp/";
 	private static int BUFFER_SIZE = 4 * 1024;
 
 	//创建目录
@@ -74,11 +75,25 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String getExternalStorageDirectory() {
-		String external = null;
-		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			external = Environment.getExternalStorageDirectory().getAbsolutePath();
-		}
-		return external;
+		String cachePath = null;
+//		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+//			external = Environment.getExternalStorageDirectory().getAbsolutePath();
+//		}
+		
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            File externalCacheDir = JLXCApplication.getInstance().getExternalCacheDir();
+            if (externalCacheDir != null) {
+                cachePath = externalCacheDir.getPath();
+            }
+        }
+        if (cachePath == null) {
+            File cacheDir = JLXCApplication.getInstance().getCacheDir();
+            if (cacheDir != null && cacheDir.exists()) {
+                cachePath = cacheDir.getPath();
+            }
+        }
+		
+		return cachePath;
 	}
 
 	// public static String getPictureDirectoryPath(){
@@ -372,10 +387,13 @@ public class FileUtil {
 				BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inJustDecodeBounds = true;
 				BitmapFactory.decodeStream(in, null, options);
-				// options.inSampleSize = 4;
+//				options.inSampleSize = 4;
 				options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 				options.inJustDecodeBounds = false;
-				Bitmap bmp = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+				Log.i("PersonalFragment", tempFile.getAbsolutePath()); 
+//				Bitmap bmp = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+				byte[] data = GetLocalOrNetBitmap(tempFile.getAbsolutePath());
+				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
 				bmp.compress(Bitmap.CompressFormat.JPEG, 80, bos);
 				bmp.recycle();
@@ -391,6 +409,38 @@ public class FileUtil {
 			}
 		}
 	}
+	
+	 public static byte[] GetLocalOrNetBitmap(String url)  {  
+        InputStream in = null;  
+        BufferedOutputStream out = null;  
+        try  
+        {  
+        	FileInputStream filein = new FileInputStream(url);
+            in = new BufferedInputStream(filein, 1024);  
+            final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();  
+            out = new BufferedOutputStream(dataStream, 1024);  
+            copy(in, out);  
+            out.flush();  
+            byte[] data = dataStream.toByteArray();
+            return data;
+//            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);  
+//            data = null;  
+//            return bitmap;  
+        }  
+        catch (IOException e)  
+        {  
+            e.printStackTrace();  
+            return null;  
+        }  
+    }
+	 
+	 private static void copy(InputStream in, OutputStream out) throws IOException {
+	        byte[] b = new byte[1024];
+	        int read;
+	        while ((read = in.read(b)) != -1) {
+	            out.write(b, 0, read);
+	        }
+	 }
 
 	/**
 	 * 将相册中的临时目录的文件压缩后放到正式目录下

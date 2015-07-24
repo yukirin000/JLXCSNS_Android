@@ -12,13 +12,14 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 
 public class DBManager {
 
+	public static final String ROOT_PATH = getExternalStorageDirectory();
 	private static DBManager dbManager;
 	private SQLiteOpenHelper helper;
-//	private DbUtils db;
 
 	private DBManager() {
 	};
@@ -29,7 +30,7 @@ public class DBManager {
 		if (null == dbManager) {
 			dbManager = new DBManager();
 			dbManager.dbImport(JLXCApplication.getInstance());
-			dbManager.helper = new SQLiteOpenHelper(JLXCApplication.getInstance(), "/sdcard/jlxc/jlxc.db", null, 1) {
+			dbManager.helper = new SQLiteOpenHelper(JLXCApplication.getInstance(), ROOT_PATH+"/jlxc/jlxc.db", null, 1) {
 				@Override
 				public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {					
 				}
@@ -86,14 +87,14 @@ public class DBManager {
 	@SuppressLint("SdCardPath") 
 	private void dbImport(Context context)
     {
-		String dbpath = "/sdcard/jlxc/jlxc.db";
+		String dbpath = ROOT_PATH+"/jlxc/jlxc.db";
 		File file =  new File(dbpath);
 		if (file.exists()) {
 			Log.i("--", "数据库已经存在");
 			return;
 		}
         try {
-            File dir = new File("/sdcard/jlxc");
+            File dir = new File(ROOT_PATH+"/jlxc");
          // 如果/sdcard/testdb目录中存在，创建这个目录
             if (!dir.exists()){
             	dir.mkdir();
@@ -175,4 +176,23 @@ public class DBManager {
 //        msg.arg1 = 0;  
 //        handler.sendMessage(msg);  
 //    } 
+	
+	//files
+	public static String getExternalStorageDirectory() {
+		String cachePath = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            File externalCacheDir = JLXCApplication.getInstance().getExternalFilesDir("");
+            if (externalCacheDir != null) {
+                cachePath = externalCacheDir.getPath();
+            }
+        }
+        if (cachePath == null) {
+            File cacheDir = JLXCApplication.getInstance().getFilesDir();
+            if (cacheDir != null && cacheDir.exists()) {
+                cachePath = cacheDir.getPath();
+            }
+        }
+		
+		return cachePath;
+	}
 }
