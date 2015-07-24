@@ -58,6 +58,7 @@ public class DataToRecommendItem {
 		RecommendPhotoItem item = new RecommendPhotoItem();
 		try {
 			item.setItemType(RecommendItemData.RECOMMEND_PHOTOS);
+			item.setUserId(personMd.getUerId());
 			item.setPhotoSubUrl(personMd.getImageList());
 		} catch (Exception e) {
 			LogUtils.e("createNewsTitle error.");

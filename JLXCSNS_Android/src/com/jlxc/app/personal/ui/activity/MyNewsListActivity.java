@@ -66,8 +66,8 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 //我的动态列表
 public class MyNewsListActivity extends BaseActivityWithTopBar {
 
-	//其他Activity传递进入的被查看的用户id
-	private final static String ITNET_KEY_UID = "user_id";
+	// 其他Activity传递进入的被查看的用户id
+	public final static String ITNET_KEY_UID = "user_id";
 	// 用户实例
 	private UserModel userModel;
 	// 动态listview
@@ -279,13 +279,16 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 
 		initBitmapUtils();
 
-		Bundle bundle = this.getIntent().getExtras();
-		if (null != bundle && bundle.containsKey(ITNET_KEY_UID)) {
-			currentUid = bundle.getString(ITNET_KEY_UID);
+		Intent intent = this.getIntent();
+		if (null != intent && intent.hasExtra(ITNET_KEY_UID)) {
+			currentUid = intent.getStringExtra(ITNET_KEY_UID);
+		}else {
+			LogUtils.e("用户id传输错误，用户id为："+currentUid);
 		}
+		
 		/*** 测试 *****/
-//		currentUid = "21";
-//		userModel.setUid(21);
+		// currentUid = "21";
+		// userModel.setUid(21);
 
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();

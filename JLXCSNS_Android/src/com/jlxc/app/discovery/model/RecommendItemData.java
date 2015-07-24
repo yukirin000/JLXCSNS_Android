@@ -128,10 +128,20 @@ public class RecommendItemData {
 	 * 照片部分
 	 * */
 	public static class RecommendPhotoItem extends RecommendItemData {
+		// 用户id
+		private String userId;
 		// 缩略照片列表
 		private List<String> photoSubUrl;
 		// 照片列表
 		private List<String> photoUrl;
+
+		public String getUserId() {
+			return userId;
+		}
+
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
 
 		public List<String> getPhotoSubUrl() {
 			return photoSubUrl;

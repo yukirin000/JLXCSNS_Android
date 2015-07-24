@@ -1,5 +1,6 @@
 package com.jlxc.app.news.ui.fragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -834,7 +835,7 @@ public class NewsListFragment extends BaseFragment {
 							.getURL();
 					Intent intentPicDetail = new Intent(mContext,
 							BigImgLookActivity.class);
-					intentPicDetail.putExtra("filePath", path);
+					intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, path);
 					startActivity(intentPicDetail);
 				} else {
 					// 跳转到动态详情
@@ -997,6 +998,7 @@ public class NewsListFragment extends BaseFragment {
 
 	/**
 	 * listview点击事件接口,用于区分不同view的点击事件
+	 * 
 	 * @author Alan
 	 */
 	private interface ListItemClickHelp {
@@ -1011,11 +1013,16 @@ public class NewsListFragment extends BaseFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			String currentImgPath = ((ImageModel) parent.getAdapter().getItem(
-					position)).getURL();
+			List<ImageModel> imageModelList = new ArrayList<ImageModel>();
+			for (int index = 0; index < parent.getAdapter().getCount(); index++) {
+				imageModelList.add((ImageModel) parent.getAdapter().getItem(
+						index));
+			}
 			// 跳转到图片详情页面
 			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra("filePath", currentImgPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+					(Serializable) imageModelList);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, position);
 			startActivity(intent);
 		}
 	}
