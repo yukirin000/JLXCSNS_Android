@@ -1,25 +1,20 @@
 package com.jlxc.app.login.ui.activity;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import android.R.bool;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -37,10 +32,9 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.demo.ui.activity.MainActivity;
 import com.jlxc.app.demo.ui.activity.NextActivity;
-import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -48,15 +42,16 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class RegisterInformationActivity extends BaseActivityWithTopBar {
 
-	public static final int PHOTOHRAPH = 1;// 拍照
-	public static final int PHOTOZOOM = 2; // 缩放
-	public static final int PHOTORESOULT = 3;// 结果
-	public static final int CAMERA_SELECT = 4;// 相册选取
+	public static final int TAKE_PHOTO = 1;// 拍照
+	public static final int ALBUM_SELECT = 2;// 相册选取
+	public static final int PHOTO_ZOOM = 3;// 缩放
+	public static final int PHOTO_RESOULT = 4;// 结果
+	
 	public static final int GET_DEPARTMENT_REQUEST_CODE = 5;
 	public static final String IMAGE_UNSPECIFIED = "image/*";
 	
 	//图片名字
-	private String headImageName;
+	private String tmpImageName;
 	
 	//头像
 	@ViewInject(R.id.headImageView)
@@ -126,7 +121,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 //		//图片保存到本地
 //		FileUtil.savePic(Bitmap.createBitmap(bitmap), FileUtil.HEAD_PIC_PATH, photoName, 100);
 		
-		final File imageFile = new File(FileUtil.HEAD_PIC_PATH+headImageName);
+		final File imageFile = new File(FileUtil.HEAD_PIC_PATH+tmpImageName);
 		if (imageFile.exists()) {
 			//图片
 			params.addBodyParameter("image", imageFile);			
@@ -205,25 +200,21 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					
-					switch (which) {
-					case 0:
-						//拍照
+					if (which == 0) {
+						//相机
 						Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-						headImageName = getPhotoFileName()+"";
-						LogUtils.i(headImageName, 1);
-						File tmpFile = new File(FileUtil.TEMP_PATH+headImageName);
+						tmpImageName = JLXCUtils.getPhotoFileName()+"";
+						File tmpFile = new File(FileUtil.TEMP_PATH+tmpImageName);
 						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
-                                Uri.fromFile(tmpFile));
-						startActivityForResult(intentCamera, PHOTOHRAPH);
-						break;
-					case 1:
+				                Uri.fromFile(tmpFile));
+						startActivityForResult(intentCamera, TAKE_PHOTO);
+					}else {
 						//相册
+						tmpImageName = JLXCUtils.getPhotoFileName()+"";
 						Intent intentAlbum = new Intent(Intent.ACTION_GET_CONTENT);
 						intentAlbum.setType(IMAGE_UNSPECIFIED);
-						startActivityForResult(intentAlbum, CAMERA_SELECT);
-						break;
-					default: 
-						break;
+						startActivityForResult(intentAlbum, ALBUM_SELECT);
+						
 					}					
 				}
 			}).setNegativeButton("取消", null).create();
@@ -245,17 +236,17 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	            }  
 	        	//头像需要缩放	            
 	            switch (requestCode) {
-	            case PHOTOHRAPH:// 当选择拍照时调用   
-	            	File tmpFile = new File(FileUtil.TEMP_PATH+headImageName);
+	            case TAKE_PHOTO:// 当选择拍照时调用   
+	            	File tmpFile = new File(FileUtil.TEMP_PATH+tmpImageName);
 	                startPhotoZoom(Uri.fromFile(tmpFile));
 	                break;
-	            case CAMERA_SELECT:// 当选择从本地获取图片时
+	            case ALBUM_SELECT:// 当选择从本地获取图片时
 	                // 做非空判断，当我们觉得不满意想重新剪裁的时候便不会报异常，下同
 	                if (data != null) {
 	                    startPhotoZoom(data.getData());
 	                }
 	                break;
-	            case PHOTORESOULT:// 返回的结果
+	            case PHOTO_RESOULT:// 返回的结果
 	                if (data != null){
 //	                	// 设置为有图片
 //	                	// 图片裁切后的结果
@@ -270,11 +261,11 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 //		    				}	
 //	        			}
 	        			
-	        			if (null != headImageName) {
+	        			if (null != tmpImageName) {
 	        				BitmapManager.getInstance().getBitmapUtils(this, false, false)
-	        				.display(headImageView, FileUtil.HEAD_PIC_PATH+headImageName);
+	        				.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 		    				//删除临时文件
-		        			File file = new File(FileUtil.TEMP_PATH+headImageName);
+		        			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
 		    				if (file.exists()) {
 		    					file.delete();
 		    				}	
@@ -287,24 +278,34 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	 }
 	//开启缩放
 	 public void startPhotoZoom(Uri uri) {
-		 
-			Intent intent = new Intent("com.android.camera.action.CROP");
-			intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
-			intent.putExtra("crop", "true");
-			// aspectX aspectY 是宽高的比例
-			intent.putExtra("aspectX", 1);
-			intent.putExtra("aspectY", 1);
-			// outputX outputY 是裁剪图片宽高
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
+		intent.putExtra("crop", "true");
+		// aspectX aspectY 是宽高的比例
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
+		// outputX outputY 是裁剪图片宽高
+		if (Build.MANUFACTURER.equals("Xiaomi")) {
+			intent.putExtra("outputX", 320);
+			intent.putExtra("outputY", 320);
+		}else {
 			intent.putExtra("outputX", 960);
 			intent.putExtra("outputY", 960);
-			intent.putExtra("scale", true);
-			intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-			intent.putExtra("noFaceDetection", true); // no face detection
-			intent.putExtra("return-data", true);
-			File tmpFile = new File(FileUtil.HEAD_PIC_PATH+headImageName);
-			//地址
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tmpFile));
-			startActivityForResult(intent, PHOTORESOULT);
+		}
+		
+		intent.putExtra("scale", true);
+		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+		intent.putExtra("noFaceDetection", true); // no face detection
+		intent.putExtra("return-data", true);
+		
+		File headDir = new File(FileUtil.HEAD_PIC_PATH);
+		if (!headDir.exists()) {
+			headDir.mkdir();
+		}
+		File tmpFile = new File(FileUtil.HEAD_PIC_PATH+tmpImageName);
+		//地址
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tmpFile));
+		startActivityForResult(intent, PHOTO_RESOULT);
 	 }
 
 	// 使用系统当前日期加以调整作为照片的名称
@@ -327,6 +328,22 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		radioGroup.check(R.id.radioMale);
 		addRightBtn("跳过");
 		
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub 
+		super.onSaveInstanceState(outState);
+		outState.putSerializable("tmpImageName", tmpImageName);  
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onRestoreInstanceState(savedInstanceState);
+		if (null != savedInstanceState) {
+			tmpImageName = savedInstanceState.getString("tmpImageName");
+		}
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.jlxc.app.news.ui.activity;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,8 +13,10 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.Button;
@@ -131,68 +136,11 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		imageDialog.show();
 	}
 	
-	 @Override  
-	 protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
-	        // TODO Auto-generated method stub  
-	        super.onActivityResult(requestCode, resultCode, data);
-	        
-	        if (resultCode == Activity.RESULT_OK) {  
-	            String sdStatus = Environment.getExternalStorageState();  
-	            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-	            	LogUtils.i("SD card is not avaiable/writeable right now.", 1);
-	                return;  
-	            }  
-	            switch (requestCode) {
-	            case TAKE_PHOTO:// 当选择拍照时调用   
-	            	// 图片压缩
-					int[] screenSize = getScreenSize();
-					if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0], screenSize[1])) {
-						addNewsImageView(FileUtil.BIG_IMAGE_PATH + tmpImageName);
-					}
-	                break;
-	            case ALBUM_SELECT:// 当选择从本地获取图片时
-	                // 做非空判断
-	                if (data != null) {
-	                	Uri uri = data.getData();
-						try {
-							ContentResolver cr = this.getContentResolver();
-							if (uri.toString().endsWith(".png") || uri.toString().endsWith(".jpg")
-									|| "image/jpeg".equals(cr.getType(uri)) || "image/png".equals(cr.getType(uri))) {
-								// 压缩存储
-								int[] screenSize1 = getScreenSize();
-								String fileRealPath = getRealPathFromURI(uri);
-								if (fileRealPath != null
-										&& FileUtil
-												.tempToLocalPath(fileRealPath, tmpImageName, screenSize1[0], screenSize1[1])) {
-									addNewsImageView(FileUtil.BIG_IMAGE_PATH + tmpImageName);
-								}
-							} else {
-								
-							}
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-	                }
-	                break;
-	            }
-	        }  
-	        
-	        //地理位置
-	        if (resultCode == LOCATION_SELECT) {
-            	String location = data.getStringExtra("location");
-            	if (null != location && !"".equals(location)) {
-            		locationString = location;
-            		choiceLocationBtn.setText(location);	
-				}
-			}
-	 }
-	
-	
 	private void addNewsImageView(String filePath) {
 		File file = new File(filePath);
 		if (!file.exists()) {
 			Toast.makeText(this, "文件异常", Toast.LENGTH_SHORT).show();
+			LogUtils.i("不存在", 1);
 			return;
 		}
 		
@@ -275,16 +223,21 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		int lineNum      = imageCount/4;
 		//添加按钮位置
 		MarginLayoutParams addlp = (MarginLayoutParams) addImageView.getLayoutParams();
+		
+//		LogUtils.i(columnNum+" "+lineNum+" "+addlp.leftMargin+" "+addImageView.getWidth()+" "+addlp.width, 1);
+		int width = addlp.width;
+		int height = addlp.height;
 		//布局位置
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(addImageView.getWidth(), addImageView.getHeight());
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
 		lp.setMargins(addlp.leftMargin, addlp.topMargin, 0, 0);
 		imageView.setLayoutParams(lp);
-		addlp.setMargins(oriMarginLeft+(addImageView.getWidth()+space)*columnNum, (addImageView.getHeight()+10)*lineNum, 0, 0);
+		addlp.setMargins(oriMarginLeft+(width+space)*columnNum, (height+10)*lineNum, 0, 0);
 		if (imageCount>8) {
 			addImageView.setVisibility(View.GONE);
 		}else {
 			addImageView.setVisibility(View.VISIBLE);
 		}
+		
 	}
 	
 	//发布动态
@@ -372,6 +325,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		return result;
 	}
 	
+	///////////////////////////////////////Override//////////////////////////////////////////
 	@Override
 	public int setLayoutId() {
 		// TODO Auto-generated method stub
@@ -389,5 +343,118 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		addRightBtn("发布");
 		locationString = "";
 	}
+	
+	///防止内存不够用
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		
+		//内容
+		outState.putString("content", contentEditText.getText().toString());		
+		//地点
+		outState.putString("location", locationString);
+		//图片
+		ArrayList<String> imageList = new ArrayList<String>();
+		int subviewsCount = addImageLayout.getChildCount();
+		for (int i = 0; i < subviewsCount; i++) {
+			View view = addImageLayout.getChildAt(i);
+			if (null != view.getTag() && view != addImageView) {
+				if (view.getTag() instanceof String) {
+					imageList.add((String) view.getTag());
+				}
+			}
+		}
+		outState.putStringArrayList("images", imageList);
+		if (null !=tmpImageName && tmpImageName.length()>0) {
+			//刚拍的照片
+			outState.putString("tmpImageName", tmpImageName);
+		}
+		
+		super.onSaveInstanceState(outState);
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		if (null != savedInstanceState) {
+			//地理位置
+			if (savedInstanceState.containsKey("location")) {
+				locationString = savedInstanceState.getString("location");
+				choiceLocationBtn.setText(locationString);
+			}
+			//内容
+			if (savedInstanceState.containsKey("content")) {
+				contentEditText.setText(savedInstanceState.getString("content"));
+			}
+			//图片
+			if (savedInstanceState.containsKey("images")) {
+				ArrayList<String> imageList = savedInstanceState.getStringArrayList("images");
+				for (String string : imageList) {
+					addNewsImageView(string);
+				}
+			}
+			
+			//最后拍的
+			if (savedInstanceState.containsKey("tmpImageName")) {
+				tmpImageName = savedInstanceState.getString("tmpImageName");
+			}
+		}
+	}
+	
+	 @Override  
+	 protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
+	        // TODO Auto-generated method stub  
+	        super.onActivityResult(requestCode, resultCode, data);
+	        
+	        if (resultCode == Activity.RESULT_OK) {  
+	            String sdStatus = Environment.getExternalStorageState();  
+	            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+	            	LogUtils.i("SD card is not avaiable/writeable right now.", 1);
+	                return;  
+	            }  
+	            switch (requestCode) {
+	            case TAKE_PHOTO:// 当选择拍照时调用   
+	            	// 图片压缩
+					int[] screenSize = getScreenSize();
+					if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0], screenSize[1])) {
+						addNewsImageView(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+					}
+	                break;
+	            case ALBUM_SELECT:// 当选择从本地获取图片时
+	                // 做非空判断
+	                if (data != null) {
+	                	Uri uri = data.getData();
+						try {
+							ContentResolver cr = this.getContentResolver();
+							if (uri.toString().endsWith(".png") || uri.toString().endsWith(".jpg")
+									|| "image/jpeg".equals(cr.getType(uri)) || "image/png".equals(cr.getType(uri))) {
+								// 压缩存储
+								int[] screenSize1 = getScreenSize();
+								String fileRealPath = getRealPathFromURI(uri);
+								if (fileRealPath != null
+										&& FileUtil
+												.tempToLocalPath(fileRealPath, tmpImageName, screenSize1[0], screenSize1[1])) {
+									addNewsImageView(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+								}
+							} else {
+								
+							}
 
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+	                }
+	                break;
+	            }
+	        }  
+	        
+	        //地理位置
+	        if (resultCode == LOCATION_SELECT) {
+            	String location = data.getStringExtra("location");
+            	if (null != location && !"".equals(location)) {
+            		locationString = location;
+            		choiceLocationBtn.setText(location);	
+				}
+			}
+	 }
 }

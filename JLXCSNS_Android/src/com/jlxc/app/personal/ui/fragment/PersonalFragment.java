@@ -23,6 +23,7 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
@@ -70,6 +71,7 @@ import com.jlxc.app.personal.ui.view.cityView.WheelView;
 import com.jlxc.app.personal.ui.view.cityView.adapters.ArrayWheelAdapter;
 import com.jlxc.app.personal.utils.XmlParserHandler;
 import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.bitmap.core.BitmapCache;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -158,7 +160,7 @@ public class PersonalFragment extends BaseFragment {
 	private HelloHaAdapter<IMModel> friendsAdapter;	
 	
     @OnClick(value={R.id.name_layout,R.id.sign_layout,R.id.birth_layout,R.id.sex_layout,
-			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_image_View
+			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_click_layout
 			,R.id.visit_layout, R.id.friend_layout, R.id.setting_Button, R.id.card_Button})
 	private void clickEvent(View view){
 		switch (view.getId()) {
@@ -229,7 +231,7 @@ public class PersonalFragment extends BaseFragment {
 		 	headAlertDialog.show();
 			break;
 			//背景点击
-		case R.id.back_image_View:
+		case R.id.back_click_layout:
 			//拍照
 			//dialog
 		 	Builder backAlertDialog = new AlertDialog.Builder(getActivity()).setNegativeButton("取消", null).setTitle("修改背景");
@@ -316,7 +318,6 @@ public class PersonalFragment extends BaseFragment {
 		friendsGridView.setEnabled(false);
 		
 		userModel = UserManager.getInstance().getUser(); 
-		LogUtils.i(""+UserManager.getInstance().getUser().getUid(), 1);
 		
 		//签名因为要跳到领一个页面 所以在只初始化一次
 		if (null == userModel.getSign() || "".equals(userModel.getSign())) {
@@ -457,18 +458,6 @@ public class PersonalFragment extends BaseFragment {
 //    						bitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH + tmpImageName);
     						uploadImage(FileUtil.BIG_IMAGE_PATH+tmpImageName);
 						}
-//    					07-24 19:25:26.490: E/##KIT_io.rong.imkit.logic.MessageCounterLogic:registerMessageCounter(1728): RongIM.getInstance() :6
-
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): FATAL EXCEPTION: IPC_WORK
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): java.lang.NullPointerException
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Parcel.readException(Parcel.java:1437)
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Parcel.readException(Parcel.java:1385)
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at io.rong.imlib.ipc.remote.IHandler$Stub$Proxy.getUnreadCount(IHandler.java:950)
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at io.rong.imlib.RongIMClient$17.run(RongIMClient.java:1003)
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Handler.handleCallback(Handler.java:730)
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Handler.dispatchMessage(Handler.java:92)
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.Looper.loop(Looper.java:137)
-//    					07-24 18:46:12.720: E/AndroidRuntime(9817): 	at android.os.HandlerThread.run(HandlerThread.java:61)
 
 					}
                 }
@@ -514,8 +503,14 @@ public class PersonalFragment extends BaseFragment {
 			intent.putExtra("aspectX", 1);
 			intent.putExtra("aspectY", 1);
 			// outputX outputY 是裁剪图片宽高
-			intent.putExtra("outputX", 960);
-			intent.putExtra("outputY", 960);
+			if (Build.MANUFACTURER.equals("Xiaomi")) {
+				intent.putExtra("outputX", 320);
+				intent.putExtra("outputY", 320);
+			}else {
+				intent.putExtra("outputX", 960);
+				intent.putExtra("outputY", 960);
+			}
+			
 			intent.putExtra("scale", true);
 			intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
 			intent.putExtra("noFaceDetection", true); // no face detection
@@ -526,7 +521,6 @@ public class PersonalFragment extends BaseFragment {
 				headDir.mkdir();
 			}
 			File tmpFile = new File(FileUtil.HEAD_PIC_PATH+tmpImageName);
-			
 			//地址
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tmpFile));
 			startActivityForResult(intent, PHOTO_RESOULT);
@@ -808,11 +802,11 @@ public class PersonalFragment extends BaseFragment {
 								String subPath = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("head_sub_image");
 								userModel.setHead_image(serverPath);
 								userModel.setHead_sub_image(subPath);
-								bitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
+//								bitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 								bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
 							}else {
 								userModel.setBackground_image(serverPath);
-								bitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH+tmpImageName);
+//								bitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH+tmpImageName);
 								bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
 							}
 							ToastUtil.show(getActivity(),jsonResponse.getString(JLXCConst.HTTP_MESSAGE));

@@ -1,51 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
     
+    <!-- 背景图 -->
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" >
+	
+	    <ImageView
+	        android:id="@+id/back_image_View"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:scaleType="centerCrop"
+	        android:src="@drawable/abc_ab_bottom_solid_light_holo" />
+	
+	</RelativeLayout>
     
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-			<!-- 背景图 -->
+
+            <!-- 头像 -->
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="150dip" >
 
-                <ImageView
-                    android:id="@+id/back_image_View"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dip"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/abc_ab_bottom_solid_light_holo" />
-
-                <ImageView
-                    android:id="@+id/return_image_view"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="14dp"
-                    android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
-                
-				<TextView
-                    android:id="@+id/setting_Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="24dp"
-                    android:layout_marginTop="14dp"
-                    android:text="设置" />
-                
                 <com.jlxc.app.base.ui.view.CircularImageView
                     android:id="@+id/head_image_view"
                     android:layout_width="70dip"
@@ -54,305 +41,354 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="70dp"
                     android:src="@drawable/icon_selfinfo_sel" />
-
             </RelativeLayout>
-            <!-- 发消息添加按钮 -->
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dip" 
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_height="wrap_content"
+                android:background="@color/color_4"
+                android:orientation="vertical" >
 
-                <LinearLayout
-                    android:id="@+id/send_message_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:id="@+id/send_message_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="发消息" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/add_friend_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:id="@+id/add_friend_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="添加" />
-                </LinearLayout>
-
-            </LinearLayout>
-            
-			<!-- TA的相片 -->
-            <LinearLayout
-                android:id="@+id/his_image_layout"
-                android:layout_width="match_parent"
-                android:layout_height="50dip" 
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_marginLeft="15dip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TA的相片" />
-                <com.jlxc.app.base.ui.view.NoScrollGridView
-                    android:id="@+id/his_image_grid_view"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginTop="5dip"
-                    android:layout_marginBottom="2dip"
-                    android:layout_width="200dp"
-                    android:layout_height="match_parent"
-                    android:numColumns="3" >
-                </com.jlxc.app.base.ui.view.NoScrollGridView>
-                <TextView
-                    android:id="@+id/his_image_count_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dip"
-                     />
-            </LinearLayout>
-            <!-- TA的好友 -->
-            <LinearLayout
-                android:id="@+id/his_friend_layout"
-                android:layout_width="match_parent"
-                android:layout_height="50dip" 
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_marginLeft="15dip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TA的好友" />
-                <com.jlxc.app.base.ui.view.NoScrollGridView
-                    android:id="@+id/his_friend_grid_view"
-                    android:layout_marginTop="5dip"
-                    android:layout_marginBottom="2dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_width="200dip"
-                    android:layout_height="match_parent"
-                    android:numColumns="3" >
-                </com.jlxc.app.base.ui.view.NoScrollGridView>
-                <TextView
-                    android:id="@+id/his_friend_count_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dip"
-                    />
-            </LinearLayout>
-            <!-- 共同好友和访客 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dip" 
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:id="@+id/common_friend_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="共同好友" />
-                </LinearLayout>
+                <!-- 发消息添加按钮 -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
+                    android:layout_height="60dip"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal" >
 
-                    <Button
-                        android:id="@+id/visit_button"
+                    <LinearLayout
+                        android:id="@+id/send_message_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/send_message_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="发消息" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/add_friend_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/add_friend_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="添加" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- TA的相片 -->
+                <LinearLayout
+                    android:id="@+id/his_image_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="访客" />
+                        android:layout_marginLeft="15dip"
+                        android:text="TA的相片" />
+
+                    <com.jlxc.app.base.ui.view.TouchInterceptGridView
+                        android:id="@+id/his_image_grid_view"
+                        android:layout_width="200dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="2dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginTop="5dip"
+                        android:numColumns="3" >
+                    </com.jlxc.app.base.ui.view.TouchInterceptGridView>
+
+                    <TextView
+                        android:id="@+id/his_image_count_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dip" />
                 </LinearLayout>
+                
+                <!-- TA的好友 -->
+                <LinearLayout
+                    android:id="@+id/his_friend_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:text="TA的好友" />
+
+                    <com.jlxc.app.base.ui.view.TouchInterceptGridView
+                        android:id="@+id/his_friend_grid_view"
+                        android:layout_width="200dip"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="2dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginTop="5dip"
+                        android:numColumns="3" >
+                    </com.jlxc.app.base.ui.view.TouchInterceptGridView>
+
+                    <TextView
+                        android:id="@+id/his_friend_count_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dip" />
+                </LinearLayout>
+                <!-- 共同好友和访客 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/common_friend_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="共同好友" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/visit_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="访客" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:background="@color/color_1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dip"
+                        android:text="个人信息" />
+                </LinearLayout>
+                <!-- 姓名 -->
+
+                <LinearLayout
+                    android:id="@+id/name_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:text="昵称" />
+
+                    <TextView
+                        android:id="@+id/name_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dip"
+                        android:text="测试" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@color/color_1" />
+                <!-- 签名 -->
+
+                <LinearLayout
+                    android:id="@+id/sign_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:text="签名" />
+
+                    <TextView
+                        android:id="@+id/sign_text_view"
+                        android:layout_width="200dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dip"
+                        android:text="你好啊 哈哈哈哈" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@color/color_1" />
+                <!-- 生日 -->
+
+                <LinearLayout
+                    android:id="@+id/birth_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:text="生日" />
+
+                    <TextView
+                        android:id="@+id/birth_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dip"
+                        android:text="1996-06-06" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@color/color_1" />
+                <!-- 性别 -->
+
+                <LinearLayout
+                    android:id="@+id/sex_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:text="性别" />
+
+                    <TextView
+                        android:id="@+id/sex_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dip"
+                        android:text="女孩纸" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@color/color_1" />
+                <!-- 学校 -->
+
+                <LinearLayout
+                    android:id="@+id/school_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:text="学校" />
+
+                    <TextView
+                        android:id="@+id/school_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dip"
+                        android:text="什么学校？？？？" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@color/color_1" />
+                <!-- 城市 -->
+
+                <LinearLayout
+                    android:id="@+id/city_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:text="城市" />
+
+                    <TextView
+                        android:id="@+id/city_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dip"
+                        android:text="北京" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@color/color_1" />
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:background="@color/color_1" 
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dip"
-                    android:text="个人信息" />
-            </LinearLayout>
-			<!-- 姓名 -->
-            <LinearLayout
-                android:id="@+id/name_layout"
-                android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dip"
-                    android:text="昵称" />
-                
-                <TextView
-                    android:id="@+id/name_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dip"
-                    android:text="测试" />
-                
-            </LinearLayout>
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="20dip"
-                android:background="@color/color_1" />
-            <!-- 签名 -->
-            <LinearLayout
-                android:id="@+id/sign_layout"
-                android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" 
-                    android:layout_marginLeft="15dip"
-                    android:text="签名" />
-                <TextView
-                    android:id="@+id/sign_text_view"
-                    android:layout_width="200dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dip"
-                    android:text="你好啊 哈哈哈哈" />
-            </LinearLayout>
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="20dip"
-                android:background="@color/color_1" />
-            <!-- 生日 -->
-            <LinearLayout
-                android:id="@+id/birth_layout"
-                android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dip"
-                    android:text="生日" />
-                
-                <TextView
-                    android:id="@+id/birth_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dip"
-                    android:text="1996-06-06" />
-            </LinearLayout>
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="20dip"
-                android:background="@color/color_1" />
-            <!-- 性别 -->
-            <LinearLayout
-                android:id="@+id/sex_layout"
-                android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dip"
-                    android:text="性别" />
-                
-                <TextView
-                    android:id="@+id/sex_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dip"
-                    android:text="女孩纸" />
-                
-            </LinearLayout>
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="20dip"
-                android:background="@color/color_1" />
-            <!-- 学校 -->
-            <LinearLayout
-                android:id="@+id/school_layout"
-                android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dip"
-                    android:text="学校" />
-                
-                <TextView
-                    android:id="@+id/school_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dip"
-                    android:text="什么学校？？？？" />
-                
-            </LinearLayout>
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="20dip"
-                android:background="@color/color_1" />
-            <!-- 城市 -->
-            <LinearLayout
-                android:id="@+id/city_layout"
-                android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dip"
-                    android:text="城市" />
-                
-                <TextView
-                    android:id="@+id/city_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dip"
-                    android:text="北京" />
-                
-            </LinearLayout>
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="20dip"
-                android:background="@color/color_1" />
-            
         </LinearLayout>
     </ScrollView>
     
+	<ImageView
+	    android:id="@+id/return_image_view"
+	    android:layout_width="30dip"
+	    android:layout_height="30dip"
+	    android:layout_alignParentLeft="true" 
+	    android:layout_alignParentTop="true"
+	    android:layout_marginLeft="18dp"
+	    android:layout_marginTop="14dp"
+	    android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
-</LinearLayout>
+	<TextView
+	    android:id="@+id/setting_Button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:layout_marginRight="24dp"
+	    android:layout_marginTop="14dp"
+	    android:text="设置" />
+
+</RelativeLayout>

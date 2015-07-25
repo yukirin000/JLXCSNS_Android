@@ -52,7 +52,7 @@ public class PersonalSettingActivity extends BaseActivityWithTopBar{
 			DataCleanManager.clearAllCache(this);
 			ToastUtil.show(this, "清除成功^_^");
 			String cacheString = DataCleanManager.getTotalCacheSize(this);
-			clearButton.setText("清除缓存"+cacheString+"M");	
+			clearButton.setText("清除缓存"+cacheString);	
 		} catch (Exception e) {
 			ToastUtil.show(this, "清除成功>_<");
 			e.printStackTrace();

@@ -372,6 +372,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		//启动聊天
 		RongIM.getInstance().startConversation
 		(OtherPersonalActivity.this, Conversation.ConversationType.PRIVATE, imModel.getTargetId(), imModel.getTitle());
+		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
 	}
 	
 	//添加好友
