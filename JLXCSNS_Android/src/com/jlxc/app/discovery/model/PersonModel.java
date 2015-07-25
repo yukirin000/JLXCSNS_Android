@@ -24,6 +24,8 @@ public class PersonModel {
 	private List<String> imageList;
 	// 关系来源
 	private String type;
+	// 是否为朋友
+	private String isFriend = "0";
 
 	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
@@ -65,6 +67,9 @@ public class PersonModel {
 		if (object.containsKey("type")) {
 			JSONObject JTypeObj = (JSONObject) object.get("type");
 			setType(JTypeObj.getString("content"));
+		}
+		if (object.containsKey("is_friend")) {
+			setIsFriend(object.getString("is_friend"));
 		}
 	}
 
@@ -152,5 +157,13 @@ public class PersonModel {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getIsFriend() {
+		return isFriend;
+	}
+
+	public void setIsFriend(String isFriend) {
+		this.isFriend = isFriend;
 	}
 }

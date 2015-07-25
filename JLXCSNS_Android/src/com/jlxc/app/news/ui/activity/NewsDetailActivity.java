@@ -1,5 +1,6 @@
 package com.jlxc.app.news.ui.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1100,10 +1101,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				BodyItem bodyData = (BodyItem) detailAdapter.getItem(postion);
 				String path = bodyData.getNewsImageListList().get(0).getURL();
 				// 跳转到图片详情页面
-				Intent intent = new Intent(NewsDetailActivity.this,
-						BigImgLookActivity.class);
-				intent.putExtra("filePath", path);
-				startActivity(intent);
+				jumpToBigImage(BigImgLookActivity.INTENT_KEY, path, 0);
 				break;
 
 			case R.id.btn_news_detail_like:
@@ -1275,13 +1273,14 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			String currentImgPath = ((ImageModel) parent.getAdapter().getItem(
-					position)).getURL();
+			List<ImageModel> imageModelList = new ArrayList<ImageModel>();
+			for (int index = 0; index < parent.getAdapter().getCount(); index++) {
+				imageModelList.add((ImageModel) parent.getAdapter().getItem(
+						index));
+			}
 			// 跳转到图片详情页面
-			Intent intent = new Intent(NewsDetailActivity.this,
-					BigImgLookActivity.class);
-			intent.putExtra("filePath", currentImgPath);
-			startActivity(intent);
+			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+					imageModelList, position);
 		}
 	}
 
@@ -1476,6 +1475,43 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		public void onLoadCompleted(ImageView container, String uri,
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
 			container.setImageBitmap(bitmap);
+		}
+	}
+
+	/**
+	 * 跳转查看大图
+	 */
+	private void jumpToBigImage(String intentKey, Object path, int index) {
+		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
+			// 单张图片跳转
+			String pathUrl = (String) path;
+			Intent intentPicDetail = new Intent(NewsDetailActivity.this,
+					BigImgLookActivity.class);
+			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
+			startActivity(intentPicDetail);
+		} else if (intentKey
+				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
+			// 传递model列表
+			@SuppressWarnings("unchecked")
+			List<ImageModel> mdPath = (List<ImageModel>) path;
+			Intent intent = new Intent(NewsDetailActivity.this,
+					BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
+			// 传递String列表
+			@SuppressWarnings("unchecked")
+			List<String> mdPath = (List<String>) path;
+			Intent intent = new Intent(NewsDetailActivity.this,
+					BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else {
+			LogUtils.e("未传递图片地址");
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.jlxc.app.discovery.ui.fragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,7 +58,10 @@ import com.jlxc.app.discovery.model.RecommendItemData;
 import com.jlxc.app.discovery.model.RecommendItemData.RecommendInfoItem;
 import com.jlxc.app.discovery.model.RecommendItemData.RecommendPhotoItem;
 import com.jlxc.app.discovery.model.RecommendItemData.RecommendTitleItem;
+import com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity;
 import com.jlxc.app.discovery.utils.DataToRecommendItem;
+import com.jlxc.app.news.model.ImageModel;
+import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
@@ -568,8 +572,11 @@ public class DiscoveryFragment extends BaseFragment {
 		@Override
 		public void onClick(View view, int position, int viewID) {
 			switch (viewID) {
-			// 添加通讯录好友
 			case R.id.layout_add_contact_root_view:
+				// 跳转到添加通讯录好友页面
+				Intent intentToContacts = new Intent(mContext,
+						ContactsUserActivity.class);
+				startActivityWithRight(intentToContacts);
 				break;
 
 			// 添加同校好友
@@ -611,14 +618,19 @@ public class DiscoveryFragment extends BaseFragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			@SuppressWarnings("unchecked")
-			Map<String, String> currentMap = ((HelloHaAdapter<Map<String, String>>) parent
-					.getAdapter()).getItem(position);
+			HelloHaAdapter<Map<String, String>> photosAdapter = (HelloHaAdapter<Map<String, String>>) parent
+					.getAdapter();
+			Map<String, String> currentMap = photosAdapter.getItem(position);
 			String currentImgPath = currentMap.get("PHOTO_SUB_URL");
 			if (!currentImgPath.equals(LOOK_ALL_PHOTOS)) {
 				// 跳转到图片详情页面
-				Intent intent = new Intent(mContext, BigImgLookActivity.class);
-				intent.putExtra("filePath", currentImgPath);
-				startActivity(intent);
+				List<String> imageList = new ArrayList<String>();
+				for (int index = 0; index < photosAdapter.getCount() - 1; index++) {
+					imageList.add(photosAdapter.getItem(index).get(
+							"PHOTO_SUB_URL"));
+				}
+				jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+						imageList, position);
 			} else {
 				// 跳转到动态列表
 				Intent intent = new Intent(mContext, MyNewsListActivity.class);
@@ -636,6 +648,41 @@ public class DiscoveryFragment extends BaseFragment {
 		Intent intentUsrMain = new Intent(mContext, OtherPersonalActivity.class);
 		intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, userID);
 		startActivityWithRight(intentUsrMain);
+	}
+
+	/**
+	 * 跳转查看大图
+	 */
+	private void jumpToBigImage(String intentKey, Object path, int index) {
+		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
+			// 单张图片跳转
+			String pathUrl = (String) path;
+			Intent intentPicDetail = new Intent(mContext,
+					BigImgLookActivity.class);
+			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
+			startActivity(intentPicDetail);
+		} else if (intentKey
+				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
+			// 传递model列表
+			@SuppressWarnings("unchecked")
+			List<ImageModel> mdPath = (List<ImageModel>) path;
+			Intent intent = new Intent(mContext, BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
+			// 传递String列表
+			@SuppressWarnings("unchecked")
+			List<String> mdPath = (List<String>) path;
+			Intent intent = new Intent(mContext, BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else {
+			LogUtils.e("未传递图片地址");
+		}
 	}
 
 	/**

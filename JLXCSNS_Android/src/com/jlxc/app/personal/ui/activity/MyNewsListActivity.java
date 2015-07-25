@@ -1,5 +1,6 @@
 package com.jlxc.app.personal.ui.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -739,10 +740,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 					// 跳转到图片详情页面
 					String path = bodyData.getNewsImageListList().get(0)
 							.getURL();
-					Intent intentPicDetail = new Intent(
-							MyNewsListActivity.this, BigImgLookActivity.class);
-					intentPicDetail.putExtra("filePath", path);
-					startActivity(intentPicDetail);
+					jumpToBigImage(BigImgLookActivity.INTENT_KEY,path, 0);
 				} else {
 					// 跳转至动态详情
 					jumpToNewsDetail(bodyData,
@@ -807,13 +805,14 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			String currentImgPath = ((ImageModel) parent.getAdapter().getItem(
-					position)).getURL();
+			List<ImageModel> imageModelList = new ArrayList<ImageModel>();
+			for (int index = 0; index < parent.getAdapter().getCount(); index++) {
+				imageModelList.add((ImageModel) parent.getAdapter().getItem(
+						index));
+			}
 			// 跳转到图片详情页面
-			Intent intent = new Intent(MyNewsListActivity.this,
-					BigImgLookActivity.class);
-			intent.putExtra("filePath", currentImgPath);
-			startActivity(intent);
+			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+					imageModelList, position);
 		}
 	}
 
@@ -863,6 +862,42 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			container.setImageBitmap(bitmap);
 		}
 	}
+	
+	/**
+	 * 跳转查看大图
+	 */
+	private void jumpToBigImage(String intentKey, Object path, int index) {
+		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
+			// 单张图片跳转
+			String pathUrl = (String) path;
+			Intent intentPicDetail = new Intent(MyNewsListActivity.this,
+					BigImgLookActivity.class);
+			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
+			startActivity(intentPicDetail);
+		} else if (intentKey
+				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
+			// 传递model列表
+			@SuppressWarnings("unchecked")
+			List<ImageModel> mdPath = (List<ImageModel>) path;
+			Intent intent = new Intent(MyNewsListActivity.this, BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
+			// 传递String列表
+			@SuppressWarnings("unchecked")
+			List<String> mdPath = (List<String>) path;
+			Intent intent = new Intent(MyNewsListActivity.this, BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else {
+			LogUtils.e("未传递图片地址");
+		}
+	}
+
 
 	/**
 	 * 跳转至用户的主页

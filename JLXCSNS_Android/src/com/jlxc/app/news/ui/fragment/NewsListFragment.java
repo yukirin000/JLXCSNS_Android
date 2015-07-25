@@ -821,7 +821,7 @@ public class NewsListFragment extends BaseFragment {
 					jumpToNewsDetail(titleData,
 							NewsOperateModel.KEY_BOARD_CLOSE, null);
 				} else {
-					JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
+					jumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				}
 				break;
 
@@ -833,10 +833,7 @@ public class NewsListFragment extends BaseFragment {
 					// 跳转到图片详情页面
 					String path = bodyData.getNewsImageListList().get(0)
 							.getURL();
-					Intent intentPicDetail = new Intent(mContext,
-							BigImgLookActivity.class);
-					intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, path);
-					startActivity(intentPicDetail);
+					jumpToBigImage(BigImgLookActivity.INTENT_KEY, path, 0);
 				} else {
 					// 跳转到动态详情
 					jumpToNewsDetail(bodyData,
@@ -892,7 +889,7 @@ public class NewsListFragment extends BaseFragment {
 				} else {
 					for (int iCount = 0; iCount < NEWS_COMMENT_NUM; ++iCount) {
 						if (viewID == commentViewList.get(iCount).get("NAME")) {
-							JumpToHomepage(JLXCUtils.stringToInt(commentData
+							jumpToHomepage(JLXCUtils.stringToInt(commentData
 									.getCommentList().get(iCount).getUserId()));
 						} else if (viewID == commentViewList.get(iCount).get(
 								"CONTENT")) {
@@ -1019,11 +1016,8 @@ public class NewsListFragment extends BaseFragment {
 						index));
 			}
 			// 跳转到图片详情页面
-			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
-					(Serializable) imageModelList);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, position);
-			startActivity(intent);
+			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+					imageModelList, position);
 		}
 	}
 
@@ -1037,7 +1031,7 @@ public class NewsListFragment extends BaseFragment {
 				long id) {
 			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
 					position);
-			JumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
+			jumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
 		}
 	}
 
@@ -1075,9 +1069,44 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
+	 * 跳转查看大图
+	 */
+	private void jumpToBigImage(String intentKey, Object path, int index) {
+		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
+			// 单张图片跳转
+			String pathUrl = (String) path;
+			Intent intentPicDetail = new Intent(mContext,
+					BigImgLookActivity.class);
+			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
+			startActivity(intentPicDetail);
+		} else if (intentKey
+				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
+			// 传递model列表
+			@SuppressWarnings("unchecked")
+			List<ImageModel> mdPath = (List<ImageModel>) path;
+			Intent intent = new Intent(mContext, BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
+			// 传递String列表
+			@SuppressWarnings("unchecked")
+			List<String> mdPath = (List<String>) path;
+			Intent intent = new Intent(mContext, BigImgLookActivity.class);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+					(Serializable) mdPath);
+			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+			startActivity(intent);
+		} else {
+			LogUtils.e("未传递图片地址");
+		}
+	}
+
+	/**
 	 * 跳转至用户的主页
 	 */
-	private void JumpToHomepage(int userID) {
+	private void jumpToHomepage(int userID) {
 		Intent intentUsrMain = new Intent(mContext, OtherPersonalActivity.class);
 		intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, userID);
 		startActivityWithRight(intentUsrMain);
