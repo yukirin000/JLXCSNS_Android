@@ -33,6 +33,8 @@ public class DataCleanManager {
                    return false;
                }
            }
+           
+           return true;
        }
        return dir.delete();
    }

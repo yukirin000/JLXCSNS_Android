@@ -1,7 +1,5 @@
 package com.jlxc.app.base.ui.activity;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -12,7 +10,6 @@ import io.rong.imlib.RongIMClient.ErrorCode;
 import io.rong.imlib.model.Conversation;
 import io.yunba.android.manager.YunBaManager;
 
-import com.amap.api.services.core.bo;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.ActivityManager;
@@ -36,8 +33,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;

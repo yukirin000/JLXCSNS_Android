@@ -8,11 +8,11 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -113,6 +113,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
         RongIM.setUserInfoProvider(this, true);//设置用户信息提供者。
         RongIM.setGroupInfoProvider(this, true);//设置群组信息提供者。
         RongIM.setConversationBehaviorListener(this);//设置会话界面操作的监听器。
+        RongIM.setConversationListBehaviorListener(this);
         RongIM.setLocationProvider(this);//设置地理位置提供者,不用位置的同学可以注掉此行代码
 //        RongIM.setPushMessageBehaviorListener(this);//自定义 push 通知。
     }
@@ -425,9 +426,12 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
      */
     @Override
     public boolean onUserPortraitClick(Context context, Conversation.ConversationType conversationType, UserInfo user) {
+    	
     	Intent intent = new Intent(context, OtherPersonalActivity.class);
     	intent.putExtra(OtherPersonalActivity.INTENT_KEY, JLXCUtils.stringToInt(user.getUserId().replace(JLXCConst.JLXC, "")));
     	context.startActivity(intent);
+    	((Activity) context).overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+    	
         /**
          * demo 代码  开发者需替换成自己的代码。
          */
@@ -533,9 +537,13 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
      */
     @Override
     public boolean onConversationClick(Context context, View view, UIConversation conversation) {
-        return false;
+    	
+    	//启动聊天
+    	RongIM.getInstance().startConversation(context, conversation.getConversationType(), conversation.getConversationTargetId(), conversation.getUIConversationTitle());
+    	((Activity) context).overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+        return true;
     }
-
+    
     /**
      * 长按会话列表 item 后执行。
      *

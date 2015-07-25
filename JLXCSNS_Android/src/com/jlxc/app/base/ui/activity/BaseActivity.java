@@ -16,7 +16,6 @@ import android.view.Window;
 
 import com.lidroid.xutils.ViewUtils;
 import com.jlxc.app.base.manager.ActivityManager;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.R;
 
 /**
