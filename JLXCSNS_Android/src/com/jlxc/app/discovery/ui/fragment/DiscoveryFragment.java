@@ -143,13 +143,15 @@ public class DiscoveryFragment extends BaseFragment {
 
 	@Override
 	public void loadLayout(View rootView) {
-		init();
-		multiItemTypeSet();
-		newsListViewSet();
 	}
 
 	@Override
 	public void setUpViews(View rootView) {
+		init();
+		multiItemTypeSet();
+		newsListViewSet();
+		RecommendTitleItem titleItem = new RecommendTitleItem();
+		personItemAdapter.add(titleItem);
 		// 首次更新数据
 		isPullDowm = true;
 		getRecommentData(String.valueOf(userModel.getUid()),
@@ -540,6 +542,7 @@ public class DiscoveryFragment extends BaseFragment {
 	 * */
 	private void JsonToItemData(List<JSONObject> dataList) {
 		if (isPullDowm) {
+			//下拉
 			personList.clear();
 			for (JSONObject newsObj : dataList) {
 				PersonModel tempPerson = new PersonModel();
@@ -551,6 +554,7 @@ public class DiscoveryFragment extends BaseFragment {
 			}
 
 		} else {
+			//上拉
 			HashSet<PersonModel> DuplicateSet = new HashSet<PersonModel>(
 					personList);
 			for (JSONObject newsObj : dataList) {

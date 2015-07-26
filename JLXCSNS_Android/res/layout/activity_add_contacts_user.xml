@@ -7,7 +7,7 @@
     <include layout="@layout/layout_title_bar" />
     <!-- 手机联系人listview -->
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
+  <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/listview_contacts_user"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
