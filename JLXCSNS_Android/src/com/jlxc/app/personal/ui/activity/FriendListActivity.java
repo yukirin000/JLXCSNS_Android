@@ -131,7 +131,7 @@ public class FriendListActivity extends BaseActivityWithTopBar {
 	
 	public void getFriends() {
 		
-		//判断是否需要同步
+		//同步
 		String path = JLXCConst.GET_FRIENDS_LIST + "?" + "user_id=" + UserManager.getInstance().getUser().getUid();
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
@@ -159,7 +159,7 @@ public class FriendListActivity extends BaseActivityWithTopBar {
 								}else {
 									model = new IMModel();
 									model.setType(IMModel.ConversationType_PRIVATE);
-									model.setTargetId(JLXCConst.JLXC+jlxcUid);
+									model.setTargetId(jlxcUid);
 									model.setTitle(jsonObject.getString("name"));
 									model.setAvatarPath(jsonObject.getString("head_image"));
 									model.setRemark(jsonObject.getString("friend_remark"));

@@ -62,7 +62,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
         RongIM.UserInfoProvider, RongIM.GroupInfoProvider, RongIM.ConversationBehaviorListener,
         RongIMClient.ConnectionStatusListener, RongIM.LocationProvider, RongIMClient.OnReceivePushMessageListener, RongIM.ConversationListBehaviorListener {
 
-    private static final String TAG = RongCloudEvent.class.getSimpleName();
+    private static final String TAG = "PushReceiver";
 
     private static RongCloudEvent mRongCloudInstance;
 
@@ -127,6 +127,8 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		RongIMClientWrapper.setOnReceiveMessageListener(this);//设置消息接收监听器。
         RongIM.getInstance().setSendMessageListener(this);//设置发出消息接收监听器.
 		RongIMClientWrapper.setConnectionStatusListener(this);//设置连接状态监听器。
+		RongIMClientWrapper.setOnReceivePushMessageListener(this);//设置通知监听器
+		
         //扩展功能自定义
         InputProvider.ExtendProvider[] provider = {
                 new ImageInputProvider(RongContext.getInstance()),//图片

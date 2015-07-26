@@ -2,19 +2,26 @@ package com.jlxc.app.base.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.jlxc.app.R;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.model.IMModel;
 
 import io.yunba.android.manager.YunBaManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
 public class PushReceiver extends BroadcastReceiver {
 
+	private NotificationManager mNotificationManager;
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
@@ -40,6 +47,7 @@ public class PushReceiver extends BroadcastReceiver {
 				}
 				int type = obj.getIntValue("type");
 				LogUtils.i(type+"",1);
+				showNotification(context, "您有一条新消息", "您有一条新消息", "");
 				switch (type) {
 				case NewsPushModel.PushAddFriend:
 					//添加好友信息
@@ -137,6 +145,36 @@ public class PushReceiver extends BroadcastReceiver {
 		//顶部更新
 		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
 		context.sendBroadcast(messageIntent);
+	}
+	
+	
+	/**
+	 * 显示通知
+	 * 
+	 * @param context
+	 * @param ewMessage
+	 */
+	@SuppressWarnings("deprecation")
+	private void showNotification(Context context, CharSequence tickerText, CharSequence contentTitle, CharSequence contentText) {
+
+		long newWhen = System.currentTimeMillis();
+		mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		int iconId = R.drawable.ic_launcher;
+		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
+		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		notificationIntent.setClass(context.getApplicationContext(), LoginActivity.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Notification notification = new Notification();
+		notification.when = newWhen;
+		notification.flags = Notification.FLAG_AUTO_CANCEL;
+		notification.defaults = Notification.DEFAULT_SOUND;
+		notification.icon = iconId;
+		notification.tickerText = tickerText;
+		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+		// notification的id使用发送者的id
+		mNotificationManager.notify(0, notification);
+
 	}
 	
 	//send msg to MainActivity
