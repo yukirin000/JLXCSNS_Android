@@ -31,7 +31,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dip" >
+                android:layout_height="250dip" >
 
                 <com.jlxc.app.base.ui.view.CircularImageView
                     android:id="@+id/head_image_view"

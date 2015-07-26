@@ -113,7 +113,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	private UserModel otherUserModel;
 	
 	@OnClick({R.id.head_image_view, R.id.visit_button, R.id.common_friend_button, R.id.his_friend_layout, 
-			R.id.return_image_view,R.id.send_message_btn, R.id.add_friend_button, R.id.setting_Button})
+			R.id.return_image_view,R.id.send_message_btn, R.id.add_friend_button, R.id.setting_Button,R.id.his_image_layout})
 	private void clickEvent(View view){
 		switch (view.getId()) {
 		case R.id.head_image_view:
@@ -134,7 +134,13 @@ public class OtherPersonalActivity extends BaseActivity{
 			Intent visitIntent = new Intent(this, VisitListActivity.class);
 			visitIntent.putExtra(VisitListActivity.INTENT_KEY, otherUserModel.getUid());
 			startActivityWithRight(visitIntent);
-			break;	
+			break;
+		case R.id.his_image_layout:
+			//图片点击
+			Intent myImageIntent = new Intent(this, MyNewsListActivity.class);
+			myImageIntent.putExtra(MyNewsListActivity.INTNET_KEY_UID, otherUserModel.getUid()+"");
+			startActivityWithRight(myImageIntent);
+			break;
 		case R.id.his_friend_layout:
 			//他的好友
 			Intent otherFriendIntent = new Intent(this, OtherPeopleFriendsActivity.class);

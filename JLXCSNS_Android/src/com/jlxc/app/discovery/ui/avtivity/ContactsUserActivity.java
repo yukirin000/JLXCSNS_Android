@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -43,7 +44,10 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.model.PersonModel;
+import com.jlxc.app.discovery.model.SameSchoolModel;
 import com.jlxc.app.login.ui.activity.SecondLoginActivity;
+import com.jlxc.app.message.helper.MessageAddFriendHelper;
+import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
@@ -92,10 +96,20 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 		getPhoneContacts();
 		getSIMContacts();
 		listviewSet();
+		
+		mContactsNumber.add("13736661234"); 
+		mContactsNumber.add("13736661220");
+		mContactsNumber.add("13736661229");
+		
+		mContactsName.add("11");
+		mContactsName.add("11");
+		mContactsName.add("11");
+		
 		getContactsPerson(String.valueOf(userModel.getUid()),
 				getContactsJSON(mContactsNumber));
 	}
-
+	
+	///////////////////////////////////private method///////////////////////////////////
 	/**
 	 * 初始化
 	 * */
@@ -131,7 +145,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 				dataList) {
 
 			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper,
+			protected void convert(final HelloHaBaseAdapterHelper helper,
 					PersonModel item) {
 				final PersonModel currentPerson = item;
 				// 联系人头像
@@ -177,6 +191,15 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							}
 						});
 
+				Button addButton = helper.getView(R.id.btn_contacts_add);
+				if (null != item.getIsFriend() && "1".equals(item.getIsFriend())) {
+					addButton.setText("已添加");
+					addButton.setEnabled(false);
+				}else{
+					addButton.setText("添加");
+					addButton.setEnabled(true);
+				}
+					
 				// 点击添加按钮
 				helper.setOnClickListener(R.id.btn_contacts_add,
 						new OnClickListener() {
@@ -184,10 +207,17 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							@Override
 							public void onClick(View v) {
 								// 点击添加按钮
-								ToastUtil.show(
-										getApplicationContext(),
-										"点击量添加按钮  uid="
-												+ currentPerson.getUerId());
+								IMModel imModel = new IMModel();
+								imModel.setTargetId(JLXCConst.JLXC + currentPerson.getUerId());
+								imModel.setTitle(currentPerson.getUserName());
+								String headImage = currentPerson.getHeadImage();
+								if (headImage != null) {
+									headImage = headImage.replace(JLXCConst.ATTACHMENT_ADDR, "");
+								}else {
+									headImage = "";
+								}
+								imModel.setAvatarPath(headImage);
+								addFriend(imModel, helper.getPosition());
 							}
 						});
 			}
@@ -234,6 +264,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	 * */
 	private String getContactsJSON(ArrayList<String> numberList) {
 		JSONArray array = new JSONArray();
+		
 		for (String phoneNum : numberList) {
 			array.add(phoneNum);
 		}
@@ -382,5 +413,46 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
 			container.setImageBitmap(bitmap);
 		}
+	}
+	
+	//添加好友
+	private void addFriend(final IMModel imModel, final int index) {
+
+		// 参数设置
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+		params.addBodyParameter("friend_id", imModel.getTargetId().replace(JLXCConst.JLXC, "")+"");
+		
+		showLoading("添加中^_^", false);
+		HttpManager.post(JLXCConst.Add_FRIEND, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						
+						hideLoading();
+						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(ContactsUserActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							//添加好友
+							MessageAddFriendHelper.addFriend(imModel);
+							//更新
+							PersonModel personModel = dataList.get(index);
+							personModel.setIsFriend("1");
+							contactsAdapter.replaceAll(dataList);
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						hideLoading();
+						ToastUtil.show(ContactsUserActivity.this,
+								"网络异常");
+					}
+				}, null));
 	}
 }

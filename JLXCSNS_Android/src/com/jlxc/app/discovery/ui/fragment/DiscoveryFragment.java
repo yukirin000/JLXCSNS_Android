@@ -662,7 +662,7 @@ public class DiscoveryFragment extends BaseFragment {
 			} else {
 				// 跳转到动态列表
 				Intent intent = new Intent(mContext, MyNewsListActivity.class);
-				intent.putExtra(MyNewsListActivity.ITNET_KEY_UID,
+				intent.putExtra(MyNewsListActivity.INTNET_KEY_UID,
 						currentMap.get("USER_ID"));
 				startActivity(intent);
 			}

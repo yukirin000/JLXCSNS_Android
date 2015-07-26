@@ -71,7 +71,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.jlxc.app.base.ui.activity.MainTabActivity" >
+        <activity android:name="com.jlxc.app.base.ui.activity.MainTabActivity" 
+            android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            >
         </activity>
         <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity" >
         </activity>
@@ -115,7 +118,18 @@
         </activity>
         <activity android:name="com.jlxc.app.message.ui.activity.NewFriendsActivity" >
         </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.MipcaCaptureActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.QRCodeScanActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.SameSchoolActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.SearchUserActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity" >
+        </activity>
 
+        
         <!-- 会话 Activity -->
         <activity
             android:name="com.jlxc.app.message.ui.activity.ConversationActivity"
@@ -255,6 +269,10 @@
                 <category android:name="com.jlxc.app" />
             </intent-filter>
          </receiver>
+         
+		<!-- 友盟部分 -->
+		<meta-data android:value="55b38ab667e58e47020048b1" android:name="UMENG_APPKEY"></meta-data>
+		<meta-data android:value="nicai" android:name="UMENG_CHANNEL"/>
         
     </application>
 
