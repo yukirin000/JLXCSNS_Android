@@ -12,6 +12,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -132,6 +133,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					PersonModel item) {
+				final PersonModel currentPerson = item;
 				// 联系人头像
 				ImageView imgView = helper.getView(R.id.iv_contacts_head);
 				LayoutParams laParams = (LayoutParams) imgView
@@ -149,8 +151,45 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 						item.getHeadSubImage(), new NewsBitmapLoadCallBack());
 
 				// 绑定昵称
-				helper.setText(R.id.tv_contacts_name, item.getUserName());
 				helper.setText(R.id.tv_contact_user_name, item.getUserName());
+				// 通讯录名称
+				String contactName = "";
+				if (mContactsNumber.contains(item.getPhoneNumber())) {
+					int index = mContactsNumber.indexOf(item.getPhoneNumber());
+					contactName = mContactsName.get(index);
+				}
+
+				helper.setText(R.id.tv_contacts_name, "通讯录好友：" + contactName);
+				helper.setOnClickListener(R.id.layout_contacts_root_view,
+						new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								// 跳转至用户的主页
+								Intent intentUsrMain = new Intent(
+										ContactsUserActivity.this,
+										OtherPersonalActivity.class);
+								intentUsrMain.putExtra(
+										OtherPersonalActivity.INTENT_KEY,
+										JLXCUtils.stringToInt(currentPerson
+												.getUerId()));
+								startActivityWithRight(intentUsrMain);
+							}
+						});
+
+				// 点击添加按钮
+				helper.setOnClickListener(R.id.btn_contacts_add,
+						new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								// 点击添加按钮
+								ToastUtil.show(
+										getApplicationContext(),
+										"点击量添加按钮  uid="
+												+ currentPerson.getUerId());
+							}
+						});
 			}
 		};
 
@@ -168,7 +207,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							public void run() {
 								contactsListView.onRefreshComplete();
 							}
-						}, 0);
+						}, 1);
 					}
 
 					@Override
@@ -179,7 +218,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							public void run() {
 								contactsListView.onRefreshComplete();
 							}
-						}, 0);
+						}, 1);
 					}
 				});
 
@@ -187,27 +226,11 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 		contactsListView.setOnScrollListener(new PauseOnScrollListener(
 				bitmapUtils, false, true));
 		contactsListView.setAdapter(contactsAdapter);
-
-		// 单击
-		contactsListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// 跳转至用户的主页
-				Intent intentUsrMain = new Intent(ContactsUserActivity.this,
-						OtherPersonalActivity.class);
-				intentUsrMain.putExtra(
-						OtherPersonalActivity.INTENT_KEY,
-						JLXCUtils.stringToInt(contactsAdapter.getItem(
-								position - 1).getUerId()));
-				startActivityWithRight(intentUsrMain);
-			}
-		});
+		contactsListView.setClickable(true);
 	}
 
 	/**
-	 * 数据转换为jsonObject
+	 * 电话数据转换为jsonObject
 	 * */
 	private String getContactsJSON(ArrayList<String> numberList) {
 		JSONArray array = new JSONArray();
@@ -275,8 +298,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("user_id", userId);
 		params.addBodyParameter("contact", contact);
-		LogUtils.i("path=" + JLXCConst.GET_CONTACT_USER + "?user_id=" + userId
-				+ "&contact=" + contact);
+
 		HttpManager.post(JLXCConst.GET_CONTACT_USER, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 

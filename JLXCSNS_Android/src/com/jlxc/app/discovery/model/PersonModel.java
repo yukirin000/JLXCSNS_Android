@@ -26,6 +26,8 @@ public class PersonModel {
 	private String type;
 	// 是否为朋友
 	private String isFriend = "0";
+	//电话号码
+	private String phoneNumber;
 
 	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
@@ -70,6 +72,9 @@ public class PersonModel {
 		}
 		if (object.containsKey("is_friend")) {
 			setIsFriend(object.getString("is_friend"));
+		}
+		if (object.containsKey("phone")) {
+			setPhoneNumber(object.getString("phone"));
 		}
 	}
 
@@ -165,5 +170,13 @@ public class PersonModel {
 
 	public void setIsFriend(String isFriend) {
 		this.isFriend = isFriend;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 }
