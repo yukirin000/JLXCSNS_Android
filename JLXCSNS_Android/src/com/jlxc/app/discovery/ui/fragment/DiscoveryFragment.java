@@ -2,18 +2,10 @@ package com.jlxc.app.discovery.ui.fragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.xml.validation.Validator;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.GridView;
@@ -31,7 +24,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.amap.api.services.core.br;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
@@ -59,9 +51,13 @@ import com.jlxc.app.discovery.model.RecommendItemData.RecommendInfoItem;
 import com.jlxc.app.discovery.model.RecommendItemData.RecommendPhotoItem;
 import com.jlxc.app.discovery.model.RecommendItemData.RecommendTitleItem;
 import com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity;
+import com.jlxc.app.discovery.ui.avtivity.MipcaCaptureActivity;
+import com.jlxc.app.discovery.ui.avtivity.SameSchoolActivity;
+import com.jlxc.app.discovery.ui.avtivity.SearchUserActivity;
 import com.jlxc.app.discovery.utils.DataToRecommendItem;
+import com.jlxc.app.message.helper.MessageAddFriendHelper;
+import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.news.model.ImageModel;
-import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
@@ -70,11 +66,14 @@ import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class DiscoveryFragment extends BaseFragment {
 
+	private final static int SCANNIN_GREQUEST_CODE = 1;
+	
 	private static final String LOOK_ALL_PHOTOS = "btn_all_photos";
 	// 用户实例
 	private UserModel userModel;
@@ -123,13 +122,18 @@ public class DiscoveryFragment extends BaseFragment {
 		switch (view.getId()) {
 		// 扫一扫页面
 		case R.id.tv_dicovery_scan:
+			Intent qrIntent = new Intent();
+			qrIntent.setClass(getActivity(), MipcaCaptureActivity.class);
+			qrIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			getActivity().startActivityForResult(qrIntent, SCANNIN_GREQUEST_CODE);
+			
 			break;
-
 		// 搜索页面
 		case R.id.tv_discovey_search:
+			Intent searchIntent = new Intent(getActivity(), SearchUserActivity.class);
+			startActivityWithRight(searchIntent);
 			break;
 		}
-
 	}
 
 	@Override
@@ -374,13 +378,23 @@ public class DiscoveryFragment extends BaseFragment {
 		helper.setText(R.id.tv_recommend_name, titleData.getUserName());
 		helper.setText(R.id.tv_recommend_tag, titleData.getRelationTag());
 		helper.setText(R.id.tv_recommend_school, titleData.getUserSchool());
-
+		
+		Button addButton = helper.getView(R.id.btn_recomment_add);
+		if (titleData.isAdd()) {
+			addButton.setEnabled(false);
+			addButton.setText("已添加");
+		}else {
+			addButton.setText("添加");
+			addButton.setEnabled(true);
+		}
+		
 		final int postion = helper.getPosition();
 		if (1 == postion) {
 			helper.setVisible(R.id.view_recommend_driver, false);
 		} else {
 			helper.setVisible(R.id.view_recommend_driver, true);
 		}
+		
 		// 监听事件
 		OnClickListener listener = new OnClickListener() {
 
@@ -475,7 +489,7 @@ public class DiscoveryFragment extends BaseFragment {
 	 * 获取推荐的人的数据
 	 * */
 	private void getRecommentData(String userId, String page) {
-		String path = JLXCConst.RECOMMEND_FRIENDS_LIST + "?" + "user_id=" + 68/* userId */
+		String path = JLXCConst.RECOMMEND_FRIENDS_LIST + "?" + "user_id=" + userId/* userId */
 				+ "&page=" + page + "&size=";
 
 		HttpManager.get(path, new JsonRequestCallBack<String>(
@@ -585,8 +599,10 @@ public class DiscoveryFragment extends BaseFragment {
 
 			// 添加同校好友
 			case R.id.layout_add_campus_root_view:
+				Intent sameSchoolIntent = new Intent(getActivity(), SameSchoolActivity.class);
+				startActivityWithRight(sameSchoolIntent);
 				break;
-
+				
 			// 点击推荐的人
 			case R.id.layout_recommend_info_rootview:
 				RecommendInfoItem currentInfoItem = (RecommendInfoItem) personItemAdapter
@@ -597,6 +613,14 @@ public class DiscoveryFragment extends BaseFragment {
 
 			// 点击添加按钮
 			case R.id.btn_recomment_add:
+				RecommendInfoItem addInfoItem = (RecommendInfoItem) personItemAdapter
+				.getItem(position);
+				IMModel imModel = new IMModel();
+				imModel.setAvatarPath(addInfoItem.getHeadImage());
+				imModel.setTargetId(JLXCConst.JLXC+addInfoItem.getUserID());
+				imModel.setTitle(addInfoItem.getUserName());
+				addFriend(imModel, position);
+				
 				break;
 			default:
 				break;
@@ -638,7 +662,7 @@ public class DiscoveryFragment extends BaseFragment {
 			} else {
 				// 跳转到动态列表
 				Intent intent = new Intent(mContext, MyNewsListActivity.class);
-				intent.putExtra(MyNewsListActivity.ITNET_KEY_UID,
+				intent.putExtra(MyNewsListActivity.INTNET_KEY_UID,
 						currentMap.get("USER_ID"));
 				startActivity(intent);
 			}
@@ -720,5 +744,46 @@ public class DiscoveryFragment extends BaseFragment {
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
 			container.setImageBitmap(bitmap);
 		}
+	}
+	
+	//添加好友
+	private void addFriend(final IMModel imModel, final int index) {
+
+		// 参数设置
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+		params.addBodyParameter("friend_id", imModel.getTargetId().replace(JLXCConst.JLXC, "")+"");
+		
+		showLoading(getActivity() ,"添加中^_^", false);
+		HttpManager.post(JLXCConst.Add_FRIEND, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						
+						hideLoading();
+						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(getActivity(),jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							//添加好友
+							MessageAddFriendHelper.addFriend(imModel);
+							//更新
+							RecommendInfoItem recommendItemData = (RecommendInfoItem) itemDataList.get(index);
+							recommendItemData.setAdd("1");
+							personItemAdapter.replaceAll(itemDataList);
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						hideLoading();
+						ToastUtil.show(getActivity(),
+								"网络异常");
+					}
+				}, null));
 	}
 }

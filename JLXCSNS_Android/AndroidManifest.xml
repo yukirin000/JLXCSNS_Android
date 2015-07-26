@@ -47,7 +47,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7ad1a3106acafa0b0f3fc9d4c5441f85" />
+            android:value="ab92e548a0429b832749d8067cb47998" />
 
         <!--
         <activity
@@ -58,7 +58,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>
         -->
         <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity" >
         </activity>
@@ -71,7 +71,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.jlxc.app.base.ui.activity.MainTabActivity" >
+        <activity android:name="com.jlxc.app.base.ui.activity.MainTabActivity" 
+            android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            >
         </activity>
         <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity" >
         </activity>
@@ -115,9 +118,18 @@
         </activity>
         <activity android:name="com.jlxc.app.message.ui.activity.NewFriendsActivity" >
         </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.MipcaCaptureActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.QRCodeScanActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.SameSchoolActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.discovery.ui.avtivity.SearchUserActivity" >
+        </activity>
         <activity android:name="com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity" >
         </activity>
 
+        
         <!-- 会话 Activity -->
         <activity
             android:name="com.jlxc.app.message.ui.activity.ConversationActivity"
@@ -239,29 +251,29 @@
 
 
         <!-- 云巴部分 -->
-        <meta-data
-            android:name="YUNBA_APPKEY"
-            android:value="55ab4554c75ecd535d69b955" />
-
-        <service android:name="io.yunba.android.core.YunBaService" >
-        </service>
-
-        <receiver android:name="io.yunba.android.core.YunBaReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.jlxc.app.base.receiver.PushReceiver" >
-            <intent-filter>
+		<meta-data android:name="YUNBA_APPKEY" android:value="55ab4554c75ecd535d69b955" />
+		<service android:name="io.yunba.android.core.YunBaService"> </service>
+		<receiver android:name="io.yunba.android.core.YunBaReceiver">
+		    <intent-filter>
+		        <action android:name="android.intent.action.USER_PRESENT" />
+		        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+		    </intent-filter>
+		</receiver>
+		
+		<receiver android:name="com.jlxc.app.base.receiver.PushReceiver">
+              <intent-filter>
                 <action android:name="io.yunba.android.MESSAGE_RECEIVED_ACTION" />
                 <action android:name="io.yunba.android.PRESENCE_RECEIVED_ACTION" />
                 <action android:name="io.yunba.android.MESSAGE_CONNECTED_ACTION" />
                 <action android:name="io.yunba.android.MESSAGE_DISCONNECTED_ACTION" />
-
                 <category android:name="com.jlxc.app" />
             </intent-filter>
-        </receiver>
+         </receiver>
+         
+		<!-- 友盟部分 -->
+		<meta-data android:value="55b38ab667e58e47020048b1" android:name="UMENG_APPKEY"></meta-data>
+		<meta-data android:value="nicai" android:name="UMENG_CHANNEL"/>
+        
     </application>
 
 </manifest>

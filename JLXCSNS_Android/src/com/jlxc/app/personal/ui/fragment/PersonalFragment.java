@@ -63,6 +63,7 @@ import com.jlxc.app.personal.ui.activity.AccountSettingActivity;
 import com.jlxc.app.personal.ui.activity.ContactFriendListActivity;
 import com.jlxc.app.personal.ui.activity.FriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyCardActivity;
+import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSettingActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSignActivity;
 import com.jlxc.app.personal.ui.activity.VisitListActivity;
@@ -160,7 +161,7 @@ public class PersonalFragment extends BaseFragment {
 	private HelloHaAdapter<IMModel> friendsAdapter;	
 	
     @OnClick(value={R.id.name_layout,R.id.sign_layout,R.id.birth_layout,R.id.sex_layout,
-			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_click_layout
+			R.id.school_layout,R.id.city_layout, R.id.head_image_view, R.id.back_click_layout,R.id.my_image_layout
 			,R.id.visit_layout, R.id.friend_layout, R.id.setting_Button, R.id.card_Button})
 	private void clickEvent(View view){
 		switch (view.getId()) {
@@ -261,6 +262,12 @@ public class PersonalFragment extends BaseFragment {
 			});
 		 	backAlertDialog.show();
 			break;	
+		case R.id.my_image_layout:
+			//图片点击
+			Intent myImageIntent = new Intent(getActivity(), MyNewsListActivity.class);
+			myImageIntent.putExtra(MyNewsListActivity.INTNET_KEY_UID, userModel.getUid()+"");
+			startActivityWithRight(myImageIntent);
+			break;
 		case R.id.visit_layout:
 			//最近来访点击
 			Intent visitIntent = new Intent(getActivity(), VisitListActivity.class);
@@ -278,7 +285,7 @@ public class PersonalFragment extends BaseFragment {
 			startActivityWithRight(setIntent);
 			break;
 		case R.id.card_Button:
-			//设置
+			//名片点击
 			Intent cardIntent = new Intent(getActivity(), MyCardActivity.class);
 			startActivityWithRight(cardIntent);
 			break;

@@ -1,6 +1,5 @@
 package com.jlxc.app.base.ui.activity;
 
-
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
@@ -18,14 +17,18 @@ import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.ui.fragment.DiscoveryFragment;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
 import com.jlxc.app.news.ui.fragment.MainPageFragment;
+import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.umeng.analytics.MobclickAgent;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -33,10 +36,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +53,8 @@ import android.widget.TabHost.TabSpec;
 
 public class MainTabActivity extends BaseActivity {
 
+	private final static int SCANNIN_GREQUEST_CODE = 1;
+	
 	// FragmentTabHost对象
 	@ViewInject(android.R.id.tabhost)
 	private FragmentTabHost mTabHost;
@@ -209,7 +217,7 @@ public class MainTabActivity extends BaseActivity {
 	            @Override
 	            public void onClick(DialogInterface dialog, int which) {
 	                if (RongIM.getInstance() != null)
-	                    RongIM.getInstance().logout();
+	                	RongIM.getInstance().disconnect();
 	                if (null != newMessageReceiver) {
 	                	unregisterReceiver(newMessageReceiver);
 	                	newMessageReceiver = null;
@@ -249,11 +257,52 @@ public class MainTabActivity extends BaseActivity {
 		super.onDestroy();  
 	}
 	
+	//友盟集成
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+		case SCANNIN_GREQUEST_CODE:
+			if(resultCode == RESULT_OK){
+				Bundle bundle = data.getExtras();
+				String resultString = bundle.getString("result");
+//				mTextView.setText(resultString);
+//				mImageView.setImageBitmap((Bitmap) data.getParcelableExtra("bitmap"));
+				//如果是可以用的
+				if (resultString.contains(JLXCConst.JLXC)) {
+					String baseUid = resultString.substring(4);
+					int uid = JLXCUtils.stringToInt(new String(Base64.decode(baseUid, Base64.DEFAULT)));
+					if (uid == UserManager.getInstance().getUser().getUid()) {
+						ToastUtil.show(this, "不要没事扫自己玩(ㅎ‸ㅎ)");
+					}else {
+						Intent intent = new Intent(this, OtherPersonalActivity.class);
+						intent.putExtra(OtherPersonalActivity.INTENT_KEY, uid);
+						startActivity(intent);
+					}
+				}
+				
+				ToastUtil.show(this, "'"+resultString+"'"+"是什么");
+			}
+			break;
+		}
+    }
+	
 	
 	////////////////////////////////private method////////////////////////////////
 	private NewMessageReceiver newMessageReceiver;
 	//注册通知
 	private void registerNotify(){
+		
 		//刷新tab
 		newMessageReceiver = new NewMessageReceiver() {
 			@Override

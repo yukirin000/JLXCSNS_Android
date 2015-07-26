@@ -25,9 +25,9 @@ import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.activity.NewFriendsActivity;
+import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.lidroid.xutils.BitmapUtils;
@@ -146,9 +146,10 @@ public class NotifyNewsFragment extends BaseFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-//				NewsPushModel newsPushModel = newsAdapter.getItem(position-1);
-//				Intent detailIntent = new Intent(getActivity(), NewsDetailActivity.class);
-				
+				NewsPushModel newsPushModel = newsAdapter.getItem(position-1);
+				Intent detailIntent = new Intent(getActivity(), NewsDetailActivity.class);
+				detailIntent.putExtra(NewsOperateModel.INTENT_KEY_NEWS_ID, ""+newsPushModel.getNews_id());
+				startActivityWithRight(detailIntent);
 			}
 		});
 		

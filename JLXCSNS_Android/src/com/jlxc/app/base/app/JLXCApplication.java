@@ -7,6 +7,7 @@ import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.DBManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.utils.FileUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.ActivityManager;
 import android.app.Application;
@@ -44,6 +45,8 @@ public class JLXCApplication extends Application {
 		YunBaManager.start(getApplicationContext());
         //初始化用户模型
         UserManager.getInstance().getUser();
+        //友盟测试模式
+        MobclickAgent.setDebugMode(true);
 	}  
 
 	public static String getCurProcessName(Context context) {
