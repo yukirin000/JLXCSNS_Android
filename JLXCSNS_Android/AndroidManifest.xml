@@ -274,6 +274,13 @@
 		<meta-data android:value="55b38ab667e58e47020048b1" android:name="UMENG_APPKEY"></meta-data>
 		<meta-data android:value="nicai" android:name="UMENG_CHANNEL"/>
         
+		<!-- *******************涂图 公共分组控制器******************* -->
+        <activity
+            android:name="org.lasque.tusdk.impl.activity.TuFragmentActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+		
     </application>
 
 </manifest>
