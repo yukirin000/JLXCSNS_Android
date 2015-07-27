@@ -1,6 +1,13 @@
 package com.jlxc.app.login.ui.activity;
 
 import java.io.File;
+
+import org.lasque.tusdk.core.TuSdk;
+import org.lasque.tusdk.core.TuSdkResult;
+import org.lasque.tusdk.impl.activity.TuFragment;
+import org.lasque.tusdk.impl.components.TuEditComponent;
+import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,10 +37,12 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.demo.ui.activity.NextActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -167,7 +176,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 							Toast.makeText(RegisterInformationActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE), Toast.LENGTH_SHORT).show();
 							hideLoading();
 							//跳到主页
-							Intent intent = new Intent(RegisterInformationActivity.this, NextActivity.class);
+							Intent intent = new Intent(RegisterInformationActivity.this, MainTabActivity.class);
 							startActivityWithRight(intent);
 							
 							//删除缓存
@@ -224,6 +233,52 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		
 	}
 	
+	//图片滤镜
+	private void filterImage(final String path) {
+		File filterFile = new File(path);
+		// 组件委托
+		TuSdkComponentDelegate delegate = new TuSdkComponentDelegate()
+		{
+			@Override
+			public void onComponentFinished(TuSdkResult result, Error error,
+					TuFragment lastFragment)
+			{
+				File oriFile = result.imageFile;
+				File newFile = new File(path);
+				boolean filterOK = oriFile.renameTo(newFile);
+				if (filterOK) {
+					
+				}else {
+					ToastUtil.show(RegisterInformationActivity.this, "图片处理失败T_T");
+				}
+			}
+			
+		};
+		
+		TuEditComponent component = TuSdk.editCommponent(this,delegate);
+		component.componentOption().editEntryOption().setEnableCuter(false);
+		component.componentOption().editEntryOption().setEnableSticker(false);
+		component.componentOption().editEntryOption().setSaveToAlbum(false);
+		component.componentOption().editEntryOption().setAutoRemoveTemp(false);
+		component.componentOption().editEntryOption().setSaveToTemp(true);
+		component.componentOption().editEntryOption().setOutputCompress(80);
+		
+		TuSdkResult result = new TuSdkResult();
+		result.imageFile = filterFile;
+		
+		// 设置图片
+		component.setImage(result.image)
+		// 设置系统照片
+				.setImageSqlInfo(result.imageSqlInfo)
+				// 设置临时文件
+				.setTempFilePath(result.imageFile)
+				// 在组件执行完成后自动关闭组件
+				.setAutoDismissWhenCompleted(true)
+				// 开启组件
+				.showComponent();
+		
+	}
+	
 	 @Override  
 	 protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
 	        // TODO Auto-generated method stub  
@@ -248,18 +303,6 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	                break;
 	            case PHOTO_RESOULT:// 返回的结果
 	                if (data != null){
-//	                	// 设置为有图片
-//	                	// 图片裁切后的结果
-//	        			Bundle bundle = data.getExtras();
-//	        			Bitmap bitmap = (Bitmap) bundle.get("data");
-//	        			headImageView.setImageBitmap(bitmap);// 将图片显示在ImageView里
-//	        			if (null != bitmap && null != headImageName) {
-//		    				//删除临时文件
-//		        			File file = new File(FileUtil.TEMP_PATH+headImageName);
-//		    				if (file.exists()) {
-//		    					file.delete();
-//		    				}	
-//	        			}
 	        			
 	        			if (null != tmpImageName) {
 	        				BitmapManager.getInstance().getBitmapUtils(this, false, false)
@@ -268,8 +311,8 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		        			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
 		    				if (file.exists()) {
 		    					file.delete();
-		    				}	
-		    				uploadInformation();
+		    				}
+		    				filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
 	        			}	 
 	                }
 	                break;
@@ -285,9 +328,12 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		intent.putExtra("aspectX", 1);
 		intent.putExtra("aspectY", 1);
 		// outputX outputY 是裁剪图片宽高
-		if (Build.MANUFACTURER.equals("Xiaomi")) {
+		if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
 			intent.putExtra("outputX", 320);
 			intent.putExtra("outputY", 320);
+		}else if (Build.MANUFACTURER.equalsIgnoreCase("MEIZU")) {
+			intent.putExtra("outputX", 250);
+			intent.putExtra("outputY", 250);
 		}else {
 			intent.putExtra("outputX", 960);
 			intent.putExtra("outputY", 960);

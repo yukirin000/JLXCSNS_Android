@@ -1,5 +1,7 @@
 package com.jlxc.app.base.app;
 
+import org.lasque.tusdk.core.TuSdk;
+
 import io.rong.imkit.RongIM;
 import io.yunba.android.manager.YunBaManager;
 
@@ -47,6 +49,9 @@ public class JLXCApplication extends Application {
         UserManager.getInstance().getUser();
         //友盟测试模式
         MobclickAgent.setDebugMode(true);
+		 //初始化TuTuSDK
+		TuSdk.enableDebugLog(true);
+		TuSdk.init(this.getApplicationContext(),"f1c31a2ee6e0fe88-00-t14qn1");
 	}  
 
 	public static String getCurProcessName(Context context) {

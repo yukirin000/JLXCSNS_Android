@@ -8,11 +8,16 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
+import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -144,11 +149,31 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
      * @param msg
      * @return
      */
+    private NotificationManager mNotificationManager;
     @Override
     public boolean onReceivePushMessage(PushNotificationMessage msg) {
         Log.d(TAG, "onReceived-onPushMessageArrive:" + msg.getContent());
 
-        PushNotificationManager.getInstance().onReceivePush(msg);
+		long newWhen = System.currentTimeMillis();
+		mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		int iconId = R.drawable.ic_launcher;
+		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
+		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		notificationIntent.setClass(mContext.getApplicationContext(), LoginActivity.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Notification notification = new Notification();
+		notification.when = newWhen;
+		notification.flags = Notification.FLAG_AUTO_CANCEL;
+		notification.defaults = Notification.DEFAULT_SOUND;
+		notification.icon = iconId;
+		notification.tickerText = "您有一条新消息";
+		notification.setLatestEventInfo(mContext, msg.getTargetUserName(), "您收到一条消息", contentIntent);
+		// notification的id使用发送者的id
+		mNotificationManager.notify(0, notification);
+        
+        
+//        PushNotificationManager.getInstance().onReceivePush(msg);
 
 //        Intent intent = new Intent();
 //        Uri uri;
@@ -173,17 +198,14 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 //            notification.flags = Notification.FLAG_AUTO_CANCEL;
 //            notification.defaults = Notification.DEFAULT_SOUND;
 //        } else {
-//
 //             notification = new Notification.Builder(RongContext.getInstance())
-//                    .setLargeIcon(getAppIcon())
 //                    .setSmallIcon(R.drawable.ic_launcher)
-//                    .setTicker("自定义 notification")
-//                    .setContentTitle("自定义 title")
+//                    .setTicker("您收到一条消息")
+//                    .setContentTitle("您收到一条消息")
 //                    .setContentText("这是 Content:"+msg.getObjectName())
 //                    .setContentIntent(pendingIntent)
 //                    .setAutoCancel(true)
 //                    .setDefaults(Notification.DEFAULT_ALL).build();
-//
 //        }
 //
 //        NotificationManager nm = (NotificationManager) RongContext.getInstance().getSystemService(RongContext.getInstance().NOTIFICATION_SERVICE);

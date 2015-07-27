@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.lasque.tusdk.core.TuSdk;
+import org.lasque.tusdk.core.TuSdkResult;
+import org.lasque.tusdk.impl.activity.TuFragment;
+import org.lasque.tusdk.impl.components.TuEditComponent;
+import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -240,6 +246,53 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		
 	}
 	
+	//图片滤镜
+		private void filterImage(final String path) {
+			File filterFile = new File(path);
+			// 组件委托
+			TuSdkComponentDelegate delegate = new TuSdkComponentDelegate()
+			{
+				@Override
+				public void onComponentFinished(TuSdkResult result, Error error,
+						TuFragment lastFragment)
+				{
+					File oriFile = result.imageFile;
+					File newFile = new File(path);
+					boolean filterOK = oriFile.renameTo(newFile);
+					if (filterOK) {
+						addNewsImageView(path);
+					}else {
+						ToastUtil.show(PublishNewsActivity.this, "图片处理失败T_T");
+					}
+				}
+				
+			};
+			
+			TuEditComponent component = TuSdk.editCommponent(this,delegate);
+			component.componentOption().editEntryOption().setEnableCuter(false);
+			component.componentOption().editEntryOption().setEnableSticker(false);
+			component.componentOption().editEntryOption().setSaveToAlbum(false);
+			component.componentOption().editEntryOption().setAutoRemoveTemp(false);
+			component.componentOption().editEntryOption().setSaveToTemp(true);
+			component.componentOption().editEntryOption().setOutputCompress(80);
+			
+			TuSdkResult result = new TuSdkResult();
+			result.imageFile = filterFile;
+			
+			// 设置图片
+			component.setImage(result.image)
+			// 设置系统照片
+					.setImageSqlInfo(result.imageSqlInfo)
+					// 设置临时文件
+					.setTempFilePath(result.imageFile)
+					// 在组件执行完成后自动关闭组件
+					.setAutoDismissWhenCompleted(true)
+					// 开启组件
+					.showComponent();
+			
+		}
+	
+	
 	//发布动态
 	private void publishNews() {
 		
@@ -344,6 +397,25 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		locationString = "";
 	}
 	
+	@Override
+	//销毁的时候清空缓存
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		//清除缓存
+		for (int i = 0; i < addImageLayout.getChildCount(); i++) {
+			View view = addImageLayout.getChildAt(i);
+			//如果不是添加按钮
+			if (view != addImageView) {
+				//图片
+				File file = new File((String) view.getTag());
+				if (file.exists()) {
+					file.delete();	
+				}
+			}
+		}
+	}
+	
 	///防止内存不够用
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -417,7 +489,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	            	// 图片压缩
 					int[] screenSize = getScreenSize();
 					if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0], screenSize[1])) {
-						addNewsImageView(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+						filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
 					}
 	                break;
 	            case ALBUM_SELECT:// 当选择从本地获取图片时
@@ -434,7 +506,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 								if (fileRealPath != null
 										&& FileUtil
 												.tempToLocalPath(fileRealPath, tmpImageName, screenSize1[0], screenSize1[1])) {
-									addNewsImageView(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+									filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
 								}
 							} else {
 								

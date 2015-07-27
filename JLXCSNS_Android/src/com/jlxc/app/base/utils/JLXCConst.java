@@ -109,6 +109,9 @@ public interface JLXCConst {
 	public static final String GET_COMMON_FRIENDS_LIST = DOMIN + "/getCommonFriendsList";
 	//举报用户
 	public static final String REPORT_OFFENCE = DOMIN + "/reportOffence";
+	//版本更新
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/getLastestVersion?sys=2
+	public static final String GET_LASTEST_VERSION = DOMIN + "/getLastestVersion";
 	//////////////////////////////////////////IM模块//////////////////////////////////////////
 	//添加好友
 	//http://localhost/jlxc_php/index.php/Home/MobileApi/addFriend

@@ -9,9 +9,14 @@ import io.rong.imlib.RongIMClient.ErrorCode;
 import io.rong.imlib.model.Conversation;
 import io.yunba.android.manager.YunBaManager;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
+import com.jlxc.app.base.helper.JsonRequestCallBack;
+import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.ActivityManager;
+import com.jlxc.app.base.manager.HttpManager;
+import com.jlxc.app.base.manager.NewVersionCheckManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.model.UserModel;
@@ -27,6 +32,7 @@ import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
 import com.jlxc.app.news.ui.fragment.MainPageFragment;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
+import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.umeng.analytics.MobclickAgent;
 
@@ -36,7 +42,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -162,9 +167,11 @@ public class MainTabActivity extends BaseActivity {
 		
 	}
 	
+	//获取最新版本号
+	private void getLastVersion() {
+		new NewVersionCheckManager(this, this).checkNewVersion(true, null);
+	}
 	
-	/**
-	 */
 	@SuppressLint("InflateParams")
 	private View getTabItemView(int index) {
 		View view = layoutInflater.inflate(R.layout.tab_item_view, null);
@@ -196,6 +203,8 @@ public class MainTabActivity extends BaseActivity {
 		initRong();			
 		//初始化云巴
 		initYunBa();
+		//获取最新版本	
+		getLastVersion();
 	}
 	
 	@Override
@@ -209,34 +218,43 @@ public class MainTabActivity extends BaseActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
-	        alterDialog.setMessage("确定退出该账号吗？");
-	        alterDialog.setCancelable(true);
-
-	        alterDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	                if (RongIM.getInstance() != null)
-	                	RongIM.getInstance().disconnect();
-	                if (null != newMessageReceiver) {
-	                	unregisterReceiver(newMessageReceiver);
-	                	newMessageReceiver = null;
-					}
-	                ActivityManager.getInstence().exitApplication();
-//	                killThisPackageIfRunning(MainTabActivity.this, "com.jlxc.app");
-//	                Process.killProcess(Process.myPid());
-	                
-//	                finish();
-	                
-	            }
-	        });
-	        alterDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	                dialog.cancel();
-	            }
-	        });
-	        alterDialog.show();
+			
+			if (RongIM.getInstance() != null)
+            	RongIM.getInstance().disconnect();
+            if (null != newMessageReceiver) {
+            	unregisterReceiver(newMessageReceiver);
+            	newMessageReceiver = null;
+			}
+            ActivityManager.getInstence().exitApplication();
+			
+//			final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
+//	        alterDialog.setMessage("确定退出该账号吗？");
+//	        alterDialog.setCancelable(true);
+//
+//	        alterDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//	            @Override
+//	            public void onClick(DialogInterface dialog, int which) {
+//	                if (RongIM.getInstance() != null)
+//	                	RongIM.getInstance().disconnect();
+//	                if (null != newMessageReceiver) {
+//	                	unregisterReceiver(newMessageReceiver);
+//	                	newMessageReceiver = null;
+//					}
+//	                ActivityManager.getInstence().exitApplication();
+////	                killThisPackageIfRunning(MainTabActivity.this, "com.jlxc.app");
+////	                Process.killProcess(Process.myPid());
+//	                
+////	                finish();
+//	                
+//	            }
+//	        });
+//	        alterDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//	            @Override
+//	            public void onClick(DialogInterface dialog, int which) {
+//	                dialog.cancel();
+//	            }
+//	        });
+//	        alterDialog.show();
 			return true;
 		} else
 			return super.onKeyDown(keyCode, event);
