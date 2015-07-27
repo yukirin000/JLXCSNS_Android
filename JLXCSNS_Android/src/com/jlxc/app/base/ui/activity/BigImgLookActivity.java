@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.truba.touchgallery.TouchView.TouchImageView;
 import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -29,6 +28,7 @@ import android.widget.LinearLayout;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.manager.BitmapManager;
+import com.jlxc.app.base.ui.view.touchview.TouchImageView;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.ImageModel;
@@ -177,7 +177,6 @@ public class BigImgLookActivity extends BaseActivity {
 	 * viewpage初始化
 	 * */
 	private void initPageImageView() {
-		LogUtils.i("imageUrlList.size=" + imageUrlList.size());
 		for (int index = 0; index < imageUrlList.size(); index++) {
 			TouchImageView tcView = new TouchImageView(this);
 			tcView.setClickable(true);

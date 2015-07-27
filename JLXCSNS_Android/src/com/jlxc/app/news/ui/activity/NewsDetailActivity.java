@@ -75,6 +75,7 @@ import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.rockerhieu.emojicon.EmojiconEditText;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
@@ -87,7 +88,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private PullToRefreshListView newsDetailListView;
 	// 评论输入框
 	@ViewInject(R.id.edt_comment_input)
-	private EditText commentEditText;
+	private EmojiconEditText commentEditText;
 	// 评论发送按钮
 	@ViewInject(R.id.btn_comment_send)
 	private Button btnSendComment;

@@ -1,4 +1,5 @@
 <com.jlxc.app.base.ui.view.KeyboardLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     android:id="@+id/news_detail_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,13 +35,13 @@
         android:focusable="true"
         android:padding="5dp" >
 
-        <EditText
+        <com.rockerhieu.emojicon.EmojiconEditText
             android:id="@+id/edt_comment_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
-            android:hint="来条神评论..." >
-        </EditText>
+            android:hint="来条神评论..."
+            emojicon:emojiconSize="28sp" />
 
         <Button
             android:id="@+id/btn_comment_send"
