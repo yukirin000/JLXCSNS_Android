@@ -913,11 +913,11 @@ public class NewsListFragment extends BaseFragment {
 						newsOPerate.addDataToLikeList(newsAdapter,
 								likeListPostion);
 					}
-
-					((Button) oprtView).setText("已赞");
-					operateData.setIsLike("1");
 					operateData.setLikeCount(String.valueOf((operateData
 							.getLikeCount() + 1)));
+					((Button) oprtView).setText("已赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("1");
 				} else {
 					if (null != curntAdapter) {
 						newsOPerate.removeHeadFromLikeList(curntAdapter);
@@ -926,24 +926,31 @@ public class NewsListFragment extends BaseFragment {
 								likeListPostion);
 					}
 
-					((Button) oprtView).setText("点赞");
-					operateData.setIsLike("0");
 					operateData.setLikeCount(String.valueOf((operateData
 							.getLikeCount() - 1)));
+					((Button) oprtView).setText("点赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("0");
 				}
 			}
 
 			@Override
 			public void onOperateFail(boolean isLike) {
-				if (isLike) {
-					((Button) oprtView).setText("点赞");
-					operateData.setIsLike("0");
-				} else {
-					((Button) oprtView).setText("已赞");
-					operateData.setIsLike("1");
-				}
 				// 撤销上次
 				newsOPerate.operateRevoked();
+				if (isLike) {
+					operateData.setLikeCount(String.valueOf((operateData
+							.getLikeCount() - 1)));
+					((Button) oprtView).setText("点赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("0");
+				} else {
+					operateData.setLikeCount(String.valueOf((operateData
+							.getLikeCount() + 1)));
+					((Button) oprtView).setText("已赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("1");
+				}
 			}
 		});
 		if (operateData.getIsLike()) {

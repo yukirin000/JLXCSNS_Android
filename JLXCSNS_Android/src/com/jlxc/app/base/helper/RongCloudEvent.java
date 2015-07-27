@@ -610,4 +610,10 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		return false;
 	}
 
+	@Override
+	public boolean onMessageLinkClick(String arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
