@@ -6,6 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -33,21 +46,20 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.ItemModel;
-import com.jlxc.app.news.model.LikeModel;
-import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.ItemModel.BodyItem;
 import com.jlxc.app.news.model.ItemModel.CommentListItem;
 import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.ItemModel.OperateItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
+import com.jlxc.app.news.model.LikeModel;
+import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.news.utils.DataToItem;
-import com.jlxc.app.news.utils.LikeOperate;
-import com.jlxc.app.news.utils.LikeOperate.LikeCallBack;
+import com.jlxc.app.news.utils.NewsOperate;
+import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
-import com.jlxc.app.personal.utils.NewsToItemData;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.PauseOnScrollListener;
@@ -56,36 +68,6 @@ import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.lidroid.xutils.view.annotation.event.OnScrollStateChanged;
-
-import android.R.anim;
-import android.R.integer;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver.OnScrollChangedListener;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.GridLayout;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 public class NewsListFragment extends BaseFragment {
 
@@ -106,8 +88,6 @@ public class NewsListFragment extends BaseFragment {
 	private HelloHaAdapter<ItemModel> newsAdapter = null;
 	// 使支持多种item
 	private MultiItemTypeSupport<ItemModel> multiItemTypeSupport = null;
-	//
-	NoScrollGridView likeGridView;
 	// 上下文信息
 	private Context mContext;
 	// bitmap的处理
@@ -132,12 +112,12 @@ public class NewsListFragment extends BaseFragment {
 	private ImageGridViewItemClick imageItemClickListener;
 	// 点击点赞头像监听
 	private LikeGridViewItemClick likeItemClickListener;
-	// 点赞操作类
-	private LikeCancel likeOperate;
-	// 当前操作的动态
-	private NewsModel currentNews;
+	// 对动态的操作
+	private NewsOperate newsOPerate;
 	// 当前操作的位置
 	private int indexAtNewsList = 0;
+	// 当前点赞对应的gridview的adpter
+	private HelloHaAdapter<LikeModel> curntAdapter = null;
 
 	@Override
 	public int setLayoutId() {
@@ -350,6 +330,7 @@ public class NewsListFragment extends BaseFragment {
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
 		likeItemClickListener = new LikeGridViewItemClick();
+		newsOPerate = new NewsOperate(mContext);
 
 		initBitmapUtils();
 		/******** 首次获取数据 *********/
@@ -614,7 +595,7 @@ public class NewsListFragment extends BaseFragment {
 			}
 		};
 		// 点赞头像gridview
-		likeGridView = (NoScrollGridView) helper
+		NoScrollGridView likeGridView = (NoScrollGridView) helper
 				.getView(R.id.gv_mian_Like_list);
 		likeGridView.setAdapter(likeGVAdapter);
 		likeGridView.setOnItemClickListener(likeItemClickListener);
@@ -737,49 +718,6 @@ public class NewsListFragment extends BaseFragment {
 		}
 	}
 
-	/***
-	 * 点赞操作
-	 */
-	private void likeNetOperate(String newsId, String likeOrCancel) {
-		// 参数设置
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("news_id", newsId);
-		params.addBodyParameter("isLike", likeOrCancel);
-		params.addBodyParameter("user_id", String.valueOf(userModel.getUid()));
-		params.addBodyParameter("is_second", "0");
-
-		HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							// 失败则取消操作
-							likeOperate.Revoked();
-							ToastUtil.show(mContext, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						// 失败则取消操作
-						likeOperate.Revoked();
-						ToastUtil.show(mContext, "卧槽，竟然操作失败，检查下网络");
-					}
-
-				}, null));
-	}
-
 	/**
 	 * 数据处理
 	 */
@@ -856,14 +794,8 @@ public class NewsListFragment extends BaseFragment {
 					jumpToNewsDetail(operateData,
 							NewsOperateModel.KEY_BOARD_COMMENT, null);
 				} else {
-					likeOperate = new LikeCancel(view, postion);
-					if (operateData.getIsLike()) {
-						likeOperate.Cancel();
-						likeNetOperate(operateData.getNewsID(), "0");
-					} else {
-						likeOperate.Like();
-						likeNetOperate(operateData.getNewsID(), "1");
-					}
+					// 点赞操作
+					likeOperate(postion, view, operateData);
 				}
 				break;
 
@@ -918,82 +850,6 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
-	 * 点赞或取消
-	 * 
-	 * @author Alan
-	 */
-	private class LikeCancel {
-		private View view;
-		private int postion;
-		private boolean isLikeOperate = false;
-
-		public LikeCancel(View view, int postion) {
-			this.view = view;
-			this.postion = postion;
-		}
-
-		/**
-		 * 点赞操作函数
-		 * */
-		public void Like() {
-			int likeHeadPostion = postion + 1;
-			isLikeOperate = true;
-			OperateItem operateData = (OperateItem) newsAdapter
-					.getItem(postion);
-			String likeCount = String.valueOf((operateData.getLikeCount() + 1));
-			operateData.setLikeCount(likeCount);
-			operateData.setIsLike("1");
-
-			LikeModel myModel = new LikeModel();
-			myModel.setUserID(String.valueOf(userModel.getUid()));
-			myModel.setHeadImage(userModel.getHead_image());
-			myModel.setHeadSubImage(userModel.getHead_sub_image());
-
-			LikeListItem likeData = (LikeListItem) newsAdapter
-					.getItem(likeHeadPostion);
-			likeData.getLikeHeadListimage().add(0, myModel);
-			newsAdapter.notifyDataSetChanged();
-		}
-
-		/**
-		 * 取消点赞
-		 * */
-		public void Cancel() {
-			isLikeOperate = false;
-			int likeHeadPostion = postion + 1;
-			OperateItem operateData = (OperateItem) newsAdapter
-					.getItem(postion);
-			String likeCount = String.valueOf((operateData.getLikeCount() - 1));
-			operateData.setLikeCount(likeCount);
-			operateData.setIsLike("0");
-			// 移除头像
-			List<LikeModel> likeData = ((LikeListItem) newsAdapter
-					.getItem(likeHeadPostion)).getLikeHeadListimage();
-			for (int index = 0; index < likeData.size(); ++index) {
-				if (likeData.get(index).getUserID()
-						.equals(String.valueOf(userModel.getUid()))) {
-					likeData.remove(index);
-					break;
-				} else {
-					LogUtils.e("点赞数据发生了错误.");
-				}
-			}
-			newsAdapter.notifyDataSetChanged();
-		}
-
-		/**
-		 * 撤销上次操作
-		 * */
-		public void Revoked() {
-			if (isLikeOperate) {
-				this.Cancel();
-			} else {
-				this.Like();
-			}
-		}
-	}
-
-	/**
 	 * listview点击事件接口,用于区分不同view的点击事件
 	 * 
 	 * @author Alan
@@ -1018,6 +874,84 @@ public class NewsListFragment extends BaseFragment {
 			// 跳转到图片详情页面
 			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
 					imageModelList, position);
+		}
+	}
+
+	/**
+	 * 点赞操作
+	 * */
+	@SuppressWarnings("unchecked")
+	private void likeOperate(int postion, View view,
+			final OperateItem operateData) {
+
+		final View oprtView = view;
+		final int likeListPostion = postion + 1;
+		try {
+			ListView nListView = newsListView.getRefreshableView();
+			View itemRootView = nListView.getChildAt(likeListPostion + 1
+					- nListView.getFirstVisiblePosition());
+			curntAdapter = null;
+			if (null != itemRootView) {
+				// 点赞头像列表可见
+				LogUtils.i("itemRootView=" + itemRootView);
+				NoScrollGridView likeGV = (NoScrollGridView) itemRootView
+						.findViewById(R.id.gv_mian_Like_list);
+				curntAdapter = (HelloHaAdapter<LikeModel>) likeGV.getAdapter();
+			}
+		} catch (Exception e) {
+			LogUtils.e("动态点赞部分发生异常.");
+		}
+
+		newsOPerate.setLikeListener(new LikeCallBack() {
+
+			@Override
+			public void onOperateStart(boolean isLike) {
+				if (isLike) {
+					if (null != curntAdapter) {
+						newsOPerate.addHeadToLikeList(curntAdapter);
+					} else {
+						newsOPerate.addDataToLikeList(newsAdapter,
+								likeListPostion);
+					}
+
+					((Button) oprtView).setText("已赞");
+					operateData.setIsLike("1");
+					operateData.setLikeCount(String.valueOf((operateData
+							.getLikeCount() + 1)));
+				} else {
+					if (null != curntAdapter) {
+						newsOPerate.removeHeadFromLikeList(curntAdapter);
+					} else {
+						newsOPerate.removeDataFromLikeList(newsAdapter,
+								likeListPostion);
+					}
+
+					((Button) oprtView).setText("点赞");
+					operateData.setIsLike("0");
+					operateData.setLikeCount(String.valueOf((operateData
+							.getLikeCount() - 1)));
+				}
+			}
+
+			@Override
+			public void onOperateFail(boolean isLike) {
+				if (isLike) {
+					((Button) oprtView).setText("点赞");
+					operateData.setIsLike("0");
+				} else {
+					((Button) oprtView).setText("已赞");
+					operateData.setIsLike("1");
+				}
+				// 撤销上次
+				newsOPerate.operateRevoked();
+			}
+		});
+		if (operateData.getIsLike()) {
+			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
+					false);
+		} else {
+			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
+					true);
 		}
 	}
 

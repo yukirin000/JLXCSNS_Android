@@ -1,9 +1,11 @@
 package com.jlxc.app.news.utils;
 
-import android.R.integer;
+import java.util.List;
+
 import android.content.Context;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
@@ -12,6 +14,9 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CommentModel;
+import com.jlxc.app.news.model.ItemModel;
+import com.jlxc.app.news.model.ItemModel.LikeListItem;
+import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.SubCommentModel;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -23,10 +28,29 @@ public class NewsOperate {
 	public final static int OP_Type_Delete_Comment = 2;
 	public final static int OP_Type_Add_Sub_Comment = 3;
 	public final static int OP_Type_Delete_Sub_Comment = 4;
+	public final static int OP_Type_Like = 5;
+	public final static int OP_Type_Like_cancel = 6;
+	public final static int OP_Type_News_Like = 7;
+	public final static int OP_Type_News_Like_cancel = 8;
 
+	// 记录上次操作
+	private int lastOperateType = -1;
+	// 上下文
 	private Context mContext;
 	// 回调接口
 	private OperateCallBack callInterface;
+	// 点赞回调接口
+	private LikeCallBack likeCallInterface;
+	// 上次操作的用户对象
+	private UserModel userModel;
+	// 上次点赞操作对应的adapter
+	private HelloHaAdapter<LikeModel> likeAdapter;
+	// 点赞操作对应的动态adapter
+	private HelloHaAdapter<ItemModel> newsAdapter;
+	// 记录动态点赞的操作位置
+	private int lastPostion = 0;
+	// 是否正在传输数据
+	private boolean isUploadData = false;
 
 	public NewsOperate(Context context) {
 		this.mContext = context;
@@ -37,10 +61,16 @@ public class NewsOperate {
 		this.callInterface = callInterface;
 	}
 
+	// 设置点赞回调
+	public void setLikeListener(LikeCallBack callInterface) {
+		this.likeCallInterface = callInterface;
+	}
+
 	/**
 	 * 删除动态操作
 	 * */
 	public void deleteNews(String newsId) {
+		lastOperateType = OP_Type_Delete_News;
 		callInterface.onStart(OP_Type_Delete_News);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("news_id", newsId);
@@ -82,6 +112,7 @@ public class NewsOperate {
 	 * */
 	public void publishComment(final UserModel user, String newsID,
 			String content) {
+		lastOperateType = OP_Type_Add_Comment;
 		callInterface.onStart(OP_Type_Add_Comment);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("user_id", String.valueOf(user.getUid()));
@@ -133,6 +164,7 @@ public class NewsOperate {
 	 * */
 	public void publishSubComment(final UserModel user, String newsID,
 			SubCommentModel subModle) {
+		lastOperateType = OP_Type_Add_Sub_Comment;
 		callInterface.onStart(OP_Type_Add_Sub_Comment);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("user_id", String.valueOf(user.getUid()));
@@ -189,6 +221,7 @@ public class NewsOperate {
 	 * 删除一级评论
 	 * */
 	public void deleteComment(String CID, String newsID) {
+		lastOperateType = OP_Type_Delete_Comment;
 		callInterface.onStart(OP_Type_Delete_Comment);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("cid", CID);
@@ -229,6 +262,7 @@ public class NewsOperate {
 	 * 删除二级评论
 	 * */
 	public void deleteSubComment(String CID, String newsID) {
+		lastOperateType = OP_Type_Delete_Sub_Comment;
 		callInterface.onStart(OP_Type_Delete_Sub_Comment);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("cid", CID);
@@ -263,45 +297,177 @@ public class NewsOperate {
 						super.onFailure(arg0, arg1, flag);
 					}
 				}, null));
-
 	}
 
-	/***
+	/**
 	 * 点赞操作网络请求
 	 */
-	public void likeNetOperate(String userID, String newsId, String likeOrCancel) {
-		// 参数设置
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("news_id", newsId);
-		params.addBodyParameter("isLike", likeOrCancel);
-		params.addBodyParameter("user_id", userID);
-		params.addBodyParameter("is_second", "0");
+	public void uploadLikeOperate(final UserModel user, String newsId,
+			boolean isLike) {
+		if (!isUploadData) {
+			isUploadData = true;
+			userModel = user;
+			if (isLike) {
+				likeCallInterface.onOperateStart(true);
+			} else {
+				likeCallInterface.onOperateStart(false);
+			}
+			// 参数设置
+			RequestParams params = new RequestParams();
+			params.addBodyParameter("news_id", newsId);
+			if (isLike) {
+				params.addBodyParameter("isLike", "1");
+			} else {
+				params.addBodyParameter("isLike", "0");
+			}
+			params.addBodyParameter("user_id", String.valueOf(user.getUid()));
+			params.addBodyParameter("is_second", "0");
 
-		HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+			HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
+					new JsonRequestCallBack<String>(
+							new LoadDataHandler<String>() {
 
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							// 点赞成功
-						}
+								@Override
+								public void onSuccess(JSONObject jsonResponse,
+										String flag) {
+									super.onSuccess(jsonResponse, flag);
+									int status = jsonResponse
+											.getInteger(JLXCConst.HTTP_STATUS);
+									if (status == JLXCConst.STATUS_SUCCESS) {
+										// 点赞成功
+										isUploadData = false;
+									}
 
-						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(mContext, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
+									if (status == JLXCConst.STATUS_FAIL) {
+										if (OP_Type_Like == lastOperateType) {
+											likeCallInterface
+													.onOperateFail(true);
+										} else {
+											likeCallInterface
+													.onOperateFail(false);
+										}
+										ToastUtil.show(
+												mContext,
+												jsonResponse
+														.getString(JLXCConst.HTTP_MESSAGE));
+										isUploadData = false;
+									}
+								}
 
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						// 点赞失败
-					}
-				}, null));
+								@Override
+								public void onFailure(HttpException arg0,
+										String arg1, String flag) {
+									super.onFailure(arg0, arg1, flag);
+									if (OP_Type_Like == lastOperateType) {
+										likeCallInterface.onOperateFail(true);
+									} else {
+										likeCallInterface.onOperateFail(false);
+									}
+									isUploadData = false;
+								}
+							}, null));
+		}
+	}
+
+	/**
+	 * 添加头像到第一个位置
+	 * */
+	public void addHeadToLikeList(HelloHaAdapter<LikeModel> headAdapter) {
+		likeAdapter = headAdapter;
+		lastOperateType = OP_Type_Like;
+
+		LikeModel myModel = new LikeModel();
+		myModel.setUserID(String.valueOf(userModel.getUid()));
+		myModel.setHeadImage(userModel.getHead_image());
+		myModel.setHeadSubImage(userModel.getHead_sub_image());
+		try {
+			headAdapter.addToFirst(myModel);
+		} catch (Exception e) {
+			ToastUtil.show(mContext, "发生了点小故障 (・ˍ・*)");
+		}
+	}
+
+	/**
+	 * 更新点赞头像的数据
+	 * */
+	public void addDataToLikeList(HelloHaAdapter<ItemModel> adapter, int postion) {
+		lastPostion = postion;
+		newsAdapter = adapter;
+		lastOperateType = OP_Type_News_Like;
+		LikeModel myModel = new LikeModel();
+		myModel.setUserID(String.valueOf(userModel.getUid()));
+		myModel.setHeadImage(userModel.getHead_image());
+		myModel.setHeadSubImage(userModel.getHead_sub_image());
+
+		LikeListItem likeData = (LikeListItem) newsAdapter.getItem(lastPostion);
+		likeData.getLikeHeadListimage().add(0, myModel);
+	}
+
+	/**
+	 * 移除自己的点赞头像
+	 * */
+	public void removeHeadFromLikeList(HelloHaAdapter<LikeModel> headAdapter) {
+		likeAdapter = headAdapter;
+		lastOperateType = OP_Type_Like_cancel;
+		// 移除头像
+		try {
+			for (int index = 0; index < headAdapter.getCount(); ++index) {
+				if (headAdapter.getItem(index).getUserID()
+						.equals(String.valueOf(userModel.getUid()))) {
+					headAdapter.remove(index);
+					break;
+				} else {
+					LogUtils.e("点赞数据发生了错误,列表中没有我的点赞信息.");
+				}
+			}
+		} catch (Exception e) {
+			ToastUtil.show(mContext, "发生了点小故障 (・ˍ・*)");
+		}
+	}
+
+	/**
+	 * 移除自己的点赞头像
+	 * */
+	public void removeDataFromLikeList(HelloHaAdapter<ItemModel> adapter,
+			int postion) {
+		lastPostion = postion;
+		newsAdapter = adapter;
+		lastOperateType = OP_Type_News_Like_cancel;
+		// 移除头像
+		List<LikeModel> likeData = ((LikeListItem) newsAdapter
+				.getItem(lastPostion)).getLikeHeadListimage();
+		for (int index = 0; index < likeData.size(); ++index) {
+			if (likeData.get(index).getUserID()
+					.equals(String.valueOf(userModel.getUid()))) {
+				likeData.remove(index);
+				break;
+			} else {
+				LogUtils.e("点赞数据发生了错误.");
+			}
+		}
+	}
+
+	/**
+	 * 撤销上次操作
+	 * */
+	public void operateRevoked() {
+		switch (lastOperateType) {
+		case OP_Type_Like:
+			removeHeadFromLikeList(likeAdapter);
+			break;
+
+		case OP_Type_Like_cancel:
+			addHeadToLikeList(likeAdapter);
+			break;
+		case OP_Type_News_Like:
+			removeDataFromLikeList(newsAdapter, lastPostion);
+			break;
+		case OP_Type_News_Like_cancel:
+			addDataToLikeList(newsAdapter, lastPostion);
+			break;
+		default:
+			break;
+		}
 	}
 
 	/**
@@ -312,5 +478,14 @@ public class NewsOperate {
 
 		public void onFinish(int operateType, boolean isSucceed,
 				Object resultValue);
+	}
+
+	/**
+	 * 点赞回调接口
+	 * */
+	public interface LikeCallBack {
+		public void onOperateStart(boolean isLike);
+
+		public void onOperateFail(boolean isLike);
 	}
 }

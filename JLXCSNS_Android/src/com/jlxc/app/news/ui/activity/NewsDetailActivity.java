@@ -63,9 +63,8 @@ import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.model.SubCommentModel;
 import com.jlxc.app.news.utils.DataToItem;
-import com.jlxc.app.news.utils.LikeOperate;
-import com.jlxc.app.news.utils.LikeOperate.LikeCallBack;
 import com.jlxc.app.news.utils.NewsOperate;
+import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
 import com.jlxc.app.news.utils.NewsOperate.OperateCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
@@ -74,7 +73,6 @@ import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
@@ -113,8 +111,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private ImageGridViewItemClick imageItemClickListener;
 	// 对动态的操作
 	private NewsOperate newsOPerate;
-	// 点赞操作类对象
-	private LikeOperate likeOperate;
 	// 点赞头像gridview
 	private NoScrollGridView likeGridView;
 	// 点赞适配器
@@ -124,7 +120,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	// 评论的内容
 	private String commentContent = "";
 	// 当前的操作的item
-	private ItemModel currentItem;
 	private CommentModel currentCommentModel;
 	// 当前的操作的子评论对象
 	private SubCommentModel currentSubCmtModel;
@@ -236,7 +231,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
 		likeItemClickListener = new LikeGridViewItemClick();
-		likeOperate = new LikeOperate(NewsDetailActivity.this);
 		initBitmapUtils();
 
 		// 获取屏幕尺寸
@@ -359,6 +353,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					break;
 
 				case NewsOperate.OP_Type_Delete_Sub_Comment:
+
 					break;
 				default:
 					break;
@@ -397,7 +392,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 
 				case NewsOperate.OP_Type_Delete_Comment:
 					if (isSucceed) {
+						ToastUtil.show(NewsDetailActivity.this, "删除成功");
 						detailAdapter.remove(currentOperateIndex);
+					} else {
+						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败");
 					}
 					break;
 
@@ -432,6 +430,9 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				case NewsOperate.OP_Type_Delete_Sub_Comment:
 					if (isSucceed) {
 						detailAdapter.remove(currentOperateIndex);
+						ToastUtil.show(NewsDetailActivity.this, "删除成功");
+					} else {
+						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败");
 					}
 					break;
 				default:
@@ -529,7 +530,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onPullUpToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-
 						// 上拉
 						/*
 						 * getNewsDetailData(String.valueOf(userModel.getUid()),
@@ -605,10 +605,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserTag());
 		if (titleData.getIsLike()) {
 			helper.setText(R.id.btn_news_detail_like, "已赞 ");
-			likeOperate.setlastSeverLikeState(true);
 		} else {
 			helper.setText(R.id.btn_news_detail_like, "点赞 ");
-			likeOperate.setlastSeverLikeState(false);
 		}
 
 		// 设置事件监听
@@ -1001,16 +999,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				final TitleItem operateData = (TitleItem) detailAdapter
 						.getItem(postion);
 				final View oprtView = view;
-				likeOperate.setOperateData(likeGVAdapter,
-						currentNews.getNewsID());
-				likeOperate.setLikeListener(new LikeCallBack() {
+				newsOPerate.setLikeListener(new LikeCallBack() {
 
 					@Override
 					public void onOperateStart(boolean isLike) {
 						if (isLike) {
+							newsOPerate.addHeadToLikeList(likeGVAdapter);
 							((Button) oprtView).setText("已赞");
 							operateData.setIsLike("1");
 						} else {
+							newsOPerate.removeHeadFromLikeList(likeGVAdapter);
 							((Button) oprtView).setText("点赞");
 							operateData.setIsLike("0");
 						}
@@ -1025,13 +1023,17 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 							((Button) oprtView).setText("已赞");
 							operateData.setIsLike("1");
 						}
+						// 撤销上次操作
+						newsOPerate.operateRevoked();
 					}
 				});
 
 				if (operateData.getIsLike()) {
-					likeOperate.Cancel();
+					newsOPerate.uploadLikeOperate(userModel,
+							currentNews.getNewsID(), false);
 				} else {
-					likeOperate.Like();
+					newsOPerate.uploadLikeOperate(userModel,
+							currentNews.getNewsID(), true);
 				}
 				break;
 

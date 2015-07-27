@@ -27,24 +27,37 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <com.jlxc.app.base.ui.view.NoScrollGridView
-            android:id="@+id/gv_school_person"
+        <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="6"
-            android:horizontalSpacing="4dp"
-            android:numColumns="5"
-            android:padding="10dp"
-            android:src="@drawable/ic_launcher" >
-        </com.jlxc.app.base.ui.view.NoScrollGridView>
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:id="@+id/liear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <com.jlxc.app.base.ui.view.NoScrollGridView
+                    android:id="@+id/gv_school_person"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:numColumns="auto_fit"
+                    android:src="@drawable/ic_launcher"
+                    android:stretchMode="spacingWidthUniform" >
+                </com.jlxc.app.base.ui.view.NoScrollGridView>
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <ImageView
             android:id="@+id/txt_campus_all_alumnus"
-            android:layout_width="0dp"
-            android:padding="10dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/ic_launcher" />
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:background="@drawable/btn_moer_photo"
+            android:padding="10dp" />
     </LinearLayout>
 
     <TextView

@@ -32,6 +32,8 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class RegisterActivity extends BaseActivityWithTopBar {
 
+	private final static String INTENT_KEY = "username";
+
 	// 是否是忘记密码
 	private Boolean isFindPwd;
 	// 当前倒计时的值
@@ -93,7 +95,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	// 初始化数据
 	private void init() {
 		Intent intent = getIntent();
-		userPhoneNumber = intent.getStringExtra("username");
+		userPhoneNumber = intent.getStringExtra(INTENT_KEY);
 		isFindPwd = intent.getBooleanExtra("isFindPwd", false);
 	}
 
@@ -136,10 +138,6 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 			} else {
 				// 注册
 				startRegister();
-				// 跳转到选择学校
-				Intent intent = new Intent(RegisterActivity.this,
-						SelectSchoolActivity.class);
-				startActivityWithRight(intent);
 			}
 		}
 	}
@@ -158,7 +156,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 					@Override
 					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag); 
+						super.onSuccess(jsonResponse, flag);
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
@@ -169,12 +167,13 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);
 							ToastUtil.show(RegisterActivity.this, "修改成功");
-							//数据持久化
+							// 数据持久化
 							UserManager.getInstance().saveAndUpdate();
-							//跳转主页
-							Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
+							// 跳转主页
+							Intent intent = new Intent(RegisterActivity.this,
+									MainTabActivity.class);
 							startActivity(intent);
-							
+
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -218,11 +217,12 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							UserModel userMd = new UserModel();
 							userMd.setContentWithJson(result);
 							UserManager.getInstance().setUser(userMd);
-							//数据持久化
+							// 数据持久化
 							UserManager.getInstance().saveAndUpdate();
 							ToastUtil.show(RegisterActivity.this, "注册成功");
-							//跳转主页
-							Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
+							// 跳转至选择学校页面
+							Intent intent = new Intent(RegisterActivity.this,
+									SelectSchoolActivity.class);
 							startActivity(intent);
 						}
 
@@ -238,7 +238,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
 						hideLoading();
-						showConfirmAlert("提示", "注册失败，请检查网络连接!");
+						ToastUtil.show(RegisterActivity.this, "注册失败，你网络太垃圾了!");
 					}
 
 				}, null));
