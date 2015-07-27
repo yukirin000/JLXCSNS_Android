@@ -1,5 +1,8 @@
 package com.jlxc.app.personal.ui.fragment;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.UserInfo;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -895,6 +898,9 @@ public class PersonalFragment extends BaseFragment {
 								userModel.setHead_sub_image(subPath);
 								bitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 								bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
+								//刷新信息								
+								UserInfo userInfo = new UserInfo(JLXCConst.JLXC+userModel.getUid(), userModel.getName(), Uri.parse(JLXCConst.ATTACHMENT_ADDR+serverPath));
+								RongIM.getInstance().refreshUserInfoCache(userInfo);
 							}else {
 								userModel.setBackground_image(serverPath);
 								bitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH+tmpImageName);
