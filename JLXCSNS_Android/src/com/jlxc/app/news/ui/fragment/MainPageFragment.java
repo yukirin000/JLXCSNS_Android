@@ -69,7 +69,9 @@ public class MainPageFragment extends BaseFragment {
 
 	@Override
 	public void setUpViews(View rootView) {
-
+		init();
+		InitImage();
+		InitViewPager();
 		imagePublish.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -81,13 +83,6 @@ public class MainPageFragment extends BaseFragment {
 		});
 	}
 
-	@Override
-	public void onStart() {
-		init();
-		InitImage();
-		InitViewPager();
-		super.onStart();
-	}
 	/**
 	 * 初始化函数
 	 * */
@@ -235,33 +230,4 @@ public class MainPageFragment extends BaseFragment {
 		}
 	}
 
-	@Override
-	public void onPause() {
-		LogUtils.i("onPause");
-		super.onPause();
-	}
-
-	@Override
-	public void onStop() {
-		LogUtils.i("onStop");
-		super.onStop();
-	}
-
-	@Override
-	public void onDestroyView() {
-		LogUtils.i("onDestroyView");
-		super.onDestroyView();
-	}
-
-	@Override
-	public void onDestroy() {
-		LogUtils.i("onDestroy");
-		super.onDestroy();
-	}
-
-	@Override
-	public void onDetach() {
-		LogUtils.i("onDetach");
-		super.onDetach();
-	}
 }
