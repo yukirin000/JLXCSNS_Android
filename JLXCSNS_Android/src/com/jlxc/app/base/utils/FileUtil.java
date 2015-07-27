@@ -271,7 +271,6 @@ public class FileUtil {
 		if (!path.exists()) {
 			path.mkdirs();
 		}
-		Log.d("file", "filename " + (fileName == null));
 		File picture = new File(path, fileName);
 		BufferedOutputStream bos;
 		try {

@@ -162,7 +162,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 						hideLoading();
 						int status = jsonResponse.getIntValue("status");
 						switch (status) {
-						case JLXCConst.STATUS_SUCCESS:							
+						case JLXCConst.STATUS_SUCCESS:						
 							//设置修改内容
 							userModel.setName(nameEditText.getText().toString());
 							userModel.setSex(sexValue);
@@ -327,22 +327,26 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		// aspectX aspectY 是宽高的比例
 		intent.putExtra("aspectX", 1);
 		intent.putExtra("aspectY", 1);
+		
+		intent.putExtra("outputX", 960);
+		intent.putExtra("outputY", 960);
+		
 		// outputX outputY 是裁剪图片宽高
-		if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
-			intent.putExtra("outputX", 320);
-			intent.putExtra("outputY", 320);
-		}else if (Build.MANUFACTURER.equalsIgnoreCase("MEIZU")) {
-			intent.putExtra("outputX", 250);
-			intent.putExtra("outputY", 250);
-		}else {
-			intent.putExtra("outputX", 960);
-			intent.putExtra("outputY", 960);
-		}
+//		if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+//			intent.putExtra("outputX", 320);
+//			intent.putExtra("outputY", 320);
+//		}else if (Build.MANUFACTURER.equalsIgnoreCase("MEIZU")) {
+//			intent.putExtra("outputX", 250);
+//			intent.putExtra("outputY", 250);
+//		}else {
+//			intent.putExtra("outputX", 960);
+//			intent.putExtra("outputY", 960);
+//		}
 		
 		intent.putExtra("scale", true);
 		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
 		intent.putExtra("noFaceDetection", true); // no face detection
-		intent.putExtra("return-data", true);
+//		intent.putExtra("return-data", true);
 		
 		File headDir = new File(FileUtil.HEAD_PIC_PATH);
 		if (!headDir.exists()) {

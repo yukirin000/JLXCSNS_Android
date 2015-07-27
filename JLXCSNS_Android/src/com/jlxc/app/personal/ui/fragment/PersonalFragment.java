@@ -481,11 +481,7 @@ public class PersonalFragment extends BaseFragment {
             case PHOTO_RESOULT:// 返回的结果
                 if (data != null){
                 	
-                	// 图片裁切后的结果
-                	//FileUtil.HEAD_PIC_PATH+tmpImageName
-//                	Bitmap bitmap = BitmapFactory.decodeFile(FileUtil.HEAD_PIC_PATH+tmpImageName);
-//        			headImageView.setImageBitmap(bitmap);// 将图片显示在ImageView里
-        			if (null != tmpImageName) {
+                	if (null != tmpImageName) {
         				bitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 	    				//删除临时文件
 	        			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
@@ -493,7 +489,33 @@ public class PersonalFragment extends BaseFragment {
 	    					file.delete(); 
 	    				}	
 	    				filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
-        			}	        			
+        			}
+                	
+//                	Bundle bundle = data.getExtras();
+//        			Bitmap bitmap = (Bitmap) bundle.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
+//        			if (null != bitmap && tmpImageName != null) {
+//        				FileUtil.savePic(Bitmap.createBitmap(bitmap), FileUtil.HEAD_PIC_PATH, tmpImageName, 100);
+//        				//删除临时文件
+//	        			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
+//	    				if (file.exists()) {
+//	    					file.delete(); 
+//	    				}	
+//        				filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
+//        			}else {
+//            			if (null != tmpImageName) {
+//            				bitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
+//    	    				//删除临时文件
+//    	        			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
+//    	    				if (file.exists()) {
+//    	    					file.delete(); 
+//    	    				}	
+//    	    				filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
+//            			}
+//					}
+                	// 图片裁切后的结果
+                	//FileUtil.HEAD_PIC_PATH+tmpImageName
+//                	Bitmap bitmap = BitmapFactory.decodeFile(FileUtil.HEAD_PIC_PATH+tmpImageName);
+//        			headImageView.setImageBitmap(bitmap);// 将图片显示在ImageView里
                 }
                 break;
             }
@@ -518,22 +540,26 @@ public class PersonalFragment extends BaseFragment {
 			// aspectX aspectY 是宽高的比例
 			intent.putExtra("aspectX", 1);
 			intent.putExtra("aspectY", 1);
-			// outputX outputY 是裁剪图片宽高
-			if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
-				intent.putExtra("outputX", 320);
-				intent.putExtra("outputY", 320);
-			}else if (Build.MANUFACTURER.equalsIgnoreCase("MEIZU")) {
-				intent.putExtra("outputX", 250);
-				intent.putExtra("outputY", 250);
-			}else {
-				intent.putExtra("outputX", 960);
-				intent.putExtra("outputY", 960);
-			}
+			
+			intent.putExtra("outputX", 960);
+			intent.putExtra("outputY", 960);
+			
+//			// outputX outputY 是裁剪图片宽高
+//			if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+//				intent.putExtra("outputX", 320);
+//				intent.putExtra("outputY", 320);
+//			}else if (Build.MANUFACTURER.equalsIgnoreCase("MEIZU")) {
+//				intent.putExtra("outputX", 250);
+//				intent.putExtra("outputY", 250);
+//			}else {
+//				intent.putExtra("outputX", 960);
+//				intent.putExtra("outputY", 960);
+//			}
 			
 			intent.putExtra("scale", true);
 			intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
 			intent.putExtra("noFaceDetection", true); // no face detection
-			intent.putExtra("return-data", true);
+//			intent.putExtra("return-data", true);
 			
 			File headDir = new File(FileUtil.HEAD_PIC_PATH);
 			if (!headDir.exists()) {

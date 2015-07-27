@@ -18,7 +18,7 @@
 
     </RelativeLayout>
      
-    <ScrollView
+    <com.jlxc.app.base.ui.view.CustomerScrollView
         
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
@@ -329,7 +329,7 @@
             </LinearLayout>
             
         </LinearLayout>
-    </ScrollView>
+    </com.jlxc.app.base.ui.view.CustomerScrollView>
     
     <Button
         android:id="@+id/card_Button"
