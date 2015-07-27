@@ -92,7 +92,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 			break;
 		case R.id.base_ll_right_btns:
 			//跳过
-			Intent intent = new Intent(this, NextActivity.class);
+			Intent intent = new Intent(this, MainTabActivity.class);
 			startActivityWithRight(intent);
 			break;
 		case R.id.register_information_activity:

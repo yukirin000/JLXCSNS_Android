@@ -2,6 +2,7 @@ package com.jlxc.app.base.helper;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
@@ -48,7 +49,10 @@ public class JsonRequestCallBack<T> extends RequestCallBack<T> {
 		// TODO Auto-generated method stub		
 		try {
 			JSONObject obj = JSON.parseObject(arg0.result.toString());
-			
+			//数据缓存
+			if (obj != null) {
+				HttpCacheUtils.saveHttpCache(absoluteUrl, obj.toJSONString());
+			}
 			handler.onSuccess(obj, flag);
 //			HttpLocalCache localCache = dbHelper.queryHttpLocalCache(absoluteUrl);
 //			if (null == localCache) {
