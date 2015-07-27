@@ -187,7 +187,7 @@ public class LoginActivity extends BaseActivity {
 	protected void setUpView() {
 		
 		////////////////////////测试数据//////////////////////////
-		usernameEt.setText("13736661234");
+//		usernameEt.setText("13736661234");
 		UserModel userModel = UserManager.getInstance().getUser();
 		if (null != userModel.getUsername() && null != userModel.getLogin_token()) {
 			//跳转主页 自动登录

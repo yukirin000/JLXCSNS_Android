@@ -167,8 +167,7 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 		//设置用户名
 		Intent intent =	getIntent();
 		setUsername(intent.getStringExtra("username"));
-		
-		passwordEt.setText("123456");
+//		passwordEt.setText("123456");
 		
 	}
 
