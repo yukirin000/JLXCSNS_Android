@@ -378,8 +378,10 @@ public class NewsOperate {
 
 		LikeModel myModel = new LikeModel();
 		myModel.setUserID(String.valueOf(userModel.getUid()));
-		myModel.setHeadImage(userModel.getHead_image());
-		myModel.setHeadSubImage(userModel.getHead_sub_image());
+		myModel.setHeadImage(JLXCConst.ATTACHMENT_ADDR
+				+ userModel.getHead_image());
+		myModel.setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
+				+ userModel.getHead_sub_image());
 		try {
 			headAdapter.addToFirst(myModel);
 		} catch (Exception e) {
@@ -396,8 +398,10 @@ public class NewsOperate {
 		lastOperateType = OP_Type_News_Like;
 		LikeModel myModel = new LikeModel();
 		myModel.setUserID(String.valueOf(userModel.getUid()));
-		myModel.setHeadImage(userModel.getHead_image());
-		myModel.setHeadSubImage(userModel.getHead_sub_image());
+		myModel.setHeadImage(JLXCConst.ATTACHMENT_ADDR
+				+ userModel.getHead_image());
+		myModel.setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
+				+ userModel.getHead_sub_image());
 
 		LikeListItem likeData = (LikeListItem) newsAdapter.getItem(lastPostion);
 		likeData.getLikeHeadListimage().add(0, myModel);

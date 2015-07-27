@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
@@ -63,15 +65,13 @@ public class MainPageFragment extends BaseFragment {
 
 	@Override
 	public void loadLayout(View rootView) {
-		init();
-		InitImage();
-		InitViewPager();
 	}
 
 	@Override
 	public void setUpViews(View rootView) {
+
 		imagePublish.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent intentUsrMain = new Intent(mContext,
@@ -81,6 +81,13 @@ public class MainPageFragment extends BaseFragment {
 		});
 	}
 
+	@Override
+	public void onStart() {
+		init();
+		InitImage();
+		InitViewPager();
+		super.onStart();
+	}
 	/**
 	 * 初始化函数
 	 * */
@@ -130,11 +137,10 @@ public class MainPageFragment extends BaseFragment {
 		campusTitleTextView.setWidth(TitleViewWisth);
 		newsTitleTextView.setOnClickListener(new ViewClickListener(0));
 		campusTitleTextView.setOnClickListener(new ViewClickListener(1));
-
 		mFragmentList.add(new NewsListFragment());
 		mFragmentList.add(new CampusFragment());
 
-		mainPager.setAdapter(new MainFragmentPagerAdapter(getFragmentManager(),
+		mainPager.setAdapter(new MainFragmentPagerAdapter(getChildFragmentManager(),
 				mFragmentList));
 		mainPager.setCurrentItem(0);
 		mainPager.setOnPageChangeListener(new MyOnPageChangeListener());
@@ -158,7 +164,7 @@ public class MainPageFragment extends BaseFragment {
 	/**
 	 * ViewPager的适配器
 	 * */
-	class MainFragmentPagerAdapter extends FragmentPagerAdapter {
+	class MainFragmentPagerAdapter extends FragmentStatePagerAdapter  {
 		private List<Fragment> fragmentList;
 
 		public MainFragmentPagerAdapter(FragmentManager fm, List<Fragment> list) {
@@ -166,6 +172,7 @@ public class MainPageFragment extends BaseFragment {
 			fragmentList = list;
 		}
 
+		//得到每个item  
 		@Override
 		public Fragment getItem(int index) {
 			return fragmentList.get(index);
@@ -178,8 +185,21 @@ public class MainPageFragment extends BaseFragment {
 
 		@Override
 		public int getItemPosition(Object object) {
+			 //
 			return super.getItemPosition(object);
 		}
+		
+        @Override  
+        public Object instantiateItem(ViewGroup arg0, int arg1) {  
+        	 // 初始化每个页卡选项   
+            return super.instantiateItem(arg0, arg1);  
+        }  
+          
+        @Override  
+        public void destroyItem(ViewGroup container, int position, Object object) {
+        	//
+            super.destroyItem(container, position, object);  
+        }  
 	}
 
 	/**
@@ -213,5 +233,35 @@ public class MainPageFragment extends BaseFragment {
 		public void onPageSelected(int arg0) {
 
 		}
+	}
+
+	@Override
+	public void onPause() {
+		LogUtils.i("onPause");
+		super.onPause();
+	}
+
+	@Override
+	public void onStop() {
+		LogUtils.i("onStop");
+		super.onStop();
+	}
+
+	@Override
+	public void onDestroyView() {
+		LogUtils.i("onDestroyView");
+		super.onDestroyView();
+	}
+
+	@Override
+	public void onDestroy() {
+		LogUtils.i("onDestroy");
+		super.onDestroy();
+	}
+
+	@Override
+	public void onDetach() {
+		LogUtils.i("onDetach");
+		super.onDetach();
 	}
 }
