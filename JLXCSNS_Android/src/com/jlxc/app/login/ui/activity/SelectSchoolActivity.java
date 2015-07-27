@@ -88,8 +88,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	private boolean isPullDowm = false;
 	// 上次查询的结果数
 	private int lastCount = 0;
-	
-	//注册的时候使用或者修改信息的时候使用
+
+	// 注册的时候使用或者修改信息的时候使用
 	private boolean notRegister;
 
 	@OnClick({ R.id.base_tv_back, R.id.root_layout })
@@ -115,23 +115,13 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	}
 
 	@Override
-	protected void onStart() {
-		// 开始定位，每0.2s通知一次，距离变化10通知一次，超时时间为5秒
-		districtLocation = new Location(SelectSchoolActivity.this);
-		districtLocation.locateInit(200, 10, 5000);
-		super.onStart();
-	}
-
-	@Override
 	protected void setUpView() {
-		
-		//设置是否是注册进入的
+
+		// 设置是否是注册进入的
 		Intent intent = getIntent();
 		setNotRegister(intent.getBooleanExtra("notRegister", false));
-		//初始化listView
+		// 初始化listView
 		initListViewSet();
-		// 设置为底部刷新模式
-		schoolListView.setMode(Mode.BOTH);
 
 		// 设置搜索框内容改变的监听事件
 		searchEditText.addTextChangedListener(new TextWatcher() {
@@ -160,6 +150,10 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			public void afterTextChanged(Editable s) {
 			}
 		});
+
+		// 开始定位，每0.2s通知一次，距离变化10通知一次，超时时间为5秒
+		districtLocation = new Location(SelectSchoolActivity.this);
+		districtLocation.locateInit(200, 10, 5000);
 	}
 
 	/***
@@ -167,6 +161,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	 * listview的设置
 	 */
 	private void initListViewSet() {
+		// 设置为底部刷新模式
+		schoolListView.setMode(Mode.BOTH);
 		schoolAdapter = new HelloHaAdapter<SchoolModel>(
 				SelectSchoolActivity.this, R.layout.school_listitem_layout,
 				mDatas) {
@@ -337,7 +333,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	/**
 	 * 上传学校数据
 	 * */
-	private void updateUserSchool(final String schoolName, final String schoolCode) {
+	private void updateUserSchool(final String schoolName,
+			final String schoolCode) {
 		final UserModel userModel = UserManager.getInstance().getUser();
 		LogUtils.i("用户id：" + userModel.getUid() + " schoolName:" + schoolName
 				+ " schoolCode:" + schoolCode);
@@ -346,7 +343,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("uid", userModel.getUid() + "");
 		params.addBodyParameter("school", schoolName);
 		params.addBodyParameter("school_code", schoolCode);
-		
+
 		HttpManager.post(JLXCConst.CHANGE_SCHOOL, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
@@ -356,17 +353,18 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							//设置数据 
+							// 设置数据
 							userModel.setSchool(schoolName);
 							userModel.setSchool_code(schoolCode);
-							//数据持久化
+							// 数据持久化
 							UserManager.getInstance().saveAndUpdate();
-							
+
 							if (isNotRegister()) {
 								finishWithRight();
-							}else {
-								//注册进来的 跳转到下一页面
-								Intent intent = new Intent(SelectSchoolActivity.this,
+							} else {
+								// 注册进来的 跳转到下一页面
+								Intent intent = new Intent(
+										SelectSchoolActivity.this,
 										RegisterInformationActivity.class);
 								startActivityWithRight(intent);
 							}
@@ -485,7 +483,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		} else
 			return super.onKeyDown(keyCode, event);
 	}
-	
+
 	public boolean isNotRegister() {
 		return notRegister;
 	}

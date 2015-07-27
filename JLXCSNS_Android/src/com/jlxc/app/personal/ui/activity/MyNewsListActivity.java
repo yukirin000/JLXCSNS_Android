@@ -8,7 +8,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,12 +43,13 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.ImageModel;
-import com.jlxc.app.news.model.ItemModel;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
-import com.jlxc.app.news.utils.DataToItem;
+import com.jlxc.app.news.utils.NewsOperate;
+import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
+import com.jlxc.app.news.utils.NewsOperate.OperateCallBack;
 import com.jlxc.app.personal.model.MyNewsListItemModel;
 import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsBodyItem;
 import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsOperateItem;
@@ -61,7 +61,6 @@ import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 //我的动态列表
@@ -98,8 +97,10 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	private ItemViewClick itemViewClickListener;
 	// 点击图片监听
 	private ImageGridViewItemClick imageItemClickListener;
-	// 当前操作的动态
-	private NewsModel currentOperateNews;
+	// 当前操作的动态id
+	private String currentNewsId = "";
+	// 对动态的操作
+	private NewsOperate newsOPerate;
 	// 当前操作的位置
 	private int indexAtNewsList = 0;
 	// 被查看者的用户ID
@@ -277,16 +278,16 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
-
+		newsOperateSet();
 		initBitmapUtils();
 
 		Intent intent = this.getIntent();
 		if (null != intent && intent.hasExtra(INTNET_KEY_UID)) {
 			currentUid = intent.getStringExtra(INTNET_KEY_UID);
-		}else {
-			LogUtils.e("用户id传输错误，用户id为："+currentUid);
+		} else {
+			LogUtils.e("用户id传输错误，用户id为：" + currentUid);
 		}
-		
+
 		/*** 测试 *****/
 		// currentUid = "21";
 		// userModel.setUid(21);
@@ -308,6 +309,42 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+	}
+
+	/**
+	 * 动态操作类的初始化
+	 * */
+	private void newsOperateSet() {
+		newsOPerate = new NewsOperate(MyNewsListActivity.this);
+		newsOPerate.setOperateListener(new OperateCallBack() {
+
+			@Override
+			public void onStart(int operateType) {
+				// 操作开始
+			}
+
+			@Override
+			public void onFinish(int operateType, boolean isSucceed,
+					Object resultValue) {
+				switch (operateType) {
+				case NewsOperate.OP_Type_Delete_News:
+					if (isSucceed) {
+						for (int index = 0; index < newsAdapter.getCount(); index++) {
+							if (newsAdapter.getItem(index).getNewsID()
+									.equals(currentNewsId)) {
+								newsAdapter.remove(index);
+								index--;
+							}
+						}
+						ToastUtil.show(MyNewsListActivity.this, "删除成功");
+					}
+					break;
+
+				default:
+					break;
+				}
+			}
+		});
 	}
 
 	/**
@@ -571,50 +608,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
-	 * 从服务器上删除
-	 * */
-	private void deleteFromSever(String newsId) {
-
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("news_id", newsId);
-
-		HttpManager.post(JLXCConst.DELETE_NEWS, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							ToastUtil.show(MyNewsListActivity.this, "删除成功");
-
-							for (int index = 0; index < newsAdapter.getCount(); index++) {
-								if (newsAdapter.getItem(index).getNewsID()
-										.equals(currentOperateNews.getNewsID())) {
-									newsAdapter.remove(index);
-								}
-							}
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(MyNewsListActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						ToastUtil
-								.show(MyNewsListActivity.this, "竟然删除失败，请检查网络!");
-					}
-				}, null));
-	}
-
-	/**
 	 * 删除当前评论
 	 * */
 	private void deleteCurrentNews(final String newsID) {
@@ -626,7 +619,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						deleteFromSever(newsID);
+						currentNewsId = newsID;
+						newsOPerate.deleteNews(newsID);
 					}
 				});
 		alterDialog.setNegativeButton("舍不得",
@@ -639,52 +633,59 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		alterDialog.show();
 	}
 
-	/***
+	/**
 	 * 点赞操作
-	 */
-	private void likeNetOperate(MyNewsOperateItem operateItem) {
-		// // 参数设置
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("news_id", operateItem.getNewsID());
-		if (operateItem.getIsLike()) {
-			params.addBodyParameter("isLike", "1");
+	 * */
+	private void likeOperate(int postion, View view,
+			final MyNewsOperateItem operateData) {
+
+		final View oprtView = view;
+
+		newsOPerate.setLikeListener(new LikeCallBack() {
+
+			@Override
+			public void onOperateStart(boolean isLike) {
+				if (isLike) {
+					operateData.setLikeCount(String.valueOf(operateData
+							.getLikeCount() + 1));
+					((Button) oprtView).setText("已赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("1");
+				} else {
+					operateData.setLikeCount(String.valueOf(operateData
+							.getLikeCount() - 1));
+					((Button) oprtView).setText("点赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("0");
+				}
+			}
+
+			@Override
+			public void onOperateFail(boolean isLike) {
+				if (isLike) {
+					operateData.setLikeCount(String.valueOf(operateData
+							.getLikeCount() - 1));
+					((Button) oprtView).setText("点赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("0");
+				} else {
+					operateData.setLikeCount(String.valueOf(operateData
+							.getLikeCount() + 1));
+					((Button) oprtView).setText("已赞 "
+							+ operateData.getLikeCount());
+					operateData.setIsLike("1");
+				}
+			}
+		});
+		if (operateData.getIsLike()) {
+			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
+					false);
 		} else {
-			params.addBodyParameter("isLike", "0");
+			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
+					true);
 		}
-		params.addBodyParameter("user_id", String.valueOf(userModel.getUid()));
-		params.addBodyParameter("is_second", "0");
-
-		HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							// 失败则取消操作
-							ToastUtil.show(MyNewsListActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						// 失败则取消操作
-						ToastUtil.show(MyNewsListActivity.this,
-								"卧槽，竟然操作失败，检查下网络");
-					}
-
-				}, null));
 	}
+
 
 	/**
 	 * 数据处理
@@ -699,7 +700,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		if (isPullDowm) {
 			newsList.clear();
 			newsList.addAll(newDatas);
-			newsAdapter.replaceAll(NewsToItemData.newsToItem(newDatas));
+			itemDataList = NewsToItemData.newsToItem(newDatas);
+			newsAdapter.replaceAll(itemDataList);
 		} else {
 			newsList.addAll(newDatas);
 			newsAdapter.addAll(NewsToItemData.newsToItem(newDatas));
@@ -740,7 +742,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 					// 跳转到图片详情页面
 					String path = bodyData.getNewsImageListList().get(0)
 							.getURL();
-					jumpToBigImage(BigImgLookActivity.INTENT_KEY,path, 0);
+					jumpToBigImage(BigImgLookActivity.INTENT_KEY, path, 0);
 				} else {
 					// 跳转至动态详情
 					jumpToNewsDetail(bodyData,
@@ -764,20 +766,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 							NewsOperateModel.KEY_BOARD_COMMENT, null);
 				} else {
 					// 进行点赞操作
-					if (operateData.getIsLike()) {
-						operateData.setLikeCount(String.valueOf(operateData
-								.getLikeCount() - 1));
-						((Button) view).setText("点赞 "
-								+ operateData.getLikeCount());
-						operateData.setIsLike("0");
-					} else {
-						operateData.setLikeCount(String.valueOf(operateData
-								.getLikeCount() + 1));
-						((Button) view).setText("已赞 "
-								+ operateData.getLikeCount());
-						operateData.setIsLike("1");
-					}
-					likeNetOperate(operateData);
+					likeOperate(postion, view, operateData);
 				}
 				break;
 
@@ -862,7 +851,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			container.setImageBitmap(bitmap);
 		}
 	}
-	
+
 	/**
 	 * 跳转查看大图
 	 */
@@ -879,7 +868,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			// 传递model列表
 			@SuppressWarnings("unchecked")
 			List<ImageModel> mdPath = (List<ImageModel>) path;
-			Intent intent = new Intent(MyNewsListActivity.this, BigImgLookActivity.class);
+			Intent intent = new Intent(MyNewsListActivity.this,
+					BigImgLookActivity.class);
 			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
 					(Serializable) mdPath);
 			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
@@ -888,7 +878,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			// 传递String列表
 			@SuppressWarnings("unchecked")
 			List<String> mdPath = (List<String>) path;
-			Intent intent = new Intent(MyNewsListActivity.this, BigImgLookActivity.class);
+			Intent intent = new Intent(MyNewsListActivity.this,
+					BigImgLookActivity.class);
 			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
 					(Serializable) mdPath);
 			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
@@ -897,7 +888,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			LogUtils.e("未传递图片地址");
 		}
 	}
-
 
 	/**
 	 * 跳转至用户的主页

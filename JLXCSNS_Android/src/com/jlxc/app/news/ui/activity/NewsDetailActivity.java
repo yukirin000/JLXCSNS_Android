@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.style.SuperscriptSpan;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -64,8 +63,9 @@ import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.model.SubCommentModel;
 import com.jlxc.app.news.utils.DataToItem;
-import com.jlxc.app.news.utils.LikeOperate;
-import com.jlxc.app.news.utils.LikeOperate.LikeCallBack;
+import com.jlxc.app.news.utils.NewsOperate;
+import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
+import com.jlxc.app.news.utils.NewsOperate.OperateCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
@@ -73,16 +73,15 @@ import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
 	// 当前的操作类型
-	private int operateType = -1;
+	private int operateType = NewsOperateModel.Input_Type_Comment;
 	// 评论的类型
-	private int commentType = -1;
+	private int commentType = NewsOperateModel.Input_Type_Comment;
 	// 主listview
 	@ViewInject(R.id.news_detail_listView)
 	private PullToRefreshListView newsDetailListView;
@@ -110,8 +109,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private ItemViewClick itemViewClickListener;
 	// 点击图片监听
 	private ImageGridViewItemClick imageItemClickListener;
-	// 点赞操作类对象
-	private LikeOperate likeOperate;
+	// 对动态的操作
+	private NewsOperate newsOPerate;
 	// 点赞头像gridview
 	private NoScrollGridView likeGridView;
 	// 点赞适配器
@@ -120,12 +119,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private LikeGridViewItemClick likeItemClickListener;
 	// 评论的内容
 	private String commentContent = "";
-	// 评论操作类
-	private CommentOperate commentOperate;
-	// 当前的操作的评论对象
+	// 当前的操作的item
 	private CommentModel currentCommentModel;
 	// 当前的操作的子评论对象
 	private SubCommentModel currentSubCmtModel;
+	// 当前操作的位置
+	private int currentOperateIndex = 0;
 	// 是否是第一次请求数据
 	private boolean firstRequstData = true;
 
@@ -161,6 +160,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		init();
 		multiItemTypeSet();
 		listViewSet();
+		newsOperateSet();
 
 		// 监听输入框文本的变化
 		commentEditText.addTextChangedListener(new TextWatcher() {
@@ -231,8 +231,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
 		likeItemClickListener = new LikeGridViewItemClick();
-		commentOperate = new CommentOperate();
-		likeOperate = new LikeOperate(NewsDetailActivity.this);
 		initBitmapUtils();
 
 		// 获取屏幕尺寸
@@ -263,12 +261,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			String cmtId = bundle
 					.getString(NewsOperateModel.INTENT_KEY_COMMENT_ID);
 
-			LogUtils.i("dataList.size()=" + dataList.size());
 			for (int index = 0; index < dataList.size(); ++index) {
-				LogUtils.i("index=" + index);
 				ItemModel tempItemModel = dataList.get(index);
 				int itemType = tempItemModel.getItemType();
 				if (ItemModel.NEWS_DETAIL_COMMENT == itemType) {
+					// 回复评论
 					currentCommentModel = ((CommentItem) tempItemModel)
 							.getCommentModel();
 					if (currentCommentModel.getCommentID().equals(cmtId)) {
@@ -278,7 +275,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						break;
 					}
 				} else if (ItemModel.NEWS_DETAIL_SUB_COMMENT == itemType) {
-					// 回复评论
+					// 回复子评论
 					currentSubCmtModel = ((SubCommentItem) tempItemModel)
 							.getSubCommentModel();
 					if (currentSubCmtModel.getSubID().equals(cmtId)) {
@@ -288,7 +285,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						break;
 					}
 				}
-				commentOperate.setPostion(index + 1);
+				currentOperateIndex = index + 1;
 			}
 			commentEditText.setFocusable(true);
 			commentEditText.setFocusableInTouchMode(true);
@@ -328,6 +325,121 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					.getCurrentFocus().getWindowToken(),
 					InputMethodManager.HIDE_NOT_ALWAYS);
 		}
+	}
+
+	/**
+	 * 动态操作设置
+	 * */
+	private void newsOperateSet() {
+		newsOPerate = new NewsOperate(NewsDetailActivity.this);
+		newsOPerate.setOperateListener(new OperateCallBack() {
+			@Override
+			public void onStart(int operateType) {
+				userModel = UserManager.getInstance().getUser();
+				LogUtils.i("头像：" + userModel.getHead_sub_image());
+				switch (operateType) {
+				case NewsOperate.OP_Type_Delete_News:
+					break;
+
+				case NewsOperate.OP_Type_Add_Comment:
+					showLoading("努力发布中...", true);
+
+				case NewsOperate.OP_Type_Delete_Comment:
+					break;
+
+				case NewsOperate.OP_Type_Add_Sub_Comment: {
+					showLoading("努力发布中...", true);
+				}
+					break;
+
+				case NewsOperate.OP_Type_Delete_Sub_Comment:
+
+					break;
+				default:
+					break;
+				}
+
+			}
+
+			@Override
+			public void onFinish(int operateType, boolean isSucceed,
+					Object resultValue) {
+				switch (operateType) {
+				case NewsOperate.OP_Type_Delete_News:
+					if (isSucceed) {
+						ToastUtil.show(NewsDetailActivity.this, "删除成功");
+						// 返回上一页
+						Intent intentBack = new Intent();
+						setResult(NewsOperateModel.OPERATE_DELETET, intentBack);
+						finishWithRight();
+					}
+					break;
+
+				case NewsOperate.OP_Type_Add_Comment:
+					if (isSucceed) {
+						// 发布成功则更新评论
+						CommentModel resultmModel = (CommentModel) resultValue;
+						detailAdapter.add(DataToItem.createComment(
+								resultmModel, ItemModel.NEWS_DETAIL_COMMENT));
+						// 滚动到底部
+						newsDetailListView.getRefreshableView().setSelection(
+								detailAdapter.getCount() - 1);
+						hideLoading();
+					} else {
+						hideLoading();
+					}
+					break;
+
+				case NewsOperate.OP_Type_Delete_Comment:
+					if (isSucceed) {
+						ToastUtil.show(NewsDetailActivity.this, "删除成功");
+						detailAdapter.remove(currentOperateIndex);
+					} else {
+						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败");
+					}
+					break;
+
+				case NewsOperate.OP_Type_Add_Sub_Comment:
+					if (isSucceed) {
+						// 发布成功则更新评论
+						SubCommentModel resultmModel = (SubCommentModel) resultValue;
+						// 找到需要插入的位置
+						int index = currentOperateIndex + 1;
+						while (index < detailAdapter.getCount()) {
+							int itemType = detailAdapter.getItem(index)
+									.getItemType();
+							if (ItemModel.NEWS_DETAIL_COMMENT == itemType) {
+								break;
+							}
+							index++;
+						}
+						// 插入子评论
+						detailAdapter.insert(index, DataToItem
+								.createSubComment(resultmModel,
+										currentNews.getNewsID(),
+										ItemModel.NEWS_DETAIL_SUB_COMMENT));
+						// 滚动到添加的评论处
+						newsDetailListView.getRefreshableView().setSelection(
+								index);
+						hideLoading();
+					} else {
+						hideLoading();
+					}
+					break;
+
+				case NewsOperate.OP_Type_Delete_Sub_Comment:
+					if (isSucceed) {
+						detailAdapter.remove(currentOperateIndex);
+						ToastUtil.show(NewsDetailActivity.this, "删除成功");
+					} else {
+						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败");
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		});
 	}
 
 	/**
@@ -418,7 +530,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onPullUpToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-
 						// 上拉
 						/*
 						 * getNewsDetailData(String.valueOf(userModel.getUid()),
@@ -494,10 +605,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserTag());
 		if (titleData.getIsLike()) {
 			helper.setText(R.id.btn_news_detail_like, "已赞 ");
-			likeOperate.setlastSeverLikeState(true);
 		} else {
 			helper.setText(R.id.btn_news_detail_like, "点赞 ");
-			likeOperate.setlastSeverLikeState(false);
 		}
 
 		// 设置事件监听
@@ -790,7 +899,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
-	 * 删除当前评论
+	 * 删除动态
 	 * */
 	private void deleteCurrentNews() {
 		final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
@@ -801,7 +910,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						deleteFromSever();
+						newsOPerate.deleteNews(currentNews.getNewsID());
 					}
 				});
 		alterDialog.setNegativeButton("舍不得",
@@ -814,219 +923,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		alterDialog.show();
 	}
 
-	/**
-	 * 从服务器上删除
-	 * */
-	private void deleteFromSever() {
-
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("news_id", currentNews.getNewsID());
-
-		HttpManager.post(JLXCConst.DELETE_NEWS, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							ToastUtil.show(NewsDetailActivity.this, "删除成功");
-							// 返回上一页
-							Intent intentBack = new Intent();
-							setResult(NewsOperateModel.OPERATE_DELETET,
-									intentBack);
-							finishWithRight();
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(NewsDetailActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						ToastUtil
-								.show(NewsDetailActivity.this, "竟然删除失败，请检查网络!");
-					}
-				}, null));
-	}
-
-	/**
-	 * 发送一级评论
-	 * */
-	private void uploadCommentData(CommentModel cmtMode) {
-
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", String.valueOf(userModel.getUid()));
-		params.addBodyParameter("news_id", currentNews.getNewsID());
-		params.addBodyParameter("comment_content", cmtMode.getCommentContent());
-
-		HttpManager.post(JLXCConst.SEND_COMMENT, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							// 刷新列表
-							JSONObject JResult = jsonResponse
-									.getJSONObject(JLXCConst.HTTP_RESULT);
-							CommentModel temMode = new CommentModel();
-							temMode.setContentWithJson(JResult);
-							// 评论成功后再次刷新
-							commentOperate.addCommentRefresh(temMode, true);
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							commentOperate.Revoked();
-							ToastUtil.show(NewsDetailActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						commentOperate.Revoked();
-						ToastUtil
-								.show(NewsDetailActivity.this, "竟然评论失败，请检查网络!");
-					}
-				}, null));
-	}
-
-	/**
-	 * 发送二级评论
-	 * */
-	private void uploadSubCommentData(SubCommentModel subModle) {
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", String.valueOf(userModel.getUid()));
-		params.addBodyParameter("news_id", currentNews.getNewsID());
-		params.addBodyParameter("comment_content", subModle.getCommentContent());
-		params.addBodyParameter("reply_uid", subModle.getReplyUid());
-		params.addBodyParameter("reply_comment_id",
-				subModle.getReplyCommentId());
-		params.addBodyParameter("top_comment_id", subModle.getTopCommentId());
-
-		final String replyToName = subModle.getReplyName();
-		HttpManager.post(JLXCConst.SEND_SECOND_COMMENT, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							// 刷新列表
-							JSONObject JResult = jsonResponse
-									.getJSONObject(JLXCConst.HTTP_RESULT);
-
-							SubCommentModel tempMd = new SubCommentModel();
-							tempMd.setContentWithJson(JResult);
-							tempMd.setReplyName(replyToName);
-							commentOperate.addSubCommentRefresh(tempMd, true);
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							commentOperate.Revoked();
-							ToastUtil.show(NewsDetailActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						commentOperate.Revoked();
-						ToastUtil
-								.show(NewsDetailActivity.this, "竟然评论失败，请检查网络!");
-					}
-				}, null));
-	}
-
-	/**
-	 * 删除一级评论
-	 * */
-	private void deleteCommentData(String CID, String newsID) {
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("cid", CID);
-		params.addBodyParameter("news_id", currentNews.getNewsID());
-
-		HttpManager.post(JLXCConst.DELETE_COMMENT, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							ToastUtil.show(NewsDetailActivity.this, "删除成功");
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							commentOperate.Revoked();
-							ToastUtil.show(NewsDetailActivity.this, "删除失败");
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						commentOperate.Revoked();
-						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败，请检查网络");
-					}
-				}, null));
-	}
-
-	/**
-	 * 删除二级评论
-	 * */
-	private void deleteSubCommentData(String CID, String newsID) {
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("cid", CID);
-		params.addBodyParameter("news_id", newsID);
-
-		HttpManager.post(JLXCConst.DELETE_SECOND_COMMENT, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							ToastUtil.show(NewsDetailActivity.this, "删除成功");
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							commentOperate.Revoked();
-							ToastUtil.show(NewsDetailActivity.this, "删除失败");
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						commentOperate.Revoked();
-						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败，请检查网络");
-					}
-				}, null));
-	}
-
 	// 点击回复发送按钮
 	private void publishComment() {
 		if (commentContent.length() > 0) {
@@ -1037,29 +933,26 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			// 隐藏输入键盘
 			setKeyboardStatu(false);
 
-			// 根据评论类型进行评论
 			switch (commentType) {
 			case NewsOperateModel.Input_Type_Comment:
+				// 发布评论
 				CommentModel temMode = new CommentModel();
 				temMode.setCommentContent(tempContent);
 				temMode.setAddDate(TimeHandle.getCurrentDataStr());
-				// 将数据更新至UI
-				commentOperate.addCommentRefresh(temMode, false);
-				// 将数据更新至服务器
-				uploadCommentData(temMode);
+				newsOPerate.publishComment(userModel, currentNews.getNewsID(),
+						tempContent);
 				break;
 
 			case NewsOperateModel.Input_Type_SubComment:
+				// 发布二级评论
 				SubCommentModel tempMd = new SubCommentModel();
 				tempMd.setCommentContent(tempContent);
 				tempMd.setReplyUid(currentCommentModel.getUserId());
 				tempMd.setReplyName(currentCommentModel.getPublishName());
 				tempMd.setReplyCommentId(currentCommentModel.getCommentID());
 				tempMd.setTopCommentId(currentCommentModel.getCommentID());
-				// 更新UI
-				commentOperate.addSubCommentRefresh(tempMd, false);
-				// 提交至服务器
-				uploadSubCommentData(tempMd);
+				newsOPerate.publishSubComment(userModel,
+						currentNews.getNewsID(), tempMd);
 				break;
 
 			case NewsOperateModel.Input_Type_SubReply:
@@ -1070,10 +963,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				tpMold.setReplyName(currentSubCmtModel.getPublishName());
 				tpMold.setReplyCommentId(currentSubCmtModel.getSubID());
 				tpMold.setTopCommentId(currentSubCmtModel.getTopCommentId());
-				// 更新UI
-				commentOperate.addSubCommentRefresh(tpMold, false);
-				// 提交至服务器
-				uploadSubCommentData(tpMold);
+				newsOPerate.publishSubComment(userModel,
+						currentNews.getNewsID(), tpMold);
 				break;
 			default:
 				break;
@@ -1108,16 +999,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				final TitleItem operateData = (TitleItem) detailAdapter
 						.getItem(postion);
 				final View oprtView = view;
-				likeOperate.setOperateData(likeGVAdapter,
-						currentNews.getNewsID());
-				likeOperate.setLikeListener(new LikeCallBack() {
+				newsOPerate.setLikeListener(new LikeCallBack() {
 
 					@Override
 					public void onOperateStart(boolean isLike) {
 						if (isLike) {
+							newsOPerate.addHeadToLikeList(likeGVAdapter);
 							((Button) oprtView).setText("已赞");
 							operateData.setIsLike("1");
 						} else {
+							newsOPerate.removeHeadFromLikeList(likeGVAdapter);
 							((Button) oprtView).setText("点赞");
 							operateData.setIsLike("0");
 						}
@@ -1132,13 +1023,17 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 							((Button) oprtView).setText("已赞");
 							operateData.setIsLike("1");
 						}
+						// 撤销上次操作
+						newsOPerate.operateRevoked();
 					}
 				});
 
 				if (operateData.getIsLike()) {
-					likeOperate.Cancel();
+					newsOPerate.uploadLikeOperate(userModel,
+							currentNews.getNewsID(), false);
 				} else {
-					likeOperate.Like();
+					newsOPerate.uploadLikeOperate(userModel,
+							currentNews.getNewsID(), true);
 				}
 				break;
 
@@ -1148,7 +1043,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				currentCommentModel = ((CommentItem) detailAdapter
 						.getItem(postion)).getCommentModel();
 				if (viewID == R.id.reply_head_layout) {
-					commentOperate.setPostion(postion);
+					currentOperateIndex = postion;
 					if (currentCommentModel.getUserId().equals(
 							String.valueOf(userModel.getUid()))) {
 						// 如果是自己发布的评论，则删除评论
@@ -1161,9 +1056,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 											public void onClick(
 													DialogInterface dialog,
 													int which) {
-												commentOperate
-														.deleteCommentRefresh();
-												deleteCommentData(
+												newsOPerate.deleteComment(
 														currentCommentModel
 																.getCommentID(),
 														currentNews.getNewsID());
@@ -1193,7 +1086,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				currentSubCmtModel = ((SubCommentItem) detailAdapter
 						.getItem(postion)).getSubCommentModel();
 				if (viewID == R.id.subcomment_root_view) {
-					commentOperate.setPostion(postion);
+					currentOperateIndex = postion;
 					if (currentSubCmtModel.getPublishId().equals(
 							String.valueOf(userModel.getUid()))) {
 						// 如果是自己发布的评论，则删除评论
@@ -1206,14 +1099,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 											public void onClick(
 													DialogInterface dialog,
 													int which) {
-												commentOperate
-														.deleteSubCommentRefresh();
-												deleteSubCommentData(
+												newsOPerate.deleteSubComment(
 														currentSubCmtModel
 																.getSubID(),
 														currentNews.getNewsID());
 											}
-
 										}).show();
 					} else {
 						// 找到topComment
@@ -1281,157 +1171,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			// 跳转到图片详情页面
 			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
 					imageModelList, position);
-		}
-	}
-
-	/**
-	 * 评论操作
-	 * 
-	 * @author luis
-	 */
-	private class CommentOperate {
-
-		// 评论的操作类型
-		private final static int Add_Comment = 0;
-		private final static int Delete_Comment = 1;
-		private final static int Add_Sub_Comment = 2;
-		private final static int Delete_Sub_Comment = 3;
-		// 操作的位置
-		private int oprtPostion;
-		// 第一条可见的位置
-		private int firstVisiblePostion;
-		// 操作的item的值
-		private ItemModel oprtItem;
-		// 操作的类型
-		private int LastOperateType = -1;
-		// 当前操作的item离顶部的距离
-		private int opertItemToTop = 0;
-
-		public void setPostion(int postion) {
-			oprtPostion = postion;
-		}
-
-		/**
-		 * 更新一级评论列表
-		 * */
-		public void addCommentRefresh(CommentModel cmtModel,
-				boolean isNetFeedback) {
-			// 自动显示最后一条
-			newsDetailListView.getRefreshableView().setTranscriptMode(
-					ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-			if (isNetFeedback) {
-				// 是不是网络回调
-				detailAdapter.remove(oprtItem);
-				newsDetailListView.getRefreshableView().setTranscriptMode(
-						ListView.TRANSCRIPT_MODE_DISABLED);
-			}
-			LastOperateType = Add_Comment;
-
-			// 新建一条评论对象
-			cmtModel.setPublishName(userModel.getName());
-			cmtModel.setHeadSubImage(userModel.getHead_sub_image());
-			List<SubCommentModel> subCmtList = new ArrayList<SubCommentModel>();
-			cmtModel.setSubCommentList(subCmtList);
-			oprtItem = DataToItem.createComment(cmtModel,
-					ItemModel.NEWS_DETAIL_COMMENT);
-			detailAdapter.add(oprtItem);
-		}
-
-		/**
-		 * 删除一级评论刷新
-		 * */
-		public void deleteCommentRefresh() {
-			LastOperateType = Delete_Comment;
-			oprtItem = (CommentItem) detailAdapter.getItem(oprtPostion);
-			// 保存当前第一个可见的item的索引和偏移量
-			firstVisiblePostion = newsDetailListView.getRefreshableView()
-					.getFirstVisiblePosition();
-			View view = newsDetailListView.getChildAt(0);
-			opertItemToTop = (view == null) ? 0 : view.getTop();
-			detailAdapter.remove(oprtPostion);
-		}
-
-		/**
-		 * 添加二级评论刷新
-		 * 
-		 * @param replyCommentId
-		 *            :被回复的评论ID
-		 * @param topCommentId
-		 *            ：顶部的评论ID
-		 * @param replyUid
-		 *            ：被回复者的ID
-		 * @param userId
-		 *            :回复者的ID
-		 * */
-		private void addSubCommentRefresh(SubCommentModel subModel,
-				boolean isNetFeedback) {
-			LastOperateType = Add_Sub_Comment;
-
-			// 找到需要插入的位置
-			int index = oprtPostion + 1;
-			while (index < detailAdapter.getCount()) {
-				if (ItemModel.NEWS_DETAIL_COMMENT == detailAdapter.getItem(
-						index).getItemType()) {
-					break;
-				}
-				index++;
-			}
-			// 设置发布的人的信息
-			subModel.setPublishName(subModel.getPublishName());
-			subModel.setPublishId(String.valueOf(userModel.getUid()));
-			if (isNetFeedback) {
-				detailAdapter.remove(oprtItem);
-				// 中间多隔了一条数据
-				index--;
-			}
-			// 滚动到添加的评论处
-			if (android.os.Build.VERSION.SDK_INT >= 8) {
-				newsDetailListView.getRefreshableView().smoothScrollToPosition(
-						index);
-			} else {
-				newsDetailListView.getRefreshableView().setSelection(index);
-			}
-
-			oprtItem = DataToItem.createSubComment(subModel,
-					currentNews.getNewsID(), ItemModel.NEWS_DETAIL_SUB_COMMENT);
-			detailAdapter.insert(index, oprtItem);
-		}
-
-		/**
-		 * 删除二级评论刷新
-		 * */
-		private void deleteSubCommentRefresh() {
-			LastOperateType = Delete_Sub_Comment;
-			oprtItem = (SubCommentItem) detailAdapter.getItem(oprtPostion);
-			// 保存当前第一个可见的item的索引和偏移量
-			firstVisiblePostion = newsDetailListView.getRefreshableView()
-					.getFirstVisiblePosition();
-			View view = newsDetailListView.getChildAt(0);
-			opertItemToTop = (view == null) ? 0 : view.getTop();
-			detailAdapter.remove(oprtPostion);
-		}
-
-		/**
-		 * 撤销上次操作
-		 * */
-		public void Revoked() {
-			switch (LastOperateType) {
-			case Add_Comment:
-			case Add_Sub_Comment:
-				detailAdapter.remove(oprtItem);
-				break;
-
-			case Delete_Comment:
-			case Delete_Sub_Comment:
-				detailAdapter.insert(oprtPostion, oprtItem);
-				// 恢复上次的位置
-				newsDetailListView.getRefreshableView().setSelectionFromTop(
-						firstVisiblePostion, opertItemToTop);
-				break;
-
-			default:
-				break;
-			}
 		}
 	}
 
@@ -1583,5 +1322,4 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					backWithResultIntent);
 		}
 	}
-
 }
