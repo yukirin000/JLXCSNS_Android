@@ -6,7 +6,9 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
@@ -61,10 +63,9 @@ public class NewVersionCheckManager {
 								alertBuilder.setPositiveButton("确定", new OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
-										
-//										Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(versionPath));
-//										intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//										activity.startActivity(intent);										
+										Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(versionPath));
+										intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										activity.startActivity(intent);										
 									}
 								});
 								alertBuilder.show();
