@@ -75,6 +75,7 @@ import com.jlxc.app.personal.ui.activity.AccountSettingActivity;
 import com.jlxc.app.personal.ui.activity.ContactFriendListActivity;
 import com.jlxc.app.personal.ui.activity.FriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyCardActivity;
+import com.jlxc.app.personal.ui.activity.MyFriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSettingActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSignActivity;
@@ -288,7 +289,7 @@ public class PersonalFragment extends BaseFragment {
 			break;
 		case R.id.friend_layout:
 			//我的好友列表
-			Intent friendIntent = new Intent(getActivity(), FriendListActivity.class);
+			Intent friendIntent = new Intent(getActivity(), MyFriendListActivity.class);
 			startActivityWithRight(friendIntent);
 			break;
 		case R.id.setting_Button:
