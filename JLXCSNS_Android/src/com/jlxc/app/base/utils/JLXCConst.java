@@ -133,6 +133,9 @@ public interface JLXCConst {
 	//获取好友列表
 	//http://localhost/jlxc_php/index.php/Home/MobileApi/getFriendsList
 	public static final String GET_FRIENDS_LIST = DOMIN + "/getFriendsList";
+	//获取全部好友列表
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/getAllFriendsList
+	public static final String GET_ALL_FRIENDS_LIST = DOMIN + "/getAllFriendsList";	
 	//////////////////////////////////////////发现模块//////////////////////////////////////////
 	//http://localhost/jlxc_php/index.php/Home/MobileApi/getContactUser	
 	//获取联系人用户

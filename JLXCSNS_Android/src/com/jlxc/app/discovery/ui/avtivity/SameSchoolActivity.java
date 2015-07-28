@@ -306,8 +306,8 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 						ToastUtil.show(SameSchoolActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 						
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							//添加好友 好友管理本地持久化废弃
-//							MessageAddFriendHelper.addFriend(imModel);
+							//添加好友
+							MessageAddFriendHelper.addFriend(imModel);
 							//更新
 							SameSchoolModel sameSchoolModel = sameSchoolModels.get(index);
 							sameSchoolModel.setIs_friend(1);

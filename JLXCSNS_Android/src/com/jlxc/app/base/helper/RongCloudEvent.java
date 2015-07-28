@@ -385,7 +385,8 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 			return userInfo;
 		}
 		//如果是好友
-		IMModel imModel = IMModel.findByGroupId(userId);
+		final IMModel imModel = IMModel.findByGroupId(userId);
+		Log.i("MainTabActivity", userId+" "+imModel);
 		if (null != imModel) {
 			headuUri = Uri.parse(JLXCConst.ATTACHMENT_ADDR+imModel.getAvatarPath());
 			userInfo = new UserInfo(userId, imModel.getTitle(), headuUri);
@@ -404,6 +405,22 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 					String name = resultObject.getString("name");
 					String headImage = resultObject.getString("head_image");
 					UserInfo userInfo = new UserInfo(userId, name, Uri.parse(JLXCConst.ATTACHMENT_ADDR+headImage));
+					if (null != imModel) {
+						imModel.setTitle(name);
+						imModel.setAvatarPath(headImage);
+						imModel.update();
+					}else {
+						IMModel newModel = new IMModel();
+						newModel.setType(IMModel.ConversationType_PRIVATE);
+						newModel.setTargetId(userId);
+						newModel.setTitle(name);
+						newModel.setAvatarPath(headImage);
+						newModel.setIsNew(0);
+						newModel.setIsRead(1);
+						newModel.setCurrentState(IMModel.GroupNotAdd);
+						newModel.setOwner(UserManager.getInstance().getUser().getUid());
+						newModel.save();
+					}
 					//刷新信息
 					RongIM.getInstance().refreshUserInfoCache(userInfo);
 				}
@@ -415,9 +432,11 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 			}
 		}, null));
 			
+//		Log.i("MainTabActivity", userInfo.getName());
 		if (userInfo == null) {
 			userInfo = new UserInfo(userId,"学僧",headuUri);
 		}
+		Log.i("MainTabActivity", userInfo.getName());
     	return userInfo;
     }
 

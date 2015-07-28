@@ -87,7 +87,8 @@ public class PushReceiver extends BroadcastReceiver {
 		IMModel imModel = IMModel.findByGroupId(pushObject.getString("uid"));
 		if (null != imModel) {
 			//存在 加好友 但是有新朋友
-			if (imModel.getCurrentState() == IMModel.GroupNotAdd) {
+			if (imModel.getIsNew() != 1) {
+				showNotification(context, "您有一条新消息", "您有一条新消息", "");
 				imModel.setIsNew(1);
 				imModel.update();
 			}

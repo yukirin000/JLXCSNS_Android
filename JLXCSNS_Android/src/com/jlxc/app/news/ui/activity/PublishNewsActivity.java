@@ -25,6 +25,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -85,7 +86,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	//地点
 	String locationString;
 
-	@OnClick(value={R.id.addImageView, R.id.choiceLocationBtn, R.id.base_ll_right_btns})
+	@OnClick(value={R.id.addImageView, R.id.choiceLocationBtn, R.id.base_ll_right_btns, R.id.publish_news_layout})
 	private void clickEvent(View view){
 		switch (view.getId()) {
 		//添加图片点击
@@ -101,6 +102,9 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		//发布
 		case R.id.base_ll_right_btns:
 			publishNews();
+		case R.id.publish_news_layout:
+			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+			inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 			break;
 		default:
 			break;
