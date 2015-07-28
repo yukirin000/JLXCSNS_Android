@@ -90,6 +90,7 @@ public class PushReceiver extends BroadcastReceiver {
 			if (imModel.getIsNew() != 1) {
 				showNotification(context, "您有一条新消息", "您有一条新消息", "");
 				imModel.setIsNew(1);
+				imModel.setIsRead(0);
 				imModel.update();
 			}
 		}else {
