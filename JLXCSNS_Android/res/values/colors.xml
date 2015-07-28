@@ -9,9 +9,9 @@
     <color name="item_normal">#FFFFFF</color>
     <color name="item_pressed">#EEEEEE</color>
     <color name="province_line_border">#C7C7C7</color>
-    
+    <color name="transparent">#00000000</color>
     <color name="result_view">#b0000000</color>
     <color name="viewfinder_mask">#60000000</color>
-    <color name="possible_result_points">#c0ffff00</color> 
+    <color name="possible_result_points">#c0ffff00</color>
 
 </resources>

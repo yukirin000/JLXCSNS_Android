@@ -72,16 +72,6 @@ public class MainActivity extends BaseActivity {
 		// }
 		//
 		// }, null));
-		btnTest = (Button) findViewById(R.id.btn_test);
-		btnTest.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setClass(MainActivity.this, RegisterActivity.class);
-				startActivity(intent);
-			}
-		});
 	}
 
 	public void initTab() {

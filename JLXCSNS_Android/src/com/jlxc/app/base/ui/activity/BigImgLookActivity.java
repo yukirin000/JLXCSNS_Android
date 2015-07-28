@@ -8,7 +8,11 @@ import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -16,9 +20,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -28,7 +34,10 @@ import android.widget.LinearLayout;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.manager.BitmapManager;
-import com.jlxc.app.base.ui.view.touchview.TouchImageView;
+import com.jlxc.app.base.ui.view.ImageLoadingDialog;
+import com.jlxc.app.base.ui.view.ItemDialog;
+import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
+import com.jlxc.app.base.ui.view.TouchImageView;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.ImageModel;
@@ -78,6 +87,10 @@ public class BigImgLookActivity extends BaseActivity {
 	private BigImageAdapter bigImageAdapter;
 	// 是否是长按操作
 	private boolean isLoneClick = false;
+	// 加载动画
+	private Dialog loadingDialog;
+	// 保存dialog
+	private ItemDialog downDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,17 +115,20 @@ public class BigImgLookActivity extends BaseActivity {
 	protected void setUpView() {
 		init();
 		initIndicator();
-		initPageImageView();
+		createPageImageView();
 		setViewPageAdpter();
 	}
 
 	@SuppressWarnings("unchecked")
 	private void init() {
+		loadingDialog = ImageLoadingDialog
+				.createLoadingDialog(BigImgLookActivity.this);
 		Intent intent = this.getIntent();
 		if (intent.hasExtra(INTENT_KEY)) {
 			// 传递的是单张图片url
 			if (intent.hasExtra(INTENT_KEY)) {
 				imageUrlList.add(intent.getStringExtra(INTENT_KEY));
+				imageSubUrlList = imageUrlList;
 			} else {
 				LogUtils.e("未传递图片地址");
 			}
@@ -176,10 +192,12 @@ public class BigImgLookActivity extends BaseActivity {
 	/**
 	 * viewpage初始化
 	 * */
-	private void initPageImageView() {
+	private void createPageImageView() {
 		for (int index = 0; index < imageUrlList.size(); index++) {
 			TouchImageView tcView = new TouchImageView(this);
 			tcView.setClickable(true);
+			bitmapUtils.display(tcView, imageSubUrlList.get(index),
+					new DefaultBitmapLoadCallBack<View>());
 			imageViewList.add(tcView);
 			tcView.setOnClickListener(new OnClickListener() {
 
@@ -190,11 +208,12 @@ public class BigImgLookActivity extends BaseActivity {
 					}
 				}
 			});
+
 			tcView.setOnLongClickListener(new OnLongClickListener() {
 
 				@Override
-				public boolean onLongClick(View v) {
-					// 长按
+				public boolean onLongClick(View view) {
+					
 					isLoneClick = true;
 					imageLongClick();
 					return true;
@@ -211,28 +230,36 @@ public class BigImgLookActivity extends BaseActivity {
 
 		bigImageAdapter = new BigImageAdapter(imageViewList);
 		viewPager.setAdapter(bigImageAdapter);
-		viewPager.setCurrentItem(currentPage);
 		viewPager.setOnPageChangeListener(new BigImageListener());
+		viewPager.setCurrentItem(currentPage);
 	}
 
 	/**
 	 * 长按操作
 	 * */
 	private void imageLongClick() {
-		CharSequence[] items = { "保存到手机" };
-		Builder loadBuilder = new AlertDialog.Builder(BigImgLookActivity.this);
-		loadBuilder.setItems(items, new DialogInterface.OnClickListener() {
+		List<String> menuList = new ArrayList<String>();
+		menuList.add("保存到手机");
+		downDialog = new ItemDialog(BigImgLookActivity.this, menuList);
+		downDialog.setClickCallBack(new ClickCallBack() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void Onclick(int which) {
 				String imagePath = imageUrlList.get(currentPage);
 				int nameIndex = imagePath.lastIndexOf("/");
 				String imageName = imagePath.substring(nameIndex + 1);
 				download(imagePath, imageName);
+				downDialog.cancel();
+			}
+		});
+		downDialog.setOnDismissListener(new OnDismissListener() {
+
+			@Override
+			public void onDismiss(DialogInterface dialog) {
 				isLoneClick = false;
 			}
 		});
-		loadBuilder.show();
+		downDialog.show();
 	}
 
 	/**
@@ -292,12 +319,9 @@ public class BigImgLookActivity extends BaseActivity {
 		@Override
 		public Object instantiateItem(final ViewGroup container,
 				final int position) {
-			if (currentPage == position) {
-				bitmapUtils.display(imageViewList.get(position),
+			if (position == currentPage) {
+				bitmapUtils.display(mList.get(position),
 						imageUrlList.get(position), loadImageCallBack);
-			} else {
-				bitmapUtils.display(imageViewList.get(position),
-						imageSubUrlList.get(position), loadImageCallBack);
 			}
 			container.addView(mList.get(position));
 			return mList.get(position);
@@ -326,8 +350,8 @@ public class BigImgLookActivity extends BaseActivity {
 					imageUrlList.get(position), loadImageCallBack);
 			tipList.get(currentPage).setBackgroundResource(
 					R.drawable.dot_notselect);
-			currentPage = position;
 			tipList.get(position).setBackgroundResource(R.drawable.dot_select);
+			currentPage = position;
 		}
 	}
 
@@ -336,17 +360,12 @@ public class BigImgLookActivity extends BaseActivity {
 	 * */
 	public class BigImgLoadCallBack extends
 			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public BigImgLoadCallBack() {
-			this.iView = null;
-		}
 
 		// 开始加载
 		@Override
 		public void onLoadStarted(ImageView container, String uri,
 				BitmapDisplayConfig config) {
-			// showLoading("", true);
+			loadingDialog.show();
 			super.onLoadStarted(container, uri, config);
 		}
 
@@ -360,7 +379,7 @@ public class BigImgLookActivity extends BaseActivity {
 		@Override
 		public void onLoadCompleted(ImageView container, String uri,
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			// hideLoading();
+			loadingDialog.cancel();
 			container.setImageBitmap(bitmap);
 		}
 	}
