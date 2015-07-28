@@ -48,6 +48,15 @@
 	        android:layout_centerVertical="true"
 	        android:text="添加" />
 
+	    <TextView
+	        android:id="@+id/textView1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/name_text_view"
+	        android:layout_alignBottom="@+id/head_image_view"
+	        android:layout_marginBottom="10dip"
+	        android:text="关注了你" />
+
 	</RelativeLayout>
     
 </LinearLayout>
