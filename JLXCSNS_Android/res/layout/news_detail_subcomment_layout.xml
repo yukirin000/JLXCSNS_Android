@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -23,21 +24,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <TextView
+            <com.rockerhieu.emojicon.EmojiconTextView
                 android:id="@+id/txt_sub_comment_by_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="朱旺"
                 android:textColor="#1010A0" />
 
-            <TextView
+            <com.rockerhieu.emojicon.EmojiconTextView
                 android:id="@+id/txt_operate_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
                 android:text="回复:" />
 
-            <TextView
+            <com.rockerhieu.emojicon.EmojiconTextView
                 android:id="@+id/txt_by_sub_comment_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
