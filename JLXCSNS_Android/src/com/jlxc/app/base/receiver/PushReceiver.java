@@ -47,7 +47,7 @@ public class PushReceiver extends BroadcastReceiver {
 				}
 				int type = obj.getIntValue("type");
 				LogUtils.i(type+"",1);
-				showNotification(context, "您有一条新消息", "您有一条新消息", "");
+				
 				switch (type) {
 				case NewsPushModel.PushAddFriend:
 					//添加好友信息
@@ -92,6 +92,9 @@ public class PushReceiver extends BroadcastReceiver {
 				imModel.update();
 			}
 		}else {
+			
+			showNotification(context, "您有一条新消息", "您有一条新消息", "");
+			
 			imModel = new IMModel();
 			//保存群组信息
 			imModel.setType(pushObject.getIntValue("type"));
@@ -119,6 +122,9 @@ public class PushReceiver extends BroadcastReceiver {
 	
 	//新闻回复点赞到来 处理消息
 	private void handleNewsPush(JSONObject jsonObject, Context context) {
+		
+		showNotification(context, "您有一条新消息", "您有一条新消息", "");
+		
 		JSONObject pushObject = jsonObject.getJSONObject("content");
 		NewsPushModel pushModel = new NewsPushModel();
 		//存储

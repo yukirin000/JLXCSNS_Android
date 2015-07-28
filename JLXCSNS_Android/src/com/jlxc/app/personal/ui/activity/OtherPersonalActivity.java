@@ -1,21 +1,29 @@
 package com.jlxc.app.personal.ui.activity;
 
 import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.Conversation.ConversationType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -51,7 +59,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	private ImageView headImageView;	
 	//设置按钮
 	@ViewInject(R.id.setting_Button)
-	private TextView setting_text_view;
+	private Button settingButton;
 	//TA的相片grid
 	@ViewInject(R.id.his_image_grid_view)
 	private GridView hisImageGridView;
@@ -124,10 +132,11 @@ public class OtherPersonalActivity extends BaseActivity{
 			break;
 		case R.id.setting_Button:
 			//设置点击
-			Intent settingIntent = new Intent(this, FriendSettingActivity.class);
-			settingIntent.putExtra(FriendSettingActivity.INTENT_FUID, otherUserModel.getUid());
-			settingIntent.putExtra(FriendSettingActivity.INTENT_NAME, otherUserModel.getName());
-			startActivityWithRight(settingIntent);
+//			Intent settingIntent = new Intent(this, FriendSettingActivity.class);
+//			settingIntent.putExtra(FriendSettingActivity.INTENT_FUID, otherUserModel.getUid());
+//			settingIntent.putExtra(FriendSettingActivity.INTENT_NAME, otherUserModel.getName());
+//			startActivityWithRight(settingIntent);
+			showPopupWindow(settingButton);
 			break;
 		case R.id.visit_button:
 			//来访
@@ -338,7 +347,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		if (UserManager.getInstance().getUser().getUid() == uid) {
 			addFriendButton.setEnabled(false);
 			sendMessageButton.setEnabled(false);
-			setting_text_view.setVisibility(View.GONE);
+			settingButton.setVisibility(View.GONE);
 		}else {
 			
 			boolean isFriend = false;
@@ -347,10 +356,10 @@ public class OtherPersonalActivity extends BaseActivity{
 			}
 			if (isFriend) {
 				addFriendLayout.setVisibility(View.GONE);
-				setting_text_view.setVisibility(View.VISIBLE);
+				settingButton.setVisibility(View.VISIBLE);
 			}else {
 				addFriendLayout.setVisibility(View.VISIBLE);
-				setting_text_view.setVisibility(View.GONE);
+				settingButton.setVisibility(View.GONE);
 			}
 		}
 	}
@@ -446,4 +455,80 @@ public class OtherPersonalActivity extends BaseActivity{
 							}
 						}).show();
 	}
+	
+	//popWindow
+	private PopupWindow popupWindow;
+	private View view;
+	@SuppressWarnings("deprecation")
+	@SuppressLint("InflateParams") 
+	private void showPopupWindow(View parent) {  
+        if (popupWindow == null) {  
+            LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);  
+            view = layoutInflater.inflate(R.layout.view_other_pop_setting, null);
+            //删除按钮
+            TextView deleteTextView = (TextView) view.findViewById(R.id.delete_text_view);
+            deleteTextView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					deleteFriend();
+				}
+			});
+            popupWindow = new PopupWindow(view, 200, 200);  
+        }  
+        popupWindow.setFocusable(true);  
+        popupWindow.setOutsideTouchable(true);  
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景  
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());  
+        popupWindow.showAsDropDown(parent, 0, 2);
+        
+//        popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+    }
+	
+	private void deleteFriend() {
+		popupWindow.dismiss();
+		
+		new AlertDialog.Builder(this).setTitle("确定要删除好友"+otherUserModel.getName()+"吗").setPositiveButton("确定", new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// 参数设置
+				RequestParams params = new RequestParams();
+				params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+				params.addBodyParameter("friend_id", otherUserModel.getUid()+"");
+				
+				showLoading("删除中..", false);
+				HttpManager.post(JLXCConst.DELETE_FRIEND, params,
+						new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
+							@Override
+							public void onSuccess(JSONObject jsonResponse, String flag) {
+								super.onSuccess(jsonResponse, flag);
+								hideLoading();
+								int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+								ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+								
+								if (status == JLXCConst.STATUS_SUCCESS) {
+									//本地删除
+									IMModel imModel = new IMModel();
+									imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+									imModel.setOwner(UserManager.getInstance().getUser().getUid());
+									imModel.remove();
+									RongIMClient.getInstance().removeConversation(ConversationType.PRIVATE, imModel.getTargetId(), null);
+									//UI变化
+									addFriendLayout.setVisibility(View.VISIBLE);
+									settingButton.setVisibility(View.GONE);
+								}
+							}
+
+							@Override
+							public void onFailure(HttpException arg0, String arg1,
+									String flag) {
+								super.onFailure(arg0, arg1, flag);
+								hideLoading();
+							}
+						}, null));
+			}
+		}).setNegativeButton("取消", null).show();
+	}
+	
 }

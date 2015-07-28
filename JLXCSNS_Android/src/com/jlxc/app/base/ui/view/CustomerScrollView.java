@@ -16,8 +16,8 @@ public class CustomerScrollView extends ScrollView {
 	private boolean handleStop = false;
 	private int eachStep = 0;
 
-	private static final int MAX_SCROLL_HEIGHT = 200;// 最大滑动距离
-	private static final float SCROLL_RATIO = 0.4f;// 阻尼系数,越小阻力就越大
+	private static final int MAX_SCROLL_HEIGHT = 230;// 最大滑动距离
+	private static final float SCROLL_RATIO = 0.5f;// 阻尼系数,越小阻力就越大
 
 	public CustomerScrollView(Context context) {
 		super(context);
