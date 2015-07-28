@@ -414,28 +414,28 @@ public class OtherPersonalActivity extends BaseActivity{
 												ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 												
 												if (status == JLXCConst.STATUS_SUCCESS) {
-													//本地数据持久化
-													IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
-													//如果存在更新
-													if (null != imModel) {
-														imModel.setTitle(otherUserModel.getName());
-														imModel.setAvatarPath(otherUserModel.getHead_image());
-														imModel.setIsNew(0);
-														imModel.setIsRead(1);
-														imModel.setCurrentState(IMModel.GroupHasAdd);
-														imModel.update();
-													}else {
-														imModel = new IMModel();
-														imModel.setType(IMModel.ConversationType_PRIVATE);
-														imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
-														imModel.setTitle(otherUserModel.getName());
-														imModel.setAvatarPath(otherUserModel.getHead_image());
-														imModel.setIsNew(0);
-														imModel.setIsRead(1);
-														imModel.setCurrentState(IMModel.GroupHasAdd);
-														imModel.setOwner(UserManager.getInstance().getUser().getUid());
-														imModel.save();
-													}
+													//本地数据持久化 好友管理本地持久化废弃
+//													IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
+//													//如果存在更新
+//													if (null != imModel) {
+//														imModel.setTitle(otherUserModel.getName());
+//														imModel.setAvatarPath(otherUserModel.getHead_image());
+//														imModel.setIsNew(0);
+//														imModel.setIsRead(1);
+//														imModel.setCurrentState(IMModel.GroupHasAdd);
+//														imModel.update();
+//													}else {
+//														imModel = new IMModel();
+//														imModel.setType(IMModel.ConversationType_PRIVATE);
+//														imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+//														imModel.setTitle(otherUserModel.getName());
+//														imModel.setAvatarPath(otherUserModel.getHead_image());
+//														imModel.setIsNew(0);
+//														imModel.setIsRead(1);
+//														imModel.setCurrentState(IMModel.GroupHasAdd);
+//														imModel.setOwner(UserManager.getInstance().getUser().getUid());
+//														imModel.save();
+//													}
 													
 													//成功隐藏 
 													addFriendLayout.setVisibility(View.GONE);
@@ -508,12 +508,12 @@ public class OtherPersonalActivity extends BaseActivity{
 								ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 								
 								if (status == JLXCConst.STATUS_SUCCESS) {
-									//本地删除
-									IMModel imModel = new IMModel();
-									imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
-									imModel.setOwner(UserManager.getInstance().getUser().getUid());
-									imModel.remove();
-									RongIMClient.getInstance().removeConversation(ConversationType.PRIVATE, imModel.getTargetId(), null);
+									//本地删除 好友管理本地持久化废弃
+//									IMModel imModel = new IMModel();
+//									imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+//									imModel.setOwner(UserManager.getInstance().getUser().getUid());
+//									imModel.remove();
+									RongIMClient.getInstance().removeConversation(ConversationType.PRIVATE, JLXCConst.JLXC+otherUserModel.getUid(), null);
 									//UI变化
 									addFriendLayout.setVisibility(View.VISIBLE);
 									settingButton.setVisibility(View.GONE);

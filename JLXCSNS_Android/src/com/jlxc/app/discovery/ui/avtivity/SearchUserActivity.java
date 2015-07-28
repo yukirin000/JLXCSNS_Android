@@ -369,8 +369,8 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 						ToastUtil.show(SearchUserActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 						
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							//添加好友
-							MessageAddFriendHelper.addFriend(imModel);
+							//添加好友 好友管理本地持久化废弃
+//							MessageAddFriendHelper.addFriend(imModel);
 							//更新
 							FindUserModel FindUserModel = findUserModels.get(index);
 							FindUserModel.setIs_friend(1);

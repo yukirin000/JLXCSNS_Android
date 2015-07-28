@@ -415,23 +415,23 @@ public class PersonalFragment extends BaseFragment {
 	    //获取当前最近的三张状态图片
 		getNewsImages();
 		getVisitImages();
-		
-		//好友
-		List<IMModel> listModels = IMModel.findHasAddAll();
-		List<IMModel> userModels = new ArrayList<IMModel>();
-		//取前三个
-		for (int i = 0; i < listModels.size(); i++) {
-			if (i==3) {
-				break;
-			}
-			userModels.add(listModels.get(i));
-		}
-		friendsAdapter.replaceAll(userModels);
-		if (listModels.size() > 0) {
-			friendsCountTextView.setText(""+listModels.size());
-		}else {
-			friendsCountTextView.setText("");
-		}
+		getFriendsImages();
+//		//好友
+//		List<IMModel> listModels = IMModel.findHasAddAll();
+//		List<IMModel> userModels = new ArrayList<IMModel>();
+//		//取前三个
+//		for (int i = 0; i < listModels.size(); i++) {
+//			if (i==3) {
+//				break;
+//			}
+//			userModels.add(listModels.get(i));
+//		}
+//		friendsAdapter.replaceAll(userModels);
+//		if (listModels.size() > 0) {
+//			friendsCountTextView.setText(""+listModels.size());
+//		}else {
+//			friendsCountTextView.setText("");
+//		}
 	}
 
 	@Override
@@ -710,6 +710,7 @@ public class PersonalFragment extends BaseFragment {
 				}, null));
 		
 	}
+	
     //获取当前最近的三张最近来访人的头像	
 	private void getVisitImages(){
 		
@@ -739,6 +740,54 @@ public class PersonalFragment extends BaseFragment {
 								visitCountTextView.setText(visitCount+"");
 							}else {
 								visitCountTextView.setText("");
+							}
+						}
+
+						if (status == JLXCConst.STATUS_FAIL) {
+							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						ToastUtil.show(getActivity(), "网络有毒=_=");
+					}
+
+				}, null));
+	}
+	
+	//获取最近关注的三个人的头像	
+	private void getFriendsImages(){
+		
+		String path = JLXCConst.GET_FRIENDS_IMAGE+"?"+"user_id="+UserManager.getInstance().getUser().getUid();
+		HttpManager.get(path, new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							//数据处理
+							JSONArray array = jResult.getJSONArray(JLXCConst.HTTP_LIST);
+							List<IMModel> headImageList = new ArrayList<IMModel>();
+							for (int i = 0; i < array.size(); i++) {
+								JSONObject object = (JSONObject) array.get(i);
+								IMModel imModel = new IMModel();
+								imModel.setAvatarPath(object.getString("head_sub_image"));
+								headImageList.add(imModel);
+							}
+							friendsAdapter.replaceAll(headImageList);
+							//人数
+							int friendCount = jResult.getIntValue("friend_count");
+							if (friendCount > 0) {
+								friendsCountTextView.setText(friendCount+"");
+							}else {
+								friendsCountTextView.setText("");
 							}
 						}
 

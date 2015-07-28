@@ -93,6 +93,8 @@ public interface JLXCConst {
 	public static final String GET_NEWS_IMAGES = DOMIN + "/getNewsImages";
 	//个人信息中 获取来访三张头像
 	public static final String GET_VISIT_IMAGES = DOMIN + "/getVisitImages";
+	//个人信息中 获取好友三张头像
+	public static final String GET_FRIENDS_IMAGE = DOMIN + "/getFriendsImage";	
 	//个人信息中 用户发布过的状态列表
 	public static final String USER_NEWS_LIST = DOMIN + "/userNewsList";
 	//个人信息 删除状态

@@ -70,7 +70,9 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
 				//姓名
 				helper.setText(R.id.name_text_view, item.getTitle());
+				//好友管理本地持久化废弃 隐藏该按钮
 				TextView addTextView = helper.getView(R.id.add_text_view);
+				addTextView.setVisibility(View.GONE);
 				//点击添加
 				addTextView.setOnClickListener(new OnClickListener() {
 					@Override

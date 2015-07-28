@@ -55,7 +55,6 @@ import com.jlxc.app.discovery.ui.avtivity.MipcaCaptureActivity;
 import com.jlxc.app.discovery.ui.avtivity.SameSchoolActivity;
 import com.jlxc.app.discovery.ui.avtivity.SearchUserActivity;
 import com.jlxc.app.discovery.utils.DataToRecommendItem;
-import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
@@ -616,7 +615,13 @@ public class DiscoveryFragment extends BaseFragment {
 				RecommendInfoItem addInfoItem = (RecommendInfoItem) personItemAdapter
 				.getItem(position);
 				IMModel imModel = new IMModel();
-				imModel.setAvatarPath(addInfoItem.getHeadImage());
+				String headImage = addInfoItem.getHeadImage();
+				if (headImage != null) {
+					headImage = headImage.replace(JLXCConst.ATTACHMENT_ADDR, "");
+				}else {
+					headImage = "";
+				}
+				imModel.setAvatarPath(headImage);
 				imModel.setTargetId(JLXCConst.JLXC+addInfoItem.getUserID());
 				imModel.setTitle(addInfoItem.getUserName());
 				addFriend(imModel, position);
@@ -767,8 +772,8 @@ public class DiscoveryFragment extends BaseFragment {
 						ToastUtil.show(getActivity(),jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 						
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							//添加好友
-							MessageAddFriendHelper.addFriend(imModel);
+							//添加好友 好友管理本地持久化废弃
+//							MessageAddFriendHelper.addFriend(imModel);
 							//更新
 							RecommendInfoItem recommendItemData = (RecommendInfoItem) itemDataList.get(index);
 							recommendItemData.setAdd("1");
