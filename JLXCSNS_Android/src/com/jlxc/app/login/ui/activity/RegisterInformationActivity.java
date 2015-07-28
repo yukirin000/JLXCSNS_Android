@@ -164,7 +164,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 						switch (status) {
 						case JLXCConst.STATUS_SUCCESS:						
 							//设置修改内容
-							userModel.setName(nameEditText.getText().toString());
+							userModel.setName(jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("name"));
 							userModel.setSex(sexValue);
 							userModel.setHead_image(jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("head_image"));
 							userModel.setHead_image(jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("head_sub_image"));
@@ -247,7 +247,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 				File newFile = new File(path);
 				boolean filterOK = oriFile.renameTo(newFile);
 				if (filterOK) {
-					
+    				BitmapManager.getInstance().getBitmapUtils(RegisterInformationActivity.this, false, false).display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 				}else {
 					ToastUtil.show(RegisterInformationActivity.this, "图片处理失败T_T");
 				}
@@ -305,8 +305,6 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	                if (data != null){
 	        			
 	        			if (null != tmpImageName) {
-	        				BitmapManager.getInstance().getBitmapUtils(this, false, false)
-	        				.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 		    				//删除临时文件
 		        			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
 		    				if (file.exists()) {
