@@ -32,7 +32,7 @@ import com.jlxc.app.personal.model.OtherPeopleFriendModel;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
-
+////////////////////////该类废弃 改用MyFriendListActivity////////////////////////////////////////////
 public class FriendListActivity extends BaseActivityWithTopBar {
 
 	@ViewInject(R.id.list_view)

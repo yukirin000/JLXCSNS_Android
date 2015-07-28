@@ -37,6 +37,7 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.message.model.IMModel;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.PauseOnScrollListener;
@@ -77,6 +78,9 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 		init();
 		listviewSet();
 		getFriends(String.valueOf(currentPage), String.valueOf(20));
+		
+		//同步好友到本地
+		syncFriends();
 	}
 
 	/**
@@ -317,5 +321,95 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
 			container.setImageBitmap(bitmap);
 		}
+	}
+	
+	
+	
+	//同步全部好友到本地
+	public void syncFriends() {
+		//判断是否需要同步
+		String path = JLXCConst.NEED_SYNC_FRIENDS + "?" + "user_id=" + UserManager.getInstance().getUser().getUid()
+				+ "&friends_count="+IMModel.findHasAddAll().size();
+		HttpManager.get(path, new JsonRequestCallBack<String>(
+				new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							//是否需要更新
+							int needUpdate = jResult.getIntValue("needUpdate");
+							if (needUpdate>0) {
+								//需要更新好友列表
+								getAllFriends();
+							}
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+					}
+
+				}, null));
+	}
+	//更新全部
+	public void getAllFriends() {
+		
+		//同步
+		String path = JLXCConst.GET_ALL_FRIENDS_LIST + "?" + "user_id=" + UserManager.getInstance().getUser().getUid();
+		HttpManager.get(path, new JsonRequestCallBack<String>(
+				new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
+							JSONArray jsonArray = jResult.getJSONArray(JLXCConst.HTTP_LIST);
+							//建立模型数组
+							for (int i = 0; i < jsonArray.size(); i++) {
+								JSONObject jsonObject = jsonArray.getJSONObject(i);
+								
+								String jlxcUid = JLXCConst.JLXC+jsonObject.getIntValue("uid");
+								IMModel model = IMModel.findByGroupId(jlxcUid);
+								if (null != model) {
+									model.setTitle(jsonObject.getString("name"));
+									model.setAvatarPath(jsonObject.getString("head_image"));
+									model.setRemark(jsonObject.getString("friend_remark"));
+									model.setCurrentState(IMModel.GroupHasAdd);
+									model.update();
+								}else {
+									model = new IMModel();
+									model.setType(IMModel.ConversationType_PRIVATE);
+									model.setTargetId(jlxcUid);
+									model.setTitle(jsonObject.getString("name"));
+									model.setAvatarPath(jsonObject.getString("head_image"));
+									model.setRemark(jsonObject.getString("friend_remark"));
+									model.setOwner(UserManager.getInstance().getUser().getUid());
+									model.setIsNew(0);
+									model.setIsRead(1);
+									model.setCurrentState(IMModel.GroupHasAdd);
+									model.save();
+								}
+								
+							}
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+					}
+
+				}, null));
 	}
 }
