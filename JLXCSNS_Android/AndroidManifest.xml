@@ -285,7 +285,7 @@
 		<!-- 高德部分 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="ab92e548a0429b832749d8067cb47998" />
+            android:value="7ad1a3106acafa0b0f3fc9d4c5441f85" />
         
         <!-- *******************涂图 公共分组控制器******************* -->
         <activity

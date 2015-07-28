@@ -586,8 +586,9 @@ public class NewsListFragment extends BaseFragment {
 				if (helper.getPosition() < MAX_LIKE_COUNT) {
 					bitmapUtils.configDefaultBitmapMaxSize(30, 30);
 					helper.setImageUrl(R.id.iv_mian_like_gridview_item,
-							bitmapUtils, item.getHeadSubImage(),
+							bitmapUtils, item.getHeadImage(),
 							new NewsBitmapLoadCallBack());
+					LogUtils.i("头像：" + item.getHeadSubImage());
 				} else if (10 == helper.getPosition()) {
 					helper.setImageResource(R.id.iv_mian_like_gridview_item,
 							R.drawable.ic_launcher);
@@ -954,11 +955,9 @@ public class NewsListFragment extends BaseFragment {
 			}
 		});
 		if (operateData.getIsLike()) {
-			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
-					false);
+			newsOPerate.uploadLikeOperate(operateData.getNewsID(), false);
 		} else {
-			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
-					true);
+			newsOPerate.uploadLikeOperate(operateData.getNewsID(), true);
 		}
 	}
 
