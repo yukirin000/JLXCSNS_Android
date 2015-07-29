@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
     android:versionCode="2"
-    android:versionName="0.01" >
+    android:versionName="1.01" >
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -286,6 +286,7 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="ab92e548a0429b832749d8067cb47998" />
+        <!-- 028a516dcc7ca5977934426ea33801ba -->
         
         <!-- *******************涂图 公共分组控制器******************* -->
         <activity
