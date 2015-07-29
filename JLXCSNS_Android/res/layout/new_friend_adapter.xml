@@ -55,7 +55,7 @@
 	        android:layout_alignLeft="@+id/name_text_view"
 	        android:layout_alignBottom="@+id/head_image_view"
 	        android:layout_marginBottom="10dip"
-	        android:text="关注了你" />
+	        android:text="添加了你" />
 
 	</RelativeLayout>
     

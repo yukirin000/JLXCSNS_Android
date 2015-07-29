@@ -688,6 +688,9 @@ public class PersonalFragment extends BaseFragment {
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							//数据处理
 							JSONArray array = jResult.getJSONArray(JLXCConst.HTTP_LIST);
+							if (null !=array && array.size() < 1) {
+								myImageAdapter.clear();	
+							}
 							List<String> imageList = new ArrayList<String>();
 							for (int i = 0; i < array.size(); i++) {
 								JSONObject object = (JSONObject) array.get(i);
@@ -698,6 +701,7 @@ public class PersonalFragment extends BaseFragment {
 
 						if (status == JLXCConst.STATUS_FAIL) {
 //							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+							myImageAdapter.clear();
 						}
 					}
 
@@ -730,6 +734,9 @@ public class PersonalFragment extends BaseFragment {
 							//数据处理
 							JSONArray array = jResult.getJSONArray(JLXCConst.HTTP_LIST);
 							List<String> headImageList = new ArrayList<String>();
+							if (null !=array && array.size() < 1) {
+								visitAdapter.clear();	
+							}
 							for (int i = 0; i < array.size(); i++) {
 								JSONObject object = (JSONObject) array.get(i);
 								headImageList.add(object.getString("head_sub_image"));
@@ -746,6 +753,8 @@ public class PersonalFragment extends BaseFragment {
 
 						if (status == JLXCConst.STATUS_FAIL) {
 //							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+							visitAdapter.clear();
+							visitCountTextView.setText("");
 						}
 					}
 
@@ -776,6 +785,7 @@ public class PersonalFragment extends BaseFragment {
 							//数据处理
 							JSONArray array = jResult.getJSONArray(JLXCConst.HTTP_LIST);
 							List<IMModel> headImageList = new ArrayList<IMModel>();
+							friendsAdapter.clear();
 							for (int i = 0; i < array.size(); i++) {
 								JSONObject object = (JSONObject) array.get(i);
 								IMModel imModel = new IMModel();
@@ -790,10 +800,13 @@ public class PersonalFragment extends BaseFragment {
 							}else {
 								friendsCountTextView.setText("");
 							}
+							
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 //							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+							friendsAdapter.clear();
+							friendsCountTextView.setText("");
 						}
 					}
 
@@ -883,7 +896,6 @@ public class PersonalFragment extends BaseFragment {
 					ToastUtil.show(getActivity(), "图片处理失败T_T");
 				}
 			}
-			
 		};
 		
 		TuEditComponent component = TuSdk.editCommponent(getActivity(),delegate);

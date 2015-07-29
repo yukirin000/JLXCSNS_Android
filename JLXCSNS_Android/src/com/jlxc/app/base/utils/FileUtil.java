@@ -21,9 +21,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.util.Log;
@@ -389,10 +391,12 @@ public class FileUtil {
 //				options.inSampleSize = 4;
 				options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 				options.inJustDecodeBounds = false;
-				Log.i("PersonalFragment", tempFile.getAbsolutePath()); 
+				Log.i("PersonalFragment", tempFile.getAbsolutePath());
 //				Bitmap bmp = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
 				byte[] data = GetLocalOrNetBitmap(tempFile.getAbsolutePath());
 				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+				int degree = readPictureDegree(tempFile.getAbsolutePath());
+				bmp = rotaingImageView(degree, bmp);
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
 				bmp.compress(Bitmap.CompressFormat.JPEG, 80, bos);
 				bmp.recycle();
@@ -455,7 +459,6 @@ public class FileUtil {
 			if (file == null || !file.exists()) {
 				return false;
 			}
-
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeFile(fileRealPath, options);
@@ -463,6 +466,8 @@ public class FileUtil {
 			options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 			options.inJustDecodeBounds = false;
 			Bitmap bmp = BitmapFactory.decodeFile(fileRealPath, options);
+			int degree = readPictureDegree(file.getAbsolutePath());
+			bmp = rotaingImageView(degree, bmp); 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
 			bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
 			bmp.recycle();
@@ -477,6 +482,52 @@ public class FileUtil {
 			return false;
 		}
 	}
+	
+	
+	/**  
+     * 旋转图片  
+     * @param angle  
+     * @param bitmap  
+     * @return Bitmap  
+     */    
+    public static Bitmap rotaingImageView(int angle , Bitmap bitmap) {    
+        //旋转图片 动作     
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);    
+        System.out.println("angle2=" + angle);    
+        // 创建新的图片     
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,    
+                bitmap.getWidth(), bitmap.getHeight(), matrix, true);    
+        return resizedBitmap;    
+    }   
+	
+	/** 
+	 * 读取图片属性：旋转的角度 
+	 * @param path 图片绝对路径 
+	 * @return degree旋转的角度 
+	 */  
+   public static int readPictureDegree(String path) {  
+       int degree  = 0;  
+       try {  
+               ExifInterface exifInterface = new ExifInterface(path);  
+               int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);  
+               switch (orientation) {  
+               case ExifInterface.ORIENTATION_ROTATE_90:  
+                       degree = 90;  
+                       break;  
+               case ExifInterface.ORIENTATION_ROTATE_180:  
+                       degree = 180;  
+                       break;  
+               case ExifInterface.ORIENTATION_ROTATE_270:  
+                       degree = 270;  
+                       break;  
+               }  
+       } catch (IOException e) {  
+               e.printStackTrace();  
+       }  
+       return degree;  
+   } 
+
 
 	/**
 	 * 根据指定的图像路径和大小来获取缩略图 此方法有两点好处： 1.

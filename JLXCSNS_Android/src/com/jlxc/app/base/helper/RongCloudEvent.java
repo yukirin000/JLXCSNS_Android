@@ -120,6 +120,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
         RongIM.setConversationBehaviorListener(this);//设置会话界面操作的监听器。
         RongIM.setConversationListBehaviorListener(this);
         RongIM.setLocationProvider(this);//设置地理位置提供者,不用位置的同学可以注掉此行代码
+        RongIM.setOnReceivePushMessageListener(this);
 //        RongIM.setPushMessageBehaviorListener(this);//自定义 push 通知。
     }
 
@@ -132,8 +133,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		RongIMClientWrapper.setOnReceiveMessageListener(this);//设置消息接收监听器。
         RongIM.getInstance().setSendMessageListener(this);//设置发出消息接收监听器.
 		RongIMClientWrapper.setConnectionStatusListener(this);//设置连接状态监听器。
-		RongIMClientWrapper.setOnReceivePushMessageListener(this);//设置通知监听器
-		
+//		RongIMClientWrapper.setOnReceivePushMessageListener(this);//设置通知监听器
         //扩展功能自定义
         InputProvider.ExtendProvider[] provider = {
                 new ImageInputProvider(RongContext.getInstance()),//图片
@@ -142,7 +142,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
         RongIM.resetInputExtensionProvider(Conversation.ConversationType.PRIVATE, provider);
 //        RongIM.getInstance().setPrimaryInputProvider(new InputTestProvider((RongContext) mContext));
     }
-
+    
     /**
      * 自定义 push 通知。
      *
@@ -152,11 +152,13 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
     private NotificationManager mNotificationManager;
     @Override
     public boolean onReceivePushMessage(PushNotificationMessage msg) {
-        Log.d(TAG, "onReceived-onPushMessageArrive:" + msg.getContent());
+        Log.i("MainTabActivity", "onReceived-onPushMessageArrive:" + msg.getContent());
 
+//        PushNotificationManager.getInstance().onReceivePush(msg);
+        
 		long newWhen = System.currentTimeMillis();
 		mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		int iconId = R.drawable.ic_launcher;
+		int iconId = R.drawable.abc_ab_bottom_solid_light_holo;
 		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		notificationIntent.setClass(mContext.getApplicationContext(), LoginActivity.class);
@@ -171,7 +173,6 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		notification.setLatestEventInfo(mContext, msg.getTargetUserName(), "您收到一条消息", contentIntent);
 		// notification的id使用发送者的id
 		mNotificationManager.notify(0, notification);
-        
         
 //        PushNotificationManager.getInstance().onReceivePush(msg);
 
@@ -244,7 +245,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		//顶部更新
 		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
 		mContext.sendBroadcast(messageIntent);
-    	
+//		Log.i("MainTabActivity", "一条新消息");
 //        MessageContent messageContent = message.getContent();
 //
 //        if (messageContent instanceof TextMessage) {//文本消息
@@ -286,7 +287,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 //            Log.d(TAG, "onReceived-其他消息，自己来判断处理");
 //        }
 
-        return false;
+        return true;
 
     }
 
