@@ -359,6 +359,7 @@ public class PersonalFragment extends BaseFragment {
 				uploadInformation("city", mCurrentProviceName+","+mCurrentCityName);
 			}
 		});
+		cityBuilder.setNegativeButton("取消", null);
 	}
 
 	@Override
