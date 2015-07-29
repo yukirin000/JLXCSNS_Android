@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -79,8 +80,8 @@ import com.rockerhieu.emojicon.EmojiconEditText;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
-	// 当前的操作类型
-	private int operateType = NewsOperateModel.Input_Type_Comment;
+	// 记录对动态的操作
+	private String actionType = NewsOperateModel.OPERATE_NO_ACTION;
 	// 评论的类型
 	private int commentType = NewsOperateModel.Input_Type_Comment;
 	// 主listview
@@ -98,8 +99,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private HelloHaAdapter<ItemModel> detailAdapter;
 	// 当前的动态对象
 	private NewsModel currentNews;
-	// 用户实例
-	private UserModel userModel;
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
 	// 屏幕的尺寸
@@ -137,13 +136,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		switch (view.getId()) {
 		// 删除动态
 		case R.id.base_ll_right_btns:
-			operateType = NewsOperateModel.OPERATE_DELETET;
 			deleteCurrentNews();
 			break;
 
 		// 发布评论
 		case R.id.btn_comment_send:
-			operateType = NewsOperateModel.OPERATE_UPDATE;
 			publishComment();
 			break;
 		default:
@@ -218,7 +215,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		}
 
 		// 更新数据
-		getNewsDetailData(String.valueOf(userModel.getUid()),
+		getNewsDetailData(
+				String.valueOf(UserManager.getInstance().getUser().getUid()),
 				currentNews.getNewsID());
 	}
 
@@ -226,7 +224,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-		userModel = UserManager.getInstance().getUser();
 
 		dataList = new ArrayList<ItemModel>();
 		itemViewClickListener = new ItemViewClick();
@@ -336,8 +333,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		newsOPerate.setOperateListener(new OperateCallBack() {
 			@Override
 			public void onStart(int operateType) {
-				userModel = UserManager.getInstance().getUser();
-				LogUtils.i("头像：" + userModel.getHead_sub_image());
 				switch (operateType) {
 				case NewsOperate.OP_Type_Delete_News:
 					break;
@@ -365,13 +360,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onFinish(int operateType, boolean isSucceed,
 					Object resultValue) {
+				actionType = NewsOperateModel.OPERATE_UPDATE;
 				switch (operateType) {
 				case NewsOperate.OP_Type_Delete_News:
 					if (isSucceed) {
 						ToastUtil.show(NewsDetailActivity.this, "删除成功");
 						// 返回上一页
-						Intent intentBack = new Intent();
-						setResult(NewsOperateModel.OPERATE_DELETET, intentBack);
+						actionType = NewsOperateModel.OPERATE_DELETET;
 						finishWithRight();
 					}
 					break;
@@ -524,7 +519,9 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
 						firstRequstData = false;
-						getNewsDetailData(String.valueOf(userModel.getUid()),
+						getNewsDetailData(
+								String.valueOf(UserManager.getInstance()
+										.getUser().getUid()),
 								currentNews.getNewsID());
 					}
 
@@ -843,7 +840,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void JsonToNewsModel(JSONObject data) {
 		currentNews.setContentWithJson(data);
 		// 如果是自己发布的动态
-		if (currentNews.getUid().equals(String.valueOf(userModel.getUid()))) {
+		if (currentNews.getUid().equals(
+				String.valueOf(UserManager.getInstance().getUser().getUid()))) {
 			addRightBtn("删除");
 		}
 		dataList = DataToItem.newsDetailToItems(currentNews);
@@ -940,8 +938,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				CommentModel temMode = new CommentModel();
 				temMode.setCommentContent(tempContent);
 				temMode.setAddDate(TimeHandle.getCurrentDataStr());
-				newsOPerate.publishComment(userModel, currentNews.getNewsID(),
-						tempContent);
+				newsOPerate.publishComment(UserManager.getInstance().getUser(),
+						currentNews.getNewsID(), tempContent);
 				break;
 
 			case NewsOperateModel.Input_Type_SubComment:
@@ -952,8 +950,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				tempMd.setReplyName(currentCommentModel.getPublishName());
 				tempMd.setReplyCommentId(currentCommentModel.getCommentID());
 				tempMd.setTopCommentId(currentCommentModel.getCommentID());
-				newsOPerate.publishSubComment(userModel,
-						currentNews.getNewsID(), tempMd);
+				newsOPerate.publishSubComment(UserManager.getInstance()
+						.getUser(), currentNews.getNewsID(), tempMd);
 				break;
 
 			case NewsOperateModel.Input_Type_SubReply:
@@ -964,8 +962,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				tpMold.setReplyName(currentSubCmtModel.getPublishName());
 				tpMold.setReplyCommentId(currentSubCmtModel.getSubID());
 				tpMold.setTopCommentId(currentSubCmtModel.getTopCommentId());
-				newsOPerate.publishSubComment(userModel,
-						currentNews.getNewsID(), tpMold);
+				newsOPerate.publishSubComment(UserManager.getInstance()
+						.getUser(), currentNews.getNewsID(), tpMold);
 				break;
 			default:
 				break;
@@ -980,7 +978,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 
 		@Override
 		public void onClick(View view, int postion, int viewID) {
-			operateType = NewsOperateModel.OPERATE_UPDATE;
 			switch (viewID) {
 			case R.id.img_news_detail_user_head:
 			case R.id.txt_news_detail_user_name:
@@ -1013,6 +1010,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 							((Button) oprtView).setText("点赞");
 							operateData.setIsLike("0");
 						}
+						actionType = NewsOperateModel.OPERATE_UPDATE;
 					}
 
 					@Override
@@ -1046,7 +1044,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				if (viewID == R.id.reply_head_layout) {
 					currentOperateIndex = postion;
 					if (currentCommentModel.getUserId().equals(
-							String.valueOf(userModel.getUid()))) {
+							String.valueOf(UserManager.getInstance().getUser()
+									.getUid()))) {
 						// 如果是自己发布的评论，则删除评论
 						CharSequence[] items = { "删除评论" };
 						new AlertDialog.Builder(NewsDetailActivity.this)
@@ -1089,7 +1088,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				if (viewID == R.id.subcomment_root_view) {
 					currentOperateIndex = postion;
 					if (currentSubCmtModel.getPublishId().equals(
-							String.valueOf(userModel.getUid()))) {
+							String.valueOf(UserManager.getInstance().getUser()
+									.getUid()))) {
 						// 如果是自己发布的评论，则删除评论
 						CharSequence[] items = { "删除评论" };
 						new AlertDialog.Builder(NewsDetailActivity.this)
@@ -1265,12 +1265,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		startActivityWithRight(intentUsrMain);
 	}
 
+	//重写
 	@Override
 	public void finishWithRight() {
 		updateResultData();
 		super.finishWithRight();
 	}
-
+	
 	// 监听返回事件
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1283,24 +1284,27 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
-	 * 保存修改的数据，并返回给上一个activity
+	 * 保存对动态的数据，并广播给上一个activity
 	 * */
 	private void updateResultData() {
-		if (NewsOperateModel.OPERATE_UPDATE == operateType) {
-			Intent backWithResultIntent = new Intent();
+		Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
+		if (actionType.equals(NewsOperateModel.OPERATE_UPDATE)) {
+			// 更新操作
 			String isLike = "0";
 			int likeCount = 0;
 			// 最新的点赞数据
 			List<LikeModel> newlkList = new ArrayList<LikeModel>();
 			for (int index = 0; index < likeGVAdapter.getCount(); index++) {
 				newlkList.add(likeGVAdapter.getItem(index));
-				if (likeGVAdapter.getItem(index).getUserID()
-						.equals(String.valueOf(userModel.getUid()))) {
+				if (likeGVAdapter
+						.getItem(index)
+						.getUserID()
+						.equals(String.valueOf(UserManager.getInstance()
+								.getUser().getUid()))) {
 					isLike = "1";
 				}
 				likeCount++;
 			}
-
 			// 最新的评论数据
 			List<CommentModel> newCmtList = new ArrayList<CommentModel>();
 			for (int index = 0; index < detailAdapter.getCount(); index++) {
@@ -1317,10 +1321,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					.getCount() - 3));
 			currentNews.setLikeHeadListimage(newlkList);
 			currentNews.setCommentList(newCmtList);
-			backWithResultIntent.putExtra(
-					NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ, currentNews);
-			NewsDetailActivity.this.setResult(NewsOperateModel.OPERATE_UPDATE,
-					backWithResultIntent);
+			mIntent.putExtra(NewsOperateModel.OPERATE_UPDATE, currentNews);
+		} else if (actionType.equals(NewsOperateModel.OPERATE_DELETET)) {
+			// 删除操作
+			mIntent.putExtra(NewsOperateModel.OPERATE_DELETET, currentNews.getNewsID());
+		} else if (actionType.equals(NewsOperateModel.OPERATE_NO_ACTION)) {
+			// 没有操作
+			mIntent.putExtra(NewsOperateModel.OPERATE_NO_ACTION, "");
 		}
+		// 发送广播
+		LocalBroadcastManager.getInstance(NewsDetailActivity.this)
+				.sendBroadcast(mIntent);
 	}
 }

@@ -6,9 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.preference.PreferenceManager.OnActivityResultListener;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +42,7 @@ import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
+import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -75,8 +80,6 @@ public class NewsListFragment extends BaseFragment {
 	private int NEWS_COMMENT_NUM = 3;
 	// 最多点赞数
 	private int MAX_LIKE_COUNT = 10;
-	// 用户实例
-	private UserModel userModel;
 	// 动态listview
 	@ViewInject(R.id.news_listview)
 	private PullToRefreshListView newsListView;
@@ -96,14 +99,14 @@ public class NewsListFragment extends BaseFragment {
 	private List<Map<String, Integer>> commentViewList;
 	// 屏幕的尺寸
 	private int screenWidth = 0, screenHeight = 0;
-	// 当前的数据页
-	private int currentPage = 1;
+	// 当前数据的页
+	private int pageIndex = 1;
 	// 是否是最后一页数据
 	private String lastPage = "0";
 	// 时间戳
 	private String latestTimesTamp = "";
 	// 是否下拉
-	private boolean isPullDowm = false;
+	private boolean isPullDowm = true;
 	// 是否正在请求数据
 	private boolean isRequestData = false;
 	// 点击view监听对象
@@ -114,8 +117,6 @@ public class NewsListFragment extends BaseFragment {
 	private LikeGridViewItemClick likeItemClickListener;
 	// 对动态的操作
 	private NewsOperate newsOPerate;
-	// 当前操作的位置
-	private int indexAtNewsList = 0;
 	// 当前点赞对应的gridview的adpter
 	private HelloHaAdapter<LikeModel> curntAdapter = null;
 
@@ -126,25 +127,54 @@ public class NewsListFragment extends BaseFragment {
 
 	@Override
 	public void loadLayout(View rootView) {
+	}
+
+	@Override
+	public void setUpViews(View rootView) {
 		init();
+		initBoradcastReceiver();
 		multiItemTypeSet();
 		newsListViewSet();
-		// 将评论view存储在map
-		commentViewList = new ArrayList<Map<String, Integer>>();
-		Map<String, Integer> commentMap = new HashMap<String, Integer>();
-		commentMap.put("NAME", R.id.txt_comment_nameA);
-		commentMap.put("CONTENT", R.id.txt_comment_contentA);
-		commentViewList.add(commentMap);
+		getCommentWidget();
+		// 获取上次缓存的数据
+		setLastData(UserManager.getInstance().getUser().getUid());
+		// 从服务器加载数据
+		getNewsData(UserManager.getInstance().getUser().getUid(), pageIndex, "");
+	}
 
-		commentMap = new HashMap<String, Integer>();
-		commentMap.put("NAME", R.id.txt_comment_nameB);
-		commentMap.put("CONTENT", R.id.txt_comment_contentB);
-		commentViewList.add(commentMap);
+	/**
+	 * 数据的初始化
+	 * */
+	private void init() {
+		mContext = this.getActivity().getApplicationContext();
 
-		commentMap = new HashMap<String, Integer>();
-		commentMap.put("NAME", R.id.txt_comment_nameC);
-		commentMap.put("CONTENT", R.id.txt_comment_contentC);
-		commentViewList.add(commentMap);
+		itemViewClickListener = new ItemViewClick();
+		imageItemClickListener = new ImageGridViewItemClick();
+		likeItemClickListener = new LikeGridViewItemClick();
+		newsOPerate = new NewsOperate(mContext);
+
+		initBitmapUtils();
+
+		// 获取屏幕尺寸
+		DisplayMetrics displayMet = getResources().getDisplayMetrics();
+		screenWidth = displayMet.widthPixels;
+		screenHeight = displayMet.heightPixels;
+		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
+				+ screenHeight);
+	}
+
+	/**
+	 * 初始化广播信息
+	 * */
+	private void initBoradcastReceiver() {
+		LocalBroadcastManager mLocalBroadcastManager;
+		mLocalBroadcastManager = LocalBroadcastManager
+				.getInstance(getActivity());
+		IntentFilter myIntentFilter = new IntentFilter();
+		myIntentFilter.addAction(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
+		// 注册广播
+		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver,
+				myIntentFilter);
 	}
 
 	/**
@@ -224,10 +254,10 @@ public class NewsListFragment extends BaseFragment {
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				currentPage = 1;
+				pageIndex = 1;
 				isPullDowm = true;
-				getNewsData(String.valueOf(userModel.getUid()),
-						String.valueOf(currentPage), "");
+				getNewsData(UserManager.getInstance().getUser().getUid(),
+						pageIndex, "");
 			}
 
 			@Override
@@ -243,8 +273,8 @@ public class NewsListFragment extends BaseFragment {
 					ToastUtil.show(mContext, "没有数据了,哦哦");
 				} else {
 					isPullDowm = false;
-					getNewsData(String.valueOf(userModel.getUid()),
-							String.valueOf(currentPage), latestTimesTamp);
+					getNewsData(UserManager.getInstance().getUser().getUid(),
+							pageIndex, latestTimesTamp);
 				}
 			}
 		});
@@ -301,9 +331,8 @@ public class NewsListFragment extends BaseFragment {
 							newsListView.setMode(Mode.PULL_FROM_END);
 							newsListView.setRefreshing(true);
 							isPullDowm = false;
-							getNewsData(String.valueOf(userModel.getUid()),
-									String.valueOf(currentPage),
-									latestTimesTamp);
+							getNewsData(UserManager.getInstance().getUser()
+									.getUid(), pageIndex, latestTimesTamp);
 						}
 					}
 				});
@@ -315,44 +344,45 @@ public class NewsListFragment extends BaseFragment {
 		newsListView.setAdapter(newsAdapter);
 	}
 
-	@Override
-	public void setUpViews(View rootView) {
-
-	}
-
 	/**
-	 * 数据的初始化
+	 * 获取评论控件, 将评论view存储在map
 	 * */
-	private void init() {
-		mContext = this.getActivity().getApplicationContext();
-		userModel = UserManager.getInstance().getUser();
+	private void getCommentWidget() {
+		commentViewList = new ArrayList<Map<String, Integer>>();
+		Map<String, Integer> commentMap = new HashMap<String, Integer>();
+		commentMap.put("NAME", R.id.txt_comment_nameA);
+		commentMap.put("CONTENT", R.id.txt_comment_contentA);
+		commentViewList.add(commentMap);
 
-		itemViewClickListener = new ItemViewClick();
-		imageItemClickListener = new ImageGridViewItemClick();
-		likeItemClickListener = new LikeGridViewItemClick();
-		newsOPerate = new NewsOperate(mContext);
+		commentMap = new HashMap<String, Integer>();
+		commentMap.put("NAME", R.id.txt_comment_nameB);
+		commentMap.put("CONTENT", R.id.txt_comment_contentB);
+		commentViewList.add(commentMap);
 
-		initBitmapUtils();
-		/******** 首次获取数据 *********/
-		currentPage = 1;
-		isPullDowm = true;
-		getNewsData(String.valueOf(userModel.getUid()),
-				String.valueOf(currentPage), "");
-		/*************************/
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
-				+ screenHeight);
+		commentMap = new HashMap<String, Integer>();
+		commentMap.put("NAME", R.id.txt_comment_nameC);
+		commentMap.put("CONTENT", R.id.txt_comment_contentC);
+		commentViewList.add(commentMap);
 	}
 
 	/***
-	 * 测试数据，上次缓存的数据
+	 * 上次缓存的数据
 	 * */
-	private List<NewsModel> getLastData() {
-		List<NewsModel> lastDataList = new ArrayList<NewsModel>();
-		return lastDataList;
+	@SuppressWarnings("unchecked")
+	private void setLastData(int userID) {
+		String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
+				+ "&page=" + 1 + "&frist_time=";
+		JSONObject JObject = HttpCacheUtils.getHttpCache(path);
+		if (null != JObject) {
+			JSONObject jResult = JObject.getJSONObject(JLXCConst.HTTP_RESULT);
+			if (null != jResult) {
+				List<JSONObject> JSONList = (List<JSONObject>) jResult
+						.get(JLXCConst.HTTP_LIST);
+				if (null != JSONList) {
+					JsonToNewsModel(JSONList);
+				}
+			}
+		}
 	}
 
 	/**
@@ -588,8 +618,7 @@ public class NewsListFragment extends BaseFragment {
 					helper.setImageUrl(R.id.iv_mian_like_gridview_item,
 							bitmapUtils, item.getHeadImage(),
 							new NewsBitmapLoadCallBack());
-					LogUtils.i("头像：" + item.getHeadSubImage());
-				} else if (10 == helper.getPosition()) {
+				} else if (MAX_LIKE_COUNT == helper.getPosition()) {
 					helper.setImageResource(R.id.iv_mian_like_gridview_item,
 							R.drawable.ic_launcher);
 				}
@@ -664,7 +693,7 @@ public class NewsListFragment extends BaseFragment {
 	/**
 	 * 获取动态数据
 	 * */
-	private void getNewsData(String userID, String desPage, String lastTime) {
+	private void getNewsData(int userID, int desPage, String lastTime) {
 		if (!isRequestData) {
 			isRequestData = true;
 			String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
@@ -688,7 +717,7 @@ public class NewsListFragment extends BaseFragment {
 										.get("list");
 								lastPage = jResult.getString("is_last");
 								if (lastPage.equals("0")) {
-									currentPage++;
+									pageIndex++;
 								}
 								JsonToNewsModel(JSONList);
 								newsListView.onRefreshComplete();
@@ -747,7 +776,6 @@ public class NewsListFragment extends BaseFragment {
 	 * */
 	public class ItemViewClick implements ListItemClickHelp {
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public void onClick(View view, int postion, int viewID) {
 			switch (viewID) {
@@ -826,9 +854,12 @@ public class NewsListFragment extends BaseFragment {
 									.getCommentList().get(iCount).getUserId()));
 						} else if (viewID == commentViewList.get(iCount).get(
 								"CONTENT")) {
-							if (!commentData.getCommentList().get(iCount)
+							if (!commentData
+									.getCommentList()
+									.get(iCount)
 									.getUserId()
-									.equals(String.valueOf(userModel.getUid()))) {
+									.equals(UserManager.getInstance().getUser()
+											.getUid())) {
 								// 跳转至评论页面并打开评论框,并变为回复某某的状态
 								jumpToNewsDetail(commentData,
 										NewsOperateModel.KEY_BOARD_REPLY,
@@ -1099,43 +1130,62 @@ public class NewsListFragment extends BaseFragment {
 				intentToNewsDetail.putExtra(
 						NewsOperateModel.INTENT_KEY_NEWS_OBJ,
 						newsList.get(index));
-				indexAtNewsList = index;
 				break;
 			}
 		}
 
 		// 带有返回参数的跳转至动态详情
-		startActivityForResult(intentToNewsDetail, 0);
+		startActivityForResult(intentToNewsDetail, 1);
 		getActivity().overridePendingTransition(R.anim.push_right_in,
 				R.anim.push_right_out);
 	}
 
 	/**
-	 * 上一个Activity返回结束时调用
+	 * 广播接收处理
 	 * */
-	@Override
-	public void onActivityResult(int requestCode, int resultCode,
-			Intent resultIntent) {
-		if (null != resultIntent) {
-			switch (resultCode) {
-			case NewsOperateModel.OPERATE_UPDATE:
-				if (resultIntent
-						.hasExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ)) {
+	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent resultIntent) {
+			String action = resultIntent.getAction();
+			if (action.equals(JLXCConst.BROADCAST_NEWS_LIST_REFRESH)) {
+				if (resultIntent.hasExtra(NewsOperateModel.OPERATE_UPDATE)) {
+					// 更新动态列表
 					NewsModel resultNews = (NewsModel) resultIntent
-							.getSerializableExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ);
-					newsList.set(indexAtNewsList, resultNews);
-					newsAdapter
-							.replaceAll(DataToItem.newsDataToItems(newsList));
+							.getSerializableExtra(NewsOperateModel.OPERATE_UPDATE);
+					for (int index = 0; index < newsList.size(); index++) {
+						if (resultNews.getNewsID().equals(
+								newsList.get(index).getNewsID())) {
+							newsList.set(index, resultNews);
+							newsAdapter.replaceAll(DataToItem
+									.newsDataToItems(newsList));
+							break;
+						}
+					}
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.OPERATE_DELETET)) {
+					String resultID = resultIntent
+							.getStringExtra(NewsOperateModel.OPERATE_DELETET);
+					// 删除该动态
+					for (int index = 0; index < newsList.size(); index++) {
+						if (resultID.equals(newsList.get(index).getNewsID())) {
+							newsList.remove(index);
+							newsAdapter.replaceAll(DataToItem
+									.newsDataToItems(newsList));
+							break;
+						}
+					}
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.OPERATE_NO_ACTION)) {
+					// 无改变
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
+					//发布了动态
+					pageIndex = 1;
+					isPullDowm = true;
+					getNewsData(UserManager.getInstance().getUser().getUid(),
+							pageIndex, "");
 				}
-				break;
-			case NewsOperateModel.OPERATE_DELETET:
-				newsList.remove(indexAtNewsList);
-				newsAdapter.replaceAll(DataToItem.newsDataToItems(newsList));
-				break;
-			default:
-				break;
 			}
 		}
-		super.onActivityResult(requestCode, resultCode, resultIntent);
-	}
+	};
 }

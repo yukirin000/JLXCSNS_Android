@@ -19,12 +19,14 @@ public class NewsOperateModel {
 	public final static String INTENT_KEY_NEWS_OBJ = "current_news_obj";
 	// 意图（当前的news的id）
 	public final static String INTENT_KEY_NEWS_ID = "current_news_id";
-	// 意图（从动态详细返回）
-	public final static String INTENT_KEY_BACK_NEWS_OBJ = "back_news_obj";
 	// 更新操作（包括评论与点赞的操作）
-	public final static int OPERATE_UPDATE = 0;
+	public final static String OPERATE_UPDATE = "news_update";
 	// 删除动态操作
-	public final static int OPERATE_DELETET = 1;
+	public final static String OPERATE_DELETET = "news_delete";
+	// 未对动态进行操作
+	public final static String OPERATE_NO_ACTION = "no_action";
+	// 发布动态操作完成
+	public final static String PUBLISH_FINISH = "pulish_finished";
 	// 评论框输入类型为评论
 	public final static int Input_Type_Comment = 0;
 	// 评论框输入类型为子评论

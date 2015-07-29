@@ -102,13 +102,13 @@ public class MainPageFragment extends BaseFragment {
 	public void InitImage() {
 		cursorWidth = 60;
 		int cursorheight = 10;
-		int publishBtnWidth = 60;
+		int publishBtnWidth = screenWidth / 8;
 		// 设置发布按钮的尺寸
 		LayoutParams pbtnParams = (LayoutParams) imagePublish.getLayoutParams();
 		pbtnParams.width = publishBtnWidth;
 		pbtnParams.height = publishBtnWidth;
 		imagePublish.setLayoutParams(pbtnParams);
-		imagePublish.setScaleType(ImageView.ScaleType.FIT_XY);
+		imagePublish.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
 		offset = ((screenWidth - publishBtnWidth) / 2 - cursorWidth) / 2;
 		// 设置游标的尺寸与位置
@@ -135,8 +135,8 @@ public class MainPageFragment extends BaseFragment {
 		mFragmentList.add(new NewsListFragment());
 		mFragmentList.add(new CampusFragment());
 
-		mainPager.setAdapter(new MainFragmentPagerAdapter(getChildFragmentManager(),
-				mFragmentList));
+		mainPager.setAdapter(new MainFragmentPagerAdapter(
+				getChildFragmentManager(), mFragmentList));
 		mainPager.setCurrentItem(0);
 		mainPager.setOnPageChangeListener(new MyOnPageChangeListener());
 	}
@@ -159,7 +159,7 @@ public class MainPageFragment extends BaseFragment {
 	/**
 	 * ViewPager的适配器
 	 * */
-	class MainFragmentPagerAdapter extends FragmentStatePagerAdapter  {
+	class MainFragmentPagerAdapter extends FragmentStatePagerAdapter {
 		private List<Fragment> fragmentList;
 
 		public MainFragmentPagerAdapter(FragmentManager fm, List<Fragment> list) {
@@ -167,7 +167,7 @@ public class MainPageFragment extends BaseFragment {
 			fragmentList = list;
 		}
 
-		//得到每个item  
+		// 得到每个item
 		@Override
 		public Fragment getItem(int index) {
 			return fragmentList.get(index);
@@ -180,21 +180,21 @@ public class MainPageFragment extends BaseFragment {
 
 		@Override
 		public int getItemPosition(Object object) {
-			 //
+			//
 			return super.getItemPosition(object);
 		}
-		
-        @Override  
-        public Object instantiateItem(ViewGroup arg0, int arg1) {  
-        	 // 初始化每个页卡选项   
-            return super.instantiateItem(arg0, arg1);  
-        }  
-          
-        @Override  
-        public void destroyItem(ViewGroup container, int position, Object object) {
-        	//
-            super.destroyItem(container, position, object);  
-        }  
+
+		@Override
+		public Object instantiateItem(ViewGroup arg0, int arg1) {
+			// 初始化每个页卡选项
+			return super.instantiateItem(arg0, arg1);
+		}
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			//
+			super.destroyItem(container, position, object);
+		}
 	}
 
 	/**

@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,6 +51,7 @@ import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
 import com.jlxc.app.news.utils.NewsOperate.OperateCallBack;
@@ -114,10 +119,11 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		init();
+		initBoradcastReceiver();
 		multiItemTypeSet();
 		newsListViewSet();
 
-		/******** 首次获取数据 *********/
+		/******** 首次获取数据 ********/
 		isPullDowm = true;
 		getMyNewsData(currentUid, String.valueOf(currentPage));
 		/*************************/
@@ -288,10 +294,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			LogUtils.e("用户id传输错误，用户id为：" + currentUid);
 		}
 
-		/*** 测试 *****/
-		// currentUid = "21";
-		// userModel.setUid(21);
-
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
@@ -309,6 +311,20 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+	}
+
+	/**
+	 * 初始化广播信息
+	 * */
+	private void initBoradcastReceiver() {
+		LocalBroadcastManager mLocalBroadcastManager;
+		mLocalBroadcastManager = LocalBroadcastManager
+				.getInstance(MyNewsListActivity.this);
+		IntentFilter myIntentFilter = new IntentFilter();
+		myIntentFilter.addAction(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
+		// 注册广播
+		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver,
+				myIntentFilter);
 	}
 
 	/**
@@ -955,31 +971,51 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
-	 * 上一个Activity返回结束时调用
+	 * 广播接收处理
 	 * */
-	@Override
-	public void onActivityResult(int requestCode, int resultCode,
-			Intent resultIntent) {
-		if (null != resultIntent) {
-			switch (resultCode) {
-			case NewsOperateModel.OPERATE_UPDATE:
-				if (resultIntent
-						.hasExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ)) {
+	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent resultIntent) {
+			String action = resultIntent.getAction();
+			if (action.equals(JLXCConst.BROADCAST_NEWS_LIST_REFRESH)) {
+				if (resultIntent.hasExtra(NewsOperateModel.OPERATE_UPDATE)) {
+					// 更新动态列表
 					NewsModel resultNews = (NewsModel) resultIntent
-							.getSerializableExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ);
-					newsList.set(indexAtNewsList, resultNews);
-					newsAdapter.replaceAll(NewsToItemData.newsToItem(newsList));
+							.getSerializableExtra(NewsOperateModel.OPERATE_UPDATE);
+					for (int index = 0; index < newsList.size(); index++) {
+						if (resultNews.getNewsID().equals(
+								newsList.get(index).getNewsID())) {
+							newsList.set(index, resultNews);
+							newsAdapter.replaceAll(NewsToItemData
+									.newsToItem(newsList));
+							break;
+						}
+					}
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.OPERATE_DELETET)) {
+					String resultID = resultIntent
+							.getStringExtra(NewsOperateModel.OPERATE_DELETET);
+					// 删除该动态
+					for (int index = 0; index < newsList.size(); index++) {
+						if (resultID.equals(newsList.get(index).getNewsID())) {
+							newsList.remove(index);
+							newsAdapter.replaceAll(NewsToItemData
+									.newsToItem(newsList));
+							break;
+						}
+					}
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.OPERATE_NO_ACTION)) {
+					// 无改变
+				}else if (resultIntent
+						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
+					//发布了动态
+					currentPage = 1;
+					isPullDowm = true;
+					getMyNewsData(currentUid, String.valueOf(currentPage));
 				}
-				break;
-			case NewsOperateModel.OPERATE_DELETET:
-				newsList.remove(indexAtNewsList);
-				newsAdapter.replaceAll(NewsToItemData.newsToItem(newsList));
-				break;
-			default:
-				break;
 			}
 		}
-		super.onActivityResult(requestCode, resultCode, resultIntent);
-	}
+	};
 
 }

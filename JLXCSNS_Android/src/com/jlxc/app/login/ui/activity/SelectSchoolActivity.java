@@ -86,8 +86,10 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	private Location districtLocation;
 	// 是否下拉刷新
 	private boolean isPullDowm = false;
-	// 上次查询的结果数
-	private int lastCount = 0;
+	// 是否是最后一页
+	private boolean isLastPage = false;
+	// 是否正在请求数据
+	private boolean isRequestingData = false;
 
 	// 注册的时候使用或者修改信息的时候使用
 	private boolean notRegister;
@@ -208,12 +210,15 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				// 上拉刷新
-				isPullDowm = false;
-				getSchoolList(String.valueOf(pageIndex), districtCode,
-						schoolName);
+				if (!isLastPage && !isRequestingData) {
+					// 上拉刷新
+					isRequestingData = true;
+					isPullDowm = false;
+					getSchoolList(String.valueOf(pageIndex), districtCode,
+							schoolName);
+					isRequestingData = false;
+				}
 			}
-
 		});
 
 		/**
@@ -243,18 +248,22 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 
 					@Override
 					public void onLastItemVisible() {
-						// 底部自动加载
-						schoolListView.setMode(Mode.PULL_FROM_END);
-						schoolListView.setRefreshing(true);
-						isPullDowm = false;
-						getSchoolList(String.valueOf(pageIndex), districtCode,
-								schoolName);
+						if (!isLastPage && !isRequestingData) {
+							// 底部自动加载
+							isRequestingData = true;
+							schoolListView.setMode(Mode.PULL_FROM_END);
+							schoolListView.setRefreshing(true);
+							isPullDowm = false;
+							getSchoolList(String.valueOf(pageIndex),
+									districtCode, schoolName);
+							isRequestingData = false;
+						}
 					}
 				});
 	}
 
 	/**
-	 * 初始化数据
+	 * 数据转化
 	 * */
 	private void schoolDataHandle(List<JSONObject> dataList) {
 		List<SchoolModel> newDatas = new ArrayList<SchoolModel>();
@@ -265,10 +274,15 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		}
 		if (isPullDowm) {
 			schoolAdapter.replaceAll(newDatas);
+			if (!isLastPage) {
+				schoolListView.setMode(Mode.BOTH);
+			}
 		} else {
 			schoolAdapter.addAll(newDatas);
 		}
-		dataList.clear();
+		if (null != dataList) {
+			dataList.clear();
+		}
 	}
 
 	/**
@@ -295,25 +309,28 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 获取学校列表
-							LogUtils.i("查询学校数据成功");
 							List<JSONObject> objList = (List<JSONObject>) jResult
 									.get("list");
-							if (objList.size() > 0) {
+							if (jResult.getString("is_last").equals("1")) {
+								isLastPage = true;
+								schoolListView.setMode(Mode.PULL_FROM_START);
+							} else {
+								isLastPage = false;
 								pageIndex++;
+								schoolListView.setMode(Mode.BOTH);
 							}
-							lastCount = objList.size();
 							schoolDataHandle(objList);
 							schoolListView.onRefreshComplete();
-							schoolListView.setMode(Mode.BOTH);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							ToastUtil.show(SelectSchoolActivity.this,
 									jsonResponse
 											.getString(JLXCConst.HTTP_MESSAGE));
-							LogUtils.e("查询学校列表失败");
+							if (!isLastPage) {
+								schoolListView.setMode(Mode.BOTH);
+							}
 							schoolListView.onRefreshComplete();
-							schoolListView.setMode(Mode.BOTH);
 						}
 					}
 
@@ -323,10 +340,11 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						super.onFailure(arg0, arg1, flag);
 						ToastUtil.show(SelectSchoolActivity.this,
 								"卧槽，竟然查询失败，检查下网络");
+						if (!isLastPage) {
+							schoolListView.setMode(Mode.BOTH);
+						}
 						schoolListView.onRefreshComplete();
-						schoolListView.setMode(Mode.BOTH);
 					}
-
 				}, null));
 	}
 
@@ -336,8 +354,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	private void updateUserSchool(final String schoolName,
 			final String schoolCode) {
 		final UserModel userModel = UserManager.getInstance().getUser();
-		LogUtils.i("用户id：" + userModel.getUid() + " schoolName:" + schoolName
-				+ " schoolCode:" + schoolCode);
 		// 参数设置
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("uid", userModel.getUid() + "");
@@ -368,7 +384,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 										RegisterInformationActivity.class);
 								startActivityWithRight(intent);
 							}
-							LogUtils.i("学校上传成功");
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -469,7 +484,10 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	private void back() {
 		// 停止定位
 		districtLocation.stopLocation();
-		finishWithRight();
+		// 返回首页
+		Intent intent = new Intent(SelectSchoolActivity.this,
+				LoginActivity.class);
+		startActivityWithRight(intent);
 	}
 
 	/**

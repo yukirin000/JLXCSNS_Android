@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +41,7 @@ import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
+import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -71,8 +75,6 @@ public class CampusFragment extends BaseFragment {
 
 	// 最多点赞数
 	private int MAX_LIKE_COUNT = 10;
-	// 用户实例
-	private UserModel userModel;
 	// 动态listview
 	@ViewInject(R.id.campus_listview)
 	private PullToRefreshListView campusListView;
@@ -95,13 +97,13 @@ public class CampusFragment extends BaseFragment {
 	// 屏幕的尺寸
 	private int screenWidth = 0, screenHeight = 0;
 	// 当前的数据页
-	private int currentPage = 1;
+	private int pageIndex = 1;
 	// 是否是最后一页数据
 	private String lastPage = "0";
 	// 时间戳
 	private String latestTimesTamp = "";
 	// 是否下拉
-	private boolean isPullDowm = false;
+	private boolean isPullDowm = true;
 	// 是否正在请求数据
 	private boolean isRequestData = false;
 	// 点击view监听对象
@@ -117,8 +119,6 @@ public class CampusFragment extends BaseFragment {
 	private NewsOperate newsOPerate;
 	// 当前操作的动态
 	public static NewsModel currentNews;
-	// 当前操作的位置
-	private int indexAtNewsList = 0;
 
 	@Override
 	public int setLayoutId() {
@@ -132,12 +132,88 @@ public class CampusFragment extends BaseFragment {
 	@Override
 	public void setUpViews(View rootView) {
 		init();
+		initBoradcastReceiver();
 		multiItemTypeSet();
 		newsListViewSet();
+		// 获取上次缓存的数据
+		setLastData(UserManager.getInstance().getUser().getUid(), UserManager
+				.getInstance().getUser().getSchool_code());
 		// 进入本页面时请求数据
-		isPullDowm = true;
-		getCampusData(String.valueOf(userModel.getUid()),
-				String.valueOf(currentPage), userModel.getSchool_code(), "");
+		getCampusData(
+				String.valueOf(UserManager.getInstance().getUser().getUid()),
+				String.valueOf(pageIndex), UserManager.getInstance().getUser()
+						.getSchool_code(), "");
+	}
+
+	/**
+	 * 数据的初始化
+	 * */
+	private void init() {
+		mContext = this.getActivity().getApplicationContext();
+
+		itemViewClickListener = new ItemViewClick();
+		imageItemClickListener = new ImageGridViewItemClick();
+		likeItemClickListener = new LikeGridViewItemClick();
+		newsOPerate = new NewsOperate(mContext);
+		initBitmapUtils();
+
+		// 获取屏幕尺寸
+		DisplayMetrics displayMet = getResources().getDisplayMetrics();
+		screenWidth = displayMet.widthPixels;
+		screenHeight = displayMet.heightPixels;
+		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
+				+ screenHeight);
+	}
+
+	/**
+	 * 初始化广播信息
+	 * */
+	private void initBoradcastReceiver() {
+		LocalBroadcastManager mLocalBroadcastManager;
+		mLocalBroadcastManager = LocalBroadcastManager
+				.getInstance(getActivity());
+		IntentFilter myIntentFilter = new IntentFilter();
+		myIntentFilter.addAction(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
+		// 注册广播
+		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver,
+				myIntentFilter);
+	}
+
+	/**
+	 * 初始化BitmapUtils
+	 * */
+	private void initBitmapUtils() {
+		bitmapUtils = new BitmapUtils(mContext);
+		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+	}
+
+	/***
+	 * 上次缓存的数据
+	 * */
+	@SuppressWarnings("unchecked")
+	private void setLastData(int userID, String schoolCode) {
+		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
+				+ "&page=" + 1 + "&school_code=" + schoolCode + "&frist_time=";
+
+		JSONObject JObject = HttpCacheUtils.getHttpCache(path);
+		if (null != JObject) {
+			JSONObject jResult = JObject.getJSONObject(JLXCConst.HTTP_RESULT);
+			if (null != jResult) {
+				// 获取数据列表
+				List<JSONObject> JNewsList = (List<JSONObject>) jResult
+						.get(JLXCConst.HTTP_LIST);
+				List<JSONObject> JPersonList = (List<JSONObject>) jResult
+						.get("info");
+				LogUtils.i("JNewsList=" + JNewsList + " JPersonList="
+						+ JPersonList);
+				if (null != JNewsList && null != JPersonList) {
+					JsonToItemData(JNewsList, JPersonList);
+				}
+			}
+		}
 	}
 
 	/**
@@ -217,12 +293,13 @@ public class CampusFragment extends BaseFragment {
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				userModel = UserManager.getInstance().getUser();
-				currentPage = 1;
+				pageIndex = 1;
 				isPullDowm = true;
-				getCampusData(String.valueOf(userModel.getUid()),
-						String.valueOf(currentPage),
-						userModel.getSchool_code(), "");
+				getCampusData(
+						String.valueOf(UserManager.getInstance().getUser()
+								.getUid()), String.valueOf(pageIndex),
+						UserManager.getInstance().getUser().getSchool_code(),
+						"");
 			}
 
 			@Override
@@ -238,9 +315,11 @@ public class CampusFragment extends BaseFragment {
 					ToastUtil.show(mContext, "没有数据了,哦哦");
 				} else {
 					isPullDowm = false;
-					getCampusData(String.valueOf(userModel.getUid()),
-							String.valueOf(currentPage),
-							userModel.getSchool_code(), latestTimesTamp);
+					getCampusData(
+							String.valueOf(UserManager.getInstance().getUser()
+									.getUid()), String.valueOf(pageIndex),
+							UserManager.getInstance().getUser()
+									.getSchool_code(), latestTimesTamp);
 				}
 			}
 		});
@@ -297,9 +376,12 @@ public class CampusFragment extends BaseFragment {
 							campusListView.setMode(Mode.PULL_FROM_END);
 							campusListView.setRefreshing(true);
 							isPullDowm = false;
-							getCampusData(String.valueOf(userModel.getUid()),
-									String.valueOf(currentPage),
-									userModel.getSchool_code(), latestTimesTamp);
+							getCampusData(
+									String.valueOf(UserManager.getInstance()
+											.getUser().getUid()),
+									String.valueOf(pageIndex), UserManager
+											.getInstance().getUser()
+											.getSchool_code(), latestTimesTamp);
 						}
 					}
 				});
@@ -309,38 +391,6 @@ public class CampusFragment extends BaseFragment {
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		campusListView.setAdapter(newsAdapter);
-	}
-
-	/**
-	 * 数据的初始化
-	 * */
-	private void init() {
-		mContext = this.getActivity().getApplicationContext();
-		userModel = UserManager.getInstance().getUser();
-
-		itemViewClickListener = new ItemViewClick();
-		imageItemClickListener = new ImageGridViewItemClick();
-		likeItemClickListener = new LikeGridViewItemClick();
-		newsOPerate = new NewsOperate(mContext);
-		initBitmapUtils();
-
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
-				+ screenHeight);
-	}
-
-	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(mContext);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/**
@@ -576,7 +626,8 @@ public class CampusFragment extends BaseFragment {
 	 * */
 	private void setCampusHeadView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
-		helper.setText(R.id.tv_campus_head_name, userModel.getSchool());
+		helper.setText(R.id.tv_campus_head_name, UserManager.getInstance()
+				.getUser().getSchool());
 
 		// 头像的尺寸,正方形显示
 		final int headImageSize = screenWidth / 7;
@@ -669,7 +720,7 @@ public class CampusFragment extends BaseFragment {
 								JsonToItemData(JNewsList, JPersonList);
 								lastPage = jResult.getString("is_last");
 								if (lastPage.equals("0")) {
-									currentPage++;
+									pageIndex++;
 								}
 								campusListView.onRefreshComplete();
 								campusListView.setMode(Mode.BOTH);
@@ -804,8 +855,8 @@ public class CampusFragment extends BaseFragment {
 				// 跳转到所有好友列表页面
 				Intent personIntent = new Intent(mContext,
 						CampusAllPersonActivity.class);
-				personIntent
-						.putExtra("School_Code", userModel.getSchool_code());
+				personIntent.putExtra("School_Code", UserManager.getInstance()
+						.getUser().getSchool_code());
 				startActivityWithRight(personIntent);
 				break;
 			default:
@@ -1090,34 +1141,54 @@ public class CampusFragment extends BaseFragment {
 	}
 
 	/**
-	 * 上一个Activity返回结束时调用
+	 * 广播接收处理
 	 * */
-	@Override
-	public void onActivityResult(int requestCode, int resultCode,
-			Intent resultIntent) {
-		// 更新操作结果
-		if (null != resultIntent) {
-			switch (resultCode) {
-			case NewsOperateModel.OPERATE_UPDATE:
-				if (resultIntent
-						.hasExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ)) {
+	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent resultIntent) {
+			String action = resultIntent.getAction();
+			if (action.equals(JLXCConst.BROADCAST_NEWS_LIST_REFRESH)) {
+				if (resultIntent.hasExtra(NewsOperateModel.OPERATE_UPDATE)) {
+					// 更新动态列表
 					NewsModel resultNews = (NewsModel) resultIntent
-							.getSerializableExtra(NewsOperateModel.INTENT_KEY_BACK_NEWS_OBJ);
-					newsList.set(indexAtNewsList, resultNews);
-					newsAdapter.replaceAll(DataToItem.campusDataToItems(
-							newsList, personList));
+							.getSerializableExtra(NewsOperateModel.OPERATE_UPDATE);
+					for (int index = 0; index < newsList.size(); index++) {
+						if (resultNews.getNewsID().equals(
+								newsList.get(index).getNewsID())) {
+							newsList.set(index, resultNews);
+							newsAdapter.replaceAll(DataToItem
+									.campusDataToItems(newsList, personList));
+							break;
+						}
+					}
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.OPERATE_DELETET)) {
+					String resultID = resultIntent
+							.getStringExtra(NewsOperateModel.OPERATE_DELETET);
+					// 删除该动态
+					for (int index = 0; index < newsList.size(); index++) {
+						if (resultID.equals(newsList.get(index).getNewsID())) {
+							newsList.remove(index);
+							newsAdapter.replaceAll(DataToItem
+									.campusDataToItems(newsList, personList));
+							break;
+						}
+					}
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.OPERATE_NO_ACTION)) {
+					// 无改变
+				} else if (resultIntent
+						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
+					//发布了动态
+					pageIndex = 1;
+					isPullDowm = true;
+					getCampusData(
+							String.valueOf(UserManager.getInstance().getUser()
+									.getUid()), String.valueOf(pageIndex),
+							UserManager.getInstance().getUser().getSchool_code(),
+							"");
 				}
-				break;
-			case NewsOperateModel.OPERATE_DELETET:
-				newsList.remove(indexAtNewsList);
-				newsAdapter.replaceAll(DataToItem.campusDataToItems(newsList,
-						personList));
-				break;
-			default:
-				break;
 			}
 		}
-
-		super.onActivityResult(requestCode, resultCode, resultIntent);
-	}
+	};
 }

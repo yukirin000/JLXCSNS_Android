@@ -1,7 +1,5 @@
 package com.jlxc.app.base.utils;
 
-import java.text.DateFormat;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +30,7 @@ public class TimeHandle {
 			// 与当前时间差，毫秒ms
 			long diff = dt.getTime() - time.getTime();
 
+			// 将时间差转化成各类型
 			long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
 			long diffHours = diff / (60 * 60 * 1000) % 24;
@@ -43,25 +42,32 @@ public class TimeHandle {
 			int hour = calendar.get(Calendar.HOUR); // 获取小时;
 			int min = calendar.get(Calendar.MINUTE); // 获取分钟;
 
+			String hourStr=String.valueOf(hour);
+			String minStr=String.valueOf(min);
+			if (hour < 10) {
+				hourStr = "0" + hour;
+			}
+			if (min < 10) {
+				minStr = "0" + min;
+			}
 			calendar = Calendar.getInstance();
 			int currentYear = calendar.get(Calendar.YEAR); // 获取当前年份
 
-			if (diffDays <= 0 && diffHours <= 0) {
-				if (diffMinutes == 0) {
-					diffMinutes = 1;
-				}
+			if (diffMinutes < 1) {
+				decTime = "刚刚";
+			} else if (diffDays <= 0 && diffHours <= 0) {
 				decTime = diffMinutes + "分钟前";
 			} else if (diffDays <= 0 && diffHours > 0) {
 				decTime = diffHours + "小时前";
 			} else if (1 == diffDays) {
-				decTime = "昨天 " + hour + ":" + min;
+				decTime = "昨天 " + hourStr + ":" + minStr;
 			} else if (2 == diffDays) {
-				decTime = "前天 " + hour + ":" + min;
+				decTime = "前天 " + hourStr + ":" + minStr;
 			} else if (currentYear == year) {
-				decTime = month + "月" + day + "日 " + hour + ":" + min;
+				decTime = month + "月" + day + "日 " + hourStr + ":" + minStr;
 			} else {
-				decTime = year + "年" + month + "月" + day + "日 " + hour + ":"
-						+ min;
+				decTime = year + "年" + month + "月" + day + "日 " + hourStr + ":"
+						+ minStr;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
