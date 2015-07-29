@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="1"
-    android:versionName="1.0" >
+
+    android:versionCode="2"
+    android:versionName="1.01" >
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -285,7 +286,8 @@
 		<!-- 高德部分 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7ad1a3106acafa0b0f3fc9d4c5441f85" />
+            android:value="ab92e548a0429b832749d8067cb47998" />
+        <!-- 028a516dcc7ca5977934426ea33801ba -->
         
         <!-- *******************涂图 公共分组控制器******************* -->
         <activity
