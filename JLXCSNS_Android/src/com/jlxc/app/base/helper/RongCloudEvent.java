@@ -158,7 +158,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
         
 		long newWhen = System.currentTimeMillis();
 		mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		int iconId = R.drawable.abc_ab_bottom_solid_light_holo;
+		int iconId = R.drawable.icon;
 		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		notificationIntent.setClass(mContext.getApplicationContext(), LoginActivity.class);

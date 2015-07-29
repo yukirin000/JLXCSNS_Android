@@ -33,4 +33,13 @@ public class HttpCacheUtils {
 		}
 	}
 	
+	//清空缓存
+	public static void clearHttpCache(){
+		try {
+			SharedPreferences httpPreferences = JLXCApplication.getInstance().getSharedPreferences("http", Activity.MODE_PRIVATE);
+			httpPreferences.edit().clear();
+		} catch (Exception e) {
+		}
+	}
+	
 }

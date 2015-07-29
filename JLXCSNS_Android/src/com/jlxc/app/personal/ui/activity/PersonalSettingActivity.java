@@ -7,6 +7,7 @@ import android.widget.Button;
 import com.jlxc.app.R;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.DataCleanManager;
+import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
@@ -52,6 +53,8 @@ public class PersonalSettingActivity extends BaseActivityWithTopBar{
 			DataCleanManager.clearAllCache(this);
 			ToastUtil.show(this, "清除成功^_^");
 			String cacheString = DataCleanManager.getTotalCacheSize(this);
+			//清除缓存
+			HttpCacheUtils.clearHttpCache();
 			clearButton.setText("清除缓存"+cacheString);	
 		} catch (Exception e) {
 			ToastUtil.show(this, "清除成功>_<");

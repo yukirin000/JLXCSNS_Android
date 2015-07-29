@@ -11,6 +11,7 @@
            android:layout_height="wrap_content"
            android:layout_marginTop="100dip"
            android:drawablePadding="10dp"
+           android:maxLength="11"
            android:hint="请输入手机号码"
            android:singleLine="true"
            android:inputType="number"

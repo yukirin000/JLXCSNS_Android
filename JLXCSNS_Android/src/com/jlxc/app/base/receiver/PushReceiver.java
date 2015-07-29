@@ -177,7 +177,7 @@ public class PushReceiver extends BroadcastReceiver {
 
 		long newWhen = System.currentTimeMillis();
 		mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		int iconId = R.drawable.ic_launcher;
+		int iconId = R.drawable.icon;
 		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		notificationIntent.setClass(context.getApplicationContext(), LoginActivity.class);
