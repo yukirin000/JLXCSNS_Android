@@ -164,7 +164,6 @@ public class MainTabActivity extends BaseActivity {
 				}
 			});
 		}
-		
 	}
 	
 	//获取最新版本号
@@ -219,14 +218,13 @@ public class MainTabActivity extends BaseActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			
-			if (RongIM.getInstance() != null)
-            	RongIM.getInstance().disconnect();
+            ActivityManager.getInstence().exitApplication();
             if (null != newMessageReceiver) {
             	unregisterReceiver(newMessageReceiver);
             	newMessageReceiver = null;
-			}
-            ActivityManager.getInstence().exitApplication();
-			
+			}	
+            if (RongIM.getInstance() != null)
+            	RongIM.getInstance().disconnect();
 //			final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
 //	        alterDialog.setMessage("确定退出该账号吗？");
 //	        alterDialog.setCancelable(true);

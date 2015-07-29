@@ -30,6 +30,7 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 //最近来访Activity
 import com.jlxc.app.personal.model.VisitModel;
@@ -95,9 +96,11 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					final VisitModel item) {
-				
+				//姓名
 				helper.setText(R.id.name_text_view, item.getName());
-				helper.setText(R.id.time_text_view, item.getVisit_time());
+				//时间
+				helper.setText(R.id.time_text_view, TimeHandle.getShowTimeFormat(item.getVisit_time()));
+				//签名
 				helper.setText(R.id.sign_text_view, item.getSign());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
 				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());

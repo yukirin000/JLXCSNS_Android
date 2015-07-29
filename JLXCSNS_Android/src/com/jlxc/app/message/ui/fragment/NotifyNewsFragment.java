@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -25,6 +26,8 @@ import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.JLXCUtils;
+import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.activity.NewFriendsActivity;
 import com.jlxc.app.news.model.NewsOperateModel;
@@ -109,7 +112,7 @@ public class NotifyNewsFragment extends BaseFragment {
 				//姓名
 				helper.setText(R.id.name_text_view, item.getName());
 				//时间
-				helper.setText(R.id.time_text_view, item.getPush_time());
+				helper.setText(R.id.time_text_view, TimeHandle.getShowTimeFormat(item.getPush_time()));
 				//内容
 				if (item.getType() == NewsPushModel.PushLikeNews) {
 					helper.setText(R.id.content_text_view, "为你点了赞");
@@ -169,7 +172,7 @@ public class NotifyNewsFragment extends BaseFragment {
 					}
 				}).setNegativeButton("取消", null).show();
 				
-				return false;
+				return true;
 			}
 		});
 		

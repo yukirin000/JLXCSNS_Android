@@ -88,10 +88,20 @@ public class PushReceiver extends BroadcastReceiver {
 		if (null != imModel) {
 			//存在 加好友 但是有新朋友
 			if (imModel.getIsNew() != 1) {
-//				showNotification(context, "您有一条新消息", "您有一条新消息", "");
+				imModel.setTitle(pushObject.getString("name"));
+				imModel.setAvatarPath(pushObject.getString("avatar"));
 				imModel.setIsNew(1);
+				imModel.setCurrentState(IMModel.GroupNotAdd);
 				imModel.setIsRead(0);
 				imModel.update();
+				showNotification(context, "您有一条新消息", "您有一条新消息", "");
+				
+				//发送通知
+				Intent newsGroupIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
+				context.sendBroadcast(newsGroupIntent);
+				//顶部更新
+				Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
+				context.sendBroadcast(messageIntent);
 			}
 		}else {
 			

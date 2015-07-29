@@ -113,13 +113,14 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						IMModel imModel = newFriendAdapter.getItem(position);
-						imModel.setIsNew(0);
-						imModel.update();
+//						imModel.setIsNew(0);
+//						imModel.update();
+						imModel.remove();
 						refreshListView(); 
 					}
 				}).setNegativeButton("取消", null).show();
 				
-				return false;
+				return true;
 			}
 		});
 	}
