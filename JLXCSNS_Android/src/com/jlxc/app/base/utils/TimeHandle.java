@@ -42,8 +42,8 @@ public class TimeHandle {
 			int hour = calendar.get(Calendar.HOUR); // 获取小时;
 			int min = calendar.get(Calendar.MINUTE); // 获取分钟;
 
-			String hourStr=String.valueOf(hour);
-			String minStr=String.valueOf(min);
+			String hourStr = String.valueOf(hour);
+			String minStr = String.valueOf(min);
 			if (hour < 10) {
 				hourStr = "0" + hour;
 			}
@@ -53,7 +53,8 @@ public class TimeHandle {
 			calendar = Calendar.getInstance();
 			int currentYear = calendar.get(Calendar.YEAR); // 获取当前年份
 
-			if (diffMinutes < 1) {
+			if (diffSeconds < 60 && diffMinutes <= 0 && diffHours <= 0
+					&& diffDays <= 0) {
 				decTime = "刚刚";
 			} else if (diffDays <= 0 && diffHours <= 0) {
 				decTime = diffMinutes + "分钟前";
