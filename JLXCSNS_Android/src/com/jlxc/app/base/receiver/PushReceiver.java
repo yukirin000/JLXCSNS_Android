@@ -88,7 +88,7 @@ public class PushReceiver extends BroadcastReceiver {
 		if (null != imModel) {
 			//存在 加好友 但是有新朋友
 			if (imModel.getIsNew() != 1) {
-				showNotification(context, "您有一条新消息", "您有一条新消息", "");
+//				showNotification(context, "您有一条新消息", "您有一条新消息", "");
 				imModel.setIsNew(1);
 				imModel.setIsRead(0);
 				imModel.update();

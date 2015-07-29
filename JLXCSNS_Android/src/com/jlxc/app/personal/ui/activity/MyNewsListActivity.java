@@ -678,14 +678,11 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			}
 		});
 		if (operateData.getIsLike()) {
-			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
-					false);
+			newsOPerate.uploadLikeOperate(operateData.getNewsID(), false);
 		} else {
-			newsOPerate.uploadLikeOperate(userModel, operateData.getNewsID(),
-					true);
+			newsOPerate.uploadLikeOperate(operateData.getNewsID(), true);
 		}
 	}
-
 
 	/**
 	 * 数据处理

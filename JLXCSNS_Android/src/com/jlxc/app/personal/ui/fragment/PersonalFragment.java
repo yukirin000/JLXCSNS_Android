@@ -697,7 +697,7 @@ public class PersonalFragment extends BaseFragment {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+//							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 
@@ -745,7 +745,7 @@ public class PersonalFragment extends BaseFragment {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+//							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 
@@ -793,7 +793,7 @@ public class PersonalFragment extends BaseFragment {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+//							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 

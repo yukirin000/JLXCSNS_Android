@@ -9,6 +9,7 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
+import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
@@ -41,8 +42,6 @@ public class NewsOperate {
 	private OperateCallBack callInterface;
 	// 点赞回调接口
 	private LikeCallBack likeCallInterface;
-	// 上次操作的用户对象
-	private UserModel userModel;
 	// 上次点赞操作对应的adapter
 	private HelloHaAdapter<LikeModel> likeAdapter;
 	// 点赞操作对应的动态adapter
@@ -302,11 +301,9 @@ public class NewsOperate {
 	/**
 	 * 点赞操作网络请求
 	 */
-	public void uploadLikeOperate(final UserModel user, String newsId,
-			boolean isLike) {
+	public void uploadLikeOperate(String newsId, boolean isLike) {
 		if (!isUploadData) {
 			isUploadData = true;
-			userModel = user;
 			if (isLike) {
 				likeCallInterface.onOperateStart(true);
 			} else {
@@ -320,7 +317,8 @@ public class NewsOperate {
 			} else {
 				params.addBodyParameter("isLike", "0");
 			}
-			params.addBodyParameter("user_id", String.valueOf(user.getUid()));
+			params.addBodyParameter("user_id", String.valueOf(UserManager
+					.getInstance().getUser().getUid()));
 			params.addBodyParameter("is_second", "0");
 
 			HttpManager.post(JLXCConst.LIKE_OR_CANCEL, params,
@@ -377,11 +375,12 @@ public class NewsOperate {
 		lastOperateType = OP_Type_Like;
 
 		LikeModel myModel = new LikeModel();
-		myModel.setUserID(String.valueOf(userModel.getUid()));
+		myModel.setUserID(String.valueOf(UserManager.getInstance().getUser()
+				.getUid()));
 		myModel.setHeadImage(JLXCConst.ATTACHMENT_ADDR
-				+ userModel.getHead_image());
+				+ UserManager.getInstance().getUser().getHead_image());
 		myModel.setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
-				+ userModel.getHead_sub_image());
+				+ UserManager.getInstance().getUser().getHead_sub_image());
 		try {
 			headAdapter.addToFirst(myModel);
 		} catch (Exception e) {
@@ -397,11 +396,12 @@ public class NewsOperate {
 		newsAdapter = adapter;
 		lastOperateType = OP_Type_News_Like;
 		LikeModel myModel = new LikeModel();
-		myModel.setUserID(String.valueOf(userModel.getUid()));
+		myModel.setUserID(String.valueOf(UserManager.getInstance().getUser()
+				.getUid()));
 		myModel.setHeadImage(JLXCConst.ATTACHMENT_ADDR
-				+ userModel.getHead_image());
+				+ UserManager.getInstance().getUser().getHead_image());
 		myModel.setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
-				+ userModel.getHead_sub_image());
+				+ UserManager.getInstance().getUser().getHead_sub_image());
 
 		LikeListItem likeData = (LikeListItem) newsAdapter.getItem(lastPostion);
 		likeData.getLikeHeadListimage().add(0, myModel);
@@ -416,8 +416,11 @@ public class NewsOperate {
 		// 移除头像
 		try {
 			for (int index = 0; index < headAdapter.getCount(); ++index) {
-				if (headAdapter.getItem(index).getUserID()
-						.equals(String.valueOf(userModel.getUid()))) {
+				if (headAdapter
+						.getItem(index)
+						.getUserID()
+						.equals(String.valueOf(UserManager.getInstance()
+								.getUser().getUid()))) {
 					headAdapter.remove(index);
 					break;
 				} else {
@@ -441,8 +444,11 @@ public class NewsOperate {
 		List<LikeModel> likeData = ((LikeListItem) newsAdapter
 				.getItem(lastPostion)).getLikeHeadListimage();
 		for (int index = 0; index < likeData.size(); ++index) {
-			if (likeData.get(index).getUserID()
-					.equals(String.valueOf(userModel.getUid()))) {
+			if (likeData
+					.get(index)
+					.getUserID()
+					.equals(String.valueOf(UserManager.getInstance().getUser()
+							.getUid()))) {
 				likeData.remove(index);
 				break;
 			} else {

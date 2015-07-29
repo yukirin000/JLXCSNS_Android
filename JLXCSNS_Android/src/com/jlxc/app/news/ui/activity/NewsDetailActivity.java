@@ -1030,11 +1030,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				});
 
 				if (operateData.getIsLike()) {
-					newsOPerate.uploadLikeOperate(userModel,
-							currentNews.getNewsID(), false);
+					newsOPerate.uploadLikeOperate(currentNews.getNewsID(),
+							false);
 				} else {
-					newsOPerate.uploadLikeOperate(userModel,
-							currentNews.getNewsID(), true);
+					newsOPerate
+							.uploadLikeOperate(currentNews.getNewsID(), true);
 				}
 				break;
 

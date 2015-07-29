@@ -49,7 +49,8 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 public class MyFriendListActivity extends BaseActivityWithTopBar {
 
 	private final static String INTENT_KEY_USER_ID = "user_id";
-
+	// 每页加载好友数
+	private final int pageCount = 20;
 	// 点赞的人的listview
 	@ViewInject(R.id.listview_my_friend_list)
 	private PullToRefreshListView friendListView;
@@ -59,6 +60,8 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	private HelloHaAdapter<Map<String, String>> friendAdapter;
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
+	// 当前的刷新模式
+	private boolean isPullDown = false;
 	// 屏幕的尺寸
 	private int screenWidth = 0, screenHeight = 0;
 	// 当前的数据页
@@ -77,9 +80,11 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		init();
 		listviewSet();
-		getFriends(String.valueOf(currentPage), String.valueOf(20));
-		
-		//同步好友到本地
+
+		isPullDown = true;
+		getFriends(String.valueOf(currentPage), String.valueOf(pageCount));
+
+		// 同步好友到本地
 		syncFriends();
 	}
 
@@ -118,7 +123,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	 * */
 	private void listviewSet() {
 		// 设置刷新模式
-		friendListView.setMode(Mode.PULL_FROM_END);
+		friendListView.setMode(Mode.BOTH);
 
 		friendAdapter = new HelloHaAdapter<Map<String, String>>(
 				MyFriendListActivity.this, R.layout.my_friend_list_item_layout,
@@ -140,7 +145,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 				helper.setImageUrl(R.id.iv_my_friend_list_head, bitmapUtils,
 						JLXCConst.ATTACHMENT_ADDR + item.get("head_sub_image"),
 						new HeadBitmapLoadCallBack());
-			
+
 				// 绑定昵称与学校
 				helper.setText(R.id.tv_my_friend_name, item.get("name"));
 				helper.setText(R.id.tv_my_friend_school, item.get("school"));
@@ -156,21 +161,19 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// 下拉
+				currentPage = 1;
+				isPullDown = true;
+				getFriends(String.valueOf(currentPage),
+						String.valueOf(pageCount));
 			}
 
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (lastPage.equals("1")) {
-					friendListView.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							friendListView.onRefreshComplete();
-						}
-					}, 1000);
-					ToastUtil.show(MyFriendListActivity.this, "没有数据了,哦哦");
-				} else {
-					getFriends(String.valueOf(currentPage), String.valueOf(20));
+				if (lastPage.equals("0")) {
+					isPullDown = false;
+					getFriends(String.valueOf(currentPage),
+							String.valueOf(pageCount));
 				}
 			}
 		});
@@ -183,19 +186,12 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 
 					@Override
 					public void onLastItemVisible() {
-						if (lastPage.equals("1")) {
-							friendListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									friendListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(MyFriendListActivity.this,
-									"没有数据了,哦哦");
-						} else {
+						if (lastPage.equals("0")) {
+							isPullDown = false;
+							friendListView.setMode(Mode.PULL_FROM_END);
 							friendListView.setRefreshing(true);
 							getFriends(String.valueOf(currentPage),
-									String.valueOf(20));
+									String.valueOf(pageCount));
 						}
 					}
 				});
@@ -237,9 +233,20 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			friedMap.put("friend_remark", jsonObject.getString("friend_remark"));
 			List.add(friedMap);
 		}
+		if (isPullDown) {
+			dataList = List;
+			friendAdapter.replaceAll(dataList);
+			if (lastPage.equals("0")) {
+				friendListView.setMode(Mode.BOTH);
+			}
+		} else {
+			dataList.addAll(List);
+			friendAdapter.addAll(dataList);
+		}
 
-		dataList.addAll(List);
-		friendAdapter.addAll(dataList);
+		if (null != jPersonList) {
+			jPersonList.clear();
+		}
 	}
 
 	/**
@@ -259,19 +266,25 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
+							friendListView.onRefreshComplete();
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							JSONArray jsonArray = jResult
 									.getJSONArray(JLXCConst.HTTP_LIST);
 							lastPage = jResult.getString("is_last");
 							if (lastPage.equals("0")) {
+								friendListView.setMode(Mode.BOTH);
 								currentPage++;
+							} else {
+								friendListView.setMode(Mode.PULL_FROM_START);
 							}
 							JsonToPersonData(jsonArray);
-							friendListView.onRefreshComplete();
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
+							if (lastPage.equals("0")) {
+								friendListView.setMode(Mode.BOTH);
+							}
 							friendListView.onRefreshComplete();
 							ToastUtil.show(MyFriendListActivity.this,
 									jsonResponse
@@ -283,6 +296,9 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
+						if (lastPage.equals("0")) {
+							friendListView.setMode(Mode.BOTH);
+						}
 						friendListView.onRefreshComplete();
 						ToastUtil.show(MyFriendListActivity.this, "网络好像有点问题");
 					}
@@ -322,14 +338,13 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			container.setImageBitmap(bitmap);
 		}
 	}
-	
-	
-	
-	//同步全部好友到本地
+
+	// 同步全部好友到本地
 	public void syncFriends() {
-		//判断是否需要同步
-		String path = JLXCConst.NEED_SYNC_FRIENDS + "?" + "user_id=" + UserManager.getInstance().getUser().getUid()
-				+ "&friends_count="+IMModel.findHasAddAll().size();
+		// 判断是否需要同步
+		String path = JLXCConst.NEED_SYNC_FRIENDS + "?" + "user_id="
+				+ UserManager.getInstance().getUser().getUid()
+				+ "&friends_count=" + IMModel.findHasAddAll().size();
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -341,10 +356,11 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
-							//是否需要更新
+							// 是否需要更新
 							int needUpdate = jResult.getIntValue("needUpdate");
-							if (needUpdate>0) {
-								//需要更新好友列表
+							if (needUpdate > 0) {
+								// 需要更新好友列表
+								isPullDown = true;
 								getAllFriends();
 							}
 						}
@@ -358,11 +374,13 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 
 				}, null));
 	}
-	//更新全部
+
+	// 更新全部
 	public void getAllFriends() {
-		
-		//同步
-		String path = JLXCConst.GET_ALL_FRIENDS_LIST + "?" + "user_id=" + UserManager.getInstance().getUser().getUid();
+
+		// 同步
+		String path = JLXCConst.GET_ALL_FRIENDS_LIST + "?" + "user_id="
+				+ UserManager.getInstance().getUser().getUid();
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -372,34 +390,43 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-							JSONArray jsonArray = jResult.getJSONArray(JLXCConst.HTTP_LIST);
-							//建立模型数组
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							JSONArray jsonArray = jResult
+									.getJSONArray(JLXCConst.HTTP_LIST);
+							// 建立模型数组
 							for (int i = 0; i < jsonArray.size(); i++) {
-								JSONObject jsonObject = jsonArray.getJSONObject(i);
-								
-								String jlxcUid = JLXCConst.JLXC+jsonObject.getIntValue("uid");
+								JSONObject jsonObject = jsonArray
+										.getJSONObject(i);
+
+								String jlxcUid = JLXCConst.JLXC
+										+ jsonObject.getIntValue("uid");
 								IMModel model = IMModel.findByGroupId(jlxcUid);
 								if (null != model) {
 									model.setTitle(jsonObject.getString("name"));
-									model.setAvatarPath(jsonObject.getString("head_image"));
-									model.setRemark(jsonObject.getString("friend_remark"));
+									model.setAvatarPath(jsonObject
+											.getString("head_image"));
+									model.setRemark(jsonObject
+											.getString("friend_remark"));
 									model.setCurrentState(IMModel.GroupHasAdd);
 									model.update();
-								}else {
+								} else {
 									model = new IMModel();
 									model.setType(IMModel.ConversationType_PRIVATE);
 									model.setTargetId(jlxcUid);
 									model.setTitle(jsonObject.getString("name"));
-									model.setAvatarPath(jsonObject.getString("head_image"));
-									model.setRemark(jsonObject.getString("friend_remark"));
-									model.setOwner(UserManager.getInstance().getUser().getUid());
+									model.setAvatarPath(jsonObject
+											.getString("head_image"));
+									model.setRemark(jsonObject
+											.getString("friend_remark"));
+									model.setOwner(UserManager.getInstance()
+											.getUser().getUid());
 									model.setIsNew(0);
 									model.setIsRead(1);
 									model.setCurrentState(IMModel.GroupHasAdd);
 									model.save();
 								}
-								
+
 							}
 						}
 					}
