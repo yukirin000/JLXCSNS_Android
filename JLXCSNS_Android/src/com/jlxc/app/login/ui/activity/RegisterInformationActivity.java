@@ -340,7 +340,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 //			intent.putExtra("outputX", 960);
 //			intent.putExtra("outputY", 960);
 //		}
-		
+		intent.putExtra("scaleUpIfNeeded", true);//黑边
 		intent.putExtra("scale", true);
 		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
 		intent.putExtra("noFaceDetection", true); // no face detection
