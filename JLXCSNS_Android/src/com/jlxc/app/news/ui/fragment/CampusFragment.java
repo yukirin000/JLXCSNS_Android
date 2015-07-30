@@ -722,9 +722,12 @@ public class CampusFragment extends BaseFragment {
 								lastPage = jResult.getString("is_last");
 								if (lastPage.equals("0")) {
 									pageIndex++;
+									campusListView.setMode(Mode.BOTH);
+								}else {
+									campusListView.setMode(Mode.PULL_FROM_START);
 								}
 								campusListView.onRefreshComplete();
-								campusListView.setMode(Mode.BOTH);
+								
 								isRequestData = false;
 							}
 
@@ -732,7 +735,7 @@ public class CampusFragment extends BaseFragment {
 								ToastUtil.show(mContext, jsonResponse
 										.getString(JLXCConst.HTTP_MESSAGE));
 								campusListView.onRefreshComplete();
-								campusListView.setMode(Mode.BOTH);
+								campusListView.setMode(Mode.PULL_FROM_START);
 								isRequestData = false;
 							}
 						}

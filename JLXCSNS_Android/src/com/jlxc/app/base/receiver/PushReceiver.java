@@ -30,6 +30,7 @@ public class PushReceiver extends BroadcastReceiver {
 			try {
 				String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
 			    //如果不是自己订阅的则不接收
+				//这里就算不是自己订阅的也需要接受！！！ 不过以后修改！
 				if (!topic.equals(JLXCConst.JLXC+UserManager.getInstance().getUser().getUid())) {
 			        return;
 				}
