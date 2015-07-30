@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -210,7 +211,9 @@ public class NotifyNewsFragment extends BaseFragment {
 		};
 		//回复或者点赞或新朋友到达
 		IntentFilter newsfilter = new IntentFilter(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
-		getActivity().registerReceiver(messageReceiver, newsfilter);
+		LocalBroadcastManager mLocalBroadcastManager;
+		mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
+		mLocalBroadcastManager.registerReceiver(messageReceiver, newsfilter);
 	}
 	
 

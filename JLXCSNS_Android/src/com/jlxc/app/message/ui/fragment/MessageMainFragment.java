@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -224,7 +225,9 @@ public class MessageMainFragment extends BaseFragment {
 			}
 		};
 		IntentFilter intentFilter = new IntentFilter(JLXCConst.BROADCAST_MESSAGE_REFRESH);
-		getActivity().registerReceiver(newMessageReceiver, intentFilter);
+		LocalBroadcastManager mLocalBroadcastManager;
+		mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
+		mLocalBroadcastManager.registerReceiver(newMessageReceiver, intentFilter);
 	}
 	
 	//刷新顶部栏

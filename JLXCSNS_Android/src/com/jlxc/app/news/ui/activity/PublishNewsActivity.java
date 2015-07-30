@@ -110,7 +110,6 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		// 发布
 		case R.id.base_ll_right_btns:
 			publishNews();
-			publishFinishBroadcast();
 		case R.id.publish_news_layout:
 			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 			inputMethodManager.hideSoftInputFromWindow(getCurrentFocus()
@@ -389,6 +388,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 											.getString(JLXCConst.HTTP_MESSAGE));
 							hideLoading();
 							finishWithRight();
+							publishFinishBroadcast();
 							break;
 						case JLXCConst.STATUS_FAIL:
 							hideLoading();
