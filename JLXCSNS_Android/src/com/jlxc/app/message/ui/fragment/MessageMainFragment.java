@@ -225,9 +225,9 @@ public class MessageMainFragment extends BaseFragment {
 			}
 		};
 		IntentFilter intentFilter = new IntentFilter(JLXCConst.BROADCAST_MESSAGE_REFRESH);
-		LocalBroadcastManager mLocalBroadcastManager;
-		mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
-		mLocalBroadcastManager.registerReceiver(newMessageReceiver, intentFilter);
+//		LocalBroadcastManager mLocalBroadcastManager;
+//		mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
+		getActivity().registerReceiver(newMessageReceiver, intentFilter);
 	}
 	
 	//刷新顶部栏

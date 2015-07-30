@@ -47,7 +47,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.support.v4.app.FragmentTabHost;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -329,9 +328,7 @@ public class MainTabActivity extends BaseActivity {
 			}
 		};
 		IntentFilter intentFilter = new IntentFilter(JLXCConst.BROADCAST_TAB_BADGE);
-		LocalBroadcastManager mLocalBroadcastManager;
-		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
-		mLocalBroadcastManager.registerReceiver(newMessageReceiver, intentFilter);
+		registerReceiver(newMessageReceiver, intentFilter);
 	}
 	
 	//刷新tab 未读标志
