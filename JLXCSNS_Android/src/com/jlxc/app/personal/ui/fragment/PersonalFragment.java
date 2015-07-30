@@ -33,6 +33,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -552,18 +554,7 @@ public class PersonalFragment extends BaseFragment {
 			intent.putExtra("outputX", 960);
 			intent.putExtra("outputY", 960);
 			
-//			// outputX outputY 是裁剪图片宽高
-//			if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
-//				intent.putExtra("outputX", 320);
-//				intent.putExtra("outputY", 320);
-//			}else if (Build.MANUFACTURER.equalsIgnoreCase("MEIZU")) {
-//				intent.putExtra("outputX", 250);
-//				intent.putExtra("outputY", 250);
-//			}else {
-//				intent.putExtra("outputX", 960);
-//				intent.putExtra("outputY", 960);
-//			}
-			
+			intent.putExtra("scaleUpIfNeeded", true);//黑边
 			intent.putExtra("scale", true);
 			intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
 			intent.putExtra("noFaceDetection", true); // no face detection
