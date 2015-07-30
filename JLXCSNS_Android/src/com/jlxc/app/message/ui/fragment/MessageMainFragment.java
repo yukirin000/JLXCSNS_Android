@@ -30,7 +30,7 @@ import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.message.model.IMModel;
-import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
+import com.jlxc.app.news.receiver.NewMessageReceiver;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 

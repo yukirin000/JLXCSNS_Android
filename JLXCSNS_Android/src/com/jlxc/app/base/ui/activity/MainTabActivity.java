@@ -28,7 +28,7 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.ui.fragment.DiscoveryFragment;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
-import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
+import com.jlxc.app.news.receiver.NewMessageReceiver;
 import com.jlxc.app.news.ui.fragment.MainPageFragment;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;

@@ -1,4 +1,4 @@
-package com.jlxc.app.news.receiver.ui;
+package com.jlxc.app.news.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

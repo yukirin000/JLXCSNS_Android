@@ -31,7 +31,7 @@ import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.activity.NewFriendsActivity;
 import com.jlxc.app.news.model.NewsOperateModel;
-import com.jlxc.app.news.receiver.ui.NewMessageReceiver;
+import com.jlxc.app.news.receiver.NewMessageReceiver;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
