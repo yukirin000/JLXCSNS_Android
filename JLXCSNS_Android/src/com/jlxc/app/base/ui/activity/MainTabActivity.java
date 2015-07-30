@@ -123,6 +123,9 @@ public class MainTabActivity extends BaseActivity {
 		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
 			token = userModel.getIm_token();
 		}
+		
+		//先设置一次 避免重启的时候因为已连接而导致没设置
+		RongCloudEvent.getInstance().setOtherListener();
 		RongIM.connect(token, new ConnectCallback() {
 
 			@Override 
@@ -134,7 +137,6 @@ public class MainTabActivity extends BaseActivity {
 			public void onSuccess(String arg0) {
 				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
 				RongCloudEvent.getInstance().setOtherListener();
-				
 				//设置im未读监听
 				final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
 		                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,

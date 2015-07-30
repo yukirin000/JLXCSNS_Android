@@ -120,6 +120,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
         RongIM.setConversationListBehaviorListener(this);
         RongIM.setLocationProvider(this);//设置地理位置提供者,不用位置的同学可以注掉此行代码
         RongIM.setOnReceivePushMessageListener(this);
+        RongIM.setOnReceiveMessageListener(this);
 //        RongIM.setPushMessageBehaviorListener(this);//自定义 push 通知。
     }
 
@@ -129,10 +130,12 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
      * 在RongIM-connect-onSuccess后调用。
      */
     public void setOtherListener() {
-		RongIMClientWrapper.setOnReceiveMessageListener(this);//设置消息接收监听器。
-        RongIM.getInstance().setSendMessageListener(this);//设置发出消息接收监听器.
-		RongIMClientWrapper.setConnectionStatusListener(this);//设置连接状态监听器。
+//		RongIMClientWrapper.setOnReceiveMessageListener(this);//设置消息接收监听器。
+//        RongIM.getInstance().setSendMessageListener(this);//设置发出消息接收监听器.
+//		RongIMClientWrapper.setConnectionStatusListener(this);//设置连接状态监听器。
 //		RongIMClientWrapper.setOnReceivePushMessageListener(this);//设置通知监听器
+    	RongIM.getInstance().setSendMessageListener(this);//设置发出消息接收监听器.
+        RongIM.getInstance().getRongIMClient().setConnectionStatusListener(this);//设置连接状态监听器。
         //扩展功能自定义
         InputProvider.ExtendProvider[] provider = {
                 new ImageInputProvider(RongContext.getInstance()),//图片
