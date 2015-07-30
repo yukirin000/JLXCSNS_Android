@@ -398,7 +398,7 @@ public class FileUtil {
 				int degree = readPictureDegree(tempFile.getAbsolutePath());
 				bmp = rotaingImageView(degree, bmp);
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
-				bmp.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+				bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
 				bmp.recycle();
 				bos.flush();
 				bos.close();

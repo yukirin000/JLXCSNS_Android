@@ -165,7 +165,9 @@ public class PersonalFragment extends BaseFragment {
 	//用户模型
 	private UserModel userModel;
 	//单例bitmapUtils的引用
-	BitmapUtils bitmapUtils;
+	private BitmapUtils bitmapUtils;
+	//无缓存的
+	private BitmapUtils noCacheBitmapUtils;
 	//我的相片adapter
 	private HelloHaAdapter<String> myImageAdapter;
 	//最近来访adapter
@@ -348,7 +350,8 @@ public class PersonalFragment extends BaseFragment {
 		
 		//设置照片和背景图
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.ic_launcher, true, true);
-		
+		//无缓存bitmap
+		noCacheBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.ic_launcher, false, false);
 		//解析省份城市xml
 		initProvinceDatas();
 		cityBuilder = new AlertDialog.Builder(getActivity());
@@ -959,14 +962,14 @@ public class PersonalFragment extends BaseFragment {
 								String subPath = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("subimage");
 								userModel.setHead_image(serverPath);
 								userModel.setHead_sub_image(subPath);
-								bitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
+								noCacheBitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 								bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
 								//刷新信息								
 								UserInfo userInfo = new UserInfo(JLXCConst.JLXC+userModel.getUid(), userModel.getName(), Uri.parse(JLXCConst.ATTACHMENT_ADDR+serverPath));
 								RongIM.getInstance().refreshUserInfoCache(userInfo);
 							}else {
 								userModel.setBackground_image(serverPath);
-								bitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH+tmpImageName);
+								noCacheBitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH+tmpImageName);
 								bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
 							}
 							ToastUtil.show(getActivity(),jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
