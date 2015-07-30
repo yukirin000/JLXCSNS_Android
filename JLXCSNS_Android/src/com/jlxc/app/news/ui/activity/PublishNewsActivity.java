@@ -44,6 +44,8 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
+import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity;
+import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyAdapter;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -91,7 +93,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	private String tmpImageName;
 	// 地点
 	private String locationString;
-	//bitmap
+	// bitmap
 	private BitmapUtils bitmapUtils;
 
 	@OnClick(value = { R.id.addImageView, R.id.choiceLocationBtn,
@@ -152,11 +154,16 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 										break;
 									case 1:
 										// 相册
+										// Intent intentAlbum = new Intent(
+										// Intent.ACTION_GET_CONTENT);
+										// tmpImageName = JLXCUtils
+										// .getPhotoFileName() + "";
+										// intentAlbum.setType(IMAGE_UNSPECIFIED);
+										// startActivityForResult(intentAlbum,
+										// ALBUM_SELECT);
 										Intent intentAlbum = new Intent(
-												Intent.ACTION_GET_CONTENT);
-										tmpImageName = JLXCUtils
-												.getPhotoFileName() + "";
-										intentAlbum.setType(IMAGE_UNSPECIFIED);
+												PublishNewsActivity.this,
+												GalleyActivity.class);
 										startActivityForResult(intentAlbum,
 												ALBUM_SELECT);
 										break;
@@ -203,7 +210,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				final String tmpFilePath = (String) v.getTag();
 				new AlertDialog.Builder(PublishNewsActivity.this)
 						.setTitle("操作")
-						.setItems(new String[] { "删除", "查看大图", "滤镜处理"},
+						.setItems(new String[] { "删除", "查看大图", "滤镜处理" },
 								new OnClickListener() {
 
 									@Override
@@ -226,7 +233,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 											startActivityWithBottom(intent);
 											break;
 										case 2:
-											//滤镜
+											// 滤镜
 											filterImage(tmpFilePath, false);
 											break;
 										default:
@@ -302,24 +309,25 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 					TuFragment lastFragment) {
 				File oriFile = result.imageFile;
 				File newFile = new File(path);
-				//滤镜成功后重命名 之前的临时文件就被覆盖掉
+				// 滤镜成功后重命名 之前的临时文件就被覆盖掉
 				boolean filterOK = oriFile.renameTo(newFile);
 				if (filterOK) {
-					//添加
+					// 添加
 					if (isAdd) {
-						addNewsImageView(path);	
-					}else {
+						addNewsImageView(path);
+					} else {
 						// 图片
 						for (int i = 0; i < addImageLayout.getChildCount(); i++) {
 							View view = addImageLayout.getChildAt(i);
 							// 添加成功处理
-							if (view != addImageView && view.getTag().equals(path)) {
+							if (view != addImageView
+									&& view.getTag().equals(path)) {
 								// 设置照片
 								bitmapUtils.display(view, path);
 							}
 						}
 					}
-					
+
 				} else {
 					ToastUtil.show(PublishNewsActivity.this, "图片处理失败T_T");
 				}
@@ -468,10 +476,10 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				- oriLp.width * 4 - oriMarginLeft * 2) / 3;
 		addRightBtn("发布");
 		locationString = "";
-		
+
 		// bitmap初始化
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-				this, R.drawable.abc_ab_bottom_solid_light_holo, false, false);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
+				R.drawable.abc_ab_bottom_solid_light_holo, false, false);
 	}
 
 	@Override
@@ -573,6 +581,12 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				}
 				break;
 			case ALBUM_SELECT:// 当选择从本地获取图片时
+				/*******************/
+				List<String> resultList = GalleyAdapter.mSelectedImage;
+				for (String string : resultList) {
+					LogUtils.i("图片路径 ："+string );
+				}
+				/*******************/
 				// 做非空判断
 				if (data != null) {
 					Uri uri = data.getData();
