@@ -86,11 +86,13 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	// 间隔
 	private int space;
 	// 点击加号的image弹窗
-	AlertDialog imageDialog;
+	private AlertDialog imageDialog;
 	// 临时文件名
-	String tmpImageName;
+	private String tmpImageName;
 	// 地点
-	String locationString;
+	private String locationString;
+	//bitmap
+	private BitmapUtils bitmapUtils;
 
 	@OnClick(value = { R.id.addImageView, R.id.choiceLocationBtn,
 			R.id.base_ll_right_btns, R.id.publish_news_layout })
@@ -190,9 +192,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		// 设置tag
 		imageView.setTag(filePath);
 		// 设置照片
-		BitmapUtils utils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-				this, R.drawable.abc_ab_bottom_solid_light_holo, false, false);
-		utils.display(imageView, filePath);
+		bitmapUtils.display(imageView, filePath);
 
 		// 设置点击查看大图事件
 		imageView.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +203,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				final String tmpFilePath = (String) v.getTag();
 				new AlertDialog.Builder(PublishNewsActivity.this)
 						.setTitle("操作")
-						.setItems(new String[] { "删除", "查看大图" },
+						.setItems(new String[] { "删除", "查看大图", "滤镜处理"},
 								new OnClickListener() {
 
 									@Override
@@ -224,6 +224,10 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 													BigImgLookActivity.INTENT_KEY,
 													tmpFilePath);
 											startActivityWithBottom(intent);
+											break;
+										case 2:
+											//滤镜
+											filterImage(tmpFilePath, false);
 											break;
 										default:
 											break;
@@ -289,7 +293,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	}
 
 	// 图片滤镜
-	private void filterImage(final String path) {
+	private void filterImage(final String path, final boolean isAdd) {
 		File filterFile = new File(path);
 		// 组件委托
 		TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
@@ -298,9 +302,24 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 					TuFragment lastFragment) {
 				File oriFile = result.imageFile;
 				File newFile = new File(path);
+				//滤镜成功后重命名 之前的临时文件就被覆盖掉
 				boolean filterOK = oriFile.renameTo(newFile);
 				if (filterOK) {
-					addNewsImageView(path);
+					//添加
+					if (isAdd) {
+						addNewsImageView(path);	
+					}else {
+						// 图片
+						for (int i = 0; i < addImageLayout.getChildCount(); i++) {
+							View view = addImageLayout.getChildAt(i);
+							// 添加成功处理
+							if (view != addImageView && view.getTag().equals(path)) {
+								// 设置照片
+								bitmapUtils.display(view, path);
+							}
+						}
+					}
+					
 				} else {
 					ToastUtil.show(PublishNewsActivity.this, "图片处理失败T_T");
 				}
@@ -449,6 +468,10 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				- oriLp.width * 4 - oriMarginLeft * 2) / 3;
 		addRightBtn("发布");
 		locationString = "";
+		
+		// bitmap初始化
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+				this, R.drawable.abc_ab_bottom_solid_light_holo, false, false);
 	}
 
 	@Override
@@ -546,7 +569,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				int[] screenSize = getScreenSize();
 				if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0],
 						screenSize[1])) {
-					filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+					filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName, true);
 				}
 				break;
 			case ALBUM_SELECT:// 当选择从本地获取图片时
@@ -567,7 +590,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 											tmpImageName, screenSize1[0],
 											screenSize1[1])) {
 								filterImage(FileUtil.BIG_IMAGE_PATH
-										+ tmpImageName);
+										+ tmpImageName, true);
 							}
 						} else {
 

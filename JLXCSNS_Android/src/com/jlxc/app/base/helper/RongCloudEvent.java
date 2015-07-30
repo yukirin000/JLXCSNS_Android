@@ -13,7 +13,6 @@ import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -21,12 +20,12 @@ import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 
-import io.rong.imkit.PushNotificationManager;
 import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.RongIM.SentMessageErrorCode;
@@ -245,6 +244,10 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		//顶部更新
 		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
 		mContext.sendBroadcast(messageIntent);
+		//底部更新
+		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+		mContext.sendBroadcast(tabIntent);
+		
 //		Log.i("MainTabActivity", "一条新消息");
 //        MessageContent messageContent = message.getContent();
 //

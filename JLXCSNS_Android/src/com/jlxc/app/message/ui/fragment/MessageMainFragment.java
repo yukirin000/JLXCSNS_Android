@@ -1,5 +1,6 @@
 package com.jlxc.app.message.ui.fragment;
 
+import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imlib.model.Conversation;
 
@@ -238,8 +239,15 @@ public class MessageMainFragment extends BaseFragment {
 	    //未读推送
 		int newsUnreadCount = NewsPushModel.findUnreadCount().size();
 		int pushCount = newFriendsCount + newsUnreadCount;
-	    //聊天未读
-		int IMUnreadCount = MainTabActivity.imUnreadCount;
+		
+		final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
+                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
+                Conversation.ConversationType.APP_PUBLIC_SERVICE, Conversation.ConversationType.PUBLIC_SERVICE};
+		//聊天未读
+		int IMUnreadCount = 0;
+		if (null != RongIM.getInstance().getRongIMClient()) {
+			IMUnreadCount = RongIM.getInstance().getRongIMClient().getUnreadCount(conversationTypes);
+		}
 	    //徽标 最多显示99
 	    if (pushCount > 99) {
 	        pushCount = 99;

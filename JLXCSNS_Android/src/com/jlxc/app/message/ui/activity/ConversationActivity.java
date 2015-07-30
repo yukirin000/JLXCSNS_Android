@@ -29,6 +29,9 @@ public class ConversationActivity extends BaseActivityWithTopBar {
 		//顶部更新
 		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
 		sendBroadcast(messageIntent);
+		//底部更新
+		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+		sendBroadcast(tabIntent);
 	}
 
 }

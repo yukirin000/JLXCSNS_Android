@@ -4,6 +4,7 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
 import io.rong.imlib.RongIMClient.ConnectCallback;
 import io.rong.imlib.RongIMClient.ErrorCode;
 import io.rong.imlib.model.Conversation;
@@ -28,7 +29,9 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.ui.fragment.DiscoveryFragment;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
+import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.receiver.NewMessageReceiver;
+import com.jlxc.app.news.ui.activity.PublishNewsActivity;
 import com.jlxc.app.news.ui.fragment.MainPageFragment;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
@@ -47,10 +50,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,14 +82,11 @@ public class MainTabActivity extends BaseActivity {
 //	private boolean isConnect = false;
 	
 	//im未读数量
-	public static int imUnreadCount;
-	
 	public void initTab() {
 
 		layoutInflater = LayoutInflater.from(this);
 
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-
 		int count = fragmentArray.length;
 
 		for (int i = 0; i < count; i++) {
@@ -95,6 +97,18 @@ public class MainTabActivity extends BaseActivity {
 					.setBackgroundResource(R.drawable.selector_tab_background);
 		}
 		
+		//选择首页刷新
+		mTabHost.getTabWidget().getChildAt(0).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				mTabHost.setCurrentTab(0); 
+				Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
+				mIntent.putExtra(NewsOperateModel.PUBLISH_FINISH, "");
+				// 发送广播
+				LocalBroadcastManager.getInstance(MainTabActivity.this).sendBroadcast(mIntent);
+			}
+		});
+		
 		//注册通知
 		registerNotify();
 		refreshTab();
@@ -103,7 +117,7 @@ public class MainTabActivity extends BaseActivity {
 	
 	//初始化融云
 	private void initRong(){
-		
+		LogUtils.i("testestest", 1);
 		String token = "";
 		UserModel userModel = UserManager.getInstance().getUser();
 		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
@@ -140,7 +154,6 @@ public class MainTabActivity extends BaseActivity {
 			}
 
 		});
-		
 	}
 	//初始化云巴
 	private void initYunBa(){
@@ -341,7 +354,15 @@ public class MainTabActivity extends BaseActivity {
 	    //徽标 最多显示99
 	    //未读推送
 		int newsUnreadCount = NewsPushModel.findUnreadCount().size();
-		int total = newsUnreadCount+newFriendsCount+imUnreadCount;
+		
+		final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
+                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
+                Conversation.ConversationType.APP_PUBLIC_SERVICE, Conversation.ConversationType.PUBLIC_SERVICE};
+		int unreadCount = 0;
+		if (null != RongIM.getInstance().getRongIMClient()) {
+			unreadCount = RongIM.getInstance().getRongIMClient().getUnreadCount(conversationTypes);
+		}
+		int total = newsUnreadCount+newFriendsCount+unreadCount;
 	    if (total > 99) {
 	        total = 99;
 	    }
@@ -382,7 +403,6 @@ public class MainTabActivity extends BaseActivity {
 	public RongIM.OnReceiveUnreadCountChangedListener mCountListener = new RongIM.OnReceiveUnreadCountChangedListener() {
         @Override
         public void onMessageIncreased(int count) {
-            imUnreadCount = count;
             refreshTab();
         }
     };
