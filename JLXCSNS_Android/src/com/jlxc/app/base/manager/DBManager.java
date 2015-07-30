@@ -38,6 +38,8 @@ public class DBManager {
 				public void onCreate(SQLiteDatabase db) {					
 				}
 			};
+			//检测是否需要更新本地数据库
+			dbManager.checkOldDB();
 		}
 		return dbManager;
 	}
@@ -95,7 +97,7 @@ public class DBManager {
 		}
         try {
             File dir = new File(ROOT_PATH+"/jlxc");
-         // 如果/sdcard/testdb目录中存在，创建这个目录
+            // 如果/sdcard/testdb目录中存在，创建这个目录
             if (!dir.exists()){
             	dir.mkdir();
             	Log.i("--", "没有目录");
@@ -121,7 +123,7 @@ public class DBManager {
                 }
                 fos.close();
                 is.close();
-                // asset.close();
+                asset.close();
             }
         }
         catch (Exception e)
@@ -194,5 +196,10 @@ public class DBManager {
         }
 		
 		return cachePath;
+	}
+	
+	//检测旧版本数据库是否需要更新
+	private void checkOldDB() {
+		
 	}
 }

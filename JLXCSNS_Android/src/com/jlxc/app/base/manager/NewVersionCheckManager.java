@@ -41,13 +41,14 @@ public class NewVersionCheckManager {
 					@Override
 					public void onSuccess(JSONObject jsonResponse, String flag) {
 						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
+						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						//回调
+						if (null != callBack) {
+							callBack.finish();
+						}
+						
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-							if (null != callBack) {
-								callBack.finish();
-							}
 							
 							int remoteVersion = jResult.getIntValue("version_code");
 							//版本地址
@@ -74,11 +75,12 @@ public class NewVersionCheckManager {
 								if (showToast) {
 									ToastUtil.show(context, "已经是最新版本");	
 								}
-								
 							}
 							
 						}else {
-							
+							if (showToast) {
+								ToastUtil.show(context, "服务器异常 sad");	
+							}
 						}
 					}
 
@@ -86,6 +88,13 @@ public class NewVersionCheckManager {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
+						if (showToast) {
+							ToastUtil.show(context, "网络环境不太好。。。");	
+						}
+						//回调
+						if (null != callBack) {
+							callBack.finish();
+						}
 					}
 
 				}, null));

@@ -168,7 +168,7 @@ public class MainTabActivity extends BaseActivity {
 	
 	//获取最新版本号
 	private void getLastVersion() {
-		new NewVersionCheckManager(this, this).checkNewVersion(true, null);
+		new NewVersionCheckManager(this, this).checkNewVersion(false, null);
 	}
 	
 	@SuppressLint("InflateParams")
