@@ -34,6 +34,7 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -183,11 +184,11 @@ public class CampusFragment extends BaseFragment {
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(mContext);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
+				true, true);
+
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/***
@@ -1179,14 +1180,14 @@ public class CampusFragment extends BaseFragment {
 					// 无改变
 				} else if (resultIntent
 						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
-					//发布了动态
+					// 发布了动态
 					pageIndex = 1;
 					isPullDowm = true;
 					getCampusData(
 							String.valueOf(UserManager.getInstance().getUser()
 									.getUid()), String.valueOf(pageIndex),
-							UserManager.getInstance().getUser().getSchool_code(),
-							"");
+							UserManager.getInstance().getUser()
+									.getSchool_code(), "");
 				}
 			}
 		}

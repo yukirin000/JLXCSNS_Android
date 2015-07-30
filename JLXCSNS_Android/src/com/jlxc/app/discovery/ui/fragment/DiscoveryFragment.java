@@ -35,6 +35,7 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -176,11 +177,11 @@ public class DiscoveryFragment extends BaseFragment {
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(mContext);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
+				true, true);
+
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/**

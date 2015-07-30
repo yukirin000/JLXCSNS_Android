@@ -35,6 +35,7 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -337,8 +338,8 @@ public class NewsListFragment extends BaseFragment {
 					}
 				});
 		// 快速滑动时不加载图片
-		newsListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
-				false, true));
+		newsListView.setOnScrollListener(new PauseOnScrollListener(
+				bitmapUtils, false, true));
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		newsListView.setAdapter(newsAdapter);
@@ -389,15 +390,11 @@ public class NewsListFragment extends BaseFragment {
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		/*
-		 * bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
-		 * false, false);
-		 */
-		bitmapUtils = new BitmapUtils(mContext);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
+				true, true);
+
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/**
@@ -616,7 +613,7 @@ public class NewsListFragment extends BaseFragment {
 				if (helper.getPosition() < MAX_LIKE_COUNT) {
 					bitmapUtils.configDefaultBitmapMaxSize(30, 30);
 					helper.setImageUrl(R.id.iv_mian_like_gridview_item,
-							bitmapUtils, item.getHeadImage(),
+							bitmapUtils, item.getHeadSubImage(),
 							new NewsBitmapLoadCallBack());
 				} else if (MAX_LIKE_COUNT == helper.getPosition()) {
 					helper.setImageResource(R.id.iv_mian_like_gridview_item,
@@ -1179,7 +1176,7 @@ public class NewsListFragment extends BaseFragment {
 					// 无改变
 				} else if (resultIntent
 						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
-					//发布了动态
+					// 发布了动态
 					pageIndex = 1;
 					isPullDowm = true;
 					getNewsData(UserManager.getInstance().getUser().getUid(),

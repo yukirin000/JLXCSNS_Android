@@ -38,6 +38,7 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -301,11 +302,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(NewsDetailActivity.this);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+				NewsDetailActivity.this, true, true);
+
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/**
@@ -570,8 +571,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		};
 
 		// 快速滑动时不加载图片
-		newsDetailListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
+		// newsDetailListView.setOnScrollListener(new PauseOnScrollListener(
+		// bitmapUtils, false, true));
 		// 设置不可点击
 		detailAdapter.setItemsClickEnable(false);
 		newsDetailListView.setAdapter(detailAdapter);
@@ -1265,13 +1266,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		startActivityWithRight(intentUsrMain);
 	}
 
-	//重写
+	// 重写
 	@Override
 	public void finishWithRight() {
 		updateResultData();
 		super.finishWithRight();
 	}
-	
+
 	// 监听返回事件
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1324,7 +1325,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			mIntent.putExtra(NewsOperateModel.OPERATE_UPDATE, currentNews);
 		} else if (actionType.equals(NewsOperateModel.OPERATE_DELETET)) {
 			// 删除操作
-			mIntent.putExtra(NewsOperateModel.OPERATE_DELETET, currentNews.getNewsID());
+			mIntent.putExtra(NewsOperateModel.OPERATE_DELETET,
+					currentNews.getNewsID());
 		} else if (actionType.equals(NewsOperateModel.OPERATE_NO_ACTION)) {
 			// 没有操作
 			mIntent.putExtra(NewsOperateModel.OPERATE_NO_ACTION, "");
