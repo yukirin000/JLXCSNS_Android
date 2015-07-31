@@ -44,7 +44,9 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
+import com.jlxc.app.base.ui.view.ItemDialog;
 import com.jlxc.app.base.ui.view.KeyboardLayout;
+import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
 import com.jlxc.app.base.ui.view.KeyboardLayout.onKeyboardsChangeListener;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.utils.JLXCConst;
@@ -1048,22 +1050,21 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 							String.valueOf(UserManager.getInstance().getUser()
 									.getUid()))) {
 						// 如果是自己发布的评论，则删除评论
-						CharSequence[] items = { "删除评论" };
-						new AlertDialog.Builder(NewsDetailActivity.this)
-								.setItems(items,
-										new DialogInterface.OnClickListener() {
+						List<String> menuList = new ArrayList<String>();
+						menuList.add("删除评论");
+						final ItemDialog downDialog = new ItemDialog(
+								NewsDetailActivity.this, menuList);
+						downDialog.setClickCallBack(new ClickCallBack() {
 
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-												newsOPerate.deleteComment(
-														currentCommentModel
-																.getCommentID(),
-														currentNews.getNewsID());
-											}
-
-										}).show();
+							@Override
+							public void Onclick(View view, int which) {
+								newsOPerate.deleteComment(
+										currentCommentModel.getCommentID(),
+										currentNews.getNewsID());
+								downDialog.cancel();
+							}
+						});
+						downDialog.show();
 					} else {
 						// 发布回复别人的评论
 						commentEditText.requestFocus();
@@ -1092,21 +1093,21 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 							String.valueOf(UserManager.getInstance().getUser()
 									.getUid()))) {
 						// 如果是自己发布的评论，则删除评论
-						CharSequence[] items = { "删除评论" };
-						new AlertDialog.Builder(NewsDetailActivity.this)
-								.setItems(items,
-										new DialogInterface.OnClickListener() {
+						List<String> menuList = new ArrayList<String>();
+						menuList.add("删除评论");
+						final ItemDialog downDialog = new ItemDialog(
+								NewsDetailActivity.this, menuList);
+						downDialog.setClickCallBack(new ClickCallBack() {
 
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-												newsOPerate.deleteSubComment(
-														currentSubCmtModel
-																.getSubID(),
-														currentNews.getNewsID());
-											}
-										}).show();
+							@Override
+							public void Onclick(View view,int which) {
+								newsOPerate.deleteSubComment(
+										currentSubCmtModel.getSubID(),
+										currentNews.getNewsID());
+								downDialog.cancel();
+							}
+						});
+						downDialog.show();
 					} else {
 						// 找到topComment
 						int index = postion;

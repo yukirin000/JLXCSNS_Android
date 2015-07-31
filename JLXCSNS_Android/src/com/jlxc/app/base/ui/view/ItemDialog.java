@@ -67,7 +67,7 @@ public class ItemDialog extends Dialog {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				clickCallBack.Onclick(position);
+				clickCallBack.Onclick(view,position);
 				
 			}
 		});
@@ -82,6 +82,6 @@ public class ItemDialog extends Dialog {
 	 * 点赞回调接口
 	 * */
 	public interface ClickCallBack {
-		public void Onclick(int which);
+		public void Onclick(View view,int which);
 	}
 }

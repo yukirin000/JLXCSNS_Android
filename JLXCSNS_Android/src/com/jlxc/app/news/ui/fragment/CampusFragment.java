@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -89,6 +91,8 @@ public class CampusFragment extends BaseFragment {
 	private List<CampusPersonModel> personList;
 	// 动态的图片适配器
 	private HelloHaAdapter<ImageModel> newsGVAdapter;
+	// 学校的人的头像
+	private GridView personHeadGridView;
 	// 使支持多种item
 	private MultiItemTypeSupport<ItemModel> multiItemTypeCampus = null;
 	// 上下文信息
@@ -118,8 +122,6 @@ public class CampusFragment extends BaseFragment {
 	private HelloHaAdapter<LikeModel> curntAdapter = null;
 	// 对动态的操作
 	private NewsOperate newsOPerate;
-	// 当前操作的动态
-	public static NewsModel currentNews;
 
 	@Override
 	public int setLayoutId() {
@@ -646,22 +648,21 @@ public class CampusFragment extends BaseFragment {
 						new NewsBitmapLoadCallBack());
 			}
 		};
-		GridView headPersonGridView = (GridView) helper
-				.getView(R.id.gv_school_person);
+		personHeadGridView = (GridView) helper.getView(R.id.gv_school_person);
 		// 设置gridview的尺寸
 		int photoCount = personList.size();
 		int gridviewWidth = (int) (photoCount * (headImageSize + 4));
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-		headPersonGridView.setColumnWidth(headImageSize);
-		headPersonGridView.setHorizontalSpacing(4);
-		headPersonGridView.setStretchMode(GridView.NO_STRETCH);
-		headPersonGridView.setNumColumns(photoCount);
-		headPersonGridView.setLayoutParams(params);
+		personHeadGridView.setColumnWidth(headImageSize);
+		personHeadGridView.setHorizontalSpacing(4);
+		personHeadGridView.setStretchMode(GridView.NO_STRETCH);
+		personHeadGridView.setNumColumns(photoCount);
+		personHeadGridView.setLayoutParams(params);
 		// 绑定适配器
-		headPersonGridView.setAdapter(personGVAdapter);
+		personHeadGridView.setAdapter(personGVAdapter);
 		PersonGridViewItemClick personItemClickListener = new PersonGridViewItemClick();
-		headPersonGridView.setOnItemClickListener(personItemClickListener);
+		personHeadGridView.setOnItemClickListener(personItemClickListener);
 
 		// 查看所有的校友
 		final int postion = helper.getPosition();
@@ -706,6 +707,7 @@ public class CampusFragment extends BaseFragment {
 							}
 							JsonToItemData(JNewsList, JPersonList);
 							campusListView.onRefreshComplete();
+
 							if (jResult.getString("is_last").equals("0")) {
 								islastPage = false;
 								pageIndex++;
@@ -770,6 +772,7 @@ public class CampusFragment extends BaseFragment {
 			itemDataList = DataToItem.campusDataToItems(newsList, personList);
 			newsAdapter.replaceAll(itemDataList);
 		} else {
+			// 加载更多动态信息
 			this.newsList.addAll(newsList);
 			itemDataList.addAll(DataToItem.campusDataToItems(newsList,
 					personList));

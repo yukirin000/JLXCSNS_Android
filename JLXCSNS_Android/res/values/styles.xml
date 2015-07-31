@@ -46,7 +46,7 @@
         <!-- 背景透明 -->
         <item name="android:windowBackground">@color/transparent</item>
         <!-- 模糊 -->
-        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
     
     <!-- 相册部分 弹出框动画 -->

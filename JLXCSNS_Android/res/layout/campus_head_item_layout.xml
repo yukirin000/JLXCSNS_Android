@@ -28,6 +28,7 @@
         android:orientation="horizontal" >
 
         <HorizontalScrollView
+            android:id="@+id/hsv_person_list"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

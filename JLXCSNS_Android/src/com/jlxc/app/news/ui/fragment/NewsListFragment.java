@@ -400,8 +400,6 @@ public class NewsListFragment extends BaseFragment {
 		laParams.width = laParams.height = (screenWidth) / 6;
 		imgView.setLayoutParams(laParams);
 		imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-		bitmapUtils.configDefaultBitmapMaxSize((screenWidth) / 4,
-				(screenWidth) / 4);
 		helper.setImageUrl(R.id.img_mian_news_user_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
 		// 设置用户名,发布的时间，标签
@@ -455,8 +453,6 @@ public class NewsListFragment extends BaseFragment {
 			}
 			imgView.setLayoutParams(laParams);
 			imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
-					screenWidth * 4 / 5);
 			helper.setImageUrl(R.id.iv_mian_news_body_picture, bitmapUtils,
 					imageModel.getURL(), new NewsBitmapLoadCallBack());
 
@@ -491,8 +487,6 @@ public class NewsListFragment extends BaseFragment {
 					laParams.width = laParams.height = desSize;
 					imgView.setLayoutParams(laParams);
 					imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-					bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
-							screenWidth);
 					helper.setImageUrl(R.id.iv_mian_body_gridview_item,
 							bitmapUtils, item.getSubURL(),
 							new NewsBitmapLoadCallBack());
@@ -595,12 +589,9 @@ public class NewsListFragment extends BaseFragment {
 				laParams.width = laParams.height = (screenWidth) / 12;
 				imgView.setLayoutParams(laParams);
 				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				bitmapUtils
-						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
 				// 绑定图片
 				if (helper.getPosition() < MAX_LIKE_COUNT) {
-					bitmapUtils.configDefaultBitmapMaxSize(30, 30);
 					helper.setImageUrl(R.id.iv_mian_like_gridview_item,
 							bitmapUtils, item.getHeadSubImage(),
 							new NewsBitmapLoadCallBack());

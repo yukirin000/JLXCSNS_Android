@@ -176,7 +176,6 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 						new String[] { "image/jpeg", "image/png" },
 						MediaStore.Images.Media.DATE_MODIFIED);
 
-				Log.e("TAG", mCursor.getCount() + "");
 				while (mCursor.moveToNext()) {
 					// 获取图片的路径
 					String path = mCursor.getString(mCursor
@@ -234,7 +233,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 				}
 				// 扫描完成，辅助的HashSet也就可以释放内存了
 				mDirPaths = null;
-				// 通知Handler扫描图片完成
+				// 通知Handler扫描图片完成x
 				mHandler.sendEmptyMessage(0x110);
 			}
 		}).start();

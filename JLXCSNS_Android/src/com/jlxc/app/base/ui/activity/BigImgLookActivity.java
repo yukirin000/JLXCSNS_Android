@@ -244,7 +244,7 @@ public class BigImgLookActivity extends BaseActivity {
 		downDialog.setClickCallBack(new ClickCallBack() {
 
 			@Override
-			public void Onclick(int which) {
+			public void Onclick(View view,int which) {
 				String imagePath = imageUrlList.get(currentPage);
 				int nameIndex = imagePath.lastIndexOf("/");
 				String imageName = imagePath.substring(nameIndex + 1);
