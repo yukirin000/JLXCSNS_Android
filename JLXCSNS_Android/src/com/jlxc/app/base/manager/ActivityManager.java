@@ -48,16 +48,24 @@ public class ActivityManager {
 	//全出
 	@SuppressWarnings("rawtypes")
 	public void popAllActivityExceptOne(Class cls) {
-		while (true) {
-			Activity activity = currentActivity();
-			if (activity == null) {
-				break;
-			}
+//		while (true) {
+			
+		for (Activity activity: activityStack) {
 			if (activity.getClass().equals(cls)) {
-				break;
-			}
+				continue;
+			}	
 			popActivity(activity);
 		}
+			
+//			Activity activity = currentActivity();
+//			if (activity == null) {
+//				break;
+//			}
+//			if (activity.getClass().equals(cls)) {
+//				break;
+//			}
+			
+//		}
 	}
 
 	/**
@@ -72,14 +80,5 @@ public class ActivityManager {
 			}
 			popActivity(activity);
 		}
-	}
-	
-	public boolean existActivity(Class<Activity> activityClass) {
-		
-		for(Activity activity: activityStack){
-			Log.i("MainTabActivity", activity+"");	
-		}
-		
-		return true;
 	}
 }
