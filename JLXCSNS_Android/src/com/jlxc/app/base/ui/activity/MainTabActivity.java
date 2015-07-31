@@ -94,14 +94,17 @@ public class MainTabActivity extends BaseActivity {
 				mTabHost.getTabWidget().getChildAt(i).setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View arg0) {
-						mTabHost.setCurrentTab(index); 
-						Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
-						mIntent.putExtra(NewsOperateModel.PUBLISH_FINISH, "");
-						//发送广播
-						LocalBroadcastManager.getInstance(MainTabActivity.this).sendBroadcast(mIntent);
-						//徽标更新
-						Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
-						sendBroadcast(tabIntent);						
+						
+						if (mTabHost.getCurrentTab() == 0) {
+							Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
+							mIntent.putExtra(NewsOperateModel.PUBLISH_FINISH, "");
+							//发送广播
+							LocalBroadcastManager.getInstance(MainTabActivity.this).sendBroadcast(mIntent);
+							//徽标更新
+							Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+							sendBroadcast(tabIntent);							
+						}
+						mTabHost.setCurrentTab(index);
 					}
 				});	
 			}else {
@@ -294,8 +297,8 @@ public class MainTabActivity extends BaseActivity {
 			newMessageReceiver = null;
 		}
 		
-		if (RongIM.getInstance() != null)
-            RongIM.getInstance().logout();
+//		if (RongIM.getInstance() != null)
+//            RongIM.getInstance().logout();
 		
 		Process.killProcess(Process.myPid());
 		super.onDestroy();  
