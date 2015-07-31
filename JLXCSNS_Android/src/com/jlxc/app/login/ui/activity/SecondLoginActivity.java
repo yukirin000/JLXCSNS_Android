@@ -102,6 +102,7 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 							Toast.LENGTH_SHORT).show();
 					//跳转主页
 					Intent intent = new Intent(SecondLoginActivity.this, MainTabActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
 					
 					break; 

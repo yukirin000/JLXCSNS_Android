@@ -137,7 +137,7 @@ public class MainTabActivity extends BaseActivity {
 
 			@Override
 			public void onSuccess(String arg0) {
-				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
 				RongCloudEvent.getInstance().setOtherListener();
 				//设置im未读监听
 				final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
@@ -169,9 +169,9 @@ public class MainTabActivity extends BaseActivity {
 				@Override
 				public void onSuccess(IMqttToken arg0) {
 //					LogUtils.i("yunba success"+JLXCConst.JLXC+userModel.getUid(), 1);
-					Looper.prepare();
-					Toast.makeText(MainTabActivity.this, "yunba success", Toast.LENGTH_SHORT).show();
-					Looper.loop();
+//					Looper.prepare();
+//					Toast.makeText(MainTabActivity.this, "yunba success", Toast.LENGTH_SHORT).show();
+//					Looper.loop();
 				}
 				@Override
 				public void onFailure(IMqttToken arg0, Throwable arg1) {
@@ -213,6 +213,8 @@ public class MainTabActivity extends BaseActivity {
 	@Override
 	protected void setUpView() {
 		
+		//只留下自己
+		ActivityManager.getInstence().popAllActivityExceptOne(MainTabActivity.class);
 		//初始化tab
 		initTab();
 		//初始化融云

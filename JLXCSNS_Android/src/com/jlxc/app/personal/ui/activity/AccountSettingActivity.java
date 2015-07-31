@@ -54,11 +54,10 @@ public class AccountSettingActivity extends BaseActivityWithTopBar{
                 //清空数据
                 UserManager.getInstance().clear();
                 UserManager.getInstance().setUser(new UserModel());
-                com.jlxc.app.base.manager.ActivityManager.getInstence().popAllActivityExceptOne(LoginActivity.class);
 //                killThisPackageIfRunning(AccountSettingActivity.this, "com.jlxc.app");
 //                Process.killProcess(Process.myPid());
-
                 Intent exit = new Intent(AccountSettingActivity.this, LoginActivity.class);
+                exit.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
 				startActivity(exit);
 				finish();
             }

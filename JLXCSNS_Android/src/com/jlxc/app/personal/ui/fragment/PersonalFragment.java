@@ -366,11 +366,6 @@ public class PersonalFragment extends BaseFragment {
 		});
 		cityBuilder.setNegativeButton("取消", null);
 		
-		
-		//头像 2015-07-07/01436273216_sub.jpg
-		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
-		//背景 2015-07-02/191435808476.png
-		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getBackground_image());
 	}
 
 	@Override
@@ -382,7 +377,10 @@ public class PersonalFragment extends BaseFragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
+		//头像 2015-07-07/01436273216_sub.jpg
+		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
+		//背景 2015-07-02/191435808476.png
+		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getBackground_image());		
 		//姓名
 		if (null == userModel.getName() || "".equals(userModel.getName())) {
 			nameTextView.setText("暂无");
@@ -536,6 +534,10 @@ public class PersonalFragment extends BaseFragment {
 			signTextView.setText(signString);
 			uploadInformation("sign", signString);
 		}else {
+			File file = new File(FileUtil.TEMP_PATH+tmpImageName);
+			if (file.exists()) {
+				file.delete(); 
+			}	
 			tmpImageName = "";
 		}  
 		
