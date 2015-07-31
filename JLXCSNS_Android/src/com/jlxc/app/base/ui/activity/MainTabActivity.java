@@ -4,7 +4,6 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
 import io.rong.imlib.RongIMClient.ConnectCallback;
 import io.rong.imlib.RongIMClient.ErrorCode;
 import io.rong.imlib.model.Conversation;
@@ -12,13 +11,9 @@ import io.yunba.android.manager.YunBaManager;
 
 import cn.smssdk.SMSSDK;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
-import com.jlxc.app.base.helper.JsonRequestCallBack;
-import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.ActivityManager;
-import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.NewVersionCheckManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.NewsPushModel;
@@ -33,18 +28,14 @@ import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.model.NewsOperateModel;
 import com.jlxc.app.news.receiver.NewMessageReceiver;
-import com.jlxc.app.news.ui.activity.PublishNewsActivity;
 import com.jlxc.app.news.ui.fragment.MainPageFragment;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.jlxc.app.personal.ui.fragment.PersonalFragment;
-import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.umeng.analytics.MobclickAgent;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -69,7 +60,7 @@ public class MainTabActivity extends BaseActivity {
 	
 	// FragmentTabHost对象
 	@ViewInject(android.R.id.tabhost)
-	private FragmentTabHost mTabHost;
+	public FragmentTabHost mTabHost;
 
 	private LayoutInflater layoutInflater; 
 
@@ -97,19 +88,36 @@ public class MainTabActivity extends BaseActivity {
 			mTabHost.addTab(tabSpec, fragmentArray[i], null);
 			mTabHost.getTabWidget().getChildAt(i)
 					.setBackgroundResource(R.drawable.selector_tab_background);
-		}
-		
-		//选择首页刷新
-		mTabHost.getTabWidget().getChildAt(0).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				mTabHost.setCurrentTab(0); 
-				Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
-				mIntent.putExtra(NewsOperateModel.PUBLISH_FINISH, "");
-				// 发送广播
-				LocalBroadcastManager.getInstance(MainTabActivity.this).sendBroadcast(mIntent);
+			final int index = i;
+			if (index == 0) {
+				//选择首页刷新和其他的不太一样
+				mTabHost.getTabWidget().getChildAt(i).setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						mTabHost.setCurrentTab(index); 
+						Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
+						mIntent.putExtra(NewsOperateModel.PUBLISH_FINISH, "");
+						//发送广播
+						LocalBroadcastManager.getInstance(MainTabActivity.this).sendBroadcast(mIntent);
+						//徽标更新
+						Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+						sendBroadcast(tabIntent);						
+					}
+				});	
+			}else {
+				//选择首页刷新和其他的不太一样
+				mTabHost.getTabWidget().getChildAt(index).setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						mTabHost.setCurrentTab(index); 
+						//徽标更新
+						Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+						sendBroadcast(tabIntent);
+					}
+				});
 			}
-		});
+			
+		}
 		
 		//注册通知
 		registerNotify();
