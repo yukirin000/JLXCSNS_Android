@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -1156,6 +1157,7 @@ public class NewsListFragment extends BaseFragment {
 				} else if (resultIntent
 						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
 					// 发布了动态
+					smoothToTop();
 					if (!isRequestingData) {
 						isRequestingData = true;
 						pageIndex = 1;
@@ -1167,4 +1169,23 @@ public class NewsListFragment extends BaseFragment {
 			}
 		}
 	};
+
+	// 平滑滚动到顶
+	private void smoothToTop() {
+		int firstVisiblePosition = newsListView.getRefreshableView()
+				.getFirstVisiblePosition();
+		if (0 == firstVisiblePosition) {
+			//已经在顶部
+			newsListView.setRefreshing(true);
+		} else {
+			if (firstVisiblePosition < 20) {
+				newsListView.getRefreshableView().smoothScrollToPosition(0);
+
+			} else {
+				newsListView.getRefreshableView().setSelection(20);
+				newsListView.getRefreshableView().smoothScrollToPosition(0);
+			}
+			newsListView.getRefreshableView().clearFocus();
+		}
+	}
 }
