@@ -1180,7 +1180,6 @@ public class NewsListFragment extends BaseFragment {
 		} else {
 			if (firstVisiblePosition < 20) {
 				newsListView.getRefreshableView().smoothScrollToPosition(0);
-
 			} else {
 				newsListView.getRefreshableView().setSelection(20);
 				newsListView.getRefreshableView().smoothScrollToPosition(0);
