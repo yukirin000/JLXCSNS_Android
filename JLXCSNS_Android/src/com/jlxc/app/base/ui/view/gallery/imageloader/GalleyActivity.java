@@ -88,7 +88,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		if (intent.hasExtra(INTENT_KEY_SELECTED_COUNT)) {
 			selectedCount = intent.getIntExtra(INTENT_KEY_SELECTED_COUNT, 0);
 		}
-		setBarText("选取照片 ("+selectedCount+"/9)");
+		setBarText("选取照片 (" + selectedCount + "/9)");
 		GalleyAdapter.clearSelectedImageList();
 		getImages();
 		initEvent();
@@ -115,6 +115,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		}
 
 		mImgs = Arrays.asList(defaultImgDir.list());
+
 		/**
 		 * 可以看到文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
 		 */
@@ -228,7 +229,9 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 					}
 				}
 				mCursor.close();
-
+				if (null == defaultImgDir) {
+					defaultImgDir = mImgDir;
+				}
 				// 扫描完成，辅助的HashSet也就可以释放内存了
 				mDirPaths = null;
 				// 通知Handler扫描图片完成
@@ -302,7 +305,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		mChooseDir.setText(floder.getName().replace("/", ""));
 		mListImageDirPopupWindow.dismiss();
 	}
-	
+
 	/**
 	 * 点击事件
 	 * */
@@ -310,8 +313,8 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 
 		@Override
 		public void OnItemClick(int count) {
-			setBarText("选取照片 ("+count+"/9)");
+			setBarText("选取照片 (" + count + "/9)");
 		}
-};
-	
+	};
+
 }
