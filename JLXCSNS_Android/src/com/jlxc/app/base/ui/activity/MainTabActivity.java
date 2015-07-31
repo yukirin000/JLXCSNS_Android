@@ -294,8 +294,8 @@ public class MainTabActivity extends BaseActivity {
 			newMessageReceiver = null;
 		}
 		
-		if (RongIM.getInstance() != null)
-            RongIM.getInstance().logout();
+//		if (RongIM.getInstance() != null)
+//            RongIM.getInstance().logout();
 		
 		Process.killProcess(Process.myPid());
 		super.onDestroy();  
