@@ -256,8 +256,10 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 			@Override
 			public void onClick(View v) {
 				// 点击完成时
-				if (mAdapter.mSelectedImage.size() > 0) {
+				List<String> list = mAdapter.getSelectedImageList();
+				if (list.size() > 0) {
 					Intent intentFinish = new Intent();
+					intentFinish.putExtra(PHOTO_PATH_LIST, (Serializable) list);
 					setResult(Activity.RESULT_OK, intentFinish);
 					finish();
 				}

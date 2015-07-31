@@ -582,9 +582,11 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				break;
 			case ALBUM_SELECT:// 当选择从本地获取图片时
 				/*******************/
-				List<String> resultList = GalleyAdapter.mSelectedImage;
+				@SuppressWarnings("unchecked")
+				List<String> resultList = (List<String>) data
+						.getSerializableExtra(GalleyActivity.PHOTO_PATH_LIST);
 				for (String string : resultList) {
-					LogUtils.i("图片路径 ："+string );
+					LogUtils.i("图片路径 ：" + string);
 				}
 				/*******************/
 				// 做非空判断

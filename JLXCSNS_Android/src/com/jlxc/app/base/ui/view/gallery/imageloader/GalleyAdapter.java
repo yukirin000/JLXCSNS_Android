@@ -19,7 +19,7 @@ public class GalleyAdapter extends CommonAdapter<String> {
 	/**
 	 * 用户选择的图片，存储为图片的完整路径
 	 */
-	public static List<String> mSelectedImage = new LinkedList<String>();
+	private List<String> mSelectedImage = new LinkedList<String>();
 
 	/**
 	 * 文件夹路径
@@ -35,7 +35,8 @@ public class GalleyAdapter extends CommonAdapter<String> {
 	@Override
 	public void convert(final ViewHolder helper, final String item) {
 		// 设置no_pic
-		helper.setImageResource(R.id.btn_galley_item_select, R.drawable.pictures_no);
+		helper.setImageResource(R.id.btn_galley_item_select,
+				R.drawable.pictures_no);
 		// 设置no_selected
 		helper.setImageResource(R.id.btn_galley_item_select,
 				R.drawable.picture_unselected);
@@ -76,5 +77,10 @@ public class GalleyAdapter extends CommonAdapter<String> {
 			mImageView.setColorFilter(Color.parseColor("#77000000"));
 		}
 
+	}
+
+	// 得到返回的数据
+	public List<String> getSelectedImageList() {
+		return mSelectedImage;
 	}
 }
