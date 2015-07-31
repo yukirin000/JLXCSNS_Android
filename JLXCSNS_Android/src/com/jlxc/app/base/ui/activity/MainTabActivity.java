@@ -10,6 +10,8 @@ import io.rong.imlib.RongIMClient.ErrorCode;
 import io.rong.imlib.model.Conversation;
 import io.yunba.android.manager.YunBaManager;
 
+import cn.smssdk.SMSSDK;
+
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
@@ -240,6 +242,7 @@ public class MainTabActivity extends BaseActivity {
 			}	
             if (RongIM.getInstance() != null)
             	RongIM.getInstance().disconnect();
+            SMSSDK.unregisterAllEventHandler();
 //			final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
 //	        alterDialog.setMessage("确定退出该账号吗？");
 //	        alterDialog.setCancelable(true);

@@ -1,17 +1,25 @@
 package com.jlxc.app.login.ui.activity;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.R.bool;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
+
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
@@ -23,6 +31,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
@@ -127,8 +136,6 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		// 判断输入值是否正确
 		if (verifyCodeEditTextValue.length() == 0) {
 			ToastUtil.show(RegisterActivity.this, "验证码未输入");
-		} else if (verifyCodeEditTextValue.length() < 6) {
-			ToastUtil.show(RegisterActivity.this, "验证码错误");
 		} else if (password.length() < 6) {
 			ToastUtil.show(RegisterActivity.this, "密码最少得6位啦");
 		} else {
@@ -145,6 +152,59 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	// 找回密码
 	private void findPwd() {
 		showLoading("数据上传中^_^", false);
+		//先验证验证码
+		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+//		RequestParams params = new RequestParams();
+//		params.addBodyParameter("username", userPhoneNumber);
+//		params.addBodyParameter("password", Md5Utils.encode(password));
+//		params.addBodyParameter("verify_code",
+//				String.valueOf(verifyCodeEditTextValue));
+//
+//		HttpManager.post(JLXCConst.FIND_PWD, params,
+//				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+//
+//					@Override
+//					public void onSuccess(JSONObject jsonResponse, String flag) {
+//						super.onSuccess(jsonResponse, flag);
+//						int status = jsonResponse
+//								.getInteger(JLXCConst.HTTP_STATUS);
+//						if (status == JLXCConst.STATUS_SUCCESS) {
+//							hideLoading();
+//							JSONObject result = jsonResponse
+//									.getJSONObject(JLXCConst.HTTP_RESULT);
+//							UserModel userMd = new UserModel();
+//							userMd.setContentWithJson(result);
+//							UserManager.getInstance().setUser(userMd);
+//							ToastUtil.show(RegisterActivity.this, "修改成功");
+//							// 数据持久化
+//							UserManager.getInstance().saveAndUpdate();
+//							// 跳转主页
+//							Intent intent = new Intent(RegisterActivity.this,
+//									MainTabActivity.class);
+//							startActivity(intent);
+//
+//						}
+//
+//						if (status == JLXCConst.STATUS_FAIL) {
+//							hideLoading();
+//							ToastUtil.show(RegisterActivity.this, jsonResponse
+//									.getString(JLXCConst.HTTP_MESSAGE));
+//						}
+//					}
+//
+//					@Override
+//					public void onFailure(HttpException arg0, String arg1,
+//							String flag) {
+//						super.onFailure(arg0, arg1, flag);
+//						hideLoading();
+//						showConfirmAlert("提示", "注册失败，请检查网络连接!");
+//					}
+//				}, null));
+	}
+	
+	// 找回密码
+	private void finishPwd() {
+//		showLoading("数据上传中^_^", false);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("username", userPhoneNumber);
 		params.addBodyParameter("password", Md5Utils.encode(password));
@@ -196,10 +256,65 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	// 开始注册
 	private void startRegister() {
 		RegisterActivity.this.showLoading("正在注册", false);
+		//先验证验证码
+		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+		
+//		RegisterActivity.this.showLoading("正在注册", false);
+//		RequestParams params = new RequestParams();
+//		params.addBodyParameter("username", userPhoneNumber);
+//		params.addBodyParameter("password", Md5Utils.encode(password));
+//		params.addBodyParameter("verify_code", verifyCodeEditTextValue);
+//
+//		HttpManager.post(JLXCConst.REGISTER_USER, params,
+//				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+//
+//					@Override
+//					public void onSuccess(JSONObject jsonResponse, String flag) {
+//						super.onSuccess(jsonResponse, flag);
+//						int status = jsonResponse
+//								.getInteger(JLXCConst.HTTP_STATUS);
+//						if (status == JLXCConst.STATUS_SUCCESS) {
+//							hideLoading();
+//							JSONObject result = jsonResponse
+//									.getJSONObject(JLXCConst.HTTP_RESULT);
+//							// 设置用户实例
+//							UserModel userMd = new UserModel();
+//							userMd.setContentWithJson(result);
+//							UserManager.getInstance().setUser(userMd);
+//							// 数据持久化
+//							UserManager.getInstance().saveAndUpdate();
+//							ToastUtil.show(RegisterActivity.this, "注册成功");
+//							// 跳转至选择学校页面
+//							Intent intent = new Intent(RegisterActivity.this,
+//									SelectSchoolActivity.class);
+//							startActivity(intent);
+//						}
+//
+//						if (status == JLXCConst.STATUS_FAIL) {
+//							hideLoading();
+//							ToastUtil.show(RegisterActivity.this, jsonResponse
+//									.getString(JLXCConst.HTTP_MESSAGE));
+//						}
+//					}
+//
+//					@Override
+//					public void onFailure(HttpException arg0, String arg1,
+//							String flag) {
+//						super.onFailure(arg0, arg1, flag);
+//						hideLoading();
+//						ToastUtil.show(RegisterActivity.this, "注册失败，你网络太垃圾了!");
+//					}
+//
+//				}, null));
+	}
+	
+	//验证成功 完成注册
+	private void finishRegister() {
+		
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("username", userPhoneNumber);
 		params.addBodyParameter("password", Md5Utils.encode(password));
-		params.addBodyParameter("verify_code", verifyCodeEditTextValue);
+//		params.addBodyParameter("verify_code", verifyCodeEditTextValue);
 
 		HttpManager.post(JLXCConst.REGISTER_USER, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -251,6 +366,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
 		init();
 		backTextView.setText("返回");
 		titletTextView.setText("注册");
@@ -276,6 +392,31 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		// 开始倒计时
 		verifyCountdownTimer.start();
 	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		//验证码接收器
+		EventHandler eh=new EventHandler(){
+			@Override
+			public void afterEvent(int event, int result, Object data) {
+				Message msg = new Message();
+				msg.arg1 = event;
+				msg.arg2 = result;
+				msg.obj = data;
+				handler.sendMessage(msg);
+			}
+		};
+		SMSSDK.registerEventHandler(eh);
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		SMSSDK.unregisterAllEventHandler();
+	}
 
 	@Override
 	protected void loadLayout(View v) {
@@ -284,40 +425,42 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	// 获取验证码
 	private void getVerificationCode() {
-		// 设置字体颜色
-		revalidatedTextView.setTextColor(Color.GRAY);
-		// 网络请求
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("phone_num", userPhoneNumber);
-
-		HttpManager.post(JLXCConst.GET_MOBILE_VERIFY, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							ToastUtil.show(RegisterActivity.this, "验证码已发送");
-							verifyCountdownTimer.start();
-						}
-
-						if (status == JLXCConst.STATUS_FAIL) {
-							hideLoading();
-							showConfirmAlert("提示", jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						hideLoading();
-						showConfirmAlert("提示", "获取失败，请检查网络连接!");
-					}
-				}, null));
+		//发送验证码
+		SMSSDK.getVerificationCode("86",userPhoneNumber);
+//		// 设置字体颜色
+//		revalidatedTextView.setTextColor(Color.GRAY);
+//		// 网络请求
+//		RequestParams params = new RequestParams();
+//		params.addBodyParameter("phone_num", userPhoneNumber);
+//
+//		HttpManager.post(JLXCConst.GET_MOBILE_VERIFY, params,
+//				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+//
+//					@Override
+//					public void onSuccess(JSONObject jsonResponse, String flag) {
+//						super.onSuccess(jsonResponse, flag);
+//						int status = jsonResponse
+//								.getInteger(JLXCConst.HTTP_STATUS);
+//						if (status == JLXCConst.STATUS_SUCCESS) {
+//							ToastUtil.show(RegisterActivity.this, "验证码已发送");
+//							verifyCountdownTimer.start();
+//						}
+//
+//						if (status == JLXCConst.STATUS_FAIL) {
+//							hideLoading();
+//							showConfirmAlert("提示", jsonResponse
+//									.getString(JLXCConst.HTTP_MESSAGE));
+//						}
+//					}
+//
+//					@Override
+//					public void onFailure(HttpException arg0, String arg1,
+//							String flag) {
+//						super.onFailure(arg0, arg1, flag);
+//						hideLoading();
+//						showConfirmAlert("提示", "获取失败，请检查网络连接!");
+//					}
+//				}, null));
 	}
 
 	/**
@@ -331,4 +474,48 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		} else
 			return super.onKeyDown(keyCode, event);
 	}
+	
+	@SuppressLint("HandlerLeak") 
+	Handler handler=new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			hideLoading();
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			int event = msg.arg1;
+			int result = msg.arg2;
+			Object data = msg.obj;
+			Log.e("event", "event="+event);
+			if (result == SMSSDK.RESULT_COMPLETE) {
+				//短信注册成功后，返回MainActivity,然后提示新好友
+				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
+					//完成注册或者找回密码
+					if (isFindPwd) {
+						finishPwd();
+					} else {
+						// 注册
+						finishRegister();
+					}
+				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+					ToastUtil.show(RegisterActivity.this, "验证码已发送至您的手机");	
+					
+				}else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){//返回支持发送验证码的国家列表
+//					Toast.makeText(getApplicationContext(), "获取国家列表成功", Toast.LENGTH_SHORT).show();
+					
+				}
+			} else {
+				((Throwable) data).printStackTrace();
+				ToastUtil.show(RegisterActivity.this, "验证码错误");
+				System.out.println(((Throwable) data).toString());
+//				int resId = getStringRes(RegisterActivity.this, "smssdk_network_error");
+//				Toast.makeText(MainActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
+//				if (resId > 0) {
+//					Toast.makeText(MainActivity.this, resId, Toast.LENGTH_SHORT).show();
+//				}
+			}
+			
+		}
+		
+	};
 }

@@ -1,12 +1,19 @@
 package com.jlxc.app.login.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
@@ -20,6 +27,7 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.Md5Utils;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -117,43 +125,45 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 	
 	//找回密码
 	public void findPwd() {
-		//网络请求
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("phone_num", username);
-		HttpManager.post(JLXCConst.GET_MOBILE_VERIFY, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
-			
-			@Override
-			public void onSuccess(JSONObject jsonResponse, String flag) {
-				// TODO Auto-generated method stub
-				super.onSuccess(jsonResponse, flag);
-				LogUtils.i(jsonResponse.toJSONString(), 1);
-				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-				switch (status) {
-				case JLXCConst.STATUS_SUCCESS:
-					hideLoading();
-					//跳转
-	            	Intent intent = new Intent(SecondLoginActivity.this, RegisterActivity.class);
-	            	intent.putExtra("username", username);
-	            	intent.putExtra("isFindPwd", true);
-	            	startActivityWithRight(intent);	
-					
-					break;
-				case JLXCConst.STATUS_FAIL:
-					hideLoading();
-					Toast.makeText(SecondLoginActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE),
-							Toast.LENGTH_SHORT).show();
-				}
-			}
-			@Override
-			public void onFailure(HttpException arg0, String arg1, String flag) {
-				// TODO Auto-generated method stub
-				super.onFailure(arg0, arg1, flag);
-				hideLoading();
-				Toast.makeText(SecondLoginActivity.this, "网络异常",
-						Toast.LENGTH_SHORT).show();
-			}
-			
-		}, null)); 
+		//发送验证码
+		SMSSDK.getVerificationCode("86",username);
+//		//网络请求
+//		RequestParams params = new RequestParams();
+//		params.addBodyParameter("phone_num", username);
+//		HttpManager.post(JLXCConst.GET_MOBILE_VERIFY, params, new JsonRequestCallBack<String>(new LoadDataHandler<String>(){
+//			
+//			@Override
+//			public void onSuccess(JSONObject jsonResponse, String flag) {
+//				// TODO Auto-generated method stub
+//				super.onSuccess(jsonResponse, flag);
+//				LogUtils.i(jsonResponse.toJSONString(), 1);
+//				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+//				switch (status) {
+//				case JLXCConst.STATUS_SUCCESS:
+//					hideLoading();
+//					//跳转
+//	            	Intent intent = new Intent(SecondLoginActivity.this, RegisterActivity.class);
+//	            	intent.putExtra("username", username);
+//	            	intent.putExtra("isFindPwd", true);
+//	            	startActivityWithRight(intent);	
+//					
+//					break;
+//				case JLXCConst.STATUS_FAIL:
+//					hideLoading();
+//					Toast.makeText(SecondLoginActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE),
+//							Toast.LENGTH_SHORT).show();
+//				}
+//			}
+//			@Override
+//			public void onFailure(HttpException arg0, String arg1, String flag) {
+//				// TODO Auto-generated method stub
+//				super.onFailure(arg0, arg1, flag);
+//				hideLoading();
+//				Toast.makeText(SecondLoginActivity.this, "网络异常",
+//						Toast.LENGTH_SHORT).show();
+//			}
+//			
+//		}, null)); 
 	}
 	
 	@Override
@@ -168,8 +178,76 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 		Intent intent =	getIntent();
 		setUsername(intent.getStringExtra("username"));
 //		passwordEt.setText("123456");
-		
+//		EventHandler eh=new EventHandler(){
+//			@Override
+//			public void afterEvent(int event, int result, Object data) {
+//				Message msg = new Message();
+//				msg.arg1 = event;
+//				msg.arg2 = result;
+//				msg.obj = data;
+//				handler.sendMessage(msg);
+//			}
+//		};
+//		SMSSDK.registerEventHandler(eh);
 	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		EventHandler eh=new EventHandler(){
+			@Override
+			public void afterEvent(int event, int result, Object data) {
+				Message msg = new Message();
+				msg.arg1 = event;
+				msg.arg2 = result;
+				msg.obj = data;
+				handler.sendMessage(msg);
+			}
+		};
+		SMSSDK.registerEventHandler(eh);
+	}
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		SMSSDK.unregisterAllEventHandler();
+	}
+	
+	@SuppressLint("HandlerLeak") 
+	Handler handler=new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			hideLoading();
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			int event = msg.arg1;
+			int result = msg.arg2;
+			Object data = msg.obj;
+			Log.e("event", "event="+event);
+			if (result == SMSSDK.RESULT_COMPLETE) {
+				//短信注册成功后，返回MainActivity,然后提示新好友
+				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
+//					Toast.makeText(getApplicationContext(), "提交验证码成功", Toast.LENGTH_SHORT).show();
+				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+	            	Intent intent = new Intent(SecondLoginActivity.this, RegisterActivity.class);
+	            	intent.putExtra("username", username);
+	            	startActivityWithRight(intent);	
+	            	
+//	            	SMSSDK.unregisterAllEventHandler();
+				}else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){//返回支持发送验证码的国家列表
+//					Toast.makeText(getApplicationContext(), "获取国家列表成功", Toast.LENGTH_SHORT).show();
+					
+				}
+			} else {
+				((Throwable) data).printStackTrace();
+				ToastUtil.show(SecondLoginActivity.this, "网络有点小问题");
+			}
+			
+		}
+		
+	};
 
 	public String getUsername() {
 		return username;

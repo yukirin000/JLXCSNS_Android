@@ -5,6 +5,9 @@ import org.lasque.tusdk.core.TuSdk;
 import io.rong.imkit.RongIM;
 import io.yunba.android.manager.YunBaManager;
 
+
+import cn.smssdk.SMSSDK;
+
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.DBManager;
 import com.jlxc.app.base.manager.UserManager;
@@ -14,7 +17,6 @@ import com.umeng.analytics.MobclickAgent;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 /**
  *Application
@@ -52,6 +54,12 @@ public class JLXCApplication extends Application {
 		 //初始化TuTuSDK
 		TuSdk.enableDebugLog(true);
 		TuSdk.init(this.getApplicationContext(),"f1c31a2ee6e0fe88-00-t14qn1");
+		// 填写从短信SDK应用后台注册得到的APPKEY 
+		String APPKEY = "94025949f2d3";//463db7238681  27fe7909f8e8
+		// 填写从短信SDK应用后台注册得到的APPSECRET
+		String APPSECRET = "f3d6e97c5b3a1872336ff370a08d1aeb";
+		//初始化验证码
+		SMSSDK.initSDK(this,APPKEY,APPSECRET);
 	}  
 
 	public static String getCurProcessName(Context context) {
