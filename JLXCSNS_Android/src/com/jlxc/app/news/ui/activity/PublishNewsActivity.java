@@ -164,6 +164,10 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 										Intent intentAlbum = new Intent(
 												PublishNewsActivity.this,
 												GalleyActivity.class);
+										intentAlbum
+												.putExtra(
+														GalleyActivity.INTENT_KEY_SELECTED_COUNT,
+														5);
 										startActivityForResult(intentAlbum,
 												ALBUM_SELECT);
 										break;
@@ -584,7 +588,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				/*******************/
 				@SuppressWarnings("unchecked")
 				List<String> resultList = (List<String>) data
-						.getSerializableExtra(GalleyActivity.PHOTO_PATH_LIST);
+						.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
 				for (String string : resultList) {
 					LogUtils.i("图片路径 ：" + string);
 				}

@@ -3,33 +3,36 @@ package com.jlxc.app.base.ui.view.gallery.imageloader;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+
 import com.jlxc.app.R;
 import com.jlxc.app.base.ui.view.gallery.utils.CommonAdapter;
 import com.jlxc.app.base.ui.view.gallery.utils.ViewHolder;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
-
 public class GalleyAdapter extends CommonAdapter<String> {
 
-	/**
-	 * 用户选择的图片，存储为图片的完整路径
-	 */
-	private List<String> mSelectedImage = new LinkedList<String>();
-
+	private final static int MAX_SELECT_COUNT = 9;
+	// 用户选择的图片，存储为图片的完整路径
+	private static List<String> mSelectedImage = new LinkedList<String>();
+	// 已经选中的数量
+	private int haveSelectCount = 0;
+	// 回调接口
+	private OnItemClickClass onItemClickClass;
 	/**
 	 * 文件夹路径
 	 */
 	private String mDirPath;
 
 	public GalleyAdapter(Context context, List<String> mDatas,
-			int itemLayoutId, String dirPath) {
+			int itemLayoutId, String dirPath, int count) {
 		super(context, mDatas, itemLayoutId);
 		this.mDirPath = dirPath;
+		this.haveSelectCount = count;
 	}
 
 	@Override
@@ -52,20 +55,18 @@ public class GalleyAdapter extends CommonAdapter<String> {
 			// 选择，则将图片变暗，反之则反之
 			@Override
 			public void onClick(View v) {
-				if (mSelectedImage.size() <= 9) {
-					// 已经选择过该图片
-					if (mSelectedImage.contains(mDirPath + "/" + item)) {
-						mSelectedImage.remove(mDirPath + "/" + item);
-						mSelect.setImageResource(R.drawable.picture_unselected);
-						mImageView.setColorFilter(null);
-					} else
-					// 未选择该图片
-					{
-						mSelectedImage.add(mDirPath + "/" + item);
-						mSelect.setImageResource(R.drawable.pictures_selected);
-						mImageView.setColorFilter(Color.parseColor("#77000000"));
-					}
+				// 已经选择过该图片
+				if (mSelectedImage.contains(mDirPath + "/" + item)) {
+					mSelectedImage.remove(mDirPath + "/" + item);
+					mSelect.setImageResource(R.drawable.picture_unselected);
+					mImageView.setColorFilter(null);
+				} else if (mSelectedImage.size() + haveSelectCount < MAX_SELECT_COUNT) {
+					mSelectedImage.add(mDirPath + "/" + item);
+					mSelect.setImageResource(R.drawable.pictures_selected);
+					mImageView.setColorFilter(Color.parseColor("#77000000"));
 				}
+				onItemClickClass.OnItemClick(mSelectedImage.size()
+						+ haveSelectCount);
 			}
 		});
 
@@ -82,5 +83,19 @@ public class GalleyAdapter extends CommonAdapter<String> {
 	// 得到返回的数据
 	public List<String> getSelectedImageList() {
 		return mSelectedImage;
+	}
+
+	// 清空选中的值
+	public static void clearSelectedImageList() {
+		mSelectedImage.clear();
+	}
+
+	public void setClickCallBack(OnItemClickClass clickCallBack) {
+		onItemClickClass = clickCallBack;
+	}
+
+	// 选则事件回调
+	public interface OnItemClickClass {
+		public void OnItemClick(int count);
 	}
 }
