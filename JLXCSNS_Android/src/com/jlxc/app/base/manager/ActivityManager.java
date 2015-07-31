@@ -3,6 +3,7 @@ package com.jlxc.app.base.manager;
 import java.util.Stack;
 
 import android.app.Activity;
+import android.util.Log;
 
 public class ActivityManager {
 	private static Stack<Activity> activityStack;
@@ -71,5 +72,14 @@ public class ActivityManager {
 			}
 			popActivity(activity);
 		}
+	}
+	
+	public boolean existActivity(Class<Activity> activityClass) {
+		
+		for(Activity activity: activityStack){
+			Log.i("MainTabActivity", activity+"");	
+		}
+		
+		return true;
 	}
 }

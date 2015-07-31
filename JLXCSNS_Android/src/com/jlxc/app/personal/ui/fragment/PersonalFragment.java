@@ -169,7 +169,7 @@ public class PersonalFragment extends BaseFragment {
 	//单例bitmapUtils的引用
 	private BitmapUtils bitmapUtils;
 	//无缓存的
-	private BitmapUtils noCacheBitmapUtils;
+//	private BitmapUtils noCacheBitmapUtils;
 	//我的相片adapter
 	private HelloHaAdapter<String> myImageAdapter;
 	//最近来访adapter
@@ -353,7 +353,7 @@ public class PersonalFragment extends BaseFragment {
 		//设置照片和背景图
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.ic_launcher, true, true);
 		//无缓存bitmap
-		noCacheBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.ic_launcher, false, false);
+//		noCacheBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.ic_launcher, false, false);
 		//解析省份城市xml
 		initProvinceDatas();
 		cityBuilder = new AlertDialog.Builder(getActivity());
@@ -365,6 +365,12 @@ public class PersonalFragment extends BaseFragment {
 			}
 		});
 		cityBuilder.setNegativeButton("取消", null);
+		
+		
+		//头像 2015-07-07/01436273216_sub.jpg
+		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
+		//背景 2015-07-02/191435808476.png
+		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getBackground_image());
 	}
 
 	@Override
@@ -376,11 +382,6 @@ public class PersonalFragment extends BaseFragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
-		//头像 2015-07-07/01436273216_sub.jpg
-		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
-		//背景 2015-07-02/191435808476.png
-		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getBackground_image());
 		
 		//姓名
 		if (null == userModel.getName() || "".equals(userModel.getName())) {
@@ -953,14 +954,14 @@ public class PersonalFragment extends BaseFragment {
 								String subPath = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getString("subimage");
 								userModel.setHead_image(serverPath);
 								userModel.setHead_sub_image(subPath);
-								noCacheBitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
+								bitmapUtils.display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 								bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
 								//刷新信息								
 								UserInfo userInfo = new UserInfo(JLXCConst.JLXC+userModel.getUid(), userModel.getName(), Uri.parse(JLXCConst.ATTACHMENT_ADDR+serverPath));
 								RongIM.getInstance().refreshUserInfoCache(userInfo);
 							}else {
 								userModel.setBackground_image(serverPath);
-								noCacheBitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH+tmpImageName);
+								bitmapUtils.display(backImageView, FileUtil.BIG_IMAGE_PATH+tmpImageName);
 								bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+serverPath);
 							}
 							ToastUtil.show(getActivity(),jsonResponse.getString(JLXCConst.HTTP_MESSAGE));

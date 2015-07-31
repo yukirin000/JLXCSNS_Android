@@ -27,6 +27,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -128,8 +129,12 @@ public class LoginActivity extends BaseActivity {
 	
 	//发送验证码
 	public void sendVerify(final String username) {
-		//发送验证码
-		SMSSDK.getVerificationCode("86",usernameEt.getText().toString().trim());
+//		//发送验证码
+//		SMSSDK.getVerificationCode("86",usernameEt.getText().toString().trim());
+		
+		Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+    	intent.putExtra("username", usernameEt.getText().toString().trim());
+    	startActivityWithRight(intent);	
 		
 //		//网络请求
 //		RequestParams params = new RequestParams();
@@ -199,6 +204,8 @@ public class LoginActivity extends BaseActivity {
 //		usernameEt.setText("13736661234");
 		UserModel userModel = UserManager.getInstance().getUser();
 		if (null != userModel.getUsername() && null != userModel.getLogin_token()) {
+			ActivityManager.getInstence().existActivity(null);
+			
 			//跳转主页 自动登录
 			Intent intent = new Intent(this, MainTabActivity.class);
 			startActivity(intent);			

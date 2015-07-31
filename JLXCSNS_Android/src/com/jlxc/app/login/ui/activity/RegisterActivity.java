@@ -256,8 +256,10 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	// 开始注册
 	private void startRegister() {
 		RegisterActivity.this.showLoading("正在注册", false);
-		//先验证验证码
-		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+		//先验证验证码 测试注释掉
+//		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+		
+		finishRegister();
 		
 //		RegisterActivity.this.showLoading("正在注册", false);
 //		RequestParams params = new RequestParams();

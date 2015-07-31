@@ -138,17 +138,11 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 									switch (which) {
 									case 0:
 										// 拍照
-										Intent intentCamera = new Intent(
-												MediaStore.ACTION_IMAGE_CAPTURE);
-										tmpImageName = JLXCUtils
-												.getPhotoFileName() + "";
+										Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+										tmpImageName = JLXCUtils.getPhotoFileName() + "";
 										LogUtils.i(tmpImageName, 1);
-										File tmpFile = new File(
-												FileUtil.TEMP_PATH
-														+ tmpImageName);
-										intentCamera.putExtra(
-												MediaStore.EXTRA_OUTPUT,
-												Uri.fromFile(tmpFile));
+										File tmpFile = new File(FileUtil.TEMP_PATH+ tmpImageName);
+										intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(tmpFile));
 										startActivityForResult(intentCamera,
 												TAKE_PHOTO);
 										break;
@@ -161,13 +155,12 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 										// intentAlbum.setType(IMAGE_UNSPECIFIED);
 										// startActivityForResult(intentAlbum,
 										// ALBUM_SELECT);
-										Intent intentAlbum = new Intent(
-												PublishNewsActivity.this,
-												GalleyActivity.class);
-										intentAlbum
-												.putExtra(
-														GalleyActivity.INTENT_KEY_SELECTED_COUNT,
-														5);
+										Intent intentAlbum = new Intent(PublishNewsActivity.this,GalleyActivity.class);
+										int imageCount = addImageLayout.getChildCount()-1;
+										if (imageCount < 0) {
+											imageCount = 0;
+										}
+										intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,imageCount);
 										startActivityForResult(intentAlbum,
 												ALBUM_SELECT);
 										break;
@@ -218,8 +211,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 								new OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(DialogInterface dialog,int which) {
 
 										switch (which) {
 										case 0:
@@ -228,12 +220,8 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 											break;
 										case 1:
 											// 查看大图
-											Intent intent = new Intent(
-													PublishNewsActivity.this,
-													BigImgLookActivity.class);
-											intent.putExtra(
-													BigImgLookActivity.INTENT_KEY,
-													tmpFilePath);
+											Intent intent = new Intent(PublishNewsActivity.this,BigImgLookActivity.class);
+											intent.putExtra(BigImgLookActivity.INTENT_KEY,tmpFilePath);
 											startActivityWithBottom(intent);
 											break;
 										case 2:
@@ -401,7 +389,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				}
 			}
 		}
-
+		
 		// 姓名
 		HttpManager.post(JLXCConst.PUBLISH_NEWS, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -444,22 +432,22 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				}, null));
 	}
 
-	private String getRealPathFromURI(Uri contentURI) {
-		String result;
-		Cursor cursor = getContentResolver().query(contentURI, null, null,
-				null, null);
-		if (cursor == null) { // Source is Dropbox or other similar local file
-								// path
-			result = contentURI.getPath();
-		} else {
-			cursor.moveToFirst();
-			int idx = cursor
-					.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-			result = cursor.getString(idx);
-			cursor.close();
-		}
-		return result;
-	}
+//	private String getRealPathFromURI(Uri contentURI) {
+//		String result;
+//		Cursor cursor = getContentResolver().query(contentURI, null, null,
+//				null, null);
+//		if (cursor == null) { // Source is Dropbox or other similar local file
+//								// path
+//			result = contentURI.getPath();
+//		} else {
+//			cursor.moveToFirst();
+//			int idx = cursor
+//					.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+//			result = cursor.getString(idx);
+//			cursor.close();
+//		}
+//		return result;
+//	}
 
 	// /////////////////////////////////////Override//////////////////////////////////////////
 	@Override
@@ -589,37 +577,47 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				@SuppressWarnings("unchecked")
 				List<String> resultList = (List<String>) data
 						.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
-				for (String string : resultList) {
-					LogUtils.i("图片路径 ：" + string);
+				int[] screenSize1 = getScreenSize();
+				
+				long interval = System.currentTimeMillis()/1000;
+				//循环处理图片
+				for (String fileRealPath : resultList) {
+					//用户id+时间戳
+			    	String fileName = UserManager.getInstance().getUser().getUid()+""+interval+".jpg";
+					if (fileRealPath != null&& FileUtil.tempToLocalPath(fileRealPath,fileName, screenSize1[0],screenSize1[1])) {
+						addNewsImageView(FileUtil.BIG_IMAGE_PATH + fileName);
+					}
+					//命名规则以当前时间戳顺序加一
+					interval++;
 				}
 				/*******************/
-				// 做非空判断
-				if (data != null) {
-					Uri uri = data.getData();
-					try {
-						ContentResolver cr = this.getContentResolver();
-						if (uri.toString().endsWith(".png")
-								|| uri.toString().endsWith(".jpg")
-								|| "image/jpeg".equals(cr.getType(uri))
-								|| "image/png".equals(cr.getType(uri))) {
-							// 压缩存储
-							int[] screenSize1 = getScreenSize();
-							String fileRealPath = getRealPathFromURI(uri);
-							if (fileRealPath != null
-									&& FileUtil.tempToLocalPath(fileRealPath,
-											tmpImageName, screenSize1[0],
-											screenSize1[1])) {
-								filterImage(FileUtil.BIG_IMAGE_PATH
-										+ tmpImageName, true);
-							}
-						} else {
-
-						}
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
+//				// 做非空判断
+//				if (data != null) {
+//					Uri uri = data.getData();
+//					try {
+//						ContentResolver cr = this.getContentResolver();
+//						if (uri.toString().endsWith(".png")
+//								|| uri.toString().endsWith(".jpg")
+//								|| "image/jpeg".equals(cr.getType(uri))
+//								|| "image/png".equals(cr.getType(uri))) {
+//							// 压缩存储
+//							int[] screenSize1 = getScreenSize();
+//							String fileRealPath = getRealPathFromURI(uri);
+//							if (fileRealPath != null
+//									&& FileUtil.tempToLocalPath(fileRealPath,
+//											tmpImageName, screenSize1[0],
+//											screenSize1[1])) {
+//								filterImage(FileUtil.BIG_IMAGE_PATH
+//										+ tmpImageName, true);
+//							}
+//						} else {
+//
+//						}
+//
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
 				break;
 			}
 		}
