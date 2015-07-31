@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -34,18 +34,25 @@
 
     <!-- 自定item的dialog的样式 -->
     <style name="item_dialog" parent="android:style/Theme.Dialog">
-<!--边框-->
-       <item name="android:windowFrame">@null</item>
-       <!--是否浮现在activity之上-->
+
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否浮现在activity之上 -->
         <item name="android:windowIsFloating">true</item>
-        <!--半透明-->
+        <!-- 半透明 -->
         <item name="android:windowIsTranslucent">false</item>
-        <!--无标题-->
+        <!-- 无标题 -->
         <item name="android:windowNoTitle">true</item>
-        <!--背景透明-->
+        <!-- 背景透明 -->
         <item name="android:windowBackground">@color/transparent</item>
-        <!--模糊-->
+        <!-- 模糊 -->
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    
+    <!-- 相册部分 弹出框动画 -->
+    <style name="anim_popup_dir">
+        <item name="android:windowEnterAnimation">@anim/gallery_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/gallery_slide_out</item>
     </style>
 
 </resources>
