@@ -274,9 +274,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		}
 		if (isPullDowm) {
 			schoolAdapter.replaceAll(newDatas);
-			if (!isLastPage) {
-				schoolListView.setMode(Mode.BOTH);
-			}
 		} else {
 			schoolAdapter.addAll(newDatas);
 		}
@@ -309,8 +306,10 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 获取学校列表
+							schoolListView.onRefreshComplete();
 							List<JSONObject> objList = (List<JSONObject>) jResult
 									.get("list");
+							schoolDataHandle(objList);
 							if (jResult.getString("is_last").equals("1")) {
 								isLastPage = true;
 								schoolListView.setMode(Mode.PULL_FROM_START);
@@ -319,8 +318,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 								pageIndex++;
 								schoolListView.setMode(Mode.BOTH);
 							}
-							schoolDataHandle(objList);
-							schoolListView.onRefreshComplete();
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
@@ -485,9 +482,13 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		// 停止定位
 		districtLocation.stopLocation();
 		// 返回首页
-		Intent intent = new Intent(SelectSchoolActivity.this,
-				LoginActivity.class);
-		startActivityWithRight(intent);
+		if (notRegister) {
+			finishWithRight();
+		} else {
+			Intent intent = new Intent(SelectSchoolActivity.this,
+					LoginActivity.class);
+			startActivityWithRight(intent);
+		}
 	}
 
 	/**
