@@ -29,10 +29,12 @@ public class ListImageDirPopupWindow extends
 				R.layout.gallery_list_dir_item) {
 			@Override
 			public void convert(ViewHolder helper, ImageFloder item) {
-				helper.setText(R.id.tv_galley_dir_items_name, item.getName());
+				helper.setText(R.id.tv_galley_dir_items_name, item.getName()
+						.replace("/", ""));
 				helper.setImageByUrl(R.id.iv_galley_dir_item,
 						item.getFirstImagePath());
-				helper.setText(R.id.tv_galley_dir_item_count, item.getCount() + "张");
+				helper.setText(R.id.tv_galley_dir_item_count, item.getCount()
+						+ "张");
 			}
 		});
 	}

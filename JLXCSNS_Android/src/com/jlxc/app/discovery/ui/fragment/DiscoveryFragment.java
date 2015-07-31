@@ -1,5 +1,7 @@
 package com.jlxc.app.discovery.ui.fragment;
 
+import it.sephiroth.android.library.exif2.IfdId;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +76,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 public class DiscoveryFragment extends BaseFragment {
 
 	private final static int SCANNIN_GREQUEST_CODE = 1;
-	
+
 	private static final String LOOK_ALL_PHOTOS = "btn_all_photos";
 	// 用户实例
 	private UserModel userModel;
@@ -105,7 +107,7 @@ public class DiscoveryFragment extends BaseFragment {
 	// 使支持多种item
 	private MultiItemTypeSupport<RecommendItemData> multiItemTypeRecommend = null;
 	// 是否是最后一页数据
-	private String lastPage = "0";
+	private boolean lastPage = false;
 	// 当前的数据页
 	private int currentPage = 1;
 	// 是否下拉
@@ -114,6 +116,8 @@ public class DiscoveryFragment extends BaseFragment {
 	private ItemViewClick itemViewClickListener;
 	// 点击图片监听
 	private ImageGridViewItemClick imageItemClickListener;
+	// 是否正在请求上拉数据
+	private boolean isRequestingUpData = false;
 
 	/**
 	 * 点击事件监听
@@ -126,12 +130,14 @@ public class DiscoveryFragment extends BaseFragment {
 			Intent qrIntent = new Intent();
 			qrIntent.setClass(getActivity(), MipcaCaptureActivity.class);
 			qrIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			getActivity().startActivityForResult(qrIntent, SCANNIN_GREQUEST_CODE);
-			
+			getActivity().startActivityForResult(qrIntent,
+					SCANNIN_GREQUEST_CODE);
+
 			break;
 		// 搜索页面
 		case R.id.tv_discovey_search:
-			Intent searchIntent = new Intent(getActivity(), SearchUserActivity.class);
+			Intent searchIntent = new Intent(getActivity(),
+					SearchUserActivity.class);
 			startActivityWithRight(searchIntent);
 			break;
 		}
@@ -260,19 +266,13 @@ public class DiscoveryFragment extends BaseFragment {
 					@Override
 					public void onPullUpToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-						if (lastPage.equals("1")) {
-							rcmdPersonListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									rcmdPersonListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(mContext, "没有数据了,哦哦");
-						} else {
+						if (!lastPage && !isRequestingUpData) {
+							isRequestingUpData = true;
 							isPullDowm = false;
 							getRecommentData(
 									String.valueOf(userModel.getUid()),
 									String.valueOf(currentPage));
+							isRequestingUpData = false;
 						}
 					}
 				});
@@ -312,21 +312,15 @@ public class DiscoveryFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						if (lastPage.equals("1")) {
-							rcmdPersonListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									rcmdPersonListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(mContext, "没有数据了,哦哦");
-						} else {
+						if (!lastPage && !isRequestingUpData) {
+							isRequestingUpData = true;
 							rcmdPersonListView.setMode(Mode.PULL_FROM_END);
 							rcmdPersonListView.setRefreshing(true);
 							isPullDowm = false;
 							getRecommentData(
 									String.valueOf(userModel.getUid()),
 									String.valueOf(currentPage));
+							isRequestingUpData = false;
 						}
 					}
 				});
@@ -377,23 +371,23 @@ public class DiscoveryFragment extends BaseFragment {
 		helper.setText(R.id.tv_recommend_name, titleData.getUserName());
 		helper.setText(R.id.tv_recommend_tag, titleData.getRelationTag());
 		helper.setText(R.id.tv_recommend_school, titleData.getUserSchool());
-		
+
 		Button addButton = helper.getView(R.id.btn_recomment_add);
 		if (titleData.isAdd()) {
 			addButton.setEnabled(false);
 			addButton.setText("已添加");
-		}else {
+		} else {
 			addButton.setText("添加");
 			addButton.setEnabled(true);
 		}
-		
+
 		final int postion = helper.getPosition();
 		if (1 == postion) {
 			helper.setVisible(R.id.view_recommend_driver, false);
 		} else {
 			helper.setVisible(R.id.view_recommend_driver, true);
 		}
-		
+
 		// 监听事件
 		OnClickListener listener = new OnClickListener() {
 
@@ -488,8 +482,8 @@ public class DiscoveryFragment extends BaseFragment {
 	 * 获取推荐的人的数据
 	 * */
 	private void getRecommentData(String userId, String page) {
-		String path = JLXCConst.RECOMMEND_FRIENDS_LIST + "?" + "user_id=" + userId/* userId */
-				+ "&page=" + page + "&size=";
+		String path = JLXCConst.RECOMMEND_FRIENDS_LIST + "?" + "user_id="
+				+ userId + "&page=" + page + "&size=";
 
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
@@ -506,21 +500,26 @@ public class DiscoveryFragment extends BaseFragment {
 							// 获取数据列表
 							List<JSONObject> JPersonList = (List<JSONObject>) jResult
 									.get("list");
-
 							JsonToItemData(JPersonList);
-							lastPage = jResult.getString("is_last");
-							if (lastPage.equals("0")) {
-								currentPage++;
-							}
 							rcmdPersonListView.onRefreshComplete();
-							rcmdPersonListView.setMode(Mode.BOTH);
+							if (jResult.getString("is_last").equals("0")) {
+								lastPage = false;
+								currentPage++;
+								rcmdPersonListView.setMode(Mode.BOTH);
+							} else {
+								lastPage = true;
+								rcmdPersonListView
+										.setMode(Mode.PULL_FROM_START);
+							}
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							ToastUtil.show(mContext, jsonResponse
 									.getString(JLXCConst.HTTP_MESSAGE));
 							rcmdPersonListView.onRefreshComplete();
-							rcmdPersonListView.setMode(Mode.BOTH);
+							if (!lastPage) {
+								rcmdPersonListView.setMode(Mode.BOTH);
+							}
 						}
 					}
 
@@ -530,7 +529,9 @@ public class DiscoveryFragment extends BaseFragment {
 						super.onFailure(arg0, arg1, flag);
 						ToastUtil.show(mContext, "网络有毒=_=");
 						rcmdPersonListView.onRefreshComplete();
-						rcmdPersonListView.setMode(Mode.BOTH);
+						if (!lastPage) {
+							rcmdPersonListView.setMode(Mode.BOTH);
+						}
 					}
 
 				}, null));
@@ -541,7 +542,7 @@ public class DiscoveryFragment extends BaseFragment {
 	 * */
 	private void JsonToItemData(List<JSONObject> dataList) {
 		if (isPullDowm) {
-			//下拉
+			// 下拉
 			personList.clear();
 			for (JSONObject newsObj : dataList) {
 				PersonModel tempPerson = new PersonModel();
@@ -553,7 +554,7 @@ public class DiscoveryFragment extends BaseFragment {
 			}
 
 		} else {
-			//上拉
+			// 上拉
 			HashSet<PersonModel> DuplicateSet = new HashSet<PersonModel>(
 					personList);
 			for (JSONObject newsObj : dataList) {
@@ -598,10 +599,11 @@ public class DiscoveryFragment extends BaseFragment {
 
 			// 添加同校好友
 			case R.id.layout_add_campus_root_view:
-				Intent sameSchoolIntent = new Intent(getActivity(), SameSchoolActivity.class);
+				Intent sameSchoolIntent = new Intent(getActivity(),
+						SameSchoolActivity.class);
 				startActivityWithRight(sameSchoolIntent);
 				break;
-				
+
 			// 点击推荐的人
 			case R.id.layout_recommend_info_rootview:
 				RecommendInfoItem currentInfoItem = (RecommendInfoItem) personItemAdapter
@@ -613,19 +615,20 @@ public class DiscoveryFragment extends BaseFragment {
 			// 点击添加按钮
 			case R.id.btn_recomment_add:
 				RecommendInfoItem addInfoItem = (RecommendInfoItem) personItemAdapter
-				.getItem(position);
+						.getItem(position);
 				IMModel imModel = new IMModel();
 				String headImage = addInfoItem.getHeadImage();
 				if (headImage != null) {
-					headImage = headImage.replace(JLXCConst.ATTACHMENT_ADDR, "");
-				}else {
+					headImage = headImage
+							.replace(JLXCConst.ATTACHMENT_ADDR, "");
+				} else {
 					headImage = "";
 				}
 				imModel.setAvatarPath(headImage);
-				imModel.setTargetId(JLXCConst.JLXC+addInfoItem.getUserID());
+				imModel.setTargetId(JLXCConst.JLXC + addInfoItem.getUserID());
 				imModel.setTitle(addInfoItem.getUserName());
 				addFriend(imModel, position);
-				
+
 				break;
 			default:
 				break;
@@ -750,32 +753,38 @@ public class DiscoveryFragment extends BaseFragment {
 			container.setImageBitmap(bitmap);
 		}
 	}
-	
-	//添加好友
+
+	// 添加好友
 	private void addFriend(final IMModel imModel, final int index) {
 
 		// 参数设置
 		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
-		params.addBodyParameter("friend_id", imModel.getTargetId().replace(JLXCConst.JLXC, "")+"");
-		
-		showLoading(getActivity() ,"添加中^_^", false);
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser()
+				.getUid()
+				+ "");
+		params.addBodyParameter("friend_id",
+				imModel.getTargetId().replace(JLXCConst.JLXC, "") + "");
+
+		showLoading(getActivity(), "添加中^_^", false);
 		HttpManager.post(JLXCConst.Add_FRIEND, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
 					@Override
 					public void onSuccess(JSONObject jsonResponse, String flag) {
 						super.onSuccess(jsonResponse, flag);
-						
+
 						hideLoading();
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-						ToastUtil.show(getActivity(),jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-						
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(getActivity(),
+								jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							//添加好友
+							// 添加好友
 							MessageAddFriendHelper.addFriend(imModel);
-							//更新
-							RecommendInfoItem recommendItemData = (RecommendInfoItem) itemDataList.get(index);
+							// 更新
+							RecommendInfoItem recommendItemData = (RecommendInfoItem) itemDataList
+									.get(index);
 							recommendItemData.setAdd("1");
 							personItemAdapter.replaceAll(itemDataList);
 						}
@@ -786,8 +795,7 @@ public class DiscoveryFragment extends BaseFragment {
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
 						hideLoading();
-						ToastUtil.show(getActivity(),
-								"网络异常");
+						ToastUtil.show(getActivity(), "网络异常");
 					}
 				}, null));
 	}

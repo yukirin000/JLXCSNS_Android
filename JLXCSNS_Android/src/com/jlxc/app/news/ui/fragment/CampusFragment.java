@@ -100,7 +100,7 @@ public class CampusFragment extends BaseFragment {
 	// 当前的数据页
 	private int pageIndex = 1;
 	// 是否是最后一页数据
-	private String lastPage = "0";
+	private boolean islastPage = false;
 	// 时间戳
 	private String latestTimesTamp = "";
 	// 是否下拉
@@ -294,27 +294,23 @@ public class CampusFragment extends BaseFragment {
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				pageIndex = 1;
-				isPullDowm = true;
-				getCampusData(
-						String.valueOf(UserManager.getInstance().getUser()
-								.getUid()), String.valueOf(pageIndex),
-						UserManager.getInstance().getUser().getSchool_code(),
-						"");
+				if (!isRequestData) {
+					isRequestData = true;
+					pageIndex = 1;
+					isPullDowm = true;
+					getCampusData(
+							String.valueOf(UserManager.getInstance().getUser()
+									.getUid()), String.valueOf(pageIndex),
+							UserManager.getInstance().getUser()
+									.getSchool_code(), "");
+				}
 			}
 
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (lastPage.equals("1")) {
-					campusListView.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							campusListView.onRefreshComplete();
-						}
-					}, 1000);
-					ToastUtil.show(mContext, "没有数据了,哦哦");
-				} else {
+				if (!islastPage && !isRequestData) {
+					isRequestData = true;
 					isPullDowm = false;
 					getCampusData(
 							String.valueOf(UserManager.getInstance().getUser()
@@ -365,15 +361,8 @@ public class CampusFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						if (lastPage.equals("1")) {
-							campusListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									campusListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(mContext, "没有数据了,哦哦");
-						} else {
+						if (!islastPage && !isRequestData) {
+							isRequestData = true;
 							campusListView.setMode(Mode.PULL_FROM_END);
 							campusListView.setRefreshing(true);
 							isPullDowm = false;
@@ -687,71 +676,67 @@ public class CampusFragment extends BaseFragment {
 	}
 
 	/**
-	 * 获取动态数据
+	 * 获取学校动态的数据
 	 * */
 	private void getCampusData(String userID, String desPage,
 			String schoolCode, String lastTime) {
-		if (!isRequestData) {
-			isRequestData = true;
-			String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id="
-					+ userID + "&page=" + desPage + "&school_code="
-					+ schoolCode + "&frist_time=" + lastTime;
+		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
+				+ "&page=" + desPage + "&school_code=" + schoolCode
+				+ "&frist_time=" + lastTime;
 
-			HttpManager.get(path, new JsonRequestCallBack<String>(
-					new LoadDataHandler<String>() {
+		HttpManager.get(path, new JsonRequestCallBack<String>(
+				new LoadDataHandler<String>() {
 
-						@SuppressWarnings("unchecked")
-						@Override
-						public void onSuccess(JSONObject jsonResponse,
-								String flag) {
-							super.onSuccess(jsonResponse, flag);
-							int status = jsonResponse
-									.getInteger(JLXCConst.HTTP_STATUS);
-							if (status == JLXCConst.STATUS_SUCCESS) {
-								JSONObject jResult = jsonResponse
-										.getJSONObject(JLXCConst.HTTP_RESULT);
-								// 获取数据列表
-								List<JSONObject> JNewsList = (List<JSONObject>) jResult
-										.get("list");
-								List<JSONObject> JPersonList = null;
-								if (jResult.containsKey("info")) {
-									JPersonList = (List<JSONObject>) jResult
-											.get("info");
-								}
-								JsonToItemData(JNewsList, JPersonList);
-								lastPage = jResult.getString("is_last");
-								if (lastPage.equals("0")) {
-									pageIndex++;
-									campusListView.setMode(Mode.BOTH);
-								}else {
-									campusListView.setMode(Mode.PULL_FROM_START);
-								}
-								campusListView.onRefreshComplete();
-								
-								isRequestData = false;
+					@SuppressWarnings("unchecked")
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							// 获取数据列表
+							List<JSONObject> JNewsList = (List<JSONObject>) jResult
+									.get("list");
+							List<JSONObject> JPersonList = null;
+							if (jResult.containsKey("info")) {
+								JPersonList = (List<JSONObject>) jResult
+										.get("info");
 							}
-
-							if (status == JLXCConst.STATUS_FAIL) {
-								ToastUtil.show(mContext, jsonResponse
-										.getString(JLXCConst.HTTP_MESSAGE));
-								campusListView.onRefreshComplete();
-								campusListView.setMode(Mode.PULL_FROM_START);
-								isRequestData = false;
-							}
-						}
-
-						@Override
-						public void onFailure(HttpException arg0, String arg1,
-								String flag) {
-							super.onFailure(arg0, arg1, flag);
-							ToastUtil.show(mContext, "网络有毒=_=");
+							JsonToItemData(JNewsList, JPersonList);
 							campusListView.onRefreshComplete();
-							campusListView.setMode(Mode.BOTH);
+							if (jResult.getString("is_last").equals("0")) {
+								islastPage = false;
+								pageIndex++;
+								campusListView.setMode(Mode.BOTH);
+							} else {
+								islastPage = true;
+								campusListView.setMode(Mode.PULL_FROM_START);
+							}
 							isRequestData = false;
 						}
 
-					}, null));
-		}
+						if (status == JLXCConst.STATUS_FAIL) {
+							ToastUtil.show(mContext, jsonResponse
+									.getString(JLXCConst.HTTP_MESSAGE));
+							campusListView.onRefreshComplete();
+							campusListView.setMode(Mode.PULL_FROM_START);
+							isRequestData = false;
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						ToastUtil.show(mContext, "网络有毒=_=");
+						campusListView.onRefreshComplete();
+						campusListView.setMode(Mode.BOTH);
+						isRequestData = false;
+					}
+
+				}, null));
 	}
 
 	/**
@@ -1183,14 +1168,18 @@ public class CampusFragment extends BaseFragment {
 					// 无改变
 				} else if (resultIntent
 						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
-					// 发布了动态
-					pageIndex = 1;
-					isPullDowm = true;
-					getCampusData(
-							String.valueOf(UserManager.getInstance().getUser()
-									.getUid()), String.valueOf(pageIndex),
-							UserManager.getInstance().getUser()
-									.getSchool_code(), "");
+					if (!isRequestData) {
+						// 发布了动态
+						pageIndex = 1;
+						isRequestData = true;
+						isPullDowm = true;
+						getCampusData(
+								String.valueOf(UserManager.getInstance()
+										.getUser().getUid()),
+								String.valueOf(pageIndex), UserManager
+										.getInstance().getUser()
+										.getSchool_code(), "");
+					}
 				}
 			}
 		}

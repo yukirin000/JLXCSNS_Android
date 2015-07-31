@@ -34,6 +34,7 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -93,9 +94,9 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	// 当前的数据页
 	private int currentPage = 1;
 	// 是否是最后一页数据
-	private String lastPage = "0";
+	private boolean islastPage = false;
 	// 是否下拉
-	private boolean isPullDowm = false;
+	private boolean isPullDowm = true;
 	// 是否正在请求数据
 	private boolean isRequestData = false;
 	// 点击view监听对象
@@ -124,7 +125,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		newsListViewSet();
 
 		/******** 首次获取数据 ********/
-		isPullDowm = true;
 		getMyNewsData(currentUid, String.valueOf(currentPage));
 		/*************************/
 	}
@@ -194,23 +194,19 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				currentPage = 1;
-				isPullDowm = true;
-				getMyNewsData(currentUid, String.valueOf(currentPage));
+				if (!isRequestData) {
+					isRequestData = true;
+					currentPage = 1;
+					isPullDowm = true;
+					getMyNewsData(currentUid, String.valueOf(currentPage));
+				}
 			}
 
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (lastPage.equals("1")) {
-					newsListView.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							newsListView.onRefreshComplete();
-						}
-					}, 1000);
-					ToastUtil.show(MyNewsListActivity.this, "没有数据了,哦哦");
-				} else {
+				if (!islastPage && !isRequestData) {
+					isRequestData = true;
 					isPullDowm = false;
 					getMyNewsData(currentUid, String.valueOf(currentPage));
 				}
@@ -251,15 +247,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 
 					@Override
 					public void onLastItemVisible() {
-						if (lastPage.equals("1")) {
-							newsListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									newsListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(MyNewsListActivity.this, "没有数据了,哦哦");
-						} else {
+						if (!islastPage && !isRequestData) {
+							isRequestData = true;
 							newsListView.setMode(Mode.PULL_FROM_END);
 							newsListView.setRefreshing(true);
 							isPullDowm = false;
@@ -306,11 +295,11 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(MyNewsListActivity.this);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+				MyNewsListActivity.this, true, true);
+
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/**
@@ -566,61 +555,62 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 获取动态数据
 	 * */
 	private void getMyNewsData(String userID, String page) {
-		if (!isRequestData) {
-			isRequestData = true;
-			String path = JLXCConst.USER_NEWS_LIST + "?" + "user_id=" + userID
-					+ "&page=" + page + "&size=" + "";
+		String path = JLXCConst.USER_NEWS_LIST + "?" + "user_id=" + userID
+				+ "&page=" + page + "&size=" + "";
 
-			LogUtils.i("path=" + path);
-			HttpManager.get(path, new JsonRequestCallBack<String>(
-					new LoadDataHandler<String>() {
+		HttpManager.get(path, new JsonRequestCallBack<String>(
+				new LoadDataHandler<String>() {
 
-						@SuppressWarnings("unchecked")
-						@Override
-						public void onSuccess(JSONObject jsonResponse,
-								String flag) {
-							super.onSuccess(jsonResponse, flag);
-							int status = jsonResponse
-									.getInteger(JLXCConst.HTTP_STATUS);
-							if (status == JLXCConst.STATUS_SUCCESS) {
-								JSONObject jResult = jsonResponse
-										.getJSONObject(JLXCConst.HTTP_RESULT);
-								// 获取动态列表
-								List<JSONObject> JSONList = (List<JSONObject>) jResult
-										.get("list");
-								lastPage = jResult.getString("is_last");
-								if (lastPage.equals("0")) {
-									currentPage++;
-								}
-								JsonToNewsModel(JSONList);
-								newsListView.onRefreshComplete();
-								newsListView.setMode(Mode.BOTH);
-								isRequestData = false;
-							}
-
-							if (status == JLXCConst.STATUS_FAIL) {
-								ToastUtil
-										.show(MyNewsListActivity.this,
-												jsonResponse
-														.getString(JLXCConst.HTTP_MESSAGE));
-								newsListView.onRefreshComplete();
-								newsListView.setMode(Mode.BOTH);
-								isRequestData = false;
-							}
-						}
-
-						@Override
-						public void onFailure(HttpException arg0, String arg1,
-								String flag) {
-							super.onFailure(arg0, arg1, flag);
-							ToastUtil.show(MyNewsListActivity.this, "网络有毒=_=");
+					@SuppressWarnings("unchecked")
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							// 获取动态列表
+							List<JSONObject> JSONList = (List<JSONObject>) jResult
+									.get("list");
+							JsonToNewsModel(JSONList);
 							newsListView.onRefreshComplete();
-							newsListView.setMode(Mode.BOTH);
+							if (jResult.getString("is_last").equals("0")) {
+								islastPage = false;
+								currentPage++;
+								newsListView.setMode(Mode.BOTH);
+							} else {
+								islastPage = true;
+								newsListView.setMode(Mode.PULL_FROM_START);
+							}
 							isRequestData = false;
 						}
 
-					}, null));
-		}
+						if (status == JLXCConst.STATUS_FAIL) {
+							ToastUtil.show(MyNewsListActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
+							newsListView.onRefreshComplete();
+							if (!islastPage) {
+								newsListView.setMode(Mode.BOTH);
+							}
+							isRequestData = false;
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						ToastUtil.show(MyNewsListActivity.this, "网络有毒=_=");
+						newsListView.onRefreshComplete();
+						if (!islastPage) {
+							newsListView.setMode(Mode.BOTH);
+						}
+						isRequestData = false;
+					}
+
+				}, null));
 	}
 
 	/**
@@ -1007,12 +997,15 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				} else if (resultIntent
 						.hasExtra(NewsOperateModel.OPERATE_NO_ACTION)) {
 					// 无改变
-				}else if (resultIntent
+				} else if (resultIntent
 						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
-					//发布了动态
-					currentPage = 1;
-					isPullDowm = true;
-					getMyNewsData(currentUid, String.valueOf(currentPage));
+					if (!isRequestData) {
+						// 发布了动态
+						isRequestData = true;
+						currentPage = 1;
+						isPullDowm = true;
+						getMyNewsData(currentUid, String.valueOf(currentPage));
+					}
 				}
 			}
 		}

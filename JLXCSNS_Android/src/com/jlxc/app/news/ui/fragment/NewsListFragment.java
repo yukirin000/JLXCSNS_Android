@@ -103,13 +103,13 @@ public class NewsListFragment extends BaseFragment {
 	// 当前数据的页
 	private int pageIndex = 1;
 	// 是否是最后一页数据
-	private String lastPage = "0";
+	private boolean lastPage = false;
 	// 时间戳
 	private String latestTimesTamp = "";
 	// 是否下拉
 	private boolean isPullDowm = true;
 	// 是否正在请求数据
-	private boolean isRequestData = false;
+	private boolean isRequestingData = false;
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
 	// 点击图片监听
@@ -255,24 +255,20 @@ public class NewsListFragment extends BaseFragment {
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				pageIndex = 1;
-				isPullDowm = true;
-				getNewsData(UserManager.getInstance().getUser().getUid(),
-						pageIndex, "");
+				if (!isRequestingData) {
+					isRequestingData = true;
+					pageIndex = 1;
+					isPullDowm = true;
+					getNewsData(UserManager.getInstance().getUser().getUid(),
+							pageIndex, "");
+				}
 			}
 
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (lastPage.equals("1")) {
-					newsListView.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							newsListView.onRefreshComplete();
-						}
-					}, 1000);
-					ToastUtil.show(mContext, "没有数据了,哦哦");
-				} else {
+				if (!lastPage && !isRequestingData) {
+					isRequestingData = true;
 					isPullDowm = false;
 					getNewsData(UserManager.getInstance().getUser().getUid(),
 							pageIndex, latestTimesTamp);
@@ -320,15 +316,8 @@ public class NewsListFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						if (lastPage.equals("1")) {
-							newsListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									newsListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(mContext, "没有数据了,哦哦");
-						} else {
+						if (!lastPage & !isRequestingData) {
+							isRequestingData = true;
 							newsListView.setMode(Mode.PULL_FROM_END);
 							newsListView.setRefreshing(true);
 							isPullDowm = false;
@@ -338,8 +327,8 @@ public class NewsListFragment extends BaseFragment {
 					}
 				});
 		// 快速滑动时不加载图片
-		newsListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
+		newsListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
+				false, true));
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		newsListView.setAdapter(newsAdapter);
@@ -691,58 +680,57 @@ public class NewsListFragment extends BaseFragment {
 	 * 获取动态数据
 	 * */
 	private void getNewsData(int userID, int desPage, String lastTime) {
-		if (!isRequestData) {
-			isRequestData = true;
-			String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
-					+ "&page=" + desPage + "&frist_time=" + lastTime;
+		String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
+				+ "&page=" + desPage + "&frist_time=" + lastTime;
 
-			HttpManager.get(path, new JsonRequestCallBack<String>(
-					new LoadDataHandler<String>() {
+		HttpManager.get(path, new JsonRequestCallBack<String>(
+				new LoadDataHandler<String>() {
 
-						@SuppressWarnings("unchecked")
-						@Override
-						public void onSuccess(JSONObject jsonResponse,
-								String flag) {
-							super.onSuccess(jsonResponse, flag);
-							int status = jsonResponse
-									.getInteger(JLXCConst.HTTP_STATUS);
-							if (status == JLXCConst.STATUS_SUCCESS) {
-								JSONObject jResult = jsonResponse
-										.getJSONObject(JLXCConst.HTTP_RESULT);
-								// 获取动态列表
-								List<JSONObject> JSONList = (List<JSONObject>) jResult
-										.get("list");
-								lastPage = jResult.getString("is_last");
-								if (lastPage.equals("0")) {
-									pageIndex++;
-								}
-								JsonToNewsModel(JSONList);
-								newsListView.onRefreshComplete();
+					@SuppressWarnings("unchecked")
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							// 获取动态列表
+							List<JSONObject> JSONList = (List<JSONObject>) jResult
+									.get("list");
+							JsonToNewsModel(JSONList);
+							newsListView.onRefreshComplete();
+							if (jResult.getString("is_last").equals("0")) {
+								lastPage = false;
+								pageIndex++;
 								newsListView.setMode(Mode.BOTH);
-								isRequestData = false;
+							} else {
+								lastPage = true;
+								newsListView.setMode(Mode.PULL_FROM_START);
 							}
-
-							if (status == JLXCConst.STATUS_FAIL) {
-								ToastUtil.show(mContext, jsonResponse
-										.getString(JLXCConst.HTTP_MESSAGE));
-								newsListView.onRefreshComplete();
-								newsListView.setMode(Mode.BOTH);
-								isRequestData = false;
-							}
+							isRequestingData = false;
 						}
 
-						@Override
-						public void onFailure(HttpException arg0, String arg1,
-								String flag) {
-							super.onFailure(arg0, arg1, flag);
-							ToastUtil.show(mContext, "网络有毒=_=");
+						if (status == JLXCConst.STATUS_FAIL) {
+							ToastUtil.show(mContext, jsonResponse
+									.getString(JLXCConst.HTTP_MESSAGE));
 							newsListView.onRefreshComplete();
 							newsListView.setMode(Mode.BOTH);
-							isRequestData = false;
+							isRequestingData = false;
 						}
+					}
 
-					}, null));
-		}
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						ToastUtil.show(mContext, "网络有毒=_=");
+						newsListView.onRefreshComplete();
+						newsListView.setMode(Mode.BOTH);
+						isRequestingData = false;
+					}
+
+				}, null));
 	}
 
 	/**
@@ -1177,10 +1165,13 @@ public class NewsListFragment extends BaseFragment {
 				} else if (resultIntent
 						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
 					// 发布了动态
-					pageIndex = 1;
-					isPullDowm = true;
-					getNewsData(UserManager.getInstance().getUser().getUid(),
-							pageIndex, "");
+					if (!isRequestingData) {
+						isRequestingData = true;
+						pageIndex = 1;
+						isPullDowm = true;
+						getNewsData(UserManager.getInstance().getUser()
+								.getUid(), pageIndex, "");
+					}
 				}
 			}
 		}

@@ -9,12 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -32,18 +30,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jlxc.app.R;
-import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.view.gallery.bean.ImageFloder;
+import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyAdapter.OnItemClickClass;
 import com.jlxc.app.base.ui.view.gallery.imageloader.ListImageDirPopupWindow.OnImageDirSelected;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.news.ui.activity.PublishNewsActivity;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class GalleyActivity extends BaseActivityWithTopBar implements
 		OnImageDirSelected {
 
-	public static final String PHOTO_PATH_LIST = "select_result";
+	public static final String INTENT_KEY_PHOTO_LIST = "select_result";
+	public static final String INTENT_KEY_SELECTED_COUNT = "selected_count";
 	// 所有的图片
 	private List<String> mImgs;
 	// 其余相册
@@ -72,6 +70,8 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 	private int mScreenHeight;
 	// 弹出框
 	private ListImageDirPopupWindow mListImageDirPopupWindow;
+	// 已选照片的数量
+	private int selectedCount = 0;
 
 	@Override
 	public int setLayoutId() {
@@ -83,7 +83,13 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		DisplayMetrics outMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
 		mScreenHeight = outMetrics.heightPixels;
-
+		// 获取已选的数量
+		Intent intent = this.getIntent();
+		if (intent.hasExtra(INTENT_KEY_SELECTED_COUNT)) {
+			selectedCount = intent.getIntExtra(INTENT_KEY_SELECTED_COUNT, 0);
+		}
+		setBarText("选取照片 (" + selectedCount + "/9)");
+		GalleyAdapter.clearSelectedImageList();
 		getImages();
 		initEvent();
 	}
@@ -109,12 +115,15 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		}
 
 		mImgs = Arrays.asList(defaultImgDir.list());
+
 		/**
 		 * 可以看到文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
 		 */
 		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
-				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath());
+				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
+				selectedCount);
 		mGirdView.setAdapter(mAdapter);
+		mAdapter.setClickCallBack(onItemClickClass);
 	};
 
 	/**
@@ -220,7 +229,9 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 					}
 				}
 				mCursor.close();
-
+				if (null == defaultImgDir) {
+					defaultImgDir = mImgDir;
+				}
 				// 扫描完成，辅助的HashSet也就可以释放内存了
 				mDirPaths = null;
 				// 通知Handler扫描图片完成
@@ -256,8 +267,11 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 			@Override
 			public void onClick(View v) {
 				// 点击完成时
-				if (mAdapter.mSelectedImage.size() > 0) {
+				List<String> list = mAdapter.getSelectedImageList();
+				if (list.size() > 0) {
 					Intent intentFinish = new Intent();
+					intentFinish.putExtra(INTENT_KEY_PHOTO_LIST,
+							(Serializable) list);
 					setResult(Activity.RESULT_OK, intentFinish);
 					finish();
 				}
@@ -284,9 +298,23 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 
 		// 文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
 		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
-				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath());
+				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
+				selectedCount);
 		mGirdView.setAdapter(mAdapter);
+		mAdapter.setClickCallBack(onItemClickClass);
 		mChooseDir.setText(floder.getName().replace("/", ""));
 		mListImageDirPopupWindow.dismiss();
 	}
+
+	/**
+	 * 点击事件
+	 * */
+	GalleyAdapter.OnItemClickClass onItemClickClass = new OnItemClickClass() {
+
+		@Override
+		public void OnItemClick(int count) {
+			setBarText("选取照片 (" + count + "/9)");
+		}
+	};
+
 }
