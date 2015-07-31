@@ -19,6 +19,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -233,7 +234,7 @@ public class MessageMainFragment extends BaseFragment {
 	
 	//刷新顶部栏
 	private void refreshMessage() {
-
+		
 	    //新好友请求未读
 		int newFriendsCount = IMModel.unReadNewFriendsCount();
 	    //未读推送
@@ -268,6 +269,12 @@ public class MessageMainFragment extends BaseFragment {
 	    	conversationUnreadTextView.setVisibility(View.VISIBLE);
 	    	conversationUnreadTextView.setText(""+IMUnreadCount);
 	    }
+	    
+		//如果正好是当前这个页面则设置成已读
+		if (mPager.getCurrentItem() == 1 && ((MainTabActivity)getActivity()).mTabHost.getCurrentTab() == 1) {
+			//设置已读
+			NewsPushModel.setIsRead();
+		}
 	}
 
 }
