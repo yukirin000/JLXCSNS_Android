@@ -67,8 +67,8 @@ public class MainTabActivity extends BaseActivity {
 	private Class<?> fragmentArray[] = { MainPageFragment.class, MessageMainFragment.class,DiscoveryFragment.class,
 			PersonalFragment.class };
 
-	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_home_btn,R.drawable.tab_home_btn,
-			R.drawable.tab_message_btn };
+	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_message_btn,R.drawable.tab_friend_btn,
+			R.drawable.tab_me_btn };
 
 	private String mTextviewArray[] = { "主页", "消息","发现", "我" };
 //	//已经连接
@@ -81,7 +81,6 @@ public class MainTabActivity extends BaseActivity {
 
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 		int count = fragmentArray.length;
-
 		for (int i = 0; i < count; i++) {
 			TabSpec tabSpec = mTabHost.newTabSpec(mTextviewArray[i])
 					.setIndicator(getTabItemView(i));

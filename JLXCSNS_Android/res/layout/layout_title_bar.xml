@@ -23,12 +23,14 @@
         android:layout_height="50dip"
         android:layout_centerVertical="true"/>
 
+    <!-- selector因为放到SRC里所以无效 但是无所谓。 -->
     <ImageView
         android:layout_width="35dip"
         android:layout_height="20dip"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/back_btn"/>
+        android:clickable="true"
+        android:src="@drawable/back_click_selector"/>
 
     <LinearLayout
         android:id="@+id/base_ll_right_btns"

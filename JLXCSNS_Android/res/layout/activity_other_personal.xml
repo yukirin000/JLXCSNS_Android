@@ -40,7 +40,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="70dp"
-                    android:src="@drawable/icon_selfinfo_sel" />
+                    android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
             </RelativeLayout>
 
             <LinearLayout
