@@ -7,7 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#BBBBBB"
+        android:background="@drawable/navbar"
+        android:gravity="center_vertical"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -15,11 +16,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:padding="5dp"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -49,17 +53,18 @@
 
                 <ImageView
                     android:id="@+id/img_cursor"
-                    android:layout_width="60dp"
-                    android:layout_height="10dp"
-                    android:src="#00AAAA" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/cursor_main" />
             </LinearLayout>
         </LinearLayout>
 
         <ImageView
             android:id="@+id/img_publish_news"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_launcher" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/selector_publish_btn" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager

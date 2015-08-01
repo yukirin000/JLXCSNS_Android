@@ -64,7 +64,7 @@ import com.jlxc.app.news.model.ItemModel.SubCommentItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
-import com.jlxc.app.news.model.NewsOperateModel;
+import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.model.SubCommentModel;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
@@ -84,9 +84,9 @@ import com.rockerhieu.emojicon.EmojiconEditText;
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
 	// 记录对动态的操作
-	private String actionType = NewsOperateModel.OPERATE_NO_ACTION;
+	private String actionType = NewsConstants.OPERATE_NO_ACTION;
 	// 评论的类型
-	private int commentType = NewsOperateModel.Input_Type_Comment;
+	private int commentType = NewsConstants.Input_Type_Comment;
 	// 主listview
 	@ViewInject(R.id.news_detail_listView)
 	private PullToRefreshListView newsDetailListView;
@@ -191,7 +191,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						if (KeyboardLayout.KEYBOARD_STATE_HIDE == state) {
 							// 内容为空并且，软键盘隐藏时
 							if (commentContent.length() <= 0) {
-								commentType = NewsOperateModel.Input_Type_Comment;
+								commentType = NewsConstants.Input_Type_Comment;
 								commentEditText.setHint("是时候来条神评论了...");
 							}
 						}
@@ -200,16 +200,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 
 		Intent intent = this.getIntent();
 		if (null != intent) {
-			if (intent.hasExtra(NewsOperateModel.INTENT_KEY_NEWS_OBJ)) {
+			if (intent.hasExtra(NewsConstants.INTENT_KEY_NEWS_OBJ)) {
 				currentNews = (NewsModel) intent
-						.getSerializableExtra(NewsOperateModel.INTENT_KEY_NEWS_OBJ);
+						.getSerializableExtra(NewsConstants.INTENT_KEY_NEWS_OBJ);
 				// 获取传递过来的的数据
 				detailAdapter.replaceAll(DataToItem
 						.newsDetailToItems(currentNews));
-			} else if (intent.hasExtra(NewsOperateModel.INTENT_KEY_NEWS_ID)) {
+			} else if (intent.hasExtra(NewsConstants.INTENT_KEY_NEWS_ID)) {
 				currentNews = new NewsModel();
 				currentNews.setNewsID(intent
-						.getStringExtra(NewsOperateModel.INTENT_KEY_NEWS_ID));
+						.getStringExtra(NewsConstants.INTENT_KEY_NEWS_ID));
 			} else {
 				LogUtils.e("未传递任何动态信息到详情页面.");
 			}
@@ -246,21 +246,21 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void stateHandel() {
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
-		switch (bundle.getInt(NewsOperateModel.INTENT_KEY_COMMENT_STATE)) {
-		case NewsOperateModel.KEY_BOARD_CLOSE:
+		switch (bundle.getInt(NewsConstants.INTENT_KEY_COMMENT_STATE)) {
+		case NewsConstants.KEY_BOARD_CLOSE:
 			btnSendComment.setFocusable(true);
 			break;
-		case NewsOperateModel.KEY_BOARD_COMMENT:
+		case NewsConstants.KEY_BOARD_COMMENT:
 			commentEditText.setFocusable(true);
 			commentEditText.setFocusableInTouchMode(true);
 			commentEditText.requestFocus();
-			commentType = NewsOperateModel.Input_Type_Comment;
+			commentType = NewsConstants.Input_Type_Comment;
 			setKeyboardStatu(true);
 			break;
-		case NewsOperateModel.KEY_BOARD_REPLY:
+		case NewsConstants.KEY_BOARD_REPLY:
 			// 直接回复评论
 			String cmtId = bundle
-					.getString(NewsOperateModel.INTENT_KEY_COMMENT_ID);
+					.getString(NewsConstants.INTENT_KEY_COMMENT_ID);
 
 			for (int index = 0; index < dataList.size(); ++index) {
 				ItemModel tempItemModel = dataList.get(index);
@@ -272,7 +272,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					if (currentCommentModel.getCommentID().equals(cmtId)) {
 						commentEditText.setHint("回复："
 								+ currentCommentModel.getPublishName());
-						commentType = NewsOperateModel.Input_Type_SubComment;
+						commentType = NewsConstants.Input_Type_SubComment;
 						break;
 					}
 				} else if (ItemModel.NEWS_DETAIL_SUB_COMMENT == itemType) {
@@ -282,7 +282,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					if (currentSubCmtModel.getSubID().equals(cmtId)) {
 						commentEditText.setHint("回复："
 								+ currentSubCmtModel.getPublishName());
-						commentType = NewsOperateModel.Input_Type_SubReply;
+						commentType = NewsConstants.Input_Type_SubReply;
 						break;
 					}
 				}
@@ -363,13 +363,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onFinish(int operateType, boolean isSucceed,
 					Object resultValue) {
-				actionType = NewsOperateModel.OPERATE_UPDATE;
+				actionType = NewsConstants.OPERATE_UPDATE;
 				switch (operateType) {
 				case NewsOperate.OP_Type_Delete_News:
 					if (isSucceed) {
 						ToastUtil.show(NewsDetailActivity.this, "删除成功");
 						// 返回上一页
-						actionType = NewsOperateModel.OPERATE_DELETET;
+						actionType = NewsConstants.OPERATE_DELETET;
 						finishWithRight();
 					}
 					break;
@@ -752,7 +752,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
 				// 绑定图片
-				if (helper.getPosition() < NewsOperateModel.MAX_LIKE_COUNT) {
+				if (helper.getPosition() < NewsConstants.MAX_LIKE_COUNT) {
 					bitmapUtils.configDefaultBitmapMaxSize(30, 30);
 					helper.setImageUrl(R.id.iv_news_detail_like_gridview_item,
 							bitmapUtils, item.getHeadSubImage(),
@@ -936,7 +936,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			setKeyboardStatu(false);
 
 			switch (commentType) {
-			case NewsOperateModel.Input_Type_Comment:
+			case NewsConstants.Input_Type_Comment:
 				// 发布评论
 				CommentModel temMode = new CommentModel();
 				temMode.setCommentContent(tempContent);
@@ -945,7 +945,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						currentNews.getNewsID(), tempContent);
 				break;
 
-			case NewsOperateModel.Input_Type_SubComment:
+			case NewsConstants.Input_Type_SubComment:
 				// 发布二级评论
 				SubCommentModel tempMd = new SubCommentModel();
 				tempMd.setCommentContent(tempContent);
@@ -957,7 +957,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						.getUser(), currentNews.getNewsID(), tempMd);
 				break;
 
-			case NewsOperateModel.Input_Type_SubReply:
+			case NewsConstants.Input_Type_SubReply:
 				// 发布子回复
 				SubCommentModel tpMold = new SubCommentModel();
 				tpMold.setCommentContent(tempContent);
@@ -1013,7 +1013,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 							((Button) oprtView).setText("点赞");
 							operateData.setIsLike("0");
 						}
-						actionType = NewsOperateModel.OPERATE_UPDATE;
+						actionType = NewsConstants.OPERATE_UPDATE;
 					}
 
 					@Override
@@ -1070,7 +1070,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						commentEditText.requestFocus();
 						commentEditText.setHint("回复："
 								+ currentCommentModel.getPublishName());
-						commentType = NewsOperateModel.Input_Type_SubComment;
+						commentType = NewsConstants.Input_Type_SubComment;
 						// 显示键盘
 						setKeyboardStatu(true);
 					}
@@ -1124,7 +1124,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						commentEditText.requestFocus();
 						commentEditText.setHint("回复："
 								+ currentSubCmtModel.getPublishName());
-						commentType = NewsOperateModel.Input_Type_SubReply;
+						commentType = NewsConstants.Input_Type_SubReply;
 						setKeyboardStatu(true);
 					}
 				} else if (viewID == R.id.txt_sub_comment_by_name) {
@@ -1290,7 +1290,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * */
 	private void updateResultData() {
 		Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
-		if (actionType.equals(NewsOperateModel.OPERATE_UPDATE)) {
+		if (actionType.equals(NewsConstants.OPERATE_UPDATE)) {
 			// 更新操作
 			String isLike = "0";
 			int likeCount = 0;
@@ -1323,14 +1323,14 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 					.getCount() - 3));
 			currentNews.setLikeHeadListimage(newlkList);
 			currentNews.setCommentList(newCmtList);
-			mIntent.putExtra(NewsOperateModel.OPERATE_UPDATE, currentNews);
-		} else if (actionType.equals(NewsOperateModel.OPERATE_DELETET)) {
+			mIntent.putExtra(NewsConstants.OPERATE_UPDATE, currentNews);
+		} else if (actionType.equals(NewsConstants.OPERATE_DELETET)) {
 			// 删除操作
-			mIntent.putExtra(NewsOperateModel.OPERATE_DELETET,
+			mIntent.putExtra(NewsConstants.OPERATE_DELETET,
 					currentNews.getNewsID());
-		} else if (actionType.equals(NewsOperateModel.OPERATE_NO_ACTION)) {
+		} else if (actionType.equals(NewsConstants.OPERATE_NO_ACTION)) {
 			// 没有操作
-			mIntent.putExtra(NewsOperateModel.OPERATE_NO_ACTION, "");
+			mIntent.putExtra(NewsConstants.OPERATE_NO_ACTION, "");
 		}
 		// 发送广播
 		LocalBroadcastManager.getInstance(NewsDetailActivity.this)

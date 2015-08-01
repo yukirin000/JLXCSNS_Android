@@ -50,7 +50,7 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
-import com.jlxc.app.news.model.NewsOperateModel;
+import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
@@ -728,7 +728,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				if (R.id.layout_my_news_list_title_rootview == viewID) {
 					// 跳转到动态详情
 					jumpToNewsDetail(titleData,
-							NewsOperateModel.KEY_BOARD_CLOSE, null);
+							NewsConstants.KEY_BOARD_CLOSE, null);
 				} else if (R.id.btn_my_news_delete == viewID) {
 					deleteCurrentNews(titleData.getNewsID());
 				} else {
@@ -749,7 +749,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				} else {
 					// 跳转至动态详情
 					jumpToNewsDetail(bodyData,
-							NewsOperateModel.KEY_BOARD_CLOSE, null);
+							NewsConstants.KEY_BOARD_CLOSE, null);
 				}
 				break;
 
@@ -762,11 +762,11 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				if (R.id.layout_my_news_list_operate_rootview == viewID) {
 					// 跳转至动态详情
 					jumpToNewsDetail(operateData,
-							NewsOperateModel.KEY_BOARD_CLOSE, null);
+							NewsConstants.KEY_BOARD_CLOSE, null);
 				} else if (R.id.btn_my_news_list_reply == viewID) {
 					// 跳转至评论页面并打开评论框
 					jumpToNewsDetail(operateData,
-							NewsOperateModel.KEY_BOARD_COMMENT, null);
+							NewsConstants.KEY_BOARD_COMMENT, null);
 				} else {
 					// 进行点赞操作
 					likeOperate(postion, view, operateData);
@@ -912,25 +912,25 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				NewsDetailActivity.class);
 		switch (keyBoardMode) {
 		// 键盘关闭
-		case NewsOperateModel.KEY_BOARD_CLOSE:
+		case NewsConstants.KEY_BOARD_CLOSE:
 			intentToNewsDetail.putExtra(
-					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
-					NewsOperateModel.KEY_BOARD_CLOSE);
+					NewsConstants.INTENT_KEY_COMMENT_STATE,
+					NewsConstants.KEY_BOARD_CLOSE);
 			break;
 		// 键盘打开等待评论
-		case NewsOperateModel.KEY_BOARD_COMMENT:
+		case NewsConstants.KEY_BOARD_COMMENT:
 			intentToNewsDetail.putExtra(
-					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
-					NewsOperateModel.KEY_BOARD_COMMENT);
+					NewsConstants.INTENT_KEY_COMMENT_STATE,
+					NewsConstants.KEY_BOARD_COMMENT);
 			break;
 		// 键盘打开等待回复
-		case NewsOperateModel.KEY_BOARD_REPLY:
+		case NewsConstants.KEY_BOARD_REPLY:
 			intentToNewsDetail.putExtra(
-					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
-					NewsOperateModel.KEY_BOARD_REPLY);
+					NewsConstants.INTENT_KEY_COMMENT_STATE,
+					NewsConstants.KEY_BOARD_REPLY);
 			if (null != commentId) {
 				intentToNewsDetail.putExtra(
-						NewsOperateModel.INTENT_KEY_COMMENT_ID, commentId);
+						NewsConstants.INTENT_KEY_COMMENT_ID, commentId);
 			} else {
 				LogUtils.e("回复别人时必须要传递被评论的id.");
 			}
@@ -940,14 +940,14 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			break;
 		}
 		// 当前操作的动态id
-		intentToNewsDetail.putExtra(NewsOperateModel.INTENT_KEY_NEWS_ID,
+		intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_NEWS_ID,
 				itemModel.getNewsID());
 
 		// 找到当前的操作对象
 		for (int index = 0; index < newsList.size(); ++index) {
 			if (newsList.get(index).getNewsID().equals(itemModel.getNewsID())) {
 				intentToNewsDetail.putExtra(
-						NewsOperateModel.INTENT_KEY_NEWS_OBJ,
+						NewsConstants.INTENT_KEY_NEWS_OBJ,
 						newsList.get(index));
 				indexAtNewsList = index;
 				break;
@@ -968,10 +968,10 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		public void onReceive(Context context, Intent resultIntent) {
 			String action = resultIntent.getAction();
 			if (action.equals(JLXCConst.BROADCAST_NEWS_LIST_REFRESH)) {
-				if (resultIntent.hasExtra(NewsOperateModel.OPERATE_UPDATE)) {
+				if (resultIntent.hasExtra(NewsConstants.OPERATE_UPDATE)) {
 					// 更新动态列表
 					NewsModel resultNews = (NewsModel) resultIntent
-							.getSerializableExtra(NewsOperateModel.OPERATE_UPDATE);
+							.getSerializableExtra(NewsConstants.OPERATE_UPDATE);
 					for (int index = 0; index < newsList.size(); index++) {
 						if (resultNews.getNewsID().equals(
 								newsList.get(index).getNewsID())) {
@@ -982,9 +982,9 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 						}
 					}
 				} else if (resultIntent
-						.hasExtra(NewsOperateModel.OPERATE_DELETET)) {
+						.hasExtra(NewsConstants.OPERATE_DELETET)) {
 					String resultID = resultIntent
-							.getStringExtra(NewsOperateModel.OPERATE_DELETET);
+							.getStringExtra(NewsConstants.OPERATE_DELETET);
 					// 删除该动态
 					for (int index = 0; index < newsList.size(); index++) {
 						if (resultID.equals(newsList.get(index).getNewsID())) {
@@ -995,10 +995,10 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 						}
 					}
 				} else if (resultIntent
-						.hasExtra(NewsOperateModel.OPERATE_NO_ACTION)) {
+						.hasExtra(NewsConstants.OPERATE_NO_ACTION)) {
 					// 无改变
 				} else if (resultIntent
-						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
+						.hasExtra(NewsConstants.PUBLISH_FINISH)) {
 					if (!isRequestData) {
 						// 发布了动态
 						isRequestData = true;

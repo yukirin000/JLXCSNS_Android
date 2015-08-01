@@ -1,6 +1,10 @@
 package com.jlxc.app.news.model;
 
-public class NewsOperateModel {
+public class NewsConstants {
+	// 小分辨率手机
+	public final static int SMALL_PIX = 540;
+	// 中等分辨率
+	public final static int MIDDLE_PIX = 720;
 	// 最多点赞数量
 	public final static int MAX_LIKE_COUNT = 10;
 	// 动态显示的评论数量

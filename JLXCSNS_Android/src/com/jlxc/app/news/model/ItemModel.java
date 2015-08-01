@@ -195,23 +195,13 @@ public class ItemModel {
 	 * */
 	public static class OperateItem extends ItemModel {
 
-		// 评论数
-		private int replyCount;
-		// 点赞数
-		private int likeCount;
 		// 是否已赞
 		private boolean isLike = false;
+		// 点赞数
+		private int likeCount;
 
-		public int getReplyCount() {
-			return replyCount;
-		}
-
-		public void setReplyCount(String replyCount) {
-			try {
-				this.replyCount = Integer.parseInt(replyCount);
-			} catch (Exception e) {
-				LogUtils.e("评论数据格式错误.");
-			}
+		public boolean getIsLike() {
+			return isLike;
 		}
 
 		public int getLikeCount() {
@@ -224,10 +214,6 @@ public class ItemModel {
 			} catch (Exception e) {
 				LogUtils.e("点赞数据格式错误.");
 			}
-		}
-
-		public boolean getIsLike() {
-			return isLike;
 		}
 
 		public void setIsLike(String isLike) {
@@ -244,8 +230,22 @@ public class ItemModel {
 	 * */
 	public static class LikeListItem extends ItemModel {
 
+		// 点赞数
+		private int likeCount;
 		// 点赞的人头像
 		private List<LikeModel> likeList = new ArrayList<LikeModel>();
+
+		public int getLikeCount() {
+			return likeCount;
+		}
+
+		public void setLikeCount(String likeCount) {
+			try {
+				this.likeCount = Integer.parseInt(likeCount);
+			} catch (Exception e) {
+				LogUtils.e("点赞数据格式错误.");
+			}
+		}
 
 		public List<LikeModel> getLikeHeadListimage() {
 			return likeList;
@@ -260,9 +260,22 @@ public class ItemModel {
 	 * 评论列表部分
 	 * */
 	public static class CommentListItem extends ItemModel {
-
+		// 评论数
+		private int replyCount;
 		// 评论列表
 		private List<CommentModel> commentList = new ArrayList<CommentModel>();
+
+		public int getReplyCount() {
+			return replyCount;
+		}
+
+		public void setReplyCount(String replyCount) {
+			try {
+				this.replyCount = Integer.parseInt(replyCount);
+			} catch (Exception e) {
+				LogUtils.e("评论数据格式错误.");
+			}
+		}
 
 		public List<CommentModel> getCommentList() {
 			return commentList;

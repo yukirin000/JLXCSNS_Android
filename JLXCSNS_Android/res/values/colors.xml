@@ -13,6 +13,10 @@
     <color name="result_view">#b0000000</color>
     <color name="viewfinder_mask">#60000000</color>
     <color name="possible_result_points">#c0ffff00</color>
+    <!-- 主页分隔线 -->
+    <color name="main_dividing_line">#fafafa</color>
+    <!-- 主页背景颜色 -->
+    <color name="main_background">#ffffff</color>
 
     <!-- 上面都是测试用的颜色 下面是正常UI配色 -->
 	<!-- 主黄色 -->
@@ -37,5 +41,6 @@
 	<!-- 辅粉色 -->
     <color name="main_pink">#f898c7</color>
     <!-- 辅浅蓝色 -->
-	<color name="main_light_blue">#4bcbfa</color>
+    <color name="main_light_blue">#4bcbfa</color>
+
 </resources>
