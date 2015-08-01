@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_background"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -74,7 +75,7 @@
     <View
         android:id="@+id/view_listview_divider"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#808080" />
+        android:layout_height="8dp"
+        android:background="@color/main_dividing_line" />
 
 </LinearLayout>

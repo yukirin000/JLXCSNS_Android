@@ -98,6 +98,7 @@ public class DataToItem {
 		OperateItem item = new OperateItem();
 		try {
 			item.setItemType(Type);
+			item.setLikeCount(news.getLikeQuantity());
 			item.setNewsID(news.getNewsID());
 			item.setIsLike(news.getIsLike());
 		} catch (Exception e) {

@@ -4,7 +4,10 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="10dp" >
+    android:background="@color/main_background"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingBottom="5dp" >
 
     <TextView
          android:id="@+id/tv_like_icon"

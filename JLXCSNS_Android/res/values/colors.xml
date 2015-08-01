@@ -13,27 +13,32 @@
     <color name="result_view">#b0000000</color>
     <color name="viewfinder_mask">#60000000</color>
     <color name="possible_result_points">#c0ffff00</color>
+    <!-- 主页分隔线 -->
+    <color name="main_dividing_line">#fafafa</color>
+    <!-- 主页背景颜色 -->
+    <color name="main_background">#ffffff</color>
 
     <!-- 上面都是测试用的颜色 下面是正常UI配色 -->
-	<!-- 主黄色 -->
-	<color name="main_yellow">#ffc400</color>
-	<!-- 主褐色 -->
-	<color name="main_brown">#86542f</color>
-	<!-- 主橘色 -->
-	<color name="main_orange">#ff8400</color>
-	<!-- 主深黑 -->
-	<color name="main_deep_black">#4d4d4d</color>
-	<!-- 主浅黑 -->
-	<color name="main_light_black">#7c7c7c</color>
-	
-	<!-- 辅灰色 -->
-	<color name="main_gary">#cccccc</color>
-	<!-- 辅肉色 -->
-	<color name="main_flesh">#cfbbac</color>
-	<!-- 辅深蓝色 -->
-	<color name="main_deep_blue">#00adad</color>
-	<!-- 辅粉色 -->
+    <!-- 主黄色 -->
+    <color name="main_yellow">#ffc400</color>
+    <!-- 主褐色 -->
+    <color name="main_brown">#86542f</color>
+    <!-- 主橘色 -->
+    <color name="main_orange">#ff8400</color>
+    <!-- 主深黑 -->
+    <color name="main_deep_black">#4d4d4d</color>
+    <!-- 主浅黑 -->
+    <color name="main_light_black">#7c7c7c</color>
+
+    <!-- 辅灰色 -->
+    <color name="main_gary">#cccccc</color>
+    <!-- 辅肉色 -->
+    <color name="main_flesh">#cfbbac</color>
+    <!-- 辅深蓝色 -->
+    <color name="main_deep_blue">#00adad</color>
+    <!-- 辅粉色 -->
     <color name="main_pink">#f898c7</color>
     <!-- 辅浅蓝色 -->
-	<color name="main_light_blue">#4bcbfa</color>
+    <color name="main_light_blue">#4bcbfa</color>
+
 </resources>

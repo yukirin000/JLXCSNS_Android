@@ -197,9 +197,23 @@ public class ItemModel {
 
 		// 是否已赞
 		private boolean isLike = false;
+		// 点赞数
+		private int likeCount;
 
 		public boolean getIsLike() {
 			return isLike;
+		}
+
+		public int getLikeCount() {
+			return likeCount;
+		}
+
+		public void setLikeCount(String likeCount) {
+			try {
+				this.likeCount = Integer.parseInt(likeCount);
+			} catch (Exception e) {
+				LogUtils.e("点赞数据格式错误.");
+			}
 		}
 
 		public void setIsLike(String isLike) {
