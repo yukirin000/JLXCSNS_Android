@@ -322,8 +322,8 @@ public class PersonalFragment extends BaseFragment {
 	public void setUpViews(View rootView) {
 		
 		//初始化adapter
-		myImageAdapter = initAdapter();
-		visitAdapter = initAdapter();
+		myImageAdapter = initAdapter(R.layout.my_image_adapter);
+		visitAdapter = initAdapter(R.layout.attrament_image);
 		friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(), R.layout.attrament_image) {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, IMModel item) {
@@ -656,9 +656,9 @@ public class PersonalFragment extends BaseFragment {
 	
 	
 	//初始化adapter
-	private HelloHaAdapter<String> initAdapter(){
+	private HelloHaAdapter<String> initAdapter(int id){
 		
-		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(getActivity(), R.layout.attrament_image) {
+		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(getActivity(), id) {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
 				ImageView imageView = helper.getView(R.id.image_attrament);

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent" xmlns:app="http://schemas.android.com/apk/res/com.jlxc.app">
     
     <!-- 背景图 -->
     <RelativeLayout
@@ -37,52 +37,67 @@
 
                 <com.jlxc.app.base.ui.view.CircularImageView
                     android:id="@+id/head_image_view"
-                    android:layout_width="70dip"
-                    android:layout_height="70dip"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="70dp"
+                    app:border_width="5dip"
+                    app:border_color="#30ffffff"
+                    android:layout_width="90dip"
+                    android:layout_height="90dip"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="90dp"
                     android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
             </RelativeLayout>
             
             <LinearLayout
-                android:background="@color/color_4"
+                android:background="@color/main_white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
                 <!-- 我的相片 -->
-
                 <LinearLayout
                     android:id="@+id/my_image_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="70dip"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal" >
+                    android:orientation="vertical" >
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dip"
-                        android:text="我的相片" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_height="40dip" >
+	                    <TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginLeft="25dip"
+	                        android:textColor="@color/main_brown"
+	                        android:text="我的动态" />
+	                    
+                        <TextView
+                            android:id="@+id/my_image_count_text_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dip" />
 
+                    </LinearLayout>
+                    
                     <com.jlxc.app.base.ui.view.TouchInterceptGridView
                         android:id="@+id/my_image_grid_view"
-                        android:layout_width="200dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="2dip"
-                        android:layout_marginLeft="5dip"
-                        android:layout_marginTop="5dip"
+                        android:layout_width="330dip"
+                        android:layout_height="wrap_content"
+                        android:stretchMode="spacingWidthUniform"
+                        android:columnWidth="100dip"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="13dip"
                         android:numColumns="3" >
                     </com.jlxc.app.base.ui.view.TouchInterceptGridView>
 
-                    <TextView
-                        android:id="@+id/my_image_count_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dip" />
                 </LinearLayout>
                 <!-- 最近来访 -->
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@color/main_gary" />
 
                 <LinearLayout
                     android:id="@+id/visit_layout"
@@ -331,24 +346,26 @@
         </LinearLayout>
     </com.jlxc.app.base.ui.view.CustomerScrollView>
     
-    <Button
+    <ImageButton
         android:id="@+id/card_Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:background="#00000000"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="14dp"
-        android:text="名片" />
+        android:layout_marginLeft="13dp"
+        android:src="@drawable/my_card"
+        android:layout_marginTop="12dp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/setting_Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:background="#00000000"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="14dp"
-        android:text="设置" />
+        android:src="@drawable/setting_btn"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="12dp" />
 
 </RelativeLayout>

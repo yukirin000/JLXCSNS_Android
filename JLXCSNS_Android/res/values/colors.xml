@@ -25,6 +25,8 @@
 	<color name="main_deep_black">#4d4d4d</color>
 	<!-- 主浅黑 -->
 	<color name="main_light_black">#7c7c7c</color>
+	<!-- 主白色 -->
+	<color name="main_white">#ffffff</color>
 	
 	<!-- 辅灰色 -->
 	<color name="main_gary">#cccccc</color>
