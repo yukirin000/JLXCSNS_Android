@@ -70,7 +70,7 @@ public class MainTabActivity extends BaseActivity {
 	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_message_btn,R.drawable.tab_friend_btn,
 			R.drawable.tab_me_btn };
 
-	private String mTextviewArray[] = { "主页", "消息","发现", "我" };
+	private String mTextviewArray[] = { "主页", "消息","找同学", "我" };
 //	//已经连接
 //	private boolean isConnect = false;
 	
