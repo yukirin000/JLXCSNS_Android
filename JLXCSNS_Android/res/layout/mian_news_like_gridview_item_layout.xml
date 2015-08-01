@@ -4,11 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ImageView
+    <com.jlxc.app.base.ui.view.RoundImageView
         android:id="@+id/iv_mian_like_gridview_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerInside"
         android:src="@drawable/ic_launcher" />
 
 </LinearLayout>

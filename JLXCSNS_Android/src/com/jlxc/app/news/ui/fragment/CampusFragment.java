@@ -59,7 +59,7 @@ import com.jlxc.app.news.model.ItemModel.OperateItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
-import com.jlxc.app.news.model.NewsOperateModel;
+import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.news.utils.DataToItem;
@@ -210,8 +210,7 @@ public class CampusFragment extends BaseFragment {
 						.get(JLXCConst.HTTP_LIST);
 				List<JSONObject> JPersonList = (List<JSONObject>) jResult
 						.get("info");
-				LogUtils.i("JNewsList=" + JNewsList + " JPersonList="
-						+ JPersonList);
+			
 				if (null != JNewsList && null != JPersonList) {
 					JsonToItemData(JNewsList, JPersonList);
 				}
@@ -547,11 +546,10 @@ public class CampusFragment extends BaseFragment {
 	private void setOperateItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		OperateItem opData = (OperateItem) item;
-		helper.setText(R.id.btn_campus_reply, "评论 " + opData.getReplyCount());
 		if (opData.getIsLike()) {
-			helper.setText(R.id.btn_campus_like, "已赞 " + opData.getLikeCount());
+			helper.setText(R.id.btn_campus_like, "已赞 ");
 		} else {
-			helper.setText(R.id.btn_campus_like, "点赞 " + opData.getLikeCount());
+			helper.setText(R.id.btn_campus_like, "点赞 ");
 		}
 		// 设置事件监听
 		final int postion = helper.getPosition();
@@ -801,7 +799,7 @@ public class CampusFragment extends BaseFragment {
 				if (R.id.layout_campus_title_rootview == viewID) {
 					// 跳转到动态详情
 					jumpToNewsDetail(titleData,
-							NewsOperateModel.KEY_BOARD_CLOSE, null);
+							NewsConstants.KEY_BOARD_CLOSE, null);
 				} else {
 					// 跳转到用户的主页
 					JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
@@ -820,7 +818,7 @@ public class CampusFragment extends BaseFragment {
 				} else {
 					// 跳转到动态详情
 					jumpToNewsDetail(bodyData,
-							NewsOperateModel.KEY_BOARD_CLOSE, null);
+							NewsConstants.KEY_BOARD_CLOSE, null);
 				}
 				break;
 
@@ -832,11 +830,11 @@ public class CampusFragment extends BaseFragment {
 				if (R.id.layout_campus_operate_root_view == viewID) {
 					// 跳转到动态详情
 					jumpToNewsDetail(operateData,
-							NewsOperateModel.KEY_BOARD_CLOSE, null);
+							NewsConstants.KEY_BOARD_CLOSE, null);
 				} else if (R.id.btn_campus_reply == viewID) {
 					// 跳转至评论页面并打开评论框
 					jumpToNewsDetail(operateData,
-							NewsOperateModel.KEY_BOARD_COMMENT, null);
+							NewsConstants.KEY_BOARD_COMMENT, null);
 				} else {
 					// 点赞操作
 					likeOperate(postion, view, operateData);
@@ -894,10 +892,7 @@ public class CampusFragment extends BaseFragment {
 								likeListPostion);
 					}
 
-					operateData.setLikeCount(String.valueOf((operateData
-							.getLikeCount() + 1)));
-					((Button) oprtView).setText("已赞 "
-							+ operateData.getLikeCount());
+					((Button) oprtView).setText("已赞 ");
 					operateData.setIsLike("1");
 				} else {
 					if (null != curntAdapter) {
@@ -906,10 +901,7 @@ public class CampusFragment extends BaseFragment {
 						newsOPerate.removeDataFromLikeList(newsAdapter,
 								likeListPostion);
 					}
-					operateData.setLikeCount(String.valueOf((operateData
-							.getLikeCount() - 1)));
-					((Button) oprtView).setText("点赞 "
-							+ operateData.getLikeCount());
+					((Button) oprtView).setText("点赞 ");
 					operateData.setIsLike("0");
 				}
 			}
@@ -919,16 +911,10 @@ public class CampusFragment extends BaseFragment {
 				// 撤销上次
 				newsOPerate.operateRevoked();
 				if (isLike) {
-					operateData.setLikeCount(String.valueOf((operateData
-							.getLikeCount() - 1)));
-					((Button) oprtView).setText("点赞 "
-							+ operateData.getLikeCount());
+					((Button) oprtView).setText("点赞 ");
 					operateData.setIsLike("0");
 				} else {
-					operateData.setLikeCount(String.valueOf((operateData
-							.getLikeCount() + 1)));
-					((Button) oprtView).setText("已赞 "
-							+ operateData.getLikeCount());
+					((Button) oprtView).setText("已赞 ");
 					operateData.setIsLike("1");
 				}
 			}
@@ -1085,25 +1071,25 @@ public class CampusFragment extends BaseFragment {
 				NewsDetailActivity.class);
 		switch (keyBoardMode) {
 		// 键盘关闭
-		case NewsOperateModel.KEY_BOARD_CLOSE:
+		case NewsConstants.KEY_BOARD_CLOSE:
 			intentToNewsDetail.putExtra(
-					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
-					NewsOperateModel.KEY_BOARD_CLOSE);
+					NewsConstants.INTENT_KEY_COMMENT_STATE,
+					NewsConstants.KEY_BOARD_CLOSE);
 			break;
 		// 键盘打开等待评论
-		case NewsOperateModel.KEY_BOARD_COMMENT:
+		case NewsConstants.KEY_BOARD_COMMENT:
 			intentToNewsDetail.putExtra(
-					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
-					NewsOperateModel.KEY_BOARD_COMMENT);
+					NewsConstants.INTENT_KEY_COMMENT_STATE,
+					NewsConstants.KEY_BOARD_COMMENT);
 			break;
 		// 键盘打开等待回复
-		case NewsOperateModel.KEY_BOARD_REPLY:
+		case NewsConstants.KEY_BOARD_REPLY:
 			intentToNewsDetail.putExtra(
-					NewsOperateModel.INTENT_KEY_COMMENT_STATE,
-					NewsOperateModel.KEY_BOARD_REPLY);
+					NewsConstants.INTENT_KEY_COMMENT_STATE,
+					NewsConstants.KEY_BOARD_REPLY);
 			if (null != commentId) {
 				intentToNewsDetail.putExtra(
-						NewsOperateModel.INTENT_KEY_COMMENT_ID, commentId);
+						NewsConstants.INTENT_KEY_COMMENT_ID, commentId);
 			} else {
 				LogUtils.e("回复别人时必须要传递被评论的id.");
 			}
@@ -1113,14 +1099,14 @@ public class CampusFragment extends BaseFragment {
 			break;
 		}
 		// 当前操作的动态id
-		intentToNewsDetail.putExtra(NewsOperateModel.INTENT_KEY_NEWS_ID,
+		intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_NEWS_ID,
 				itemModel.getNewsID());
 
 		// 找到当前的操作对象
 		for (int index = 0; index < newsList.size(); ++index) {
 			if (newsList.get(index).getNewsID().equals(itemModel.getNewsID())) {
 				intentToNewsDetail.putExtra(
-						NewsOperateModel.INTENT_KEY_NEWS_OBJ,
+						NewsConstants.INTENT_KEY_NEWS_OBJ,
 						newsList.get(index));
 				break;
 			}
@@ -1140,10 +1126,10 @@ public class CampusFragment extends BaseFragment {
 		public void onReceive(Context context, Intent resultIntent) {
 			String action = resultIntent.getAction();
 			if (action.equals(JLXCConst.BROADCAST_NEWS_LIST_REFRESH)) {
-				if (resultIntent.hasExtra(NewsOperateModel.OPERATE_UPDATE)) {
+				if (resultIntent.hasExtra(NewsConstants.OPERATE_UPDATE)) {
 					// 更新动态列表
 					NewsModel resultNews = (NewsModel) resultIntent
-							.getSerializableExtra(NewsOperateModel.OPERATE_UPDATE);
+							.getSerializableExtra(NewsConstants.OPERATE_UPDATE);
 					for (int index = 0; index < newsList.size(); index++) {
 						if (resultNews.getNewsID().equals(
 								newsList.get(index).getNewsID())) {
@@ -1154,9 +1140,9 @@ public class CampusFragment extends BaseFragment {
 						}
 					}
 				} else if (resultIntent
-						.hasExtra(NewsOperateModel.OPERATE_DELETET)) {
+						.hasExtra(NewsConstants.OPERATE_DELETET)) {
 					String resultID = resultIntent
-							.getStringExtra(NewsOperateModel.OPERATE_DELETET);
+							.getStringExtra(NewsConstants.OPERATE_DELETET);
 					// 删除该动态
 					for (int index = 0; index < newsList.size(); index++) {
 						if (resultID.equals(newsList.get(index).getNewsID())) {
@@ -1167,10 +1153,10 @@ public class CampusFragment extends BaseFragment {
 						}
 					}
 				} else if (resultIntent
-						.hasExtra(NewsOperateModel.OPERATE_NO_ACTION)) {
+						.hasExtra(NewsConstants.OPERATE_NO_ACTION)) {
 					// 无改变
 				} else if (resultIntent
-						.hasExtra(NewsOperateModel.PUBLISH_FINISH)) {
+						.hasExtra(NewsConstants.PUBLISH_FINISH)) {
 					if (!isRequestData) {
 						// 发布了动态
 						pageIndex = 1;

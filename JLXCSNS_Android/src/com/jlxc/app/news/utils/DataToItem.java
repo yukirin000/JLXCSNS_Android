@@ -98,11 +98,8 @@ public class DataToItem {
 		OperateItem item = new OperateItem();
 		try {
 			item.setItemType(Type);
-
 			item.setNewsID(news.getNewsID());
 			item.setIsLike(news.getIsLike());
-			item.setReplyCount(news.getCommentQuantity());
-			item.setLikeCount(news.getLikeQuantity());
 		} catch (Exception e) {
 			LogUtils.e("createOperate error.");
 		}
@@ -130,8 +127,8 @@ public class DataToItem {
 		LikeListItem item = new LikeListItem();
 		try {
 			item.setItemType(Type);
-
 			item.setNewsID(news.getNewsID());
+			item.setLikeCount(news.getLikeQuantity());
 			item.setLikeHeadListimage(news.getLikeHeadListimage());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");
@@ -142,9 +139,11 @@ public class DataToItem {
 	// 提取新闻中的评论列表信息
 	private static ItemModel createCommentList(NewsModel news, int Type) {
 		CommentListItem item = new CommentListItem();
+
 		try {
 			item.setNewsID(news.getNewsID());
 			item.setItemType(Type);
+			item.setReplyCount(news.getCommentQuantity());
 			item.setCommentList(news.getCommentList());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");

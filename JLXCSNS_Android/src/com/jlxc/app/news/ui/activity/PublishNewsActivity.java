@@ -54,7 +54,7 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ItemModel;
 import com.jlxc.app.news.model.LikeModel;
-import com.jlxc.app.news.model.NewsOperateModel;
+import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.model.ItemModel.CommentItem;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -637,7 +637,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	 * */
 	private void publishFinishBroadcast() {
 		Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
-		mIntent.putExtra(NewsOperateModel.PUBLISH_FINISH, "");
+		mIntent.putExtra(NewsConstants.PUBLISH_FINISH, "");
 		// 发送广播
 		LocalBroadcastManager.getInstance(PublishNewsActivity.this)
 				.sendBroadcast(mIntent);

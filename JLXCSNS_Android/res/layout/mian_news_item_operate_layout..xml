@@ -1,29 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_news_operate_rootview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:gravity="center_vertical"
-    android:paddingBottom="10dp"
-    android:paddingLeft="10dp" >
+    android:gravity="right"
+    android:orientation="horizontal"
+    android:padding="5dp" >
 
-    <Button
-        android:id="@+id/btn_mian_like"
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:text="点赞" />
+        android:paddingRight="10dp"
+        android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/btn_mian_reply"
+        <ImageView
+           android:id="@+id/btn_mian_reply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_comment_btn"
+            android:src="@drawable/btn_comment" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="评论" />
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/btn_mian_like"
-        android:text="评论" />
+        android:layout_height="wrap_content" >
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/iv_background_like_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/like_no" />
+
+        <TextView
+            android:id="@+id/btn_mian_like"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="点赞" />
+    </FrameLayout>
+
+</LinearLayout>

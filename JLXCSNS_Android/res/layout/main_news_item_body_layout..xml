@@ -14,7 +14,7 @@
         android:paddingTop="10dp"
         android:text="文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容"
         android:textColor="#6b717b"
-        android:textSize="13dp" />
+        android:textSize="15sp" />
 
     <com.jlxc.app.base.ui.view.NoScrollGridView
         android:id="@+id/gv_mian_news_body_image"
@@ -42,7 +42,9 @@
         android:id="@+id/txt_main_news_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
+        android:drawableLeft="@drawable/localtion"
+        android:drawablePadding="5dp"
+        android:paddingLeft="12dp"
         android:text="地理位置" />
 
 </LinearLayout>
