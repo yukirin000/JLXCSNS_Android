@@ -14,17 +14,17 @@
         <ImageView
             android:id="@+id/imageview"
             android:src="@drawable/abc_ab_bottom_solid_light_holo"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            android:layout_width="22dp"
+            android:layout_height="22dp" />
 
         <TextView
             android:id="@+id/textview"
             android:text="首页"
-			android:textColor="#ffffff"        
+			android:textColor="@color/tab_title_textview"        
 			android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:textSize="15sp" />
+            android:textSize="@dimen/font_size_micro" />
     </LinearLayout>
 
     <TextView

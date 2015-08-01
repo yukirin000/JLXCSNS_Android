@@ -1,0 +1,32 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+	<dimen name="font_size_huge">20sp</dimen>
+    <dimen name="font_size_large">18sp</dimen>
+    <dimen name="font_size_medium">16sp</dimen>
+    <dimen name="font_size_small">14sp</dimen>
+    <dimen name="font_size_tiny">12sp</dimen>
+    <dimen name="font_size_micro">10sp</dimen>
+    <!-- 聊天页面行上边距和下边距 -->
+    <dimen name="chatting_item_marging_top">10dp</dimen>
+	<dimen name="chatting_item_marging_bottom">10dp</dimen>
+	<!-- 聊天页面头像距左右边距 -->
+	<dimen name="chatting_headpic_margin">10dp</dimen>
+	<!-- 聊天页面气泡距头像边距 -->
+	<dimen name="chatting_pop_margin">5dp</dimen>
+	<!-- 聊天页面气泡的最大和最小宽度 -->
+	<dimen name="chatting_pop_maxwidth">239dp</dimen>
+	<dimen name="chatting_pop_minwidth">20dp</dimen>
+	<!-- 聊天页面用户名字体大小 -->
+	<dimen name="chatting_text_size">11sp</dimen>
+	<!-- 聊天页面头像大小 -->
+	<dimen name="chatting_headpic_width">55dp</dimen>
+	<dimen name="chatting_headpic_height">55dp</dimen>
+	<dimen name="attrament_img_width">50dp</dimen>
+	<dimen name="attrament_img_height">50dp</dimen>
+	<dimen name="attrament_img_margin_left">50dp</dimen>
+    
+</resources>

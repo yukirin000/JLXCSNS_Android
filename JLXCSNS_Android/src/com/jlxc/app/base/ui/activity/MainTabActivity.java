@@ -86,8 +86,8 @@ public class MainTabActivity extends BaseActivity {
 			TabSpec tabSpec = mTabHost.newTabSpec(mTextviewArray[i])
 					.setIndicator(getTabItemView(i));
 			mTabHost.addTab(tabSpec, fragmentArray[i], null);
-			mTabHost.getTabWidget().getChildAt(i)
-					.setBackgroundResource(R.drawable.selector_tab_background);
+//			mTabHost.getTabWidget().getChildAt(i)
+//					.setBackgroundResource(R.drawable.selector_tab_background);
 			final int index = i;
 			if (index == 0) {
 				//选择首页刷新和其他的不太一样
