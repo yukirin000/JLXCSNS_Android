@@ -82,8 +82,6 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class CampusFragment extends BaseFragment {
 
-	// 最多点赞数
-	private int MAX_LIKE_COUNT = 10;
 	// 最多点赞数默认为8
 	private int maxLikeCount = 8;
 	// 点赞列表的宽度

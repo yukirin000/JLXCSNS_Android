@@ -87,6 +87,7 @@ public class DataToItem {
 			item.setUserTag(news.getUserSchool());
 			item.setIsLike(news.getIsLike());
 			item.setUserID(news.getUid());
+			item.setLikeCount(news.getLikeQuantity());
 		} catch (Exception e) {
 			LogUtils.e("createNewsTitle error.");
 		}

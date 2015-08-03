@@ -3,6 +3,8 @@ package com.jlxc.app.news.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.integer;
+
 import com.jlxc.app.base.utils.LogUtils;
 
 /**
@@ -89,6 +91,8 @@ public class ItemModel {
 		private String userID;
 		// 显示是否已赞
 		private boolean isLike;
+		//所有点赞的人
+		private int likeCount;
 
 		public String getHeadSubImage() {
 			return headSubImage;
@@ -148,6 +152,18 @@ public class ItemModel {
 
 		public void setUserID(String userID) {
 			this.userID = userID;
+		}
+
+		public int getLikeCount() {
+			return likeCount;
+		}
+
+		public void setLikeCount(String likeCount) {
+			try {
+				this.likeCount = Integer.parseInt(likeCount);
+			} catch (Exception e) {
+				LogUtils.e("点赞数据格式错误.");
+			}
 		}
 
 	}

@@ -2,22 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/news_detail_likelist_rootview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/main_deep_white"
     android:orientation="vertical" >
 
-    <com.jlxc.app.base.ui.view.NoScrollGridView
-        android:id="@+id/gv_news_detail_Like_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:horizontalSpacing="2dp"
-        android:numColumns="11"
-        android:padding="10dp"
-        android:src="@drawable/ic_launcher" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/item_interior_space_small"
+        android:paddingLeft="@dimen/news_item_margins_right"
+        android:paddingRight="@dimen/news_item_margins_left" >
+
+        <!-- 赞的icon -->
+
+        <TextView
+            android:id="@+id/tv_news_detail_like_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/like_icon"
+            android:drawablePadding="5dp"
+            android:gravity="center" />
+
+        <com.jlxc.app.base.ui.view.NoScrollGridView
+            android:id="@+id/gv_news_detail_Like_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:horizontalSpacing="4dp"
+            android:numColumns="10"
+            android:src="@drawable/ic_launcher" >
+        </com.jlxc.app.base.ui.view.NoScrollGridView>
+
+        <TextView
+            android:id="@+id/tv_news_detai_like_all_person"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/all_like_person"
+            android:gravity="center"
+            android:text="22" />
+    </LinearLayout>
+
+    <!-- 主页点赞头像列表 -->
 
     <View
         android:id="@+id/view_listview_divider_dowm"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#808080" />
+        android:layout_height="@dimen/item_interior_space_medium"
+        android:background="@color/main_light_white" />
 
 </LinearLayout>

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
-        android:text="文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容"
+        android:text="内容文字内容"
         android:textColor="#6b717b"
         android:textSize="13dp" />
 
