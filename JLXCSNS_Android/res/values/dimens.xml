@@ -4,6 +4,7 @@
 
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="font_size_sper_large">30sp</dimen>
     <dimen name="font_size_huge">20sp</dimen>
     <dimen name="font_size_large">18sp</dimen>
     <dimen name="font_size_medium">16sp</dimen>
@@ -16,8 +17,12 @@
     <dimen name="news_item_margins_right">12dp</dimen>
     <!-- 动态页item上边距 -->
     <dimen name="news_item_margins_top">10dp</dimen>
-    <!-- 动态页中的内部间距 -->
-    <dimen name="news_item_interior_space">5dp</dimen>
+    <!-- item的内部间距 -->
+    <dimen name="item_interior_space_small">5dp</dimen>
+    <dimen name="item_interior_space_medium">10dp</dimen>
+    <dimen name="item_interior_space_large">15dp</dimen>
+    <!-- 校园中的title的高度 -->
+    <dimen name="campus_title_high">40dp</dimen>
 
     <!-- 聊天页面行上边距和下边距 -->
     <dimen name="chatting_item_marging_top">10dp</dimen>

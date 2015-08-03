@@ -24,7 +24,7 @@
     <!-- 主纯白色 -->
     <color name="main_deep_white">#FFFFFF</color>
     <!-- 主页浅白色 -->
-    <color name="main_light_white">#fafafa</color>
+    <color name="main_light_white">#ebebeb</color>
     <!-- 主深黑 -->
     <color name="main_deep_black">#4d4d4d</color>
     <!-- 主浅黑 -->
@@ -37,7 +37,7 @@
     <!-- 辅深蓝色 -->
     <color name="main_deep_blue">#00adad</color>
     <!-- 辅粉色 -->
-	<color name="main_white">#ffffff</color>
+    <color name="main_white">#ffffff</color>
     <color name="main_pink">#f898c7</color>
     <!-- 辅浅蓝色 -->
     <color name="main_light_blue">#4bcbfa</color>
