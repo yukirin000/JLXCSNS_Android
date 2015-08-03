@@ -593,7 +593,7 @@ public class NewsListFragment extends BaseFragment {
 		};
 		helper.setOnClickListener(R.id.btn_mian_reply, listener);
 		helper.setOnClickListener(R.id.btn_news_like, listener);
-		//helper.setOnClickListener(R.id.layout_news_operate_rootview, listener);
+		helper.setOnClickListener(R.id.layout_news_operate_rootview, listener);
 	}
 
 	/**
@@ -686,11 +686,10 @@ public class NewsListFragment extends BaseFragment {
 						.intValue(), true);
 				// 绑定数据
 				helper.setText(commentViewList.get(iCount).get("NAME")
-						.intValue(), commentList.get(iCount).getPublishName()
-						+ ":");
+						.intValue(), commentList.get(iCount).getPublishName());
 				helper.setText(commentViewList.get(iCount).get("CONTENT")
-						.intValue(), commentList.get(iCount)
-						.getCommentContent());
+						.intValue(), ":"
+						+ commentList.get(iCount).getCommentContent());
 			} else {
 				// 设为隐藏
 				helper.setVisible(commentViewList.get(iCount).get("NAME")

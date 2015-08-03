@@ -3,19 +3,24 @@
     android:id="@+id/layout_news_body_rootview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background"
+    android:background="@color/main_deep_white"
     android:clickable="true"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/news_item_margins_left"
+    android:paddingRight="@dimen/news_item_margins_right"
+    android:paddingTop="@dimen/news_item_margins_top" >
+
+    <!-- 动态的文字内容 -->
 
     <TextView
         android:id="@+id/txt_main_news_content"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:text="文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容文字内容"
-        android:textColor="#6b717b"
-        android:textSize="15sp" />
+        android:text="内容"
+        android:textColor="@color/main_deep_black"
+        android:textSize="@dimen/font_size_medium" />
+
+    <!-- 动态的图片（多图） -->
 
     <com.jlxc.app.base.ui.view.NoScrollGridView
         android:id="@+id/gv_mian_news_body_image"
@@ -24,7 +29,7 @@
         android:gravity="center"
         android:horizontalSpacing="5dp"
         android:numColumns="3"
-        android:padding="10dp"
+        android:paddingTop="@dimen/news_item_margins_top"
         android:src="@drawable/ic_launcher"
         android:verticalSpacing="5dp" >
     </com.jlxc.app.base.ui.view.NoScrollGridView>
@@ -35,17 +40,18 @@
         android:id="@+id/iv_mian_news_body_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:paddingTop="@dimen/news_item_margins_top"
         android:src="@drawable/ic_launcher" />
     <!-- 发布的位置 -->
 
     <TextView
         android:id="@+id/txt_main_news_location"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/localtion"
+        android:drawableStart="@drawable/localtion"
         android:drawablePadding="5dp"
-        android:paddingLeft="12dp"
+        android:paddingTop="@dimen/news_item_margins_top"
+        android:textColor="@color/main_light_blue"
         android:text="地理位置" />
 
 </LinearLayout>
