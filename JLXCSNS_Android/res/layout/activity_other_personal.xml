@@ -88,8 +88,9 @@
 
                 <!-- 发消息添加按钮 -->
                 <LinearLayout
+                    android:id="@+id/add_send_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="60dip"
+                    android:layout_height="70dip"
                     android:background="@color/main_light_white"
                     android:gravity="center_vertical"
                     android:orientation="horizontal" >
@@ -102,11 +103,11 @@
                         android:gravity="center"
                         android:orientation="horizontal" >
 
-                        <Button
+                        <ImageButton
                             android:id="@+id/send_message_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="发消息" />
+                            android:layout_width="145dip"
+                            android:layout_height="40dip"
+                            android:src="@drawable/send_message_selector"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -117,11 +118,11 @@
                         android:gravity="center"
                         android:orientation="horizontal" >
 
-                        <Button
+                        <ImageButton
                             android:id="@+id/add_friend_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="添加" />
+                            android:layout_width="145dip"
+                            android:layout_height="40dip"
+                            android:src="@drawable/add_friend_selector"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -253,43 +254,99 @@
                 </LinearLayout>
                 <View
                     android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginLeft="20dip"
-					android:background="@color/main_light_gary" />
+                    android:layout_height="10dip"
+					android:background="@color/main_light_white" />
                 <!-- 共同好友和访客 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dip"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal" >
+                    android:orientation="vertical" >
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="horizontal" >
-
-                        <Button
-                            android:id="@+id/common_friend_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="共同好友" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="horizontal" >
-
-                        <Button
-                            android:id="@+id/visit_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="访客" />
-                    </LinearLayout>
+					<LinearLayout
+					     android:id="@+id/common_friend_layout"
+		                 android:layout_width="match_parent"
+		                 android:layout_height="45dip"
+		                 android:gravity="center_vertical"
+		                 android:orientation="horizontal" >
+		
+		                  <TextView
+		                      android:layout_width="wrap_content"
+		                      android:layout_height="wrap_content"
+		                      android:textSize="@dimen/font_size_small"
+		                      android:textColor="@color/main_char_gary"
+		                      android:layout_marginLeft="15dip"
+		                      android:text="共同好友" />
+		                  
+							<RelativeLayout
+							    android:layout_width="match_parent"
+							    android:layout_height="wrap_content" >
+									    
+								 <TextView
+								     android:id="@+id/common_friend_count_text_view"
+								     android:layout_width="wrap_content"
+								     android:layout_height="wrap_content"
+								     android:layout_toLeftOf="@+id/common_friend_arrow"
+								     android:textSize="@dimen/font_size_small"
+				                     android:textColor="@color/main_char_gary"
+								     android:layout_centerVertical="true"
+								     android:layout_marginLeft="5dip" />				    
+							    
+							    <ImageView
+							        android:id="@+id/common_friend_arrow"
+							        android:layout_width="15dp"
+							        android:layout_height="15dp"
+							        android:scaleType="fitCenter"
+							        android:layout_alignParentRight="true"
+							        android:layout_marginRight="10dp"
+							        android:src="@drawable/right_arrow" />
+							</RelativeLayout>
+		              </LinearLayout>
+		              <View
+		                  android:layout_width="fill_parent"
+		                  android:layout_height="1dip"
+		                  android:layout_marginLeft="20dip"
+		                  android:background="@color/main_light_gary" />
+		              
+					<LinearLayout
+					     android:id="@+id/his_visit_layout"
+		                 android:layout_width="match_parent"
+		                 android:layout_height="45dip"
+		                 android:gravity="center_vertical"
+		                 android:orientation="horizontal" >
+		
+		                  <TextView
+		                      android:layout_width="wrap_content"
+		                      android:layout_height="wrap_content"
+		                      android:textSize="@dimen/font_size_small"
+		                      android:textColor="@color/main_char_gary"
+		                      android:layout_marginLeft="15dip"
+		                      android:text="TA的访客" />
+		                  
+							<RelativeLayout
+							    android:layout_width="match_parent"
+							    android:layout_height="wrap_content" >
+									    
+								 <TextView
+								     android:id="@+id/his_visit_count_text_view"
+								     android:layout_width="wrap_content"
+								     android:layout_height="wrap_content"
+								     android:layout_toLeftOf="@+id/his_visit_arrow"
+								     android:textSize="@dimen/font_size_small"
+				                     android:textColor="@color/main_char_gary"
+								     android:layout_centerVertical="true"
+								     android:layout_marginLeft="5dip" />				    
+							    
+							    <ImageView
+							        android:id="@+id/his_visit_arrow"
+							        android:layout_width="15dp"
+							        android:layout_height="15dp"
+							        android:scaleType="fitCenter"
+							        android:layout_alignParentRight="true"
+							        android:layout_marginRight="10dp"
+							        android:src="@drawable/right_arrow" />
+							</RelativeLayout>
+		              </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -310,7 +367,7 @@
                 </LinearLayout>
                 
                 <!-- 个人信息layout -->
-                <include layout="@layout/personal_information_layout"/>
+                <include layout="@layout/other_personal_information_layout"/>
 
             </LinearLayout>
         </LinearLayout>
@@ -318,17 +375,16 @@
     
 	<ImageButton
 	    android:id="@+id/return_image_view"
-	    android:layout_width="40dip"
-	    android:layout_height="40dip"
+	    android:layout_width="30dip"
+	    android:layout_height="30dip"
 	    android:layout_alignParentLeft="true"
 	    android:layout_alignParentTop="true"
 	    android:layout_marginLeft="13dp"
-	    android:layout_marginTop="12dp"
+	    android:layout_marginTop="17dp"
 	    android:background="#00000000"
-	    android:src="@drawable/back_white_btn" />
+	    android:src="@drawable/back_white_selector" />
 
 	<ImageButton
-        android:visibility="gone"	    
 	    android:id="@+id/setting_Button"
 	    android:layout_width="40dip"
 	    android:layout_height="40dip"

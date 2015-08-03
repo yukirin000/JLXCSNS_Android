@@ -54,6 +54,8 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 		setUid(intent.getIntExtra(INTENT_KEY, 0));
 		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true));
 		
+		setBarText("共同好友");
+		
 		initGridView();
 		getData();
 	}
@@ -100,6 +102,10 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 							
 							String jsonString = jResult.getString(JLXCConst.HTTP_LIST);
 							List<CommonFriendsModel> commonsFriendslist = JSON.parseArray(jsonString, CommonFriendsModel.class);
+							if (commonsFriendslist.size()>0) {
+								setBarText("共同好友"+"（"+commonsFriendslist.size()+"）");								
+							}
+							
 							commonAdapter.replaceAll(commonsFriendslist);
 						}
 						if (status == JLXCConst.STATUS_FAIL) {

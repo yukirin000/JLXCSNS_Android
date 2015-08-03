@@ -1,15 +1,13 @@
 package com.jlxc.app.personal.ui.activity;
 
-
 import io.rong.imkit.RongIM;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
 import com.jlxc.app.R;
+import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
@@ -59,7 +57,7 @@ public class AccountSettingActivity extends BaseActivityWithTopBar{
                 Intent exit = new Intent(AccountSettingActivity.this, LoginActivity.class);
                 exit.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
 				startActivity(exit);
-				finish();
+				ActivityManager.getInstence().exitApplication();
             }
         });
         alterDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -71,8 +69,8 @@ public class AccountSettingActivity extends BaseActivityWithTopBar{
         alterDialog.show();
 	}
 	
-	public static void killThisPackageIfRunning(final Context context, String packageName) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        activityManager.killBackgroundProcesses(packageName);
-    }
+//	public static void killThisPackageIfRunning(final Context context, String packageName) {
+//        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//        activityManager.killBackgroundProcesses(packageName);
+//    }
 }

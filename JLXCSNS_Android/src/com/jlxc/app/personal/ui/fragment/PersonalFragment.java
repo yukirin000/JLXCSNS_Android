@@ -369,6 +369,7 @@ public class PersonalFragment extends BaseFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				cityTextView.setText(mCurrentProviceName+mCurrentCityName);
+				
 				uploadInformation("city", mCurrentProviceName+","+mCurrentCityName);
 			}
 		});
@@ -420,7 +421,7 @@ public class PersonalFragment extends BaseFragment {
 		//学校字符串
 		String schoolString = "";
 		//城市字符串
-		String cityString = "";		
+//		String cityString = "";		
 		//学校
 		if (null == userModel.getSchool() || "".equals(userModel.getSchool())) {
 			schoolTextView.setText("暂无");
@@ -433,19 +434,19 @@ public class PersonalFragment extends BaseFragment {
 			cityTextView.setText("暂无");
 		}else {
 			cityTextView.setText(userModel.getCity());
-			cityString = userModel.getCity();
+//			cityString = userModel.getCity();
 		}
 		
 		//顶部学校
-		String topSchoolString = "";
-		if (schoolString.length()>0) {
-			topSchoolString = cityString+","+schoolString;
-		}else {
-			topSchoolString = schoolString;
-		}
+//		String topSchoolString = "";
+//		if (cityString.length()>0) {
+//			topSchoolString = cityString+","+schoolString;
+//		}else {
+//			topSchoolString = schoolString;
+//		}
 		
-		//顶部学校tv
-		topSchoolTextView.setText(topSchoolString);
+		//顶部学校tv 暂时只有学校
+		topSchoolTextView.setText(schoolString);
 		
 	    //获取当前最近的三张状态图片
 		getNewsImages();
@@ -880,6 +881,9 @@ public class PersonalFragment extends BaseFragment {
 							}else if ("sex".equals(field)) {
 								//性别
 								userModel.setSex(Integer.parseInt(value));			
+							}else if ("city".equals(field)) {
+								//城市
+								userModel.setCity(value);			
 							}
 							//本地持久化
 							UserManager.getInstance().saveAndUpdate();

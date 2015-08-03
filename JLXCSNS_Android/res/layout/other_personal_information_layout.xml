@@ -32,13 +32,6 @@
 				<RelativeLayout
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content" >
-				    <ImageView
-				        android:layout_width="15dp"
-				        android:layout_height="15dp"
-				        android:scaleType="fitCenter"
-				        android:layout_alignParentRight="true"
-				        android:layout_marginRight="10dp"
-				        android:src="@drawable/right_arrow" />
 				</RelativeLayout>
               </LinearLayout>
 
@@ -75,14 +68,6 @@
                   <RelativeLayout
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content" >
-
-                      <ImageView
-			        android:layout_width="15dp"
-			        android:layout_height="15dp"
-			        android:scaleType="fitCenter"
-                          android:layout_alignParentRight="true"
-                          android:layout_marginRight="10dp"
-                          android:src="@drawable/right_arrow" />
                   </RelativeLayout>
 
               </LinearLayout>
@@ -120,14 +105,6 @@
                   <RelativeLayout
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content" >
-
-                      <ImageView
-			        android:layout_width="15dp"
-			        android:layout_height="15dp"
-			        android:scaleType="fitCenter"
-                          android:layout_alignParentRight="true"
-                          android:layout_marginRight="10dp"
-                          android:src="@drawable/right_arrow" />
                   </RelativeLayout>                    
               </LinearLayout>
 
@@ -164,14 +141,6 @@
                   <RelativeLayout
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content" >
-
-                      <ImageView
-			        android:layout_width="15dp"
-			        android:layout_height="15dp"
-			        android:scaleType="fitCenter"
-                          android:layout_alignParentRight="true"
-                          android:layout_marginRight="10dp"
-                          android:src="@drawable/right_arrow" />
                   </RelativeLayout>                      
               </LinearLayout>
 
@@ -209,14 +178,6 @@
                   <RelativeLayout
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content" >
-
-                      <ImageView
-			        android:layout_width="15dp"
-			        android:layout_height="15dp"
-			        android:scaleType="fitCenter"
-                          android:layout_alignParentRight="true"
-                          android:layout_marginRight="10dp"
-                          android:src="@drawable/right_arrow" />
                   </RelativeLayout>                      
               </LinearLayout>
 
@@ -253,14 +214,6 @@
                   <RelativeLayout
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content" >
-
-                      <ImageView
-			        android:layout_width="15dp"
-			        android:layout_height="15dp"
-			        android:scaleType="fitCenter"
-                          android:layout_alignParentRight="true"
-                          android:layout_marginRight="10dp"
-                          android:src="@drawable/right_arrow" />
                   </RelativeLayout>                     
               </LinearLayout>    
     

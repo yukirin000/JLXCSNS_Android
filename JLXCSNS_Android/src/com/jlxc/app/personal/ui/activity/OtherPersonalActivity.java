@@ -57,7 +57,15 @@ public class OtherPersonalActivity extends BaseActivity{
 	private ImageView backImageView;
 	//头像
 	@ViewInject(R.id.head_image_view)
-	private ImageView headImageView;	
+	private ImageView headImageView;
+	
+	//顶部姓名
+	@ViewInject(R.id.top_name_text_view)
+	private TextView topNameTextView;	
+	//顶部学校
+	@ViewInject(R.id.top_school_text_view)
+	private TextView topSchoolTextView;	
+	
 	//设置按钮
 	@ViewInject(R.id.setting_Button)
 	private ImageButton settingButton;
@@ -83,6 +91,9 @@ public class OtherPersonalActivity extends BaseActivity{
 	//性别
 	@ViewInject(R.id.sex_text_view)
 	private TextView sexTextView;
+	//性别图片
+	@ViewInject(R.id.sex_image_view)
+	private ImageView sexImageView;	
 	//生日
 	@ViewInject(R.id.birth_text_view)
 	private TextView birthTextView;
@@ -90,25 +101,35 @@ public class OtherPersonalActivity extends BaseActivity{
 	@ViewInject(R.id.city_text_view)
 	private TextView cityTextView;
 	
+	//发消息最外边的layout
+	@ViewInject(R.id.add_send_layout)
+	private LinearLayout addSendLayout;	
 	//发消息layout
 	@ViewInject(R.id.send_message_layout)
 	private LinearLayout sendMessageLayout;
 	//发消息btn
 	@ViewInject(R.id.send_message_btn)
-	private Button sendMessageButton;
+	private ImageButton sendMessageButton;
 	//添加好友layout
 	@ViewInject(R.id.add_friend_layout)
 	private LinearLayout addFriendLayout;
 	//添加好友btn 
 	@ViewInject(R.id.add_friend_button)
-	private Button addFriendButton;	
+	private ImageButton addFriendButton;	
 	
 	//共同好友
-	@ViewInject(R.id.common_friend_button)
-	private Button commonFriendButton;	
+	@ViewInject(R.id.common_friend_layout)
+	private LinearLayout commonFriendLayout;
+	//共同好友数量
+	@ViewInject(R.id.common_friend_count_text_view)
+	private TextView commonFriendCountTextView;
 	//访客
-	@ViewInject(R.id.visit_button)
-	private Button visitButton;	
+	@ViewInject(R.id.his_visit_layout)
+	private LinearLayout visitLayout;	
+	//访客数量
+	@ViewInject(R.id.his_visit_count_text_view)
+	private TextView visitFriendCountTextView;		
+	
 	
 	//单例bitmapUtils的引用
 	BitmapUtils bitmapUtils;
@@ -121,7 +142,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	//查看的用户模型
 	private UserModel otherUserModel;
 	
-	@OnClick({R.id.head_image_view, R.id.visit_button, R.id.common_friend_button, R.id.his_friend_layout, 
+	@OnClick({R.id.head_image_view, R.id.his_visit_layout, R.id.common_friend_layout, R.id.his_friend_layout, 
 			R.id.return_image_view,R.id.send_message_btn, R.id.add_friend_button, R.id.setting_Button,R.id.his_image_layout})
 	private void clickEvent(View view){
 		switch (view.getId()) {
@@ -139,7 +160,7 @@ public class OtherPersonalActivity extends BaseActivity{
 //			startActivityWithRight(settingIntent);
 			showPopupWindow(settingButton);
 			break;
-		case R.id.visit_button:
+		case R.id.his_visit_layout:
 			//来访
 			Intent visitIntent = new Intent(this, VisitListActivity.class);
 			visitIntent.putExtra(VisitListActivity.INTENT_KEY, otherUserModel.getUid());
@@ -157,7 +178,7 @@ public class OtherPersonalActivity extends BaseActivity{
 			otherFriendIntent.putExtra(OtherPeopleFriendsActivity.INTENT_KEY, otherUserModel.getUid());
 			startActivityWithRight(otherFriendIntent);
 			break;
-		case R.id.common_friend_button:
+		case R.id.common_friend_layout:
 			//共同好友
 			Intent commonIntent = new Intent(this, CommonFriendsActivity.class);
 			commonIntent.putExtra(CommonFriendsActivity.INTENT_KEY, otherUserModel.getUid());
@@ -271,6 +292,7 @@ public class OtherPersonalActivity extends BaseActivity{
 			nameTextView.setText("暂无");
 		}else {
 			nameTextView.setText(otherUserModel.getName());
+			topNameTextView.setText(otherUserModel.getName());
 		}
 		//签名
 		if (null == otherUserModel.getSign() || "".equals(otherUserModel.getSign())) {
@@ -287,14 +309,18 @@ public class OtherPersonalActivity extends BaseActivity{
 		//性别
 		if (otherUserModel.getSex() == 0) {
 			sexTextView.setText("男孩纸");
+			sexImageView.setImageResource(R.drawable.sex_boy);
 		}else {
 			sexTextView.setText("女孩纸");
+			sexImageView.setImageResource(R.drawable.sex_girl);
 		}
 		//学校
 		if (null == otherUserModel.getSchool() || "".equals(otherUserModel.getSchool())) {
 			schoolTextView.setText("暂无");
+			topSchoolTextView.setText("");
 		}else {
 			schoolTextView.setText(otherUserModel.getSchool());
+			topSchoolTextView.setText(otherUserModel.getSchool());
 		}
 		//城市
 		if (null == otherUserModel.getCity() || "".equals(otherUserModel.getCity())) {
@@ -327,27 +353,29 @@ public class OtherPersonalActivity extends BaseActivity{
 		
 		//访客数量
 		if (jsonObject.getIntValue("visit_count")>0) {
-			visitButton.setText("访客"+jsonObject.getIntValue("visit_count"));	
+			visitFriendCountTextView.setText(jsonObject.getIntValue("visit_count")+"人");	
 		}else {
-			visitButton.setText("访客");
+			visitFriendCountTextView.setText("");
 		}
 		//好友数量
 		if (jsonObject.getIntValue("friend_count")>0) {
-			hisFriendsCountTextView.setText(""+jsonObject.getIntValue("friend_count"));	
+			hisFriendsCountTextView.setText(jsonObject.getIntValue("friend_count")+"人");	
 		}else {
 			hisFriendsCountTextView.setText("");
 		}
 		//共同好友数量
 		if (jsonObject.getIntValue("common_friend_count")>0) {
-			commonFriendButton.setText("共同好友"+jsonObject.getIntValue("common_friend_count"));	
+			commonFriendCountTextView.setText(jsonObject.getIntValue("common_friend_count")+"人");	
 		}else {
-			commonFriendButton.setText("共同好友");
+			commonFriendCountTextView.setText("");
 		}
 		
 		//如果是自己
 		if (UserManager.getInstance().getUser().getUid() == uid) {
-			addFriendButton.setEnabled(false);
-			sendMessageButton.setEnabled(false);
+			
+			addSendLayout.setVisibility(View.GONE);
+			addFriendButton.setVisibility(View.GONE);
+			sendMessageButton.setVisibility(View.GONE);
 			settingButton.setVisibility(View.GONE);
 		}else {
 			
