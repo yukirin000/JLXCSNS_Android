@@ -32,14 +32,19 @@
 
     <!-- 辅灰色 -->
     <color name="main_gary">#cccccc</color>
+    <!-- 辅浅灰色 -->
+    <color name="main_light_gary">#e6e6e6</color>    
     <!-- 辅肉色 -->
     <color name="main_flesh">#cfbbac</color>
     <!-- 辅深蓝色 -->
     <color name="main_deep_blue">#00adad</color>
-    <!-- 辅粉色 -->
+    <!-- 辅白色 -->
 	<color name="main_white">#ffffff</color>
+	<!-- 辅粉色 -->
     <color name="main_pink">#f898c7</color>
     <!-- 辅浅蓝色 -->
     <color name="main_light_blue">#4bcbfa</color>
+    <!-- 字用灰色 -->
+    <color name="main_char_gary">#808080</color>
 
 </resources>

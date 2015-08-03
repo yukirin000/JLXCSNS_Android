@@ -1,5 +1,6 @@
 package com.jlxc.app.base.ui.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -70,6 +71,7 @@ public class CircularImageView extends ImageView {
 		this.invalidate();
 	}
 
+	@SuppressLint("NewApi") 
 	public void addShadow() {
 		setLayerType(LAYER_TYPE_SOFTWARE, paintBorder);
 		paintBorder.setShadowLayer(4.0f, 0.0f, 2.0f, Color.BLACK);

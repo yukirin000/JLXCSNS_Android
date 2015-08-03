@@ -1,6 +1,9 @@
 package com.jlxc.app.base.ui.view;
 
+import com.jlxc.app.R;
+
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,6 +23,9 @@ public class RoundImageView extends ImageView {
 
 	public RoundImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.RoundImageView);
+		setRectAdius(attributes.getDimensionPixelOffset(R.styleable.RoundImageView_rect_adius, 10));
+		
 		init();
 	}
 
