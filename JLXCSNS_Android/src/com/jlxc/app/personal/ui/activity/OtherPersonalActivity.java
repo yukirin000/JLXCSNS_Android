@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -59,7 +60,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	private ImageView headImageView;	
 	//设置按钮
 	@ViewInject(R.id.setting_Button)
-	private Button settingButton;
+	private ImageButton settingButton;
 	//TA的相片grid
 	@ViewInject(R.id.his_image_grid_view)
 	private GridView hisImageGridView;
@@ -190,8 +191,8 @@ public class OtherPersonalActivity extends BaseActivity{
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		//初始化adapter
-		hisImageAdapter = initAdapter();
-		hisFriendAdapter = initAdapter();
+		hisImageAdapter = initAdapter(R.layout.my_image_adapter);
+		hisFriendAdapter = initAdapter(R.layout.attrament_other_image);
 		//设置adapter
 		hisImageGridView.setAdapter(hisImageAdapter);
 		hisFriendsGridView.setAdapter(hisFriendAdapter);
@@ -216,8 +217,8 @@ public class OtherPersonalActivity extends BaseActivity{
 	
 	//////////////////////private method////////////////////////
 	//初始化adapter
-	private HelloHaAdapter<String> initAdapter(){
-		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(this, R.layout.attrament_image) {
+	private HelloHaAdapter<String> initAdapter(int id){
+		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(this, id) {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
 				ImageView imageView = helper.getView(R.id.image_attrament);

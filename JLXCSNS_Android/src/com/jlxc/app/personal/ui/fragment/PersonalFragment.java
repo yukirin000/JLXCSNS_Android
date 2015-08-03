@@ -126,6 +126,12 @@ public class PersonalFragment extends BaseFragment {
 	//头像
 	@ViewInject(R.id.head_image_view)
 	private ImageView headImageView;	
+	//顶部姓名
+	@ViewInject(R.id.top_name_text_view)
+	private TextView topNameTextView;	
+	//顶部学校
+	@ViewInject(R.id.top_school_text_view)
+	private TextView topSchoolTextView;	
 	//我的相片grid
 	@ViewInject(R.id.my_image_grid_view)
 	private GridView myImageGridView;
@@ -144,7 +150,6 @@ public class PersonalFragment extends BaseFragment {
 	//我的好友数量
 	@ViewInject(R.id.friend_count_text_view)
 	private TextView friendsCountTextView;
-	
 	//姓名
 	@ViewInject(R.id.name_text_view)
 	private TextView nameTextView;
@@ -157,6 +162,9 @@ public class PersonalFragment extends BaseFragment {
 	//性别
 	@ViewInject(R.id.sex_text_view)
 	private TextView sexTextView;
+	//性别图片
+	@ViewInject(R.id.sex_image_view)
+	private ImageView sexImageView;	
 	//生日
 	@ViewInject(R.id.birth_text_view)
 	private TextView birthTextView;
@@ -386,6 +394,8 @@ public class PersonalFragment extends BaseFragment {
 			nameTextView.setText("暂无");
 		}else {
 			nameTextView.setText(userModel.getName());
+			//顶部姓名
+			topNameTextView.setText(userModel.getName());
 		}
 //		//签名 签名不能放在这里更新
 //		if (null == userModel.getSign() || "".equals(userModel.getSign())) {
@@ -402,21 +412,40 @@ public class PersonalFragment extends BaseFragment {
 		//性别
 		if (userModel.getSex() == 0) {
 			sexTextView.setText("男孩纸");
+			sexImageView.setImageResource(R.drawable.sex_boy);
 		}else {
 			sexTextView.setText("女孩纸");
+			sexImageView.setImageResource(R.drawable.sex_girl);
 		}
+		//学校字符串
+		String schoolString = "";
+		//城市字符串
+		String cityString = "";		
 		//学校
 		if (null == userModel.getSchool() || "".equals(userModel.getSchool())) {
 			schoolTextView.setText("暂无");
 		}else {
 			schoolTextView.setText(userModel.getSchool());
+			schoolString = userModel.getSchool();
 		}
 		//城市
 		if (null == userModel.getCity() || "".equals(userModel.getCity())) {
 			cityTextView.setText("暂无");
 		}else {
 			cityTextView.setText(userModel.getCity());
-		}	
+			cityString = userModel.getCity();
+		}
+		
+		//顶部学校
+		String topSchoolString = "";
+		if (schoolString.length()>0) {
+			topSchoolString = cityString+","+schoolString;
+		}else {
+			topSchoolString = schoolString;
+		}
+		
+		//顶部学校tv
+		topSchoolTextView.setText(topSchoolString);
 		
 	    //获取当前最近的三张状态图片
 		getNewsImages();
@@ -645,8 +674,10 @@ public class PersonalFragment extends BaseFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				if (which == 0) {
 					sexTextView.setText("男孩纸");
+					sexImageView.setImageResource(R.drawable.sex_boy);
 				}else {
 					sexTextView.setText("女孩纸");
+					sexImageView.setImageResource(R.drawable.sex_girl);
 				}
 				uploadInformation("sex", ""+which);
 			}
@@ -743,7 +774,7 @@ public class PersonalFragment extends BaseFragment {
 							//人数
 							int visitCount = jResult.getIntValue("visit_count");
 							if (visitCount > 0) {
-								visitCountTextView.setText(visitCount+"");
+								visitCountTextView.setText(visitCount+"人");
 							}else {
 								visitCountTextView.setText("");
 							}
@@ -794,7 +825,7 @@ public class PersonalFragment extends BaseFragment {
 							//人数
 							int friendCount = jResult.getIntValue("friend_count");
 							if (friendCount > 0) {
-								friendsCountTextView.setText(friendCount+"");
+								friendsCountTextView.setText(friendCount+"人");
 							}else {
 								friendsCountTextView.setText("");
 							}
@@ -802,7 +833,6 @@ public class PersonalFragment extends BaseFragment {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-//							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 							friendsAdapter.clear();
 							friendsCountTextView.setText("");
 						}
