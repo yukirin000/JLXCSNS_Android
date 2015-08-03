@@ -426,7 +426,6 @@ public class NewsListFragment extends BaseFragment {
 		LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
 		laParams.width = laParams.height = (screenWidth) / 7;
 		imgView.setLayoutParams(laParams);
-		imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 		helper.setImageUrl(R.id.img_mian_news_user_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
 		// 设置用户名,发布的时间，标签
@@ -469,14 +468,14 @@ public class NewsListFragment extends BaseFragment {
 			ImageModel imageModel = pictureList.get(0);
 			LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
 			if (imageModel.getImageHheight() >= imageModel.getImageWidth()) {
-				laParams.height = screenWidth * 4 / 5;
+				laParams.height = screenWidth * 3 / 5;
 				laParams.width = (int) ((imageModel.getImageWidth()
-						* screenWidth * 4) / (5.0 * imageModel
+						* screenWidth * 3) / (5.0 * imageModel
 						.getImageHheight()));
 			} else {
 				laParams.height = (int) ((imageModel.getImageHheight()
-						* screenWidth * 4) / (5.0 * imageModel.getImageWidth()));
-				laParams.width = screenWidth * 4 / 5;
+						* screenWidth * 3) / (5.0 * imageModel.getImageWidth()));
+				laParams.width = screenWidth * 3 / 5;
 			}
 			imgView.setLayoutParams(laParams);
 			imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -604,13 +603,13 @@ public class NewsListFragment extends BaseFragment {
 		LikeListItem lkData = (LikeListItem) item;
 		List<LikeModel> lkImageList = lkData.getLikeHeadListimage();
 		if (lkImageList.size() <= 0) {
-			helper.getView(R.id.tv_like_icon).setVisibility(View.INVISIBLE);
+			helper.getView(R.id.tv_like_icon).setVisibility(View.GONE);
 		} else {
 			helper.getView(R.id.tv_like_icon).setVisibility(View.VISIBLE);
 		}
 		if (lkImageList.size() < maxLikeCount) {
 			helper.getView(R.id.tv_news_like_all_person).setVisibility(
-					View.INVISIBLE);
+					View.GONE);
 		} else {
 			helper.getView(R.id.tv_news_like_all_person).setVisibility(
 					View.VISIBLE);
@@ -993,7 +992,7 @@ public class NewsListFragment extends BaseFragment {
 					((ImageView) oprtView
 							.findViewById(R.id.iv_main_news_like_back))
 							.setImageResource(R.drawable.like_have);
-					if (View.INVISIBLE == likeIcon.getVisibility()) {
+					if (View.GONE == likeIcon.getVisibility()) {
 						// 显示点赞图标
 						likeIcon.setVisibility(View.VISIBLE);
 					}
@@ -1020,11 +1019,11 @@ public class NewsListFragment extends BaseFragment {
 							.setImageResource(R.drawable.like_no);
 					if (curntAdapter.getCount() <= 0) {
 						// 隐藏点赞图标
-						likeIcon.setVisibility(View.INVISIBLE);
+						likeIcon.setVisibility(View.GONE);
 					}
 					if (curntAdapter.getCount() <= maxLikeCount) {
 						// 隐藏所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.INVISIBLE);
+						allLikeIcon.setVisibility(View.GONE);
 					}
 					operateData.setIsLike("0");
 				}
@@ -1042,11 +1041,11 @@ public class NewsListFragment extends BaseFragment {
 							.setImageResource(R.drawable.like_no);
 					if (curntAdapter.getCount() <= 0) {
 						// 隐藏点赞图标
-						likeIcon.setVisibility(View.INVISIBLE);
+						likeIcon.setVisibility(View.GONE);
 					}
 					if (curntAdapter.getCount() <= maxLikeCount) {
 						// 隐藏所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.INVISIBLE);
+						allLikeIcon.setVisibility(View.GONE);
 					}
 					operateData.setIsLike("0");
 				} else {
@@ -1055,7 +1054,7 @@ public class NewsListFragment extends BaseFragment {
 					((ImageView) oprtView
 							.findViewById(R.id.iv_main_news_like_back))
 							.setImageResource(R.drawable.like_have);
-					if (View.INVISIBLE == likeIcon.getVisibility()) {
+					if (View.GONE == likeIcon.getVisibility()) {
 						// 显示点赞图标
 						likeIcon.setVisibility(View.VISIBLE);
 					}

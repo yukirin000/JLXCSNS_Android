@@ -2,25 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/main_gary"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tv_campus_head_name"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/xianjian01"
-        android:gravity="center"
-        android:text="深圳市高级中学"
-        android:textColor="#101010"
-        android:textSize="30sp" />
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/campus_background" />
+
+        <TextView
+            android:id="@+id/tv_campus_head_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="深圳市高级中学"
+            android:textColor="@color/main_deep_white"
+            android:textSize="@dimen/font_size_sper_large" />
+    </FrameLayout>
 
     <TextView
-        android:id="@+id/tv_person_head"
+        android:id="@+id/tv_campus_person_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#B0B0B0"
-        android:text="这个学校的学生"
-        android:textColor="#101010" />
+        android:layout_height="@dimen/campus_title_high"
+        android:background="@drawable/campus_person_title"
+        android:gravity="center_vertical"
+        android:text="  这个学校的学生"
+        android:textColor="@color/main_deep_black"
+        android:textSize="@dimen/font_size_large" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,10 +44,9 @@
 
         <HorizontalScrollView
             android:id="@+id/hsv_person_list"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="5dp"
+            android:padding="@dimen/item_interior_space_small"
             android:scrollbars="none" >
 
             <LinearLayout
@@ -52,21 +66,29 @@
                 </com.jlxc.app.base.ui.view.NoScrollGridView>
             </LinearLayout>
         </HorizontalScrollView>
-
-        <ImageView
-            android:id="@+id/txt_campus_all_alumnus"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:background="@drawable/btn_moer_photo"
-            android:padding="10dp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_news_head"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#B0B0B0"
-        android:text="动态列表"
-        android:textColor="#101010" />
+        android:paddingBottom="1dp" >
+
+        <ImageView
+            android:id="@+id/iv_campus_news_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/campus_title_high"
+            android:scaleType="fitXY"
+            android:src="@drawable/campus_news_title" />
+
+        <TextView
+            android:id="@+id/tv_campus_news_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/item_interior_space_small"
+            android:text="动态列表"
+            android:textColor="@color/main_deep_black"
+            android:textSize="@dimen/font_size_large" />
+    </FrameLayout>
 
 </LinearLayout>

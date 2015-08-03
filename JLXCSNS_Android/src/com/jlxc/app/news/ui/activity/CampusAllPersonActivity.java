@@ -68,6 +68,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		init();
 		GridViewSetup();
 		setRightBtn();
+		setBarText("所有学生");
 		// 查询数据
 		getCampusAllPerson(schoolCode);
 	}
@@ -263,7 +264,8 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 
 			Intent intentUsrMain = new Intent(CampusAllPersonActivity.this,
 					OtherPersonalActivity.class);
-			intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, JLXCUtils.stringToInt(personModel.getUserId()));
+			intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY,
+					JLXCUtils.stringToInt(personModel.getUserId()));
 			startActivityWithRight(intentUsrMain);
 		}
 	}

@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -227,7 +228,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-
+		setBarText("详情", getResources().getDimension(R.dimen.font_size_small),
+				getResources().getColorStateList(R.color.main_brown));
 		dataList = new ArrayList<ItemModel>();
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
@@ -845,7 +847,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		// 如果是自己发布的动态
 		if (currentNews.getUid().equals(
 				String.valueOf(UserManager.getInstance().getUser().getUid()))) {
-			addRightBtn("删除");
+			addRightImgBtn(R.layout.right_image_button,
+					R.id.layout_top_btn_root_view, R.id.img_btn_right_top);
 		}
 		dataList = DataToItem.newsDetailToItems(currentNews);
 		detailAdapter.replaceAll(dataList);
@@ -1100,7 +1103,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						downDialog.setClickCallBack(new ClickCallBack() {
 
 							@Override
-							public void Onclick(View view,int which) {
+							public void Onclick(View view, int which) {
 								newsOPerate.deleteSubComment(
 										currentSubCmtModel.getSubID(),
 										currentNews.getNewsID());

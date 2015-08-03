@@ -1,29 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_campus_operate_root_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
+    android:background="@color/main_deep_white"
     android:clickable="true"
-    android:paddingBottom="10dp"
-    android:paddingLeft="10dp" >
+    android:gravity="right"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/news_item_margins_left"
+    android:paddingRight="@dimen/news_item_margins_right" >
 
-    <Button
-        android:id="@+id/btn_campus_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:text="点赞" />
-
-    <Button
+    <FrameLayout
         android:id="@+id/btn_campus_reply"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/btn_campus_like"
-        android:text="评论" />
+        android:layout_height="match_parent"
+        android:padding="@dimen/item_interior_space_medium" >
 
-</RelativeLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_comment_btn"
+            android:src="@drawable/btn_comment" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="@dimen/item_interior_space_small"
+            android:gravity="center"
+            android:text="评论"
+            android:textColor="@color/main_brown"
+            android:textSize="@dimen/font_size_small" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btn_campus_like"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/item_interior_space_medium"
+        android:paddingLeft="@dimen/item_interior_space_medium"
+        android:paddingTop="@dimen/item_interior_space_medium" >
+
+        <ImageView
+            android:id="@+id/iv_campus_news_like_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/like_no" />
+
+        <TextView
+            android:id="@+id/tv_campus_news_like"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="@dimen/item_interior_space_small"
+            android:gravity="center"
+            android:text="点赞"
+            android:textColor="@color/main_brown"
+            android:textSize="@dimen/font_size_small" />
+    </FrameLayout>
+
+</LinearLayout>

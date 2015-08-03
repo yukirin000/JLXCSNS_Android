@@ -5,9 +5,11 @@
     android:background="@color/main_deep_white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:paddingBottom="@dimen/item_interior_space_small"
     android:paddingLeft="@dimen/news_item_margins_right"
-    android:paddingRight="@dimen/news_item_margins_left"
-    android:paddingBottom="@dimen/news_item_interior_space" >
+    android:paddingRight="@dimen/news_item_margins_left" >
+
+    <!-- 赞的icon -->
 
     <TextView
         android:id="@+id/tv_like_icon"
