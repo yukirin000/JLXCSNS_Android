@@ -624,7 +624,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setOnClickListener(R.id.img_news_detail_user_head, listener);
 		helper.setOnClickListener(R.id.txt_news_detail_user_name, listener);
 		helper.setOnClickListener(R.id.btn_news_detail_like, listener);
-
 	}
 
 	/**
