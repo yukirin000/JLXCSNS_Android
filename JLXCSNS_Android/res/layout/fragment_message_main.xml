@@ -6,12 +6,13 @@
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#BBBBBB"
+        android:layout_height="@dimen/abc_action_bar_default_height" 
+        android:background="@color/main_yellow"
         android:orientation="horizontal" >
 
         <LinearLayout
             android:layout_width="0dp"
+            
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -32,9 +33,10 @@
                     android:id="@+id/conversation_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+					android:textColor="@color/main_brown"                    
                     android:layout_centerHorizontal="true"
                     android:text="会话"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/abc_action_bar_title_text_size" />
                 <TextView
                     android:id="@+id/conversation_unread_text_view"
                     android:layout_width="wrap_content"
@@ -59,7 +61,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="通知"
-                    android:textSize="18sp" />
+					android:textColor="@color/main_brown"                    
+                    android:textSize="@dimen/abc_action_bar_title_text_size" />
 
                 <TextView
                     android:id="@+id/notify_unread_text_view"
@@ -85,8 +88,8 @@
                 <ImageView
                     android:id="@+id/img_cursor"
                     android:layout_width="60dp"
-                    android:layout_height="10dp"
-                    android:src="#00AAAA" />
+                    android:layout_height="3dp"
+                    android:src="@color/main_orange" />
             </LinearLayout>
         </LinearLayout>
 

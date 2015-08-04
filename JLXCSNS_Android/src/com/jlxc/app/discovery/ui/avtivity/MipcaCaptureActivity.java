@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.jlxc.app.R;
+import com.jlxc.app.base.manager.ActivityManager;
+import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.discovery.ui.view.qrcodeView.camera.CameraManager;
 import com.jlxc.app.discovery.ui.view.qrcodeView.decoding.CaptureActivityHandler;
 import com.jlxc.app.discovery.ui.view.qrcodeView.decoding.InactivityTimer;
@@ -33,7 +35,7 @@ import com.jlxc.app.discovery.ui.view.qrcodeView.view.ViewfinderView;
  * Initial the camera
  * @author Ryan.Tang
  */
-public class MipcaCaptureActivity extends Activity implements Callback {
+public class MipcaCaptureActivity extends BaseActivityWithTopBar implements Callback {
 
 	private CaptureActivityHandler handler;
 	private ViewfinderView viewfinderView;
@@ -47,30 +49,9 @@ public class MipcaCaptureActivity extends Activity implements Callback {
 	private boolean vibrate;
 
 	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_capture);
-		//ViewUtil.addTopView(getApplicationContext(), this, R.string.scan_card);
-		CameraManager.init(getApplication());
-		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-		
-		Button mButtonBack = (Button) findViewById(R.id.button_back);
-		mButtonBack.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				MipcaCaptureActivity.this.finish();
-				
-			}
-		});
-		hasSurface = false;
-		inactivityTimer = new InactivityTimer(this);
-	}
 
 	@Override
-	protected void onResume() {
+	public void onResume() {
 		super.onResume();
 		SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
 		SurfaceHolder surfaceHolder = surfaceView.getHolder();
@@ -94,7 +75,7 @@ public class MipcaCaptureActivity extends Activity implements Callback {
 	}
 
 	@Override
-	protected void onPause() {
+	public void onPause() {
 		super.onPause();
 		if (handler != null) {
 			handler.quitSynchronously();
@@ -223,5 +204,26 @@ public class MipcaCaptureActivity extends Activity implements Callback {
 			mediaPlayer.seekTo(0);
 		}
 	};
+
+	@Override
+	public int setLayoutId() {
+		// TODO Auto-generated method stub
+		return R.layout.activity_capture;
+	}
+
+	@Override
+	protected void setUpView() {
+		//ViewUtil.addTopView(getApplicationContext(), this, R.string.scan_card);
+		CameraManager.init(getApplication());
+		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+		hasSurface = false;
+		inactivityTimer = new InactivityTimer(this);
+		setBarText("HelloHa扫描");
+	}
+	
+	public void finishWithRight() {
+		ActivityManager.getInstence().popActivity(this);
+		finish();
+	}
 
 }

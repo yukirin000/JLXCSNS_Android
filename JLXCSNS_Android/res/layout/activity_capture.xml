@@ -18,12 +18,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <include
+<!--         <include
             android:id="@+id/include1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            layout="@layout/activity_title" />
+            layout="@layout/activity_title" /> -->
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/abc_action_bar_default_height"
+            android:layout_alignParentTop="true"
+            layout="@layout/layout_title_bar" />            
     </RelativeLayout>
 
 </FrameLayout>

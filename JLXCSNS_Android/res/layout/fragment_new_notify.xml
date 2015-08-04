@@ -6,6 +6,8 @@
 
     <ListView
         android:id="@+id/notify_list_view"
+        android:listSelector="@color/main_clear" 
+        android:background="@color/main_white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>

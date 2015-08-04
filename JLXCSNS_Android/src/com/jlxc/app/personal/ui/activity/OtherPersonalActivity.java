@@ -15,16 +15,15 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -106,13 +105,13 @@ public class OtherPersonalActivity extends BaseActivity{
 	private LinearLayout addSendLayout;	
 	//发消息layout
 	@ViewInject(R.id.send_message_layout)
-	private LinearLayout sendMessageLayout;
+	private RelativeLayout sendMessageLayout;
 	//发消息btn
 	@ViewInject(R.id.send_message_btn)
 	private ImageButton sendMessageButton;
 	//添加好友layout
 	@ViewInject(R.id.add_friend_layout)
-	private LinearLayout addFriendLayout;
+	private RelativeLayout addFriendLayout;
 	//添加好友btn 
 	@ViewInject(R.id.add_friend_button)
 	private ImageButton addFriendButton;	
@@ -386,6 +385,9 @@ public class OtherPersonalActivity extends BaseActivity{
 			if (isFriend) {
 				addFriendLayout.setVisibility(View.GONE);
 				settingButton.setVisibility(View.VISIBLE);
+				
+				LayoutParams layoutParams = (LayoutParams) sendMessageButton.getLayoutParams();
+				layoutParams.setMargins(50, 0, 50, 0);
 			}else {
 				addFriendLayout.setVisibility(View.VISIBLE);
 				settingButton.setVisibility(View.GONE);

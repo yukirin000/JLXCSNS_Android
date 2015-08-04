@@ -260,7 +260,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 			}
 		});
 
-		TextView finishView = addRightBtn("完成");
+		final TextView finishView = addRightBtn("完成");
 		finishView.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -273,6 +273,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 							(Serializable) list);
 					setResult(Activity.RESULT_OK, intentFinish);
 					finish();
+					finishView.setEnabled(false);
 				}
 			}
 		});

@@ -140,17 +140,19 @@
                         
                     </LinearLayout>
                     
-                    <com.jlxc.app.base.ui.view.TouchInterceptGridView
+                <com.jlxc.app.base.ui.view.TouchInterceptGridView
                         android:id="@+id/my_image_grid_view"
                         android:layout_width="320dip"
                         android:layout_height="wrap_content"
                         android:stretchMode="spacingWidthUniform"
+                        android:horizontalSpacing="5dip"
                         android:columnWidth="100dip"
                         android:layout_marginBottom="5dip"
                         android:layout_marginLeft="10dip"
                         android:numColumns="3" >
                     </com.jlxc.app.base.ui.view.TouchInterceptGridView>
 
+                    
                 </LinearLayout>
 
                 <View
