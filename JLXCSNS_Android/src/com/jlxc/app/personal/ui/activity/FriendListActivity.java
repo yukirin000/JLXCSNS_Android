@@ -1,7 +1,5 @@
 package com.jlxc.app.personal.ui.activity;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
@@ -11,10 +9,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
@@ -26,9 +22,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
-import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.message.model.IMModel;
-import com.jlxc.app.personal.model.OtherPeopleFriendModel;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;

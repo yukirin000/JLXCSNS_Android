@@ -28,7 +28,7 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
-
+//我的名片页面
 public class MyCardActivity extends BaseActivityWithTopBar {
 
 	//头像
@@ -90,6 +90,8 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 	}
 	@Override
 	protected void setUpView() {
+		
+		setBarText("我的名片");
 		
 		userModel = UserManager.getInstance().getUser();
 		if (null != userModel.getHelloha_id() && userModel.getHelloha_id().length() > 0) {
@@ -190,7 +192,7 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 							//布局改变
 							hellohalLayout.setVisibility(View.GONE);
 							hellohaTextView.setVisibility(View.VISIBLE);
-							hellohaTextView.setText("HelloHa号"+userModel.getHelloha_id());
+							hellohaTextView.setText("HelloHa账号："+userModel.getHelloha_id());
 						}
 					}
 				}

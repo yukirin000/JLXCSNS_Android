@@ -26,13 +26,8 @@
                       android:textSize="@dimen/font_size_medium"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_marginLeft="15dip"
-                      android:text="测试" />
+                      android:layout_marginLeft="15dip"/>
                   
-				<RelativeLayout
-				    android:layout_width="match_parent"
-				    android:layout_height="wrap_content" >
-				</RelativeLayout>
               </LinearLayout>
 
               <View
@@ -62,13 +57,7 @@
                       android:textSize="@dimen/font_size_medium"
                       android:layout_width="200dip"
                       android:layout_height="wrap_content"
-                      android:layout_marginLeft="15dip"
-                      android:text="你好啊 哈哈哈哈" />
-                  
-                  <RelativeLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content" >
-                  </RelativeLayout>
+                      android:layout_marginLeft="15dip" />
 
               </LinearLayout>
 
@@ -99,13 +88,8 @@
                       android:textSize="@dimen/font_size_medium"                        
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_marginLeft="15dip"
-                      android:text="1996-06-06" />
+                      android:layout_marginLeft="15dip" />
                   
-                  <RelativeLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content" >
-                  </RelativeLayout>                    
               </LinearLayout>
 
               <View
@@ -113,8 +97,8 @@
                   android:layout_height="1dip"
                   android:layout_marginLeft="20dip"
                   android:background="@color/main_light_gary" />
+              
               <!-- 性别 -->
-
               <LinearLayout
                   android:id="@+id/sex_layout"
                   android:layout_width="match_parent"
@@ -136,12 +120,7 @@
                       android:textSize="@dimen/font_size_medium"                          
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_marginLeft="15dip"
-                      android:text="女孩纸" />
-                  <RelativeLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content" >
-                  </RelativeLayout>                      
+                      android:layout_marginLeft="15dip"/>
               </LinearLayout>
 
               <View
@@ -172,13 +151,8 @@
                       android:layout_height="wrap_content"
                       android:textColor="@color/main_deep_black"
                       android:textSize="@dimen/font_size_medium"                          
-                      android:layout_marginLeft="15dip"
-                      android:text="什么学校？？？？" />
+                      android:layout_marginLeft="15dip"/>
                   
-                  <RelativeLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content" >
-                  </RelativeLayout>                      
               </LinearLayout>
 
               <View
@@ -209,12 +183,7 @@
                       android:layout_height="wrap_content"
                       android:textColor="@color/main_deep_black"
                       android:textSize="@dimen/font_size_medium"                          
-                      android:layout_marginLeft="15dip"
-                      android:text="北京" />
-                  <RelativeLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content" >
-                  </RelativeLayout>                     
+                      android:layout_marginLeft="15dip"/>
               </LinearLayout>    
     
 

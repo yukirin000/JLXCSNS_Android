@@ -72,6 +72,12 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 		// TODO Auto-generated method stub
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
+		//如果是自己
+		if (uid == UserManager.getInstance().getUser().getUid()) {
+			setBarText("我的访客");
+		}else {
+			setBarText("TA的访客");
+		}
 		
 		bitmapUtils = new BitmapUtils(this);
 		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
@@ -163,24 +169,24 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (isLast) {
-					CountDownTimer countdownTimer = new CountDownTimer(500, 1000) {
-						@Override
-						public void onTick(long millisUntilFinished) {
-						}
-						@Override
-						public void onFinish() {
-							visitListView.onRefreshComplete();
-						}
-					};
-					// 开始倒计时
-					countdownTimer.start();
-					return;
-				}
-				currentPage++;
-				// 上拉刷新
-				isPullDowm = false;
-				getVisitsData();
+//				if (isLast) {
+//					CountDownTimer countdownTimer = new CountDownTimer(500, 1000) {
+//						@Override
+//						public void onTick(long millisUntilFinished) {
+//						}
+//						@Override
+//						public void onFinish() {
+//							visitListView.onRefreshComplete();
+//						}
+//					};
+//					// 开始倒计时
+//					countdownTimer.start();
+//					return;
+//				}
+//				currentPage++;
+//				// 上拉刷新
+//				isPullDowm = false;
+//				getVisitsData();
 			}
 
 		});

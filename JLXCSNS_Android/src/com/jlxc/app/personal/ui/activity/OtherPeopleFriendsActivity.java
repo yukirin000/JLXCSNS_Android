@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -65,6 +66,7 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		// TODO Auto-generated method stub
+		setBarText("TA的好友");
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		
@@ -130,24 +132,24 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (isLast) {
-					CountDownTimer countdownTimer = new CountDownTimer(500, 1000) {
-						@Override
-						public void onTick(long millisUntilFinished) {
-						}
-						@Override
-						public void onFinish() {
-							friendListView.onRefreshComplete();
-						}
-					};
-					// 开始倒计时
-					countdownTimer.start();
-					return;
-				}
-				currentPage++;
-				// 上拉刷新
-				isPullDowm = false;
-				getFriendsData();
+//				if (isLast) {
+//					CountDownTimer countdownTimer = new CountDownTimer(500, 1000) {
+//						@Override
+//						public void onTick(long millisUntilFinished) {
+//						}
+//						@Override
+//						public void onFinish() {
+//							friendListView.onRefreshComplete();
+//						}
+//					};
+//					// 开始倒计时
+//					countdownTimer.start();
+//					return;
+//				}
+//				currentPage++;
+//				// 上拉刷新
+//				isPullDowm = false;
+//				getFriendsData();
 			}
 
 		});
@@ -184,7 +186,6 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 
 		String path = JLXCConst.GET_OTHER_FRIENDS_LIST + "?" + "uid=" + uid
 				+ "&page="+currentPage;
-		
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -203,6 +204,7 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 							}else {
 								isLast = false;
 							}
+							
 							// 获取动态列表							
 							String jsonArrayStr = jResult.getString(JLXCConst.HTTP_LIST);
 							List<OtherPeopleFriendModel> list = JSON.parseArray(jsonArrayStr, OtherPeopleFriendModel.class);
@@ -214,6 +216,7 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 								friendAdapter.addAll(list);
 							}
 							friendListView.onRefreshComplete();
+							
 							//是否是最后一页
 							if (isLast) {
 								friendListView.setMode(Mode.PULL_FROM_START);

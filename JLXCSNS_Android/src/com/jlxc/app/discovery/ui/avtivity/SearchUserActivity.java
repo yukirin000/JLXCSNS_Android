@@ -209,24 +209,24 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (isLast) {
-					CountDownTimer countdownTimer = new CountDownTimer(500, 1000) {
-						@Override
-						public void onTick(long millisUntilFinished) {
-						}
-						@Override
-						public void onFinish() {
-							searchListView.onRefreshComplete();
-						}
-					};
-					// 开始倒计时
-					countdownTimer.start();
-					return;
-				}
-				currentPage++;
-				// 上拉刷新
-				isPullDowm = false;
-				getSearchData();
+//				if (isLast) {
+//					CountDownTimer countdownTimer = new CountDownTimer(500, 1000) {
+//						@Override
+//						public void onTick(long millisUntilFinished) {
+//						}
+//						@Override
+//						public void onFinish() {
+//							searchListView.onRefreshComplete();
+//						}
+//					};
+//					// 开始倒计时
+//					countdownTimer.start();
+//					return;
+//				}
+//				currentPage++;
+//				// 上拉刷新
+//				isPullDowm = false;
+//				getSearchData();
 			}
 
 		});

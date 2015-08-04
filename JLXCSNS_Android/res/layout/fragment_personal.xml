@@ -108,7 +108,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/my_images_icon"
-                            android:layout_marginLeft="15dip" />
+                            android:layout_marginLeft="10dip" />
                         
 	                    <TextView
 	                        android:layout_width="wrap_content"
@@ -147,7 +147,7 @@
                         android:stretchMode="spacingWidthUniform"
                         android:columnWidth="100dip"
                         android:layout_marginBottom="5dip"
-                        android:layout_marginLeft="13dip"
+                        android:layout_marginLeft="10dip"
                         android:numColumns="3" >
                     </com.jlxc.app.base.ui.view.TouchInterceptGridView>
 
@@ -156,7 +156,7 @@
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dip"
-                    android:layout_marginLeft="20dip"
+                    android:layout_marginLeft="10dip"
 					android:background="@color/main_light_gary" />
                 <!-- 最近来访 -->
                 <LinearLayout
@@ -169,7 +169,7 @@
                   <ImageView
                       android:layout_width="20dp"
                       android:layout_height="20dp"
-                      android:layout_marginLeft="15dip"
+                      android:layout_marginLeft="10dip"
                       android:src="@drawable/my_visit_icon" />
                     
                     <TextView
@@ -221,7 +221,7 @@
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dip"
-                    android:layout_marginLeft="20dip"
+                    android:layout_marginLeft="10dip"
                          android:background="@color/main_light_gary" />
                 <!-- 我的好友 -->
                 <LinearLayout
@@ -234,7 +234,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginLeft="15dip"
+                        android:layout_marginLeft="10dip"
                         android:src="@drawable/my_friends_icon" />
                     
                     <TextView
@@ -294,7 +294,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dip"
+                        android:layout_marginLeft="10dip"
                         android:layout_marginBottom="3dip"
                         android:textColor="@color/main_char_gary"
                         android:textSize="@dimen/font_size_tiny" 

@@ -354,7 +354,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	// 发布动态
 	private void publishNews() {
 
-		if ("".equals(contentEditText.getText().toString())
+		if ("".equals(contentEditText.getText().toString().trim())
 				&& addImageLayout.getChildCount() == 1) {
 			ToastUtil.show(this, "内容和图片至少有一个不能为空=_=");
 			return;

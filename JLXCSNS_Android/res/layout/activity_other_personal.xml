@@ -54,8 +54,7 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:textSize="@dimen/font_size_medium"
-	                    android:textColor="@color/main_white"
-	                    android:text="测试名字" />
+	                    android:textColor="@color/main_white"/>
 	                <ImageView 
 	                    android:id="@+id/sex_image_view"
 	                    android:layout_marginLeft="5dip"
@@ -75,8 +74,7 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:textSize="@dimen/font_size_tiny"
-	                    android:textColor="@color/main_white"
-	                    android:text="广东省深圳市，罗湖中学" />
+	                    android:textColor="@color/main_white" />
                 </LinearLayout>                
             </RelativeLayout>
 
@@ -94,23 +92,52 @@
                     android:background="@color/main_light_white"
                     android:gravity="center_vertical"
                     android:orientation="horizontal" >
-
-                    <LinearLayout
+					<!-- 发消息 -->
+                    <RelativeLayout
                         android:id="@+id/send_message_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="horizontal" >
+                        android:layout_weight="1"  >
 
                         <ImageButton
                             android:id="@+id/send_message_btn"
-                            android:layout_width="145dip"
+                            android:layout_marginLeft="10dip"
+                            android:layout_marginRight="10dip"
+                            android:layout_width="match_parent"
+                            android:layout_centerInParent="true"
+                            android:background="@color/main_clear"
+                            android:scaleType="fitXY"
                             android:layout_height="40dip"
                             android:src="@drawable/send_message_selector"/>
-                    </LinearLayout>
+                        
+                        <LinearLayout 
+                            android:layout_marginLeft="10dip"
+                            android:layout_marginRight="10dip"
+                            android:layout_width="match_parent"
+                            android:layout_centerInParent="true"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:layout_height="40dip">
 
-                    <LinearLayout
+	                        <ImageView 
+	                            android:layout_height="20dip"
+	                            android:layout_width="wrap_content"
+	                            android:src="@drawable/send_message_content_image"/>
+	                             
+						    <TextView
+		                        android:layout_width="wrap_content"
+		                        android:layout_height="wrap_content"
+		                        android:layout_marginLeft="10dip"
+		                        android:textSize="@dimen/font_size_large"
+		                        android:textColor="@color/main_white"
+		                        android:text="发消息" />	   
+                            
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <!-- 添加 -->
+                    <RelativeLayout
                         android:id="@+id/add_friend_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -120,10 +147,38 @@
 
                         <ImageButton
                             android:id="@+id/add_friend_button"
-                            android:layout_width="145dip"
+                            android:layout_marginLeft="10dip"
+                            android:layout_marginRight="10dip"
+                            android:layout_width="match_parent"
+                            android:layout_centerInParent="true"
+                            android:background="@color/main_clear"
+                            android:scaleType="fitXY"
                             android:layout_height="40dip"
-                            android:src="@drawable/add_friend_selector"/>
-                    </LinearLayout>
+                            android:src="@drawable/add_friend_selector"/>                        
+                        <LinearLayout 
+                            android:layout_marginLeft="10dip"
+                            android:layout_marginRight="10dip"
+                            android:layout_width="match_parent"
+                            android:layout_centerInParent="true"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:layout_height="40dip">
+
+	                        <ImageView 
+	                            android:layout_height="20dip"
+	                            android:layout_width="wrap_content"
+	                            android:src="@drawable/add_friend_content_image"/>
+	                             
+						    <TextView
+		                        android:layout_width="wrap_content"
+		                        android:layout_height="wrap_content"
+		                        android:layout_marginLeft="10dip"
+		                        android:textSize="@dimen/font_size_large"
+		                        android:textColor="@color/main_white"
+		                        android:text="加好友" />	   
+                            
+                        </LinearLayout>                        
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <!-- TA的动态 -->
@@ -294,6 +349,7 @@
 							    
 							    <ImageView
 							        android:id="@+id/common_friend_arrow"
+							        android:layout_centerVertical="true"
 							        android:layout_width="15dp"
 							        android:layout_height="15dp"
 							        android:scaleType="fitCenter"
@@ -339,6 +395,7 @@
 							    
 							    <ImageView
 							        android:id="@+id/his_visit_arrow"
+							        android:layout_centerVertical="true"
 							        android:layout_width="15dp"
 							        android:layout_height="15dp"
 							        android:scaleType="fitCenter"

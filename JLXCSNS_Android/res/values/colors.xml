@@ -32,6 +32,8 @@
 
     <!-- 辅灰色 -->
     <color name="main_gary">#cccccc</color>
+    <!-- 辅深灰色 -->
+    <color name="main_deep_gary">#999999</color>
     <!-- 辅浅灰色 -->
     <color name="main_light_gary">#e6e6e6</color>
     <!-- 辅肉色 -->
@@ -44,7 +46,11 @@
     <color name="main_pink">#f898c7</color>
     <!-- 辅浅蓝色 -->
     <color name="main_light_blue">#4bcbfa</color>
+    <!-- 辅名片绿色 -->
+    <color name="main_card_green">#2ddd84</color>    
     <!-- 字用灰色 -->
     <color name="main_char_gary">#808080</color>
+    <!-- 透明色 -->
+    <color name="main_clear">#00000000</color>    
 
 </resources>

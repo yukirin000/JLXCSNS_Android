@@ -35,7 +35,7 @@ public class AccountSettingActivity extends BaseActivityWithTopBar{
 
 	@Override
 	protected void setUpView() {
-		 
+		 setBarText("账号设置");
 	}
 	
 	//退出

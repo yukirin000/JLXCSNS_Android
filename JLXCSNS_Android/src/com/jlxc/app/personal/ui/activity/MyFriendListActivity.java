@@ -78,6 +78,9 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
+		setBarText("我的好友");
+		
 		init();
 		listviewSet();
 
@@ -132,15 +135,15 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					Map<String, String> item) {
-				ImageView imgView = helper.getView(R.id.iv_my_friend_list_head);
-				// 设置头像尺寸
-				LayoutParams laParams = (LayoutParams) imgView
-						.getLayoutParams();
-				laParams.width = laParams.height = (screenWidth) / 7;
-				imgView.setLayoutParams(laParams);
-				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				bitmapUtils
-						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
+//				ImageView imgView = helper.getView(R.id.iv_my_friend_list_head);
+//				// 设置头像尺寸
+//				LayoutParams laParams = (LayoutParams) imgView
+//						.getLayoutParams();
+//				laParams.width = laParams.height = (screenWidth) / 7;
+//				imgView.setLayoutParams(laParams);
+//				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//				bitmapUtils
+//						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
 				helper.setImageUrl(R.id.iv_my_friend_list_head, bitmapUtils,
 						JLXCConst.ATTACHMENT_ADDR + item.get("head_sub_image"),
@@ -170,11 +173,11 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (lastPage.equals("0")) {
-					isPullDown = false;
-					getFriends(String.valueOf(currentPage),
-							String.valueOf(pageCount));
-				}
+//				if (lastPage.equals("0")) {
+//					isPullDown = false;
+//					getFriends(String.valueOf(currentPage),
+//							String.valueOf(pageCount));
+//				}
 			}
 		});
 
@@ -272,13 +275,15 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 							JSONArray jsonArray = jResult
 									.getJSONArray(JLXCConst.HTTP_LIST);
 							lastPage = jResult.getString("is_last");
+							
+							JsonToPersonData(jsonArray);
+							
 							if (lastPage.equals("0")) {
 								friendListView.setMode(Mode.BOTH);
 								currentPage++;
 							} else {
 								friendListView.setMode(Mode.PULL_FROM_START);
 							}
-							JsonToPersonData(jsonArray);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {

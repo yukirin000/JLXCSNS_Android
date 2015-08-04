@@ -17,7 +17,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"
-                      android:layout_marginLeft="15dip"
+                      android:layout_marginLeft="10dip"
                       android:text="昵称" />
 
                   <TextView
@@ -45,7 +45,7 @@
               <View
                   android:layout_width="fill_parent"
                   android:layout_height="1dip"
-                  android:layout_marginLeft="20dip"
+                  android:layout_marginLeft="10dip"
                   android:background="@color/main_light_gary" />
               <!-- 签名 -->
               <LinearLayout
@@ -60,7 +60,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"
-                      android:layout_marginLeft="15dip"
+                      android:layout_marginLeft="10dip"
                       android:text="签名" />
 
                   <TextView
@@ -90,7 +90,7 @@
               <View
                   android:layout_width="fill_parent"
                   android:layout_height="1dip"
-                  android:layout_marginLeft="20dip"
+                  android:layout_marginLeft="10dip"
                   android:background="@color/main_light_gary" />
               <!-- 生日 -->
               <LinearLayout
@@ -105,7 +105,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"                        
-                      android:layout_marginLeft="15dip"
+                      android:layout_marginLeft="10dip"
                       android:text="生日" />
 
                   <TextView
@@ -134,7 +134,7 @@
               <View
                   android:layout_width="fill_parent"
                   android:layout_height="1dip"
-                  android:layout_marginLeft="20dip"
+                  android:layout_marginLeft="10dip"
                   android:background="@color/main_light_gary" />
               <!-- 性别 -->
 
@@ -150,7 +150,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"                        
-                      android:layout_marginLeft="15dip"
+                      android:layout_marginLeft="10dip"
                       android:text="性别" />
 
                   <TextView
@@ -178,7 +178,7 @@
               <View
                   android:layout_width="fill_parent"
                   android:layout_height="1dip"
-                  android:layout_marginLeft="20dip"
+                  android:layout_marginLeft="10dip"
                   android:background="@color/main_light_gary" />
               
               <!-- 学校 -->
@@ -194,7 +194,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"                          
-                      android:layout_marginLeft="15dip"
+                      android:layout_marginLeft="10dip"
                       android:text="学校" />
 
                   <TextView
@@ -223,7 +223,7 @@
               <View
                   android:layout_width="fill_parent"
                   android:layout_height="1dip"
-                  android:layout_marginLeft="20dip"
+                  android:layout_marginLeft="10dip"
                   android:background="@color/main_light_gary" />
               
               <!-- 城市 -->
@@ -239,7 +239,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"                          
-                      android:layout_marginLeft="15dip"
+                      android:layout_marginLeft="10dip"
                       android:text="城市" />
 
                   <TextView

@@ -3,14 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:background="@color/main_light_white"
+    android:orientation="vertical" > 
     
 	<include layout="@layout/layout_title_bar" />
-    <Button
-       android:layout_marginTop="200dip"
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="退出" />
+    
+    <RelativeLayout
+        android:layout_marginTop="50dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+	        
+	    <ImageButton
+	        android:id="@+id/logout_button"
+	        android:layout_marginLeft="15dip"
+	        android:layout_marginRight="15dip"
+	        android:layout_width="wrap_content"
+	        android:layout_height="45dip"
+	        android:src="@drawable/logout_btn"/>
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/font_size_medium"
+	        android:layout_centerInParent="true"
+	        android:textColor="@color/main_white"
+	        android:text="退出当前账号"/>
+	    
+	    
+	</RelativeLayout>
 
 </LinearLayout>
