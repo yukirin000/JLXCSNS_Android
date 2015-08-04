@@ -46,7 +46,10 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
+import com.jlxc.app.base.ui.view.LikeButton;
+import com.jlxc.app.base.ui.view.LikeListControl;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
+import com.jlxc.app.base.ui.view.LikeListControl.EventCallBack;
 import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
 import com.jlxc.app.base.ui.view.RoundImageView;
 import com.jlxc.app.base.utils.HttpCacheUtils;
@@ -65,6 +68,7 @@ import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsConstants;
+import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.news.ui.fragment.NewsListFragment.NewsBitmapLoadCallBack;
@@ -82,14 +86,6 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class CampusFragment extends BaseFragment {
 
-	// 最多点赞数默认为8
-	private int maxLikeCount = 8;
-	// 点赞列表的宽度
-	private int likeheadGVWidth;
-	// 点赞头像的尺寸
-	private int headImageSize;
-	// 点赞头像的间距
-	private int likeHeadSpace = 4;
 	// 动态listview
 	@ViewInject(R.id.campus_listview)
 	private PullToRefreshListView campusListView;
@@ -127,17 +123,10 @@ public class CampusFragment extends BaseFragment {
 	private ItemViewClick itemViewClickListener;
 	// 点击图片监听
 	private ImageGridViewItemClick imageItemClickListener;
-	// 点击头像监听
-	private LikeGridViewItemClick likeItemClickListener;
-	// 点赞操作类
-	// 当前点赞对应的gridview的adpter
-	private HelloHaAdapter<LikeModel> curntAdapter = null;
 	// 对动态的操作
 	private NewsOperate newsOPerate;
-	// 当前点赞对应的icon
-	private TextView likeIcon = null;
-	// 所有点赞的对应的icon
-	private TextView allLikeIcon = null;
+	// 当前点赞对应的gridview的adpter
+	private LikeListControl currentLikeListControl;
 
 	@Override
 	public int setLayoutId() {
@@ -172,7 +161,6 @@ public class CampusFragment extends BaseFragment {
 
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
-		likeItemClickListener = new LikeGridViewItemClick();
 		newsOPerate = new NewsOperate(mContext);
 		initBitmapUtils();
 
@@ -180,25 +168,6 @@ public class CampusFragment extends BaseFragment {
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
 		screenHeight = displayMet.heightPixels;
-
-		// 计算显示的头像个数
-		if (screenWidth <= NewsConstants.SMALL_PIX) {
-			maxLikeCount = 8;
-		} else if (screenWidth > NewsConstants.SMALL_PIX
-				&& screenWidth <= NewsConstants.MIDDLE_PIX) {
-			maxLikeCount = 9;
-		} else if (screenWidth > NewsConstants.MIDDLE_PIX) {
-			maxLikeCount = 10;
-		}
-		int leftSpace = (int) getResources().getDimension(
-				R.dimen.news_item_margins_left);
-		int rightSpace = (int) getResources().getDimension(
-				R.dimen.news_item_margins_right);
-		headImageSize = (screenWidth - (leftSpace + rightSpace + maxLikeCount
-				* likeHeadSpace))
-				/ (maxLikeCount + 2);
-		likeheadGVWidth = (headImageSize + likeHeadSpace) * maxLikeCount
-				- likeHeadSpace;
 	}
 
 	/**
@@ -578,15 +547,14 @@ public class CampusFragment extends BaseFragment {
 	private void setOperateItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		OperateItem opData = (OperateItem) item;
+		// 点赞按钮
+		LikeButton likeBtn = helper.getView(R.id.btn_campus_like);
 		if (opData.getIsLike()) {
-			helper.setText(R.id.tv_campus_news_like, "已赞 ");
-			helper.setImageResource(R.id.iv_campus_news_like_background,
-					R.drawable.like_have);
+			likeBtn.setStatue(true);
 		} else {
-			helper.setText(R.id.tv_campus_news_like, "点赞 ");
-			helper.setImageResource(R.id.iv_campus_news_like_background,
-					R.drawable.like_no);
+			likeBtn.setStatue(false);
 		}
+
 		// 设置事件监听
 		final int postion = helper.getPosition();
 		OnClickListener listener = new OnClickListener() {
@@ -609,69 +577,30 @@ public class CampusFragment extends BaseFragment {
 			ItemModel item) {
 		LikeListItem lkData = (LikeListItem) item;
 		List<LikeModel> lkImageList = lkData.getLikeHeadListimage();
-		if (lkImageList.size() <= 0) {
-			helper.getView(R.id.tv_campus_like_icon).setVisibility(View.GONE);
-		} else {
-			helper.getView(R.id.tv_campus_like_icon)
-					.setVisibility(View.VISIBLE);
-		}
-		if (lkImageList.size() < maxLikeCount) {
-			helper.getView(R.id.tv_campus_like_all_person).setVisibility(
-					View.GONE);
-		} else {
-			helper.getView(R.id.tv_campus_like_all_person).setVisibility(
-					View.VISIBLE);
-			helper.setText(R.id.tv_campus_like_all_person,
-					String.valueOf(lkData.getLikeCount()));
-		}
-		while (lkImageList.size() > maxLikeCount) {
-			// 移除多余 的头像
-			lkImageList.remove(maxLikeCount);
-		}
-		// 点赞头像的显示
-		HelloHaAdapter<LikeModel> likeGVAdapter = new HelloHaAdapter<LikeModel>(
-				mContext, R.layout.campus_news_likelist_gridview_item_layout,
-				lkImageList) {
-			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper,
-					LikeModel item) {
-				// 设置头像imageview的尺寸
-				RoundImageView imgView = helper
-						.getView(R.id.iv_campus_like_gridview_item);
-				LayoutParams laParams = (LayoutParams) imgView
-						.getLayoutParams();
-				laParams.width = laParams.height = headImageSize;
-				imgView.setLayoutParams(laParams);
-				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				// 圆角的角度
-				imgView.setRectAdius(3);
-				helper.setImageUrl(R.id.iv_campus_like_gridview_item,
-						bitmapUtils, item.getHeadSubImage(),
-						new NewsBitmapLoadCallBack());
-			}
-		};
-		// 点赞头像gridview
-		NoScrollGridView likeGridView = (NoScrollGridView) helper
-				.getView(R.id.gv_campus_like_list);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				likeheadGVWidth, headImageSize);
-		// 参数设置
-		likeGridView.setHorizontalSpacing(likeHeadSpace);
-		likeGridView.setNumColumns(maxLikeCount);
-		likeGridView.setLayoutParams(params);
+		LikeListControl likeControl = helper
+				.getView(R.id.control_campus_like_listview);
+		int allCount = lkData.getLikeCount();
+		String newsID = lkData.getNewsID();
 
-		likeGridView.setAdapter(likeGVAdapter);
-		likeGridView.setOnItemClickListener(likeItemClickListener);
-		// 设置事件监听
-		final int postion = helper.getPosition();
-		OnClickListener listener = new OnClickListener() {
+		likeControl.dataInit(allCount, bitmapUtils, newsID);
+		likeControl.listDataBindSet(lkImageList);
+		likeControl.setEventListener(new EventCallBack() {
 
 			@Override
-			public void onClick(View view) {
-				itemViewClickListener.onClick(view, postion, view.getId());
+			public void onItemClick(int userId) {
+				JumpToHomepage(userId);
 			}
-		};
-		helper.setOnClickListener(R.id.tv_campus_like_all_person, listener);
+
+			@Override
+			public void onAllPersonBtnClick(String newsId) {
+				// 跳转到点赞的人
+				Intent intentToALLPerson = new Intent(mContext,
+						AllLikePersonActivity.class);
+				intentToALLPerson.putExtra(
+						AllLikePersonActivity.INTENT_KEY_NEWS_ID, newsId);
+				startActivityWithRight(intentToALLPerson);
+			}
+		});
 	}
 
 	/**
@@ -921,26 +850,20 @@ public class CampusFragment extends BaseFragment {
 	/**
 	 * 点赞操作
 	 * */
-	@SuppressWarnings("unchecked")
 	private void likeOperate(int postion, View view,
 			final OperateItem operateData) {
 
-		final FrameLayout oprtView = (FrameLayout) view;
+		final LikeButton oprtView = (LikeButton) view;
 		final int likeListPostion = postion + 1;
 		try {
 			ListView nListView = campusListView.getRefreshableView();
 			View itemRootView = nListView.getChildAt(likeListPostion + 1
 					- nListView.getFirstVisiblePosition());
-			curntAdapter = null;
+			currentLikeListControl = null;
 			if (null != itemRootView) {
 				// 点赞头像列表可见的情况下
-				NoScrollGridView likeGV = (NoScrollGridView) itemRootView
-						.findViewById(R.id.gv_campus_like_list);
-				curntAdapter = (HelloHaAdapter<LikeModel>) likeGV.getAdapter();
-				likeIcon = (TextView) itemRootView
-						.findViewById(R.id.tv_campus_like_icon);
-				allLikeIcon = (TextView) itemRootView
-						.findViewById(R.id.tv_campus_like_all_person);
+				currentLikeListControl = (LikeListControl) itemRootView
+						.findViewById(R.id.control_campus_like_listview);
 			}
 		} catch (Exception e) {
 			LogUtils.e("动态点赞部分发生异常.");
@@ -952,48 +875,25 @@ public class CampusFragment extends BaseFragment {
 			public void onOperateStart(boolean isLike) {
 				if (isLike) {
 					// 点赞操作
-					if (null != curntAdapter) {
-						newsOPerate.addHeadToLikeList(curntAdapter);
+					if (null != currentLikeListControl) {
+						newsOPerate.addHeadToLikeList(currentLikeListControl);
+					} else {
+						newsOPerate.addDataToLikeList(newsAdapter,
+								likeListPostion);
 					}
-					newsOPerate.addDataToLikeList(newsAdapter, likeListPostion);
-					((TextView) oprtView.findViewById(R.id.tv_campus_news_like))
-							.setText("已赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_campus_news_like_background))
-							.setImageResource(R.drawable.like_have);
-					if (curntAdapter.getCount() > 0) {
-						// 显示点赞图标
-						likeIcon.setVisibility(View.VISIBLE);
-					}
-					if (curntAdapter.getCount() > maxLikeCount) {
-						// 显示所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.VISIBLE);
-						operateData.setLikeCount(String.valueOf(operateData
-								.getLikeCount() + 1));
-						allLikeIcon.setText(operateData.getLikeCount());
-					}
+					oprtView.setStatue(true);
 					operateData.setIsLike("1");
 				} else {
 					// 取消点赞
-					if (null != curntAdapter) {
-						newsOPerate.removeHeadFromLikeList(curntAdapter);
+					if (null != currentLikeListControl) {
+						newsOPerate
+								.removeHeadFromLikeList(currentLikeListControl);
+					} else {
+						newsOPerate.removeDataFromLikeList(newsAdapter,
+								likeListPostion);
 					}
-					newsOPerate.removeDataFromLikeList(newsAdapter,
-							likeListPostion);
 
-					((TextView) oprtView.findViewById(R.id.tv_campus_news_like))
-							.setText("点赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_campus_news_like_background))
-							.setImageResource(R.drawable.like_no);
-					if (curntAdapter.getCount() <= 0) {
-						// 隐藏点赞图标
-						likeIcon.setVisibility(View.GONE);
-					}
-					if (curntAdapter.getCount() <= maxLikeCount) {
-						// 隐藏所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.GONE);
-					}
+					oprtView.setStatue(false);
 					operateData.setIsLike("0");
 				}
 			}
@@ -1003,37 +903,10 @@ public class CampusFragment extends BaseFragment {
 				// 撤销上次
 				newsOPerate.operateRevoked();
 				if (isLike) {
-					((TextView) oprtView.findViewById(R.id.tv_campus_news_like))
-							.setText("点赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_campus_news_like_background))
-							.setImageResource(R.drawable.like_no);
-					if (curntAdapter.getCount() <= 0) {
-						// 隐藏点赞图标
-						likeIcon.setVisibility(View.GONE);
-					}
-					if (curntAdapter.getCount() <= maxLikeCount) {
-						// 隐藏所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.GONE);
-					}
+					oprtView.setStatue(false);
 					operateData.setIsLike("0");
 				} else {
-					((TextView) oprtView.findViewById(R.id.tv_campus_news_like))
-							.setText("已赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_campus_news_like_background))
-							.setImageResource(R.drawable.like_have);
-					if (View.GONE == likeIcon.getVisibility()) {
-						// 显示点赞图标
-						likeIcon.setVisibility(View.VISIBLE);
-					}
-					if (curntAdapter.getCount() > maxLikeCount) {
-						// 显示所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.VISIBLE);
-						operateData.setLikeCount(String.valueOf(operateData
-								.getLikeCount() + 1));
-						allLikeIcon.setText(operateData.getLikeCount());
-					}
+					oprtView.setStatue(true);
 					operateData.setIsLike("1");
 				}
 			}
@@ -1086,20 +959,6 @@ public class CampusFragment extends BaseFragment {
 					.getAdapter().getItem(position);
 			// 跳转到用户的主页
 			JumpToHomepage(JLXCUtils.stringToInt(personModel.getUserId()));
-		}
-	}
-
-	/**
-	 * 点赞gridview监听
-	 */
-	public class LikeGridViewItemClick implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
-					position);
-			JumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
 		}
 	}
 

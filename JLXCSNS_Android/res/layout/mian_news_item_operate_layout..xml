@@ -33,30 +33,9 @@
             android:textSize="@dimen/font_size_small" />
     </FrameLayout>
 
-    <FrameLayout
+    <com.jlxc.app.base.ui.view.LikeButton
         android:id="@+id/btn_news_like"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp" >
-
-        <ImageView
-            android:id="@+id/iv_main_news_like_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/like_no" />
-
-        <TextView
-            android:id="@+id/tv_main_news_like"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="right|center"
-            android:layout_marginRight="5dp"
-            android:gravity="center"
-            android:text="点赞"
-            android:textColor="@color/main_brown"
-            android:textSize="@dimen/font_size_small" />
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

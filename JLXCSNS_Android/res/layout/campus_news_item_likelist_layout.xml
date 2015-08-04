@@ -4,51 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/main_deep_white"
-    android:gravity="center_vertical"
     android:orientation="vertical" >
 
-    <!-- 赞的icon -->
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/item_interior_space_small"
-        android:paddingLeft="@dimen/news_item_margins_right"
-        android:paddingRight="@dimen/news_item_margins_left" >
-
-        <TextView
-            android:id="@+id/tv_campus_like_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/like_icon"
-            android:drawablePadding="5dp"
-            android:gravity="center" />
-
-        <com.jlxc.app.base.ui.view.NoScrollGridView
-            android:id="@+id/gv_campus_like_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:horizontalSpacing="2dp"
-            android:numColumns="11"
-            android:src="@drawable/ic_launcher" >
-        </com.jlxc.app.base.ui.view.NoScrollGridView>
-
-        <TextView
-            android:id="@+id/tv_campus_like_all_person"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/all_like_person"
-            android:gravity="center"
-            android:text="22" />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/view_campus_listview_divider"
+    <com.jlxc.app.base.ui.view.LikeListControl
+        android:id="@+id/control_campus_like_listview"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_interior_space_medium"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/news_item_margins_top"
         android:background="@color/main_light_white" />
 
 </LinearLayout>

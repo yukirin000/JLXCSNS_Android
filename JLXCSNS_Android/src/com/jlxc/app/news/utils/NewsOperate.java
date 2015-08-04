@@ -11,6 +11,7 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
+import com.jlxc.app.base.ui.view.LikeListControl;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -42,8 +43,8 @@ public class NewsOperate {
 	private OperateCallBack callInterface;
 	// 点赞回调接口
 	private LikeCallBack likeCallInterface;
-	// 上次点赞操作对应的adapter
-	private HelloHaAdapter<LikeModel> likeAdapter;
+	// 上次点赞操作的listview
+	private LikeListControl likeListView;
 	// 点赞操作对应的动态adapter
 	private HelloHaAdapter<ItemModel> newsAdapter;
 	// 记录动态点赞的操作位置
@@ -370,10 +371,9 @@ public class NewsOperate {
 	/**
 	 * 添加头像到第一个位置
 	 * */
-	public void addHeadToLikeList(HelloHaAdapter<LikeModel> headAdapter) {
-		likeAdapter = headAdapter;
+	public void addHeadToLikeList(LikeListControl likeView) {
 		lastOperateType = OP_Type_Like;
-
+		this.likeListView = likeView;
 		LikeModel myModel = new LikeModel();
 		myModel.setUserID(String.valueOf(UserManager.getInstance().getUser()
 				.getUid()));
@@ -382,7 +382,7 @@ public class NewsOperate {
 		myModel.setHeadSubImage(JLXCConst.ATTACHMENT_ADDR
 				+ UserManager.getInstance().getUser().getHead_sub_image());
 		try {
-			headAdapter.addToFirst(myModel);
+			likeListView.insertToFirst(myModel);
 		} catch (Exception e) {
 			ToastUtil.show(mContext, "发生了点小故障 (・ˍ・*)");
 		}
@@ -410,26 +410,10 @@ public class NewsOperate {
 	/**
 	 * 移除自己的点赞头像
 	 * */
-	public void removeHeadFromLikeList(HelloHaAdapter<LikeModel> headAdapter) {
-		likeAdapter = headAdapter;
+	public void removeHeadFromLikeList(LikeListControl likeView) {
+		this.likeListView = likeView;
 		lastOperateType = OP_Type_Like_cancel;
-		// 移除头像
-		try {
-			for (int index = 0; index < headAdapter.getCount(); ++index) {
-				if (headAdapter
-						.getItem(index)
-						.getUserID()
-						.equals(String.valueOf(UserManager.getInstance()
-								.getUser().getUid()))) {
-					headAdapter.remove(index);
-					break;
-				} else {
-					LogUtils.e("点赞数据发生了错误,列表中没有我的点赞信息.");
-				}
-			}
-		} catch (Exception e) {
-			ToastUtil.show(mContext, "发生了点小故障 (・ˍ・*)");
-		}
+		likeListView.removeHeadImg();
 	}
 
 	/**
@@ -451,7 +435,7 @@ public class NewsOperate {
 							.getUid()))) {
 				likeData.remove(index);
 				break;
-			} else {
+			} else if (index == likeData.size()) {
 				LogUtils.e("点赞数据发生了错误.");
 			}
 		}
@@ -463,11 +447,11 @@ public class NewsOperate {
 	public void operateRevoked() {
 		switch (lastOperateType) {
 		case OP_Type_Like:
-			removeHeadFromLikeList(likeAdapter);
+			removeHeadFromLikeList(likeListView);
 			break;
 
 		case OP_Type_Like_cancel:
-			addHeadToLikeList(likeAdapter);
+			addHeadToLikeList(likeListView);
 			break;
 		case OP_Type_News_Like:
 			removeDataFromLikeList(newsAdapter, lastPostion);

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/main_deep_white"
+    android:orientation="vertical" xmlns:app="http://schemas.android.com/apk/res/com.jlxc.app">
+
+    <com.jlxc.app.base.ui.view.RoundImageView
+        android:id="@+id/iv_like_gridview_item"
+        app:rect_adius="1dip"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher" />
+
+</LinearLayout>

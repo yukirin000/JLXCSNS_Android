@@ -4,43 +4,11 @@
     android:layout_height="wrap_content"
     android:background="@color/main_deep_white"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingBottom="@dimen/item_interior_space_small"
-    android:paddingLeft="@dimen/news_item_margins_right"
-    android:paddingRight="@dimen/news_item_margins_left" >
+    android:orientation="horizontal" >
 
-    <!-- 赞的icon -->
-
-    <TextView
-        android:id="@+id/tv_like_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/like_icon"
-        android:drawablePadding="5dp"
-        android:gravity="center" />
-    <!-- 主页点赞头像列表 -->
-
-    <com.jlxc.app.base.ui.view.NoScrollGridView
-        android:id="@+id/gv_mian_Like_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:horizontalSpacing="4dp"
-        android:numColumns="10"
-        android:src="@drawable/ic_launcher" />
-
-    <LinearLayout
+    <com.jlxc.app.base.ui.view.LikeListControl
+        android:id="@+id/control_news_like_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right|center"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/tv_news_like_all_person"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/all_like_person"
-            android:gravity="center"
-            android:text="22" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -3,7 +3,7 @@ package com.jlxc.app.news.ui.activity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.jlxc.app.base.ui.view.LikeListControl.EventCallBack;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -48,9 +48,11 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.view.ItemDialog;
-import com.jlxc.app.base.ui.view.KeyboardLayout;
 import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
+import com.jlxc.app.base.ui.view.KeyboardLayout;
 import com.jlxc.app.base.ui.view.KeyboardLayout.onKeyboardsChangeListener;
+import com.jlxc.app.base.ui.view.LikeButton;
+import com.jlxc.app.base.ui.view.LikeListControl;
 import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.ui.view.RoundImageView;
 import com.jlxc.app.base.utils.JLXCConst;
@@ -109,7 +111,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	// 当前的动态对象
 	private NewsModel currentNews;
 	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
+	private BitmapUtils bitmapUtils;
 	// 屏幕的尺寸
 	private int screenWidth = 0, screenHeight = 0;
 	// 使支持多种item
@@ -120,10 +122,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private ImageGridViewItemClick imageItemClickListener;
 	// 对动态的操作
 	private NewsOperate newsOPerate;
-	// 点赞适配器
-	private HelloHaAdapter<LikeModel> likeGVAdapter;
-	// 点击点赞头像监听
-	private LikeGridViewItemClick likeItemClickListener;
 	// 评论的内容
 	private String commentContent = "";
 	// 当前的操作的item
@@ -134,18 +132,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private int currentOperateIndex = 0;
 	// 是否是第一次请求数据
 	private boolean firstRequstData = true;
-	// 当前点赞对应的icon
-	private TextView likeIcon = null;
-	// 所有点赞的对应的icon
-	private TextView allLikeIcon = null;
-	// 最多点赞数默认为8
-	private int maxLikeCount = 8;
-	// 点赞列表的宽度
-	private int likeheadGVWidth;
-	// 点赞头像的尺寸
-	private int headImageSize;
-	// 点赞头像的间距
-	private int likeHeadSpace = 4;
+	// 点赞按钮
+	private LikeButton likeBtn;
+	// 已赞头像部件
+	private LikeListControl likeControl;
 
 	/**
 	 * 事件监听函数
@@ -248,32 +238,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		dataList = new ArrayList<ItemModel>();
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
-		likeItemClickListener = new LikeGridViewItemClick();
 		initBitmapUtils();
 
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
 		screenHeight = displayMet.heightPixels;
-
-		// 计算显示的头像个数
-		if (screenWidth <= NewsConstants.SMALL_PIX) {
-			maxLikeCount = 8;
-		} else if (screenWidth > NewsConstants.SMALL_PIX
-				&& screenWidth <= NewsConstants.MIDDLE_PIX) {
-			maxLikeCount = 9;
-		} else if (screenWidth > NewsConstants.MIDDLE_PIX) {
-			maxLikeCount = 10;
-		}
-		int leftSpace = (int) getResources().getDimension(
-				R.dimen.news_item_margins_left);
-		int rightSpace = (int) getResources().getDimension(
-				R.dimen.news_item_margins_right);
-		headImageSize = (screenWidth - (leftSpace + rightSpace + maxLikeCount
-				* likeHeadSpace))
-				/ (maxLikeCount + 2);
-		likeheadGVWidth = (headImageSize + likeHeadSpace) * maxLikeCount
-				- likeHeadSpace;
 	}
 
 	/**
@@ -632,8 +602,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		laParams.width = laParams.height = (screenWidth) / 7;
 		imgView.setLayoutParams(laParams);
 		imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-		bitmapUtils.configDefaultBitmapMaxSize((screenWidth) / 4,
-				(screenWidth) / 4);
 		helper.setImageUrl(R.id.img_news_detail_user_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
 		// 设置用户名,发布的时间，标签
@@ -641,14 +609,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.txt_news_detail_publish_time,
 				TimeHandle.getShowTimeFormat(titleData.getSendTime()));
 		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserTag());
+		// 点赞按钮
+		likeBtn = helper.getView(R.id.btn_news_detail_like);
 		if (titleData.getIsLike()) {
-			helper.setText(R.id.tv_news_detail_like, "已赞 ");
-			helper.setImageResource(R.id.iv_news_detail_like_background,
-					R.drawable.like_have);
+			likeBtn.setStatue(true);
 		} else {
-			helper.setText(R.id.tv_news_detail_like, "点赞 ");
-			helper.setImageResource(R.id.iv_news_detail_like_background,
-					R.drawable.like_no);
+			likeBtn.setStatue(false);
 		}
 
 		// 设置事件监听
@@ -770,71 +736,28 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * */
 	private void setLikeListItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
-		LikeListItem lkData = (LikeListItem) item;
-		List<LikeModel> lkImageList = lkData.getLikeHeadListimage();
-		if (lkImageList.size() <= 0) {
-			helper.getView(R.id.tv_news_detail_like_icon).setVisibility(
-					View.GONE);
-		} else {
-			helper.getView(R.id.tv_news_detail_like_icon).setVisibility(
-					View.VISIBLE);
-		}
-		if (lkImageList.size() < maxLikeCount) {
-			helper.getView(R.id.tv_news_detai_like_all_person).setVisibility(
-					View.GONE);
-		} else {
-			helper.getView(R.id.tv_news_detai_like_all_person).setVisibility(
-					View.VISIBLE);
-			helper.setText(R.id.tv_news_detai_like_all_person,
-					String.valueOf(lkData.getLikeCount()));
-		}
-		while (lkImageList.size() > maxLikeCount) {
-			// 移除多余 的头像
-			lkImageList.remove(maxLikeCount);
-		}
-		// 点赞头像的显示
-		likeGVAdapter = new HelloHaAdapter<LikeModel>(NewsDetailActivity.this,
-				R.layout.news_detail_like_gridview_item_layout, lkImageList) {
-			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper,
-					LikeModel item) {
-				// 设置头像imageview的尺寸
-				RoundImageView imgView = helper
-						.getView(R.id.iv_news_detail_like_gridview_item);
-				LayoutParams laParams = (LayoutParams) imgView
-						.getLayoutParams();
-				laParams.width = laParams.height = headImageSize;
-				imgView.setLayoutParams(laParams);
-				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				// 圆角的角度
-				imgView.setRectAdius(3);
-				helper.setImageUrl(R.id.iv_news_detail_like_gridview_item,
-						bitmapUtils, item.getHeadSubImage(),
-						new NewsBitmapLoadCallBack());
-			}
-		};
-		// 点赞头像gridview
-		NoScrollGridView likeGridView = (NoScrollGridView) helper
-				.getView(R.id.gv_news_detail_Like_list);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				likeheadGVWidth, headImageSize);
-		// 参数设置
-		likeGridView.setHorizontalSpacing(likeHeadSpace);
-		likeGridView.setNumColumns(maxLikeCount);
-		likeGridView.setLayoutParams(params);
-
-		likeGridView.setAdapter(likeGVAdapter);
-		likeGridView.setOnItemClickListener(likeItemClickListener);
-		// 设置事件监听
-		final int postion = helper.getPosition();
-		OnClickListener listener = new OnClickListener() {
+		likeControl = helper.getView(R.id.control_like_listview);
+		likeControl.dataInit(
+				JLXCUtils.stringToInt(currentNews.getLikeQuantity()),
+				bitmapUtils, currentNews.getNewsID());
+		likeControl.listDataBindSet(currentNews.getLikeHeadListimage());
+		likeControl.setEventListener(new EventCallBack() {
 
 			@Override
-			public void onClick(View view) {
-				itemViewClickListener.onClick(view, postion, view.getId());
+			public void onItemClick(int userId) {
+				JumpToHomepage(userId);
 			}
-		};
-		helper.setOnClickListener(R.id.tv_news_detai_like_all_person, listener);
+
+			@Override
+			public void onAllPersonBtnClick(String newsId) {
+				// 跳转到点赞的人
+				Intent intentToALLPerson = new Intent(NewsDetailActivity.this,
+						AllLikePersonActivity.class);
+				intentToALLPerson.putExtra(
+						AllLikePersonActivity.INTENT_KEY_NEWS_ID, newsId);
+				startActivityWithRight(intentToALLPerson);
+			}
+		});
 	}
 
 	/**
@@ -1065,9 +988,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				break;
 
 			case R.id.btn_news_detail_like:
-				final TitleItem operateData = (TitleItem) detailAdapter
-						.getItem(postion);
-				likeOperate(postion, view, operateData);
+				actionType = NewsConstants.OPERATE_UPDATE;
+				likeOperate();
 				break;
 
 			case R.id.reply_head_layout:
@@ -1176,76 +1098,33 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	/**
 	 * 点赞操作
 	 * */
-	private void likeOperate(int postion, View view, final TitleItem operateData) {
-
-		final FrameLayout oprtView = (FrameLayout) view;
-		final int likeListPostion = postion + 2;
-		try {
-			ListView nListView = newsDetailListView.getRefreshableView();
-			View itemRootView = nListView.getChildAt(likeListPostion + 1
-					- nListView.getFirstVisiblePosition());
-			if (null != itemRootView) {
-				// 点赞头像列表可见的情况下
-				likeIcon = (TextView) itemRootView
-						.findViewById(R.id.tv_news_detail_like_icon);
-				allLikeIcon = (TextView) itemRootView
-						.findViewById(R.id.tv_news_detai_like_all_person);
-			}
-		} catch (Exception e) {
-			LogUtils.e("动态点赞部分发生异常.");
-		}
-
+	private void likeOperate() {
+		final TitleItem operateData = (TitleItem) detailAdapter.getItem(0);
 		newsOPerate.setLikeListener(new LikeCallBack() {
 
 			@Override
 			public void onOperateStart(boolean isLike) {
 				if (isLike) {
 					// 点赞操作
-					if (null != likeGVAdapter) {
-						newsOPerate.addHeadToLikeList(likeGVAdapter);
+					if (null != likeControl) {
+						newsOPerate.addHeadToLikeList(likeControl);
+					} else {
+						newsOPerate.addDataToLikeList(detailAdapter, 2);
 					}
-					newsOPerate.addDataToLikeList(detailAdapter,
-							likeListPostion);
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() + 1));
-					((TextView) oprtView.findViewById(R.id.tv_news_detail_like))
-							.setText("已赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_news_detail_like_background))
-							.setImageResource(R.drawable.like_have);
-					if (View.GONE == likeIcon.getVisibility()) {
-						// 显示点赞图标
-						likeIcon.setVisibility(View.VISIBLE);
-					}
-					if (operateData.getLikeCount() > maxLikeCount) {
-						// 显示所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.VISIBLE);
-						allLikeIcon.setText(operateData.getLikeCount());
-					}
+					likeBtn.setStatue(true);
 					operateData.setIsLike("1");
 				} else {
 					// 取消点赞
-					if (null != detailAdapter) {
-						newsOPerate.removeHeadFromLikeList(likeGVAdapter);
+					if (null != likeControl) {
+						newsOPerate.removeHeadFromLikeList(likeControl);
+					} else {
+						newsOPerate.removeDataFromLikeList(detailAdapter, 2);
 					}
-					newsOPerate.removeDataFromLikeList(detailAdapter,
-							likeListPostion);
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() - 1));
-
-					((TextView) oprtView.findViewById(R.id.tv_news_detail_like))
-							.setText("点赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_news_detail_like_background))
-							.setImageResource(R.drawable.like_no);
-					if (operateData.getLikeCount() <= 0) {
-						// 隐藏点赞图标
-						likeIcon.setVisibility(View.GONE);
-					}
-					if (operateData.getLikeCount() <= maxLikeCount) {
-						// 隐藏所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.GONE);
-					}
+					likeBtn.setStatue(false);
 					operateData.setIsLike("0");
 				}
 			}
@@ -1255,40 +1134,14 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				// 撤销上次
 				newsOPerate.operateRevoked();
 				if (isLike) {
-					((TextView) oprtView.findViewById(R.id.tv_news_detail_like))
-							.setText("点赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_news_detail_like_background))
-							.setImageResource(R.drawable.like_no);
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() - 1));
-					allLikeIcon.setText(operateData.getLikeCount());
-					if (operateData.getLikeCount() <= 0) {
-						// 隐藏点赞图标
-						likeIcon.setVisibility(View.GONE);
-					}
-					if (operateData.getLikeCount() <= maxLikeCount) {
-						// 隐藏所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.GONE);
-					}
+					likeBtn.setStatue(false);
 					operateData.setIsLike("0");
 				} else {
-					((TextView) oprtView.findViewById(R.id.tv_news_detail_like))
-							.setText("已赞 ");
-					((ImageView) oprtView
-							.findViewById(R.id.iv_news_detail_like_background))
-							.setImageResource(R.drawable.like_have);
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() + 1));
-					allLikeIcon.setText(operateData.getLikeCount());
-					if (View.GONE == likeIcon.getVisibility()) {
-						// 显示点赞图标
-						likeIcon.setVisibility(View.VISIBLE);
-					}
-					if (operateData.getLikeCount() > maxLikeCount) {
-						// 显示所有点赞的人的按钮
-						allLikeIcon.setVisibility(View.VISIBLE);
-					}
+					likeBtn.setStatue(true);
 					operateData.setIsLike("1");
 				}
 			}
@@ -1297,21 +1150,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			newsOPerate.uploadLikeOperate(operateData.getNewsID(), false);
 		} else {
 			newsOPerate.uploadLikeOperate(operateData.getNewsID(), true);
-		}
-	}
-
-	/**
-	 * 点赞gridview监听
-	 */
-	public class LikeGridViewItemClick implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
-					position);
-			// 跳转到用户的主页
-			JumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
 		}
 	}
 
@@ -1448,20 +1286,15 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void updateResultData() {
 		Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
 		if (actionType.equals(NewsConstants.OPERATE_UPDATE)) {
-			// 更新操作
+
+			// 点赞数据
+			LikeListItem likeData = (LikeListItem) detailAdapter.getItem(2);
+			List<LikeModel> newlkList = likeData.getLikeHeadListimage();
+			// 评论数据
+			TitleItem titleData = (TitleItem) detailAdapter.getItem(0);
 			String isLike = "0";
-			// 最新的点赞数据
-			List<LikeModel> newlkList = new ArrayList<LikeModel>();
-			for (int index = 0; index < likeGVAdapter.getCount(); index++) {
-				newlkList.add(likeGVAdapter.getItem(index));
-				if (likeGVAdapter
-						.getItem(index)
-						.getUserID()
-						.equals(String.valueOf(UserManager.getInstance()
-								.getUser().getUid()))) {
-					isLike = "1";
-					break;
-				}
+			if (titleData.getIsLike()) {
+				isLike = "1";
 			}
 			// 最新的评论数据
 			List<CommentModel> newCmtList = new ArrayList<CommentModel>();
@@ -1474,8 +1307,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 
 			currentNews.setIsLike(isLike);
-			currentNews.setLikeQuantity(((TitleItem) detailAdapter.getItem(0))
-					.getLikeCount() + "");
+			currentNews.setLikeQuantity(titleData.getLikeCount() + "");
 			currentNews.setCommentQuantity(String.valueOf(detailAdapter
 					.getCount() - 3));
 			currentNews.setLikeHeadListimage(newlkList);

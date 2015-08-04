@@ -64,30 +64,9 @@
 
     <!-- 点赞按钮 -->
 
-    <FrameLayout
+    <com.jlxc.app.base.ui.view.LikeButton
         android:id="@+id/btn_news_detail_like"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/item_interior_space_medium"
-        android:paddingLeft="@dimen/item_interior_space_medium"
-        android:paddingTop="@dimen/item_interior_space_medium" >
-
-        <ImageView
-            android:id="@+id/iv_news_detail_like_background"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/like_no" />
-
-        <TextView
-            android:id="@+id/tv_news_detail_like"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="right|center"
-            android:layout_marginRight="@dimen/item_interior_space_small"
-            android:gravity="center"
-            android:text="点赞"
-            android:textColor="@color/main_brown"
-            android:textSize="@dimen/font_size_small" />
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
 </LinearLayout>
