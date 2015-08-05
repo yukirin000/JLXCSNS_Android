@@ -1,6 +1,7 @@
 package com.jlxc.app.login.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
@@ -105,6 +107,15 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
 					
+					finish();
+					//把前面的finish掉
+					for (Activity activity:ActivityManager.getActivityStack()) {
+						if (activity.getClass().equals(LoginActivity.class)) {
+							activity.finish();
+							break;
+						}
+					}
+					
 					break; 
 				case JLXCConst.STATUS_FAIL:
 					hideLoading();
@@ -126,8 +137,16 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 	
 	//找回密码
 	public void findPwd() {
-		//发送验证码
-		SMSSDK.getVerificationCode("86",username);
+		
+//		showLoading("验证码获取中..", false);
+//		//发送验证码
+//		SMSSDK.getVerificationCode("86",username);
+    	Intent intent = new Intent(SecondLoginActivity.this, RegisterActivity.class);
+    	intent.putExtra("username", username);
+    	intent.putExtra("isFindPwd", true);
+    	startActivityWithRight(intent);			
+		
+		
 //		//网络请求
 //		RequestParams params = new RequestParams();
 //		params.addBodyParameter("phone_num", username);
@@ -196,23 +215,32 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		EventHandler eh=new EventHandler(){
-			@Override
-			public void afterEvent(int event, int result, Object data) {
-				Message msg = new Message();
-				msg.arg1 = event;
-				msg.arg2 = result;
-				msg.obj = data;
-				handler.sendMessage(msg);
-			}
-		};
-		SMSSDK.registerEventHandler(eh);
+		try {
+			EventHandler eh=new EventHandler(){
+				@Override
+				public void afterEvent(int event, int result, Object data) {
+					Message msg = new Message();
+					msg.arg1 = event;
+					msg.arg2 = result;
+					msg.obj = data;
+					handler.sendMessage(msg);
+				}
+			};
+			SMSSDK.registerEventHandler(eh);			
+		} catch (Exception e) {
+			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+		}		
+
 	}
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		SMSSDK.unregisterAllEventHandler();
+		try {
+			SMSSDK.unregisterAllEventHandler();	
+		} catch (Exception e) {
+			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+		}		
 	}
 	
 	@SuppressLint("HandlerLeak") 
@@ -234,6 +262,7 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
 	            	Intent intent = new Intent(SecondLoginActivity.this, RegisterActivity.class);
 	            	intent.putExtra("username", username);
+	            	intent.putExtra("isFindPwd", true);
 	            	startActivityWithRight(intent);	
 	            	
 //	            	SMSSDK.unregisterAllEventHandler();

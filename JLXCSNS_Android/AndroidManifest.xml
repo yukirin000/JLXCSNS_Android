@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="14"
-    android:versionName="0.13" >
+    android:versionCode="21"
+    android:versionName="0.20" >
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -68,7 +68,7 @@
         <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity" >
         </activity>
         <activity
-            android:name="com.jlxc.app.login.ui.activity.LoginActivity"
+            android:name="com.jlxc.app.login.ui.activity.LaunchActivity"
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -81,6 +81,8 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.LoginActivity" >
         </activity>
         <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity" >
         </activity>
@@ -138,7 +140,10 @@
         </activity>
         <activity android:name="com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity" >
         </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.AboutUsActivity" >
+        </activity>
 
+        
         <!-- 会话 Activity -->
         <activity
             android:name="com.jlxc.app.message.ui.activity.ConversationActivity"
@@ -299,6 +304,8 @@
             android:name="com.amap.api.v2.apikey"
             android:value="028a516dcc7ca5977934426ea33801ba" />
         <!-- 028a516dcc7ca5977934426ea33801ba -->
+        <!-- ab92e548a0429b832749d8067cb47998 -->
+        
         
         <!-- *******************涂图 公共分组控制器******************* -->
         <activity

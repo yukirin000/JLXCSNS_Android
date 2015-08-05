@@ -12,6 +12,14 @@ public class ActivityManager {
 	private ActivityManager() {
 	}
 
+	public static Stack<Activity> getActivityStack() {
+		return activityStack;
+	}
+
+	public static void setActivityStack(Stack<Activity> activityStack) {
+		ActivityManager.activityStack = activityStack;
+	}
+
 	public static ActivityManager getInstence() {
 		if (instance == null) {
 			instance = new ActivityManager();
@@ -50,12 +58,12 @@ public class ActivityManager {
 	public void popAllActivityExceptOne(Class cls) {
 //		while (true) {
 			
-		for (Activity activity: activityStack) {
-			if (activity.getClass().equals(cls)) {
-				continue;
-			}	
-			popActivity(activity);
-		}
+//		for (Activity activity: activityStack) {
+//			if (activity.getClass().equals(cls)) {
+//				continue;
+//			}	
+//			popActivity(activity);
+//		}
 			
 //			Activity activity = currentActivity();
 //			if (activity == null) {

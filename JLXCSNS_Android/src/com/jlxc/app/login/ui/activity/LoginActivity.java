@@ -201,12 +201,12 @@ public class LoginActivity extends BaseActivity {
 		
 		////////////////////////测试数据//////////////////////////
 //		usernameEt.setText("13736661234");
-		UserModel userModel = UserManager.getInstance().getUser();
-		if (null != userModel.getUsername() && null != userModel.getLogin_token()) {
-			//跳转主页 自动登录
-			Intent intent = new Intent(this, MainTabActivity.class);
-			startActivity(intent);		
-		}
+//		UserModel userModel = UserManager.getInstance().getUser();
+//		if (null != userModel.getUsername() && null != userModel.getLogin_token()) {
+//			//跳转主页 自动登录
+//			Intent intent = new Intent(this, MainTabActivity.class);
+//			startActivity(intent);		
+//		}
 		
 	}
 	
@@ -214,23 +214,31 @@ public class LoginActivity extends BaseActivity {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		EventHandler eh=new EventHandler(){
-			@Override
-			public void afterEvent(int event, int result, Object data) {
-				Message msg = new Message();
-				msg.arg1 = event;
-				msg.arg2 = result;
-				msg.obj = data;
-				handler.sendMessage(msg);
-			}
-		};
-		SMSSDK.registerEventHandler(eh);
+		try {
+			EventHandler eh=new EventHandler(){
+				@Override
+				public void afterEvent(int event, int result, Object data) {
+					Message msg = new Message();
+					msg.arg1 = event;
+					msg.arg2 = result;
+					msg.obj = data;
+					handler.sendMessage(msg);
+				}
+			};
+			SMSSDK.registerEventHandler(eh);
+		} catch (Exception e) {
+			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+		}
 	}
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		SMSSDK.unregisterAllEventHandler();
+		try {
+			SMSSDK.unregisterAllEventHandler();	
+		} catch (Exception e) {
+			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+		}
 	}
 	
 	@SuppressLint("HandlerLeak") 
