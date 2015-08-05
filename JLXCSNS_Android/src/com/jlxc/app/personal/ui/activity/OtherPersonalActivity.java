@@ -157,7 +157,7 @@ public class OtherPersonalActivity extends BaseActivity{
 //			settingIntent.putExtra(FriendSettingActivity.INTENT_FUID, otherUserModel.getUid());
 //			settingIntent.putExtra(FriendSettingActivity.INTENT_NAME, otherUserModel.getName());
 //			startActivityWithRight(settingIntent);
-			showPopupWindow(settingButton);
+			deleteFriend();
 			break;
 		case R.id.his_visit_layout:
 			//来访
@@ -516,7 +516,7 @@ public class OtherPersonalActivity extends BaseActivity{
     }
 	
 	private void deleteFriend() {
-		popupWindow.dismiss();
+//		popupWindow.dismiss();
 		
 		new AlertDialog.Builder(this).setTitle("确定要删除好友"+otherUserModel.getName()+"吗").setPositiveButton("确定", new OnClickListener() {
 			

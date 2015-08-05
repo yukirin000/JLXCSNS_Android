@@ -589,11 +589,10 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				break;
 			case ALBUM_SELECT:// 当选择从本地获取图片时
 				/*******************/
-				@SuppressWarnings("unchecked")
-				List<String> resultList = (List<String>) data
-						.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
-				int[] screenSize1 = getScreenSize();
 				
+				@SuppressWarnings("unchecked")
+				List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
+				int[] screenSize1 = getScreenSize();
 				long interval = System.currentTimeMillis()/1000;
 				//循环处理图片
 				for (String fileRealPath : resultList) {
@@ -605,15 +604,24 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 					//命名规则以当前时间戳顺序加一
 					interval++;
 				}
+				
 				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						Message message = new Message();
-		                message.what = 1;
-		                handler.sendMessage(message);
+//						Message message = new Message();
+//		                message.what = 1;
+//		                handler.sendMessage(message);
+		                timerHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+				            	//恢复点击
+								rightLayout.setEnabled(true);
+							}
+						});
 					}
 				}, 1000);
 
@@ -665,16 +673,8 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		}
 	}
 
-	final Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            super.handleMessage(msg);
-            if(msg.what == 1){
-            	//恢复点击
-				rightLayout.setEnabled(true);
-            }
-        }
-    };
+	final Handler timerHandler = new Handler();
+	final Handler photoHandler = new Handler();
 	
 	/**
 	 * 发布动态完成发送广播

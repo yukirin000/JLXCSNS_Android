@@ -20,7 +20,7 @@ public class PersonalSettingActivity extends BaseActivityWithTopBar{
 	@ViewInject(R.id.clear_size_text_view)
 	private TextView clearSizeTextView;
 	
-	@OnClick({R.id.account_layout,R.id.clear_layout,R.id.check_layout})
+	@OnClick({R.id.account_layout,R.id.clear_layout,R.id.check_layout,R.id.about_us})
 	private void clickMethod(View view) {
 		switch (view.getId()) {
 			//退出
@@ -35,6 +35,11 @@ public class PersonalSettingActivity extends BaseActivityWithTopBar{
 			//版本检查
 		case R.id.check_layout:
 			checkVersion();
+			break;
+		case R.id.about_us:
+			//关于我们
+			Intent aboutIntent = new Intent(this, AboutUsActivity.class);
+			startActivityWithRight(aboutIntent);
 			break;
 		default:
 			break;

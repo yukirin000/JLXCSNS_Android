@@ -136,6 +136,41 @@
 					        android:src="@drawable/right_arrow" />
 					</RelativeLayout>
 	             </LinearLayout>
+	             <View
+	                 android:layout_width="fill_parent"
+	                 android:layout_height="1dip"
+	                 android:background="@color/main_light_gary" />	             
+			
+				<LinearLayout
+				    android:id="@+id/about_us"
+				    android:background="@color/main_white"
+	                android:layout_width="match_parent"
+	                android:layout_height="45dip"
+	                android:gravity="center_vertical"
+	                android:orientation="horizontal" >
+	
+		                 <TextView
+		                     android:layout_width="wrap_content"
+		                     android:layout_height="wrap_content"
+		                     android:textSize="@dimen/font_size_small"
+		                     android:textColor="@color/main_deep_black"
+		                     android:layout_marginLeft="15dip"
+		                     android:text="关于" />
+		                 
+						<RelativeLayout
+						    android:layout_width="match_parent"
+						    android:layout_height="wrap_content" >
+						    
+						    <ImageView
+						        android:layout_width="15dp"
+						        android:layout_height="15dp"
+						        android:scaleType="fitCenter"
+						        android:layout_alignParentRight="true"
+						        android:layout_marginRight="10dp"
+						        android:src="@drawable/right_arrow" />
+						</RelativeLayout>
+		             </LinearLayout>
+			
        </LinearLayout>
 	
 
