@@ -33,7 +33,7 @@
             android:textSize="@dimen/font_size_small" />
     </FrameLayout>
 
-    <com.jlxc.app.base.ui.view.LikeButton
+    <com.jlxc.app.news.ui.view.LikeButton
         android:id="@+id/btn_campus_like"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />

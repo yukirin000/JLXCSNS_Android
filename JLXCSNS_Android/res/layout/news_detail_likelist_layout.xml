@@ -4,19 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/main_deep_white"
+    android:paddingLeft="@dimen/news_item_margins_left"
+    android:paddingRight="@dimen/news_item_margins_right"
     android:orientation="vertical" >
-
-    <com.jlxc.app.base.ui.view.LikeListControl
-        android:id="@+id/control_like_listview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <!-- 主页点赞头像列表 -->
 
-    <View
-        android:id="@+id/view_listview_divider_dowm"
+    <com.jlxc.app.news.ui.view.LikeImageListView
+        android:id="@+id/control_like_listview"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_interior_space_medium"
-        android:background="@color/main_light_white" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -23,6 +23,7 @@
     <dimen name="item_interior_space_small">5dp</dimen>
     <dimen name="item_interior_space_medium">10dp</dimen>
     <dimen name="item_interior_space_large">15dp</dimen>
+    <dimen name="item_interior_space_huge">20dp</dimen>
     <!-- 校园中的title的高度 -->
     <dimen name="campus_title_high">40dp</dimen>
     <!-- 头像的大小 -->
@@ -31,6 +32,12 @@
     <dimen name="head_image_size_large">50dp</dimen>
     <dimen name="head_image_size_huge">55dp</dimen>
     <dimen name="head_image_size_super_large">60dp</dimen>
+    <!-- 图片的大小 -->
+    <dimen name="image_size_small">80dp</dimen>
+    <dimen name="image_size_medium">100dp</dimen>
+    <dimen name="image_size_large">200dp</dimen>
+    <!-- 子评论左边距 -->
+    <dimen name="subcomment_margins_left">62dp</dimen>
 
     <!-- 聊天页面行上边距和下边距 -->
     <dimen name="chatting_item_marging_top">10dp</dimen>

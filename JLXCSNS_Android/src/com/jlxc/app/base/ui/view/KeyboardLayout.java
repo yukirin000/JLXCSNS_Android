@@ -1,7 +1,5 @@
 package com.jlxc.app.base.ui.view;
 
-import com.jlxc.app.base.utils.LogUtils;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;

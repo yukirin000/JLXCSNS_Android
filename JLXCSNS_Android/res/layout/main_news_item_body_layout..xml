@@ -20,38 +20,19 @@
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />
 
-    <!-- 动态的图片（多图） -->
-
-    <com.jlxc.app.base.ui.view.NoScrollGridView
-        android:id="@+id/gv_mian_news_body_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:horizontalSpacing="5dp"
-        android:numColumns="3"
-        android:paddingTop="@dimen/news_item_margins_top"
-        android:src="@drawable/ic_launcher"
-        android:verticalSpacing="5dp" >
-    </com.jlxc.app.base.ui.view.NoScrollGridView>
-
-    <!-- 只有一张图片时显示此imageview -->
-
-    <ImageView
-        android:id="@+id/iv_mian_news_body_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/news_item_margins_top"
-        android:src="@drawable/ic_launcher" />
-    <!-- 发布的位置 -->
+    <com.jlxc.app.news.ui.view.MultiImageView
+        android:id="@+id/miv_main_news_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/txt_main_news_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/localtion"
         android:drawablePadding="5dp"
+        android:drawableStart="@drawable/localtion"
         android:paddingTop="@dimen/news_item_margins_top"
-        android:textColor="@color/main_light_blue"
-        android:text="地理位置" />
+        android:text="地理位置"
+        android:textColor="@color/main_light_blue" />
 
 </LinearLayout>

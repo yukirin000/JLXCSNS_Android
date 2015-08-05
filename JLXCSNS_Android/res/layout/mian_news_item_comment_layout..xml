@@ -15,7 +15,7 @@
         <TextView
             android:id="@+id/txt_comment_nameA"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/item_interior_space_huge"
             android:text="昵称"
             android:textColor="@color/main_brown"
             android:textSize="@dimen/font_size_small" />
@@ -39,7 +39,7 @@
         <TextView
             android:id="@+id/txt_comment_nameB"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/item_interior_space_huge"
             android:text="昵称"
             android:textColor="@color/main_brown"
             android:textSize="@dimen/font_size_small" />
@@ -63,7 +63,7 @@
         <TextView
             android:id="@+id/txt_comment_nameC"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/item_interior_space_huge"
             android:text="昵称"
             android:textColor="@color/main_brown"
             android:textSize="@dimen/font_size_small" />
@@ -80,26 +80,16 @@
     <TextView
         android:id="@+id/tv_more_comment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/item_interior_space_huge"
         android:paddingLeft="@dimen/news_item_margins_left"
         android:paddingRight="@dimen/news_item_margins_right"
-        android:paddingTop="@dimen/item_interior_space_small"
         android:text="查看更多评论"
         android:textColor="@color/main_brown"
         android:textSize="@dimen/font_size_small" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/item_interior_space_small" >
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/news_item_margins_top"
-            android:layout_weight="1"
-            android:background="@color/main_light_white" />
-
-    </LinearLayout>
+        android:layout_height="@dimen/news_item_margins_top"
+        android:background="@color/main_light_white" />
 
 </LinearLayout>

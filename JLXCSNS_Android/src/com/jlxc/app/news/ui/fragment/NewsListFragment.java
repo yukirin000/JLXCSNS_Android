@@ -1,33 +1,20 @@
 package com.jlxc.app.news.ui.fragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.R.integer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.hardware.Camera.Parameters;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -44,15 +31,7 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
-import com.jlxc.app.base.ui.view.CircularImageView;
-import com.jlxc.app.base.ui.view.LikeButton;
-import com.jlxc.app.base.ui.view.LikeListControl;
-import com.jlxc.app.base.ui.view.NoScrollGridView;
-import com.jlxc.app.base.ui.view.LikeListControl.EventCallBack;
-import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
-import com.jlxc.app.base.ui.view.RoundImageView;
 import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -68,10 +47,15 @@ import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.ItemModel.OperateItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
-import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsConstants;
+import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.ui.view.LikeButton;
+import com.jlxc.app.news.ui.view.LikeImageListView;
+import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
+import com.jlxc.app.news.ui.view.MultiImageView;
+import com.jlxc.app.news.ui.view.MultiImageView.JumpCallBack;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
@@ -88,12 +72,6 @@ public class NewsListFragment extends BaseFragment {
 
 	// 动态显示的评论数量
 	private int NEWS_COMMENT_NUM = 3;
-	// 最多点赞数默认为8
-	private int maxLikeCount = 8;
-	// 点赞列表的宽度
-	private int likeheadGVWidth;
-	// 点赞头像的尺寸
-	private int headImageSize;
 	// 动态listview
 	@ViewInject(R.id.news_listview)
 	private PullToRefreshListView newsListView;
@@ -111,8 +89,6 @@ public class NewsListFragment extends BaseFragment {
 	private static BitmapUtils bitmapUtils;
 	// 评论部分的控件
 	private List<Map<String, Integer>> commentViewList;
-	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
 	// 当前数据的页
 	private int pageIndex = 1;
 	// 是否是最后一页数据
@@ -125,14 +101,10 @@ public class NewsListFragment extends BaseFragment {
 	private boolean isRequestingData = false;
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
-	// 点击图片监听
-	private ImageGridViewItemClick imageItemClickListener;
-	// 点击点赞头像监听
-	private LikeGridViewItemClick likeItemClickListener;
 	// 对动态的操作
 	private NewsOperate newsOPerate;
 	// 当前点赞对应的gridview的adpter
-	private LikeListControl currentLikeListControl;
+	private LikeImageListView currentLikeListControl;
 
 	@Override
 	public int setLayoutId() {
@@ -163,31 +135,13 @@ public class NewsListFragment extends BaseFragment {
 		mContext = this.getActivity().getApplicationContext();
 
 		itemViewClickListener = new ItemViewClick();
-		imageItemClickListener = new ImageGridViewItemClick();
-		likeItemClickListener = new LikeGridViewItemClick();
 		newsOPerate = new NewsOperate(mContext);
+		// bitmapUtils的设置
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
+				true, true);
 
-		initBitmapUtils();
-
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
-				+ screenHeight);
-
-		// 计算显示的头像个数
-		if (screenWidth <= NewsConstants.SMALL_PIX) {
-			maxLikeCount = 8;
-		} else if (screenWidth > NewsConstants.SMALL_PIX
-				&& screenWidth <= NewsConstants.MIDDLE_PIX) {
-			maxLikeCount = 9;
-		} else if (screenWidth > NewsConstants.MIDDLE_PIX) {
-			maxLikeCount = 10;
-		}
-		headImageSize = (screenWidth - (10 + 10 + maxLikeCount * 4))
-				/ (maxLikeCount + 2);
-		likeheadGVWidth = (headImageSize + 4) * maxLikeCount - 4;
+		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
 	}
 
 	/**
@@ -402,36 +356,15 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
-				true, true);
-
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-	}
-
-	/**
 	 * titleItem的数据绑定与设置
 	 * */
 	private void setTitleItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		TitleItem titleData = (TitleItem) item;
-
-		// 设置头像
-		RoundImageView imgView = helper.getView(R.id.img_mian_news_user_head);
-		imgView.setRectAdius(5);
-		// 设置图片
-		LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
-		laParams.width = laParams.height = (screenWidth) / 7;
-		imgView.setLayoutParams(laParams);
 		helper.setImageUrl(R.id.img_mian_news_user_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
-		// 设置用户名,发布的时间，标签
+		// 设置用户名，标签
 		helper.setText(R.id.txt_main_news_user_name, titleData.getUserName());
-		helper.setText(R.id.txt_main_news_publish_time,
-				TimeHandle.getShowTimeFormat(titleData.getSendTime()));
 		helper.setText(R.id.txt_main_news_user_tag, titleData.getUserTag());
 
 		// 设置事件监听
@@ -454,88 +387,17 @@ public class NewsListFragment extends BaseFragment {
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
 		BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
+		MultiImageView bodyImages = helper.getView(R.id.miv_main_news_images);
+		bodyImages.imageDataSet(pictureList);
 
-		// 绑定图片显示
-		if (pictureList.size() == 0) {
-			// 没有图片的情况
-			helper.setVisible(R.id.gv_mian_news_body_image, false);
-			helper.setVisible(R.id.iv_mian_news_body_picture, false);
-		} else if (pictureList.size() == 1) {
-			// 只有一张图片的情况
-			helper.setVisible(R.id.gv_mian_news_body_image, false);
-			helper.setVisible(R.id.iv_mian_news_body_picture, true);
-			ImageView imgView = helper.getView(R.id.iv_mian_news_body_picture);
-			ImageModel imageModel = pictureList.get(0);
-			LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
-			if (imageModel.getImageHheight() >= imageModel.getImageWidth()) {
-				laParams.height = screenWidth * 3 / 5;
-				laParams.width = (int) ((imageModel.getImageWidth()
-						* screenWidth * 3) / (5.0 * imageModel
-						.getImageHheight()));
-			} else {
-				laParams.height = (int) ((imageModel.getImageHheight()
-						* screenWidth * 3) / (5.0 * imageModel.getImageWidth()));
-				laParams.width = screenWidth * 3 / 5;
+		bodyImages.setJumpListener(new JumpCallBack() {
+
+			@Override
+			public void onImageClick(Intent intentToimageoBig) {
+				startActivity(intentToimageoBig);
 			}
-			imgView.setLayoutParams(laParams);
-			imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			helper.setImageUrl(R.id.iv_mian_news_body_picture, bitmapUtils,
-					imageModel.getURL(), new NewsBitmapLoadCallBack());
+		});
 
-			// 设置点击事件
-			final int postion = helper.getPosition();
-			imgView.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View view) {
-					itemViewClickListener.onClick(view, postion, view.getId());
-				}
-			});
-		} else {
-			// 多张图片以九宫格显示
-			helper.setVisible(R.id.gv_mian_news_body_image, true);
-			helper.setVisible(R.id.iv_mian_news_body_picture, false);
-			NoScrollGridView bodyGridView = (NoScrollGridView) helper
-					.getView(R.id.gv_mian_news_body_image);
-
-			HelloHaAdapter<ImageModel> newsGVAdapter = new HelloHaAdapter<ImageModel>(
-					mContext, R.layout.mian_news_body_gridview_item_layout,
-					pictureList) {
-				@Override
-				protected void convert(HelloHaBaseAdapterHelper helper,
-						ImageModel item) {
-					// 设置显示图片的imageView大小
-					int desSize = (screenWidth - 20) / 3;
-					ImageView imgView = helper
-							.getView(R.id.iv_mian_body_gridview_item);
-					LayoutParams laParams = (LayoutParams) imgView
-							.getLayoutParams();
-					laParams.width = laParams.height = desSize;
-					imgView.setLayoutParams(laParams);
-					imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-					helper.setImageUrl(R.id.iv_mian_body_gridview_item,
-							bitmapUtils, item.getSubURL(),
-							new NewsBitmapLoadCallBack());
-				}
-			};
-			bodyGridView.setAdapter(newsGVAdapter);
-
-			/**
-			 * 点击图片事件
-			 * */
-			bodyGridView.setOnItemClickListener(imageItemClickListener);
-			// 点击空白区域时将事件传回给父控件
-			bodyGridView
-					.setOnTouchInvalidPositionListener(new OnTouchInvalidPositionListener() {
-
-						@Override
-						public boolean onTouchInvalidPosition(int motionEvent) {
-							return false;
-						}
-					});
-		}
-
-		// 创建点击事件监听对象
 		final int postion = helper.getPosition();
 		OnClickListener listener = new OnClickListener() {
 
@@ -544,7 +406,6 @@ public class NewsListFragment extends BaseFragment {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
-
 		// 设置 文字内容
 		if (bodyData.getNewsContent().equals("")) {
 			helper.setVisible(R.id.txt_main_news_content, false);
@@ -562,6 +423,7 @@ public class NewsListFragment extends BaseFragment {
 			helper.setText(R.id.txt_main_news_location, bodyData.getLocation());
 		}
 		// 父布局监听
+		helper.setOnClickListener(R.id.miv_main_news_images, listener);
 		helper.setOnClickListener(R.id.layout_news_body_rootview, listener);
 	}
 
@@ -570,7 +432,6 @@ public class NewsListFragment extends BaseFragment {
 	 * */
 	private void setOperateItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
-
 		OperateItem opData = (OperateItem) item;
 		// 点赞按钮
 		LikeButton likeBtn = helper.getView(R.id.btn_news_like);
@@ -589,6 +450,10 @@ public class NewsListFragment extends BaseFragment {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
+		// 绑定时间
+		helper.setText(R.id.txt_main_news_publish_time,
+				TimeHandle.getShowTimeFormat(opData.getSendTime()));
+		// 事件监听绑定
 		helper.setOnClickListener(R.id.btn_mian_reply, listener);
 		helper.setOnClickListener(R.id.btn_news_like, listener);
 		helper.setOnClickListener(R.id.layout_news_operate_rootview, listener);
@@ -602,7 +467,7 @@ public class NewsListFragment extends BaseFragment {
 		LikeListItem lkData = (LikeListItem) item;
 		List<LikeModel> lkImageList = lkData.getLikeHeadListimage();
 
-		LikeListControl likeControl = helper
+		LikeImageListView likeControl = helper
 				.getView(R.id.control_news_like_listview);
 		int allCount = lkData.getLikeCount();
 		String newsID = lkData.getNewsID();
@@ -649,7 +514,7 @@ public class NewsListFragment extends BaseFragment {
 				helper.setText(commentViewList.get(iCount).get("NAME")
 						.intValue(), commentList.get(iCount).getPublishName());
 				helper.setText(commentViewList.get(iCount).get("CONTENT")
-						.intValue(), ":"
+						.intValue(), " : "
 						+ commentList.get(iCount).getCommentContent());
 			} else {
 				// 设为隐藏
@@ -791,18 +656,10 @@ public class NewsListFragment extends BaseFragment {
 
 			case R.id.layout_news_body_rootview:
 			case R.id.txt_main_news_content:
-			case R.id.iv_mian_news_body_picture:
+			case R.id.miv_main_news_images:
 				BodyItem bodyData = (BodyItem) newsAdapter.getItem(postion);
-				if (R.id.iv_mian_news_body_picture == viewID) {
-					// 跳转到图片详情页面
-					String path = bodyData.getNewsImageListList().get(0)
-							.getURL();
-					jumpToBigImage(BigImgLookActivity.INTENT_KEY, path, 0);
-				} else {
-					// 跳转到动态详情
-					jumpToNewsDetail(bodyData, NewsConstants.KEY_BOARD_CLOSE,
-							null);
-				}
+				// 跳转到动态详情
+				jumpToNewsDetail(bodyData, NewsConstants.KEY_BOARD_CLOSE, null);
 				break;
 
 			case R.id.btn_mian_reply:
@@ -882,25 +739,6 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
-	 * 图片gridview监听
-	 */
-	public class ImageGridViewItemClick implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			List<ImageModel> imageModelList = new ArrayList<ImageModel>();
-			for (int index = 0; index < parent.getAdapter().getCount(); index++) {
-				imageModelList.add((ImageModel) parent.getAdapter().getItem(
-						index));
-			}
-			// 跳转到图片详情页面
-			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					imageModelList, position);
-		}
-	}
-
-	/**
 	 * 点赞操作
 	 * */
 	private void likeOperate(int postion, View view,
@@ -915,7 +753,7 @@ public class NewsListFragment extends BaseFragment {
 			currentLikeListControl = null;
 			if (null != itemRootView) {
 				// 点赞头像列表可见的情况下
-				currentLikeListControl = (LikeListControl) itemRootView
+				currentLikeListControl = (LikeImageListView) itemRootView
 						.findViewById(R.id.control_news_like_listview);
 			}
 		} catch (Exception e) {
@@ -972,20 +810,6 @@ public class NewsListFragment extends BaseFragment {
 	}
 
 	/**
-	 * 点赞gridview监听
-	 */
-	public class LikeGridViewItemClick implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
-					position);
-			jumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
-		}
-	}
-
-	/**
 	 * 加载图片时的回调函数
 	 * */
 	public class NewsBitmapLoadCallBack extends
@@ -1015,41 +839,6 @@ public class NewsListFragment extends BaseFragment {
 		public void onLoadCompleted(ImageView container, String uri,
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
 			container.setImageBitmap(bitmap);
-		}
-	}
-
-	/**
-	 * 跳转查看大图
-	 */
-	private void jumpToBigImage(String intentKey, Object path, int index) {
-		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
-			// 单张图片跳转
-			String pathUrl = (String) path;
-			Intent intentPicDetail = new Intent(mContext,
-					BigImgLookActivity.class);
-			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
-			startActivity(intentPicDetail);
-		} else if (intentKey
-				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
-			// 传递model列表
-			@SuppressWarnings("unchecked")
-			List<ImageModel> mdPath = (List<ImageModel>) path;
-			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
-			// 传递String列表
-			@SuppressWarnings("unchecked")
-			List<String> mdPath = (List<String>) path;
-			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else {
-			LogUtils.e("未传递图片地址");
 		}
 	}
 

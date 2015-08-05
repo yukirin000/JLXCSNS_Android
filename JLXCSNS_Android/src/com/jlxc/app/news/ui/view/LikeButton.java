@@ -1,4 +1,4 @@
-package com.jlxc.app.base.ui.view;
+package com.jlxc.app.news.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -26,8 +26,8 @@ public class LikeButton extends FrameLayout {
 		// 将自定义组合控件的布局渲染成View
 		View view = View.inflate(context,
 				R.layout.custom_view_like_btn_layout, this);
-		imageView = (ImageView) view.findViewById(R.id.iv_like_background);
-		textView = (TextView) view.findViewById(R.id.tv_like);
+		imageView = (ImageView) view.findViewById(R.id.iv_custom_btn_like_background);
+		textView = (TextView) view.findViewById(R.id.tv_custom_btn_like);
 	}
 
 	/** 设置点赞的状态 */

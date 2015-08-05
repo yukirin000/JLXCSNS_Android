@@ -1,30 +1,22 @@
 package com.jlxc.app.news.ui.fragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.integer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
@@ -43,15 +35,7 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.UserModel;
-import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
-import com.jlxc.app.base.ui.view.LikeButton;
-import com.jlxc.app.base.ui.view.LikeListControl;
-import com.jlxc.app.base.ui.view.NoScrollGridView;
-import com.jlxc.app.base.ui.view.LikeListControl.EventCallBack;
-import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
-import com.jlxc.app.base.ui.view.RoundImageView;
 import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -66,12 +50,16 @@ import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.ItemModel.OperateItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
-import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsConstants;
+import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
-import com.jlxc.app.news.ui.fragment.NewsListFragment.NewsBitmapLoadCallBack;
+import com.jlxc.app.news.ui.view.LikeButton;
+import com.jlxc.app.news.ui.view.LikeImageListView;
+import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
+import com.jlxc.app.news.ui.view.MultiImageView;
+import com.jlxc.app.news.ui.view.MultiImageView.JumpCallBack;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
@@ -97,8 +85,6 @@ public class CampusFragment extends BaseFragment {
 	private HelloHaAdapter<ItemModel> newsAdapter = null;
 	// 学校的人
 	private List<CampusPersonModel> personList;
-	// 动态的图片适配器
-	private HelloHaAdapter<ImageModel> newsGVAdapter;
 	// 学校的人的头像
 	private GridView personHeadGridView;
 	// 使支持多种item
@@ -108,7 +94,7 @@ public class CampusFragment extends BaseFragment {
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
 	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
+	private int screenWidth = 0;
 	// 当前的数据页
 	private int pageIndex = 1;
 	// 是否是最后一页数据
@@ -121,12 +107,10 @@ public class CampusFragment extends BaseFragment {
 	private boolean isRequestData = false;
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
-	// 点击图片监听
-	private ImageGridViewItemClick imageItemClickListener;
 	// 对动态的操作
 	private NewsOperate newsOPerate;
 	// 当前点赞对应的gridview的adpter
-	private LikeListControl currentLikeListControl;
+	private LikeImageListView currentLikeListControl;
 
 	@Override
 	public int setLayoutId() {
@@ -160,14 +144,12 @@ public class CampusFragment extends BaseFragment {
 		mContext = this.getActivity().getApplicationContext();
 
 		itemViewClickListener = new ItemViewClick();
-		imageItemClickListener = new ImageGridViewItemClick();
 		newsOPerate = new NewsOperate(mContext);
 		initBitmapUtils();
 
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
 	}
 
 	/**
@@ -393,21 +375,12 @@ public class CampusFragment extends BaseFragment {
 			ItemModel item) {
 		TitleItem titleData = (TitleItem) item;
 
-		// 设置头像
-		RoundImageView imgView = helper.getView(R.id.img_campus_user_head);
-		imgView.setRectAdius(5);
-		// 设置图片
-		LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
-		laParams.width = laParams.height = (screenWidth) / 7;
-		imgView.setLayoutParams(laParams);
-		imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 		helper.setImageUrl(R.id.img_campus_user_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
-		// 设置用户名,发布的时间，标签
+		// 设置用户名
 		helper.setText(R.id.txt_campus_user_name, titleData.getUserName());
 		helper.setText(R.id.txt_campus_publish_time,
 				TimeHandle.getShowTimeFormat(titleData.getSendTime()));
-
 		// 设置事件监听
 		final int postion = helper.getPosition();
 		OnClickListener listener = new OnClickListener() {
@@ -428,88 +401,16 @@ public class CampusFragment extends BaseFragment {
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
 		BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
-		// 绑定图片显示
-		if (pictureList.size() == 0) {
-			// 没有图片的情况
-			helper.setVisible(R.id.gv_campus_news_body_image, false);
-			helper.setVisible(R.id.iv_campus_news_body_picture, false);
-		} else if (pictureList.size() == 1) {
-			// 只有一张图片的情况
-			helper.setVisible(R.id.gv_campus_news_body_image, false);
-			helper.setVisible(R.id.iv_campus_news_body_picture, true);
-			ImageView imgView = helper
-					.getView(R.id.iv_campus_news_body_picture);
-			ImageModel imageModel = pictureList.get(0);
-			LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
-			if (imageModel.getImageHheight() >= imageModel.getImageWidth()) {
-				laParams.height = screenWidth * 4 / 5;
-				laParams.width = (int) ((imageModel.getImageWidth()
-						* screenWidth * 4) / (5.0 * imageModel
-						.getImageHheight()));
-			} else {
-				laParams.height = (int) ((imageModel.getImageHheight()
-						* screenWidth * 4) / (5.0 * imageModel.getImageWidth()));
-				laParams.width = screenWidth * 4 / 5;
+		MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
+		bodyImages.imageDataSet(pictureList);
+
+		bodyImages.setJumpListener(new JumpCallBack() {
+
+			@Override
+			public void onImageClick(Intent intentToimageoBig) {
+				startActivity(intentToimageoBig);
 			}
-			imgView.setLayoutParams(laParams);
-			imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
-					screenWidth * 4 / 5);
-			helper.setImageUrl(R.id.iv_campus_news_body_picture, bitmapUtils,
-					imageModel.getURL(), new NewsBitmapLoadCallBack());
-
-			// 设置点击事件
-			final int postion = helper.getPosition();
-			imgView.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View view) {
-					itemViewClickListener.onClick(view, postion, view.getId());
-				}
-			});
-		} else {
-			// 多张图片以九宫格显示
-			helper.setVisible(R.id.gv_campus_news_body_image, true);
-			helper.setVisible(R.id.iv_campus_news_body_picture, false);
-			NoScrollGridView bodyGridView = (NoScrollGridView) helper
-					.getView(R.id.gv_campus_news_body_image);
-			newsGVAdapter = new HelloHaAdapter<ImageModel>(mContext,
-					R.layout.campus_news_body_gridview_item_layout, pictureList) {
-				@Override
-				protected void convert(HelloHaBaseAdapterHelper helper,
-						ImageModel item) {
-					// 设置显示图片的imageView大小
-					int desSize = (screenWidth - 20) / 3;
-					ImageView imgView = helper
-							.getView(R.id.iv_campus_body_gridview_item);
-					LayoutParams laParams = (LayoutParams) imgView
-							.getLayoutParams();
-					laParams.width = laParams.height = desSize;
-					imgView.setLayoutParams(laParams);
-					imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-					bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
-							screenWidth);
-					helper.setImageUrl(R.id.iv_campus_body_gridview_item,
-							bitmapUtils, item.getSubURL(),
-							new NewsBitmapLoadCallBack());
-				}
-			};
-			bodyGridView.setAdapter(newsGVAdapter);
-
-			/**
-			 * 点击图片事件
-			 * */
-			bodyGridView.setOnItemClickListener(imageItemClickListener);
-			// 点击空白区域时将事件传回给父控件
-			bodyGridView
-					.setOnTouchInvalidPositionListener(new OnTouchInvalidPositionListener() {
-
-						@Override
-						public boolean onTouchInvalidPosition(int motionEvent) {
-							return false;
-						}
-					});
-		}
+		});
 
 		// 设置点击事件
 		final int postion = helper.getPosition();
@@ -577,7 +478,7 @@ public class CampusFragment extends BaseFragment {
 			ItemModel item) {
 		LikeListItem lkData = (LikeListItem) item;
 		List<LikeModel> lkImageList = lkData.getLikeHeadListimage();
-		LikeListControl likeControl = helper
+		LikeImageListView likeControl = helper
 				.getView(R.id.control_campus_like_listview);
 		int allCount = lkData.getLikeCount();
 		String newsID = lkData.getNewsID();
@@ -798,20 +699,12 @@ public class CampusFragment extends BaseFragment {
 				}
 				break;
 
-			case R.id.iv_campus_news_body_picture:
+			case R.id.miv_campus_body_images:
 			case R.id.layout_campus_body_root_view:
 			case R.id.txt_campus_news_content:
+				// 跳转到动态详情
 				BodyItem bodyData = (BodyItem) newsAdapter.getItem(postion);
-				if (R.id.iv_campus_news_body_picture == viewID) {
-					String path = bodyData.getNewsImageListList().get(0)
-							.getURL();
-					// 跳转到图片详情页面
-					jumpToBigImage(BigImgLookActivity.INTENT_KEY, path, 0);
-				} else {
-					// 跳转到动态详情
-					jumpToNewsDetail(bodyData, NewsConstants.KEY_BOARD_CLOSE,
-							null);
-				}
+				jumpToNewsDetail(bodyData, NewsConstants.KEY_BOARD_CLOSE, null);
 				break;
 
 			case R.id.btn_campus_reply:
@@ -862,7 +755,7 @@ public class CampusFragment extends BaseFragment {
 			currentLikeListControl = null;
 			if (null != itemRootView) {
 				// 点赞头像列表可见的情况下
-				currentLikeListControl = (LikeListControl) itemRootView
+				currentLikeListControl = (LikeImageListView) itemRootView
 						.findViewById(R.id.control_campus_like_listview);
 			}
 		} catch (Exception e) {
@@ -929,25 +822,6 @@ public class CampusFragment extends BaseFragment {
 	}
 
 	/**
-	 * 图片gridview监听
-	 */
-	public class ImageGridViewItemClick implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			List<ImageModel> imageModelList = new ArrayList<ImageModel>();
-			for (int index = 0; index < parent.getAdapter().getCount(); index++) {
-				imageModelList.add((ImageModel) parent.getAdapter().getItem(
-						index));
-			}
-			// 跳转到图片详情页面
-			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					imageModelList, position);
-		}
-	}
-
-	/**
 	 * 学校的人gridview监听
 	 */
 	public class PersonGridViewItemClick implements OnItemClickListener {
@@ -992,41 +866,6 @@ public class CampusFragment extends BaseFragment {
 		public void onLoadCompleted(ImageView container, String uri,
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
 			container.setImageBitmap(bitmap);
-		}
-	}
-
-	/**
-	 * 跳转查看大图
-	 */
-	private void jumpToBigImage(String intentKey, Object path, int index) {
-		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
-			// 单张图片跳转
-			String pathUrl = (String) path;
-			Intent intentPicDetail = new Intent(mContext,
-					BigImgLookActivity.class);
-			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
-			startActivity(intentPicDetail);
-		} else if (intentKey
-				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
-			// 传递model列表
-			@SuppressWarnings("unchecked")
-			List<ImageModel> mdPath = (List<ImageModel>) path;
-			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
-			// 传递String列表
-			@SuppressWarnings("unchecked")
-			List<String> mdPath = (List<String>) path;
-			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else {
-			LogUtils.e("未传递图片地址");
 		}
 	}
 

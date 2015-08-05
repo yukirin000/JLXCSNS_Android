@@ -83,16 +83,16 @@ public class ItemModel {
 		private String headImage;
 		// 动态发布者的名字
 		private String userName;
-		// 发布的时间
-		private String sendTime;
 		// 显示的标签
 		private String userTag;
 		// 显示用户的id
 		private String userID;
 		// 显示是否已赞
 		private boolean isLike;
-		//所有点赞的人
+		// 所有点赞的人
 		private int likeCount;
+		// 发布的时间
+		private String sendTime;
 
 		public String getHeadSubImage() {
 			return headSubImage;
@@ -116,14 +116,6 @@ public class ItemModel {
 
 		public void setUserName(String userNameStr) {
 			this.userName = userNameStr;
-		}
-
-		public String getSendTime() {
-			return sendTime;
-		}
-
-		public void setSendTime(String sendTime) {
-			this.sendTime = sendTime;
 		}
 
 		public String getUserTag() {
@@ -166,6 +158,13 @@ public class ItemModel {
 			}
 		}
 
+		public String getSendTime() {
+			return sendTime;
+		}
+
+		public void setSendTime(String sendTime) {
+			this.sendTime = sendTime;
+		}
 	}
 
 	/**
@@ -179,6 +178,8 @@ public class ItemModel {
 		private List<ImageModel> newsImageList = new ArrayList<ImageModel>();
 		// 发布的位置
 		private String location;
+		// 发布的时间
+		private String sendTime;
 
 		public String getNewsContent() {
 			return newsContent;
@@ -204,6 +205,13 @@ public class ItemModel {
 			this.location = location;
 		}
 
+		public String getSendTime() {
+			return sendTime;
+		}
+
+		public void setSendTime(String sendTime) {
+			this.sendTime = sendTime;
+		}
 	}
 
 	/**
@@ -215,6 +223,8 @@ public class ItemModel {
 		private boolean isLike = false;
 		// 点赞数
 		private int likeCount;
+		// 发布的时间
+		private String sendTime;
 
 		public boolean getIsLike() {
 			return isLike;
@@ -238,6 +248,14 @@ public class ItemModel {
 			} else {
 				this.isLike = false;
 			}
+		}
+
+		public String getSendTime() {
+			return sendTime;
+		}
+
+		public void setSendTime(String sendTime) {
+			this.sendTime = sendTime;
 		}
 	}
 

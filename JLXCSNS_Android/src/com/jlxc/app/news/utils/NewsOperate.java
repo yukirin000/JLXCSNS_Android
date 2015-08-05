@@ -11,7 +11,6 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
-import com.jlxc.app.base.ui.view.LikeListControl;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -20,6 +19,7 @@ import com.jlxc.app.news.model.ItemModel;
 import com.jlxc.app.news.model.ItemModel.LikeListItem;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.SubCommentModel;
+import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 
@@ -44,7 +44,7 @@ public class NewsOperate {
 	// 点赞回调接口
 	private LikeCallBack likeCallInterface;
 	// 上次点赞操作的listview
-	private LikeListControl likeListView;
+	private LikeImageListView likeListView;
 	// 点赞操作对应的动态adapter
 	private HelloHaAdapter<ItemModel> newsAdapter;
 	// 记录动态点赞的操作位置
@@ -371,7 +371,7 @@ public class NewsOperate {
 	/**
 	 * 添加头像到第一个位置
 	 * */
-	public void addHeadToLikeList(LikeListControl likeView) {
+	public void addHeadToLikeList(LikeImageListView likeView) {
 		lastOperateType = OP_Type_Like;
 		this.likeListView = likeView;
 		LikeModel myModel = new LikeModel();
@@ -410,7 +410,7 @@ public class NewsOperate {
 	/**
 	 * 移除自己的点赞头像
 	 * */
-	public void removeHeadFromLikeList(LikeListControl likeView) {
+	public void removeHeadFromLikeList(LikeImageListView likeView) {
 		this.likeListView = likeView;
 		lastOperateType = OP_Type_Like_cancel;
 		likeListView.removeHeadImg();

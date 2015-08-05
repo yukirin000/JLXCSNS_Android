@@ -6,8 +6,7 @@
     <color name="color_2">#2a4253</color>
     <color name="color_3">#f26d7e</color>
     <color name="color_4">#a286c0</color>
-    <color name="item_normal">#FFFFFF</color>
-    <color name="item_pressed">#EEEEEE</color>
+    <color name="item_pressed">#BBBBBB</color>
     <color name="province_line_border">#C7C7C7</color>
     <color name="transparent">#00000000</color>
     <color name="result_view">#b0000000</color>

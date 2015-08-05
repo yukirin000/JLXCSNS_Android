@@ -101,6 +101,7 @@ public class DataToItem {
 			item.setItemType(Type);
 			item.setLikeCount(news.getLikeQuantity());
 			item.setNewsID(news.getNewsID());
+			item.setSendTime(news.getSendTime());
 			item.setIsLike(news.getIsLike());
 		} catch (Exception e) {
 			LogUtils.e("createOperate error.");
@@ -117,6 +118,7 @@ public class DataToItem {
 			item.setNewsID(news.getNewsID());
 			item.setNewsContent(news.getNewsContent());
 			item.setImageNewsList(news.getImageNewsList());
+			item.setSendTime(news.getSendTime());
 			item.setLocation(news.getLocation());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");

@@ -5,10 +5,19 @@
     android:layout_height="wrap_content"
     android:background="@color/main_deep_white"
     android:clickable="true"
-    android:gravity="right"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/news_item_margins_left"
     android:paddingRight="@dimen/news_item_margins_right" >
+
+    <TextView
+        android:id="@+id/txt_main_news_publish_time"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="@dimen/item_interior_space_small"
+        android:text="时间"
+        android:textColor="@color/main_gary"
+        android:textSize="@dimen/font_size_tiny" />
 
     <FrameLayout
         android:id="@+id/btn_mian_reply"
@@ -26,14 +35,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="right|center"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="@dimen/item_interior_space_small"
             android:gravity="center"
             android:text="评论"
             android:textColor="@color/main_brown"
             android:textSize="@dimen/font_size_small" />
     </FrameLayout>
 
-    <com.jlxc.app.base.ui.view.LikeButton
+    <com.jlxc.app.news.ui.view.LikeButton
         android:id="@+id/btn_news_like"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />

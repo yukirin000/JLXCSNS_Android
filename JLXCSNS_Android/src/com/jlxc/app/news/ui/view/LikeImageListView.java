@@ -1,4 +1,4 @@
-package com.jlxc.app.base.ui.view;
+package com.jlxc.app.news.ui.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.ui.view.RoundImageView;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.news.model.LikeModel;
@@ -27,7 +28,7 @@ import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 
-public class LikeListControl extends LinearLayout {
+public class LikeImageListView extends LinearLayout {
 
 	// 小分辨率手机
 	private final static int SMALL_PIX = 540;
@@ -58,11 +59,11 @@ public class LikeListControl extends LinearLayout {
 	// 点击事件回调接口
 	private EventCallBack callInterface;
 
-	public LikeListControl(Context context) {
+	public LikeImageListView(Context context) {
 		super(context);
 	}
 
-	public LikeListControl(Context context, AttributeSet attrs) {
+	public LikeImageListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
 		getWidget();
@@ -77,18 +78,30 @@ public class LikeListControl extends LinearLayout {
 				this);
 		rootView = (RelativeLayout) view
 				.findViewById(R.id.layout_like_list_root_view);
-		allLikeView = (TextView) view.findViewById(R.id.tv_like_all_person);
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewA));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewB));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewC));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewD));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewE));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewF));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewG));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewH));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewI));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewJ));
-		likeImageViews.add((RoundImageView) view.findViewById(R.id.imageViewK));
+		allLikeView = (TextView) view
+				.findViewById(R.id.tv_custom_like_all_person);
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_A));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_B));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_C));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_D));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_E));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_F));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_G));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_H));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_I));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_J));
+		likeImageViews.add((RoundImageView) view
+				.findViewById(R.id.iv_like_head_img_K));
 		setWidgetListener();
 	}
 
@@ -143,12 +156,8 @@ public class LikeListControl extends LinearLayout {
 		// 计算显示的头像个数
 		if (screenWidth <= SMALL_PIX) {
 			maxLikeCount = 8;
-		} else if (screenWidth > SMALL_PIX && screenWidth <= MIDDLE_PIX) {
+		} else if (screenWidth > LAGER_PIX) {
 			maxLikeCount = 9;
-		} else if (screenWidth > MIDDLE_PIX && screenWidth <= LAGER_PIX) {
-			maxLikeCount = 10;
-		} else {
-			maxLikeCount = 11;
 		}
 	}
 

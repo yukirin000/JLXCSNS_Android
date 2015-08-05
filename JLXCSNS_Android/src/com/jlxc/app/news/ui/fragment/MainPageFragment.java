@@ -92,8 +92,6 @@ public class MainPageFragment extends BaseFragment {
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
 		screenHeight = displayMet.heightPixels;
-		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
-				+ screenHeight);
 	}
 
 	/*

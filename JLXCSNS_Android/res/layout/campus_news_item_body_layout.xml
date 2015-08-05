@@ -18,26 +18,10 @@
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />
 
-    <com.jlxc.app.base.ui.view.NoScrollGridView
-        android:id="@+id/gv_campus_news_body_image"
+    <com.jlxc.app.news.ui.view.MultiImageView
+        android:id="@+id/miv_campus_body_images"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:horizontalSpacing="5dp"
-        android:numColumns="3"
-        android:paddingTop="@dimen/item_interior_space_medium"
-        android:src="@drawable/ic_launcher"
-        android:verticalSpacing="5dp" >
-    </com.jlxc.app.base.ui.view.NoScrollGridView>
-
-    <!-- 只有一张图片时显示此imageview -->
-
-    <ImageView
-        android:id="@+id/iv_campus_news_body_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/item_interior_space_medium"
-        android:src="@drawable/ic_launcher" />
+        android:layout_height="wrap_content" />
     <!-- 发布的位置 -->
 
     <TextView
@@ -45,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/localtion"
-        android:drawablePadding="5dp"
+        android:drawablePadding="@dimen/item_interior_space_small"
         android:paddingTop="@dimen/item_interior_space_medium"
         android:text="地理位置"
         android:textColor="@color/main_light_blue" />

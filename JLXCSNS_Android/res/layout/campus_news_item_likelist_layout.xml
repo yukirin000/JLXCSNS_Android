@@ -6,11 +6,12 @@
     android:background="@color/main_deep_white"
     android:orientation="vertical" >
 
-    <com.jlxc.app.base.ui.view.LikeListControl
+    <com.jlxc.app.news.ui.view.LikeImageListView
         android:id="@+id/control_campus_like_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <View
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/news_item_margins_top"
         android:background="@color/main_light_white" />

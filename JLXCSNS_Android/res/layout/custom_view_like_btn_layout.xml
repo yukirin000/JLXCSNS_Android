@@ -3,18 +3,17 @@
     android:id="@+id/btn_news_like"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/item_interior_space_medium"
     android:paddingLeft="@dimen/item_interior_space_medium"
     android:paddingTop="@dimen/item_interior_space_medium" >
 
     <ImageView
-        android:id="@+id/iv_like_background"
+        android:id="@+id/iv_custom_btn_like_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/like_no" />
 
     <TextView
-        android:id="@+id/tv_like"
+        android:id="@+id/tv_custom_btn_like"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="right|center"
