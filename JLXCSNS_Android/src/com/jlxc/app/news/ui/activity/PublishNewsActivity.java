@@ -658,6 +658,9 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 			if (null != location && !"".equals(location)) {
 				locationString = location;
 				choiceLocationTextView.setText(location);
+			}else {
+				locationString = "";
+				choiceLocationTextView.setText("告诉我你在哪里....");
 			}
 		}
 	}
