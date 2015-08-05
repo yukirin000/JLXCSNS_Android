@@ -45,13 +45,15 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.SchoolModel;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 
 public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AMapLocationListener, OnPoiSearchListener 
 ,Runnable{
 
 	// 位置列表listview
 	@ViewInject(R.id.location_refresh_list)
-	private PullToRefreshListView loactionListView;
+	private PullToRefreshListView loactionListView;	
+	
 	// 位置listview的适配器
 	private HelloHaAdapter<String> locationAdapter;
 	// 位置数据列表
@@ -73,18 +75,39 @@ public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AM
 	private PoiSearch poiSearch;
 	private List<PoiItem> poiItems;// poi数据
 	
+	@OnClick({R.id.no_postion_btn})
+	private void clickEvent(View view) {
+		switch (view.getId()) {
+		case R.id.no_postion_btn:
+			//不显示
+			Intent intent = new Intent();
+			intent.putExtra("location", "");
+			//选择location返回值
+			setResult(100, intent);
+			// 停止定位
+			finishWithRight();
+			stopLocation();
+			break;
+		default:
+			break;
+		}
+	}
+	
 	@Override
 	public int setLayoutId() {
 		return R.layout.activity_choice_location;
 	}
 	@Override
 	protected void setUpView() {
+		
+		setBarText("我在这里");
 		initListViewSet();
 		// 设置为底部刷新模式
 		loactionListView.setMode(Mode.BOTH);
 		//设置定位
 		aMapLocManager = LocationManagerProxy.getInstance(this);
 		
+		showLoading("定位中...", true);
 		///////////定位////////////////
 		/*
 		 * mAMapLocManager.setGpsEnable(false);//
@@ -92,13 +115,12 @@ public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AM
 		 * API定位采用GPS和网络混合定位方式
 		 * ，第一个参数是定位provider，第二个参数时间最短是2000毫秒，第三个参数距离间隔单位是米，第四个参数是定位监听者
 		 */
-		aMapLocManager.requestLocationData(
-				LocationProviderProxy.AMapNetwork, 2000, 10, this);
+		
+		aMapLocManager.requestLocationData(LocationProviderProxy.AMapNetwork, 2000, 10, this);
 		handler.postDelayed(this, 12000);// 设置超过12秒还没有定位到就停止定位
 	}
 
 	/***
-	 * 
 	 * listview的设置
 	 */
 	private void initListViewSet() {
@@ -136,14 +158,14 @@ public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AM
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				// 上拉刷新
-				isPullDowm = false;
-				if (aMapLocation!=null) {
-					nextSearch();	
-				}else {
-					loactionListView.onRefreshComplete();
-					loactionListView.setMode(Mode.BOTH);
-				}
+//				// 上拉刷新
+//				isPullDowm = false;
+//				if (aMapLocation!=null) {
+//					nextSearch();	
+//				}else {
+//					loactionListView.onRefreshComplete();
+//					loactionListView.setMode(Mode.BOTH);
+//				}
 			}
 
 		});
@@ -258,6 +280,7 @@ public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AM
 	@Override
 	public void onLocationChanged(AMapLocation location) {
 		if (location != null) {
+			hideLoading();
 			this.aMapLocation = location;// 判断超时机制
 			Double geoLat = location.getLatitude();
 			Double geoLng = location.getLongitude();
@@ -306,7 +329,6 @@ public class ChoiceLocationActivity extends BaseActivityWithTopBar implements AM
 				if (result.getQuery().equals(query)) {// 是否是同一条
 					poiResult = result;
 					poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
-					
 //					List<SuggestionCity> suggestionCities = poiResult
 //							.getSearchSuggestionCitys();// 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
 					if (poiItems != null && poiItems.size() > 0) {
