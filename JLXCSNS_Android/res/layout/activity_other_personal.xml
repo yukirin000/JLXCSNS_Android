@@ -120,15 +120,15 @@
                             android:layout_height="40dip">
 
 	                        <ImageView 
-	                            android:layout_height="25dip"
+	                            android:layout_height="20dip"
 	                            android:layout_width="wrap_content"
 	                            android:src="@drawable/send_message_content_image"/>
 	                             
 						    <TextView
 		                        android:layout_width="wrap_content"
 		                        android:layout_height="wrap_content"
-		                        android:layout_marginLeft="5dip"
-		                        android:textSize="@dimen/font_size_huge"
+		                        android:layout_marginLeft="10dip"
+		                        android:textSize="@dimen/font_size_large"
 		                        android:textColor="@color/main_white"
 		                        android:text="发消息" />	   
                             
@@ -165,15 +165,15 @@
                             android:layout_height="40dip">
 
 	                        <ImageView 
-	                            android:layout_height="25dip"
+	                            android:layout_height="20dip"
 	                            android:layout_width="wrap_content"
 	                            android:src="@drawable/add_friend_content_image"/>
 	                             
 						    <TextView
 		                        android:layout_width="wrap_content"
 		                        android:layout_height="wrap_content"
-		                        android:layout_marginLeft="5dip"
-		                        android:textSize="@dimen/font_size_huge"
+		                        android:layout_marginLeft="10dip"
+		                        android:textSize="@dimen/font_size_large"
 		                        android:textColor="@color/main_white"
 		                        android:text="加好友" />	   
                             

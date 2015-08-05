@@ -2,9 +2,8 @@ package com.jlxc.app.news.ui.activity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.lasque.tusdk.core.TuSdk;
 import org.lasque.tusdk.core.TuSdkResult;
@@ -14,27 +13,25 @@ import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelega
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
@@ -83,15 +80,8 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	private ImageView addImageView;
 	@ViewInject(R.id.contentEt)
 	private EditText contentEditText;
-	//选地点layout
-	@ViewInject(R.id.choice_location_layout)
-	private LinearLayout choiceLocationLayout;
-	//选地点textview
-	@ViewInject(R.id.choice_location_text_view)
-	private TextView choiceLocationTextView;
-	//发布按钮
-	@ViewInject(R.id.base_ll_right_btns)
-	private LinearLayout rightLayout;
+	@ViewInject(R.id.choiceLocationBtn)
+	private Button choiceLocationBtn;
 
 	// 起始左边间距
 	private int oriMarginLeft;
@@ -106,7 +96,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	// bitmap
 	private BitmapUtils bitmapUtils;
 
-	@OnClick(value = { R.id.addImageView, R.id.choice_location_layout,
+	@OnClick(value = { R.id.addImageView, R.id.choiceLocationBtn,
 			R.id.base_ll_right_btns, R.id.publish_news_layout })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
@@ -115,7 +105,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 			showChoiceImageAlert();
 			break;
 		// 选择地理位置点击
-		case R.id.choice_location_layout:
+		case R.id.choiceLocationBtn:
 			Intent intent = new Intent(this, ChoiceLocationActivity.class);
 			startActivityForResult(intent, 1);
 			overridePendingTransition(R.anim.push_right_in,
@@ -173,7 +163,6 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 										intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,imageCount);
 										startActivityForResult(intentAlbum,
 												ALBUM_SELECT);
-										rightLayout.setEnabled(false);
 										break;
 									default:
 										break;
@@ -471,7 +460,6 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		// TODO Auto-generated method stub
-		setBarText("记录点滴");
 		// 设置初始间隔
 		MarginLayoutParams oriLp = (MarginLayoutParams) addImageView
 				.getLayoutParams();
@@ -480,6 +468,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				- oriLp.width * 4 - oriMarginLeft * 2) / 3;
 		addRightBtn("发布");
 		locationString = "";
+
 		// bitmap初始化
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
 				R.drawable.abc_ab_bottom_solid_light_holo, false, false);
@@ -540,11 +529,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 			// 地理位置
 			if (savedInstanceState.containsKey("location")) {
 				locationString = savedInstanceState.getString("location");
-				if (null == locationString || locationString.length()<1) {
-					choiceLocationTextView.setText("告诉我你在哪里....");					
-				}else {
-					choiceLocationTextView.setText(locationString);	
-				}
+				choiceLocationBtn.setText(locationString);
 			}
 			// 内容
 			if (savedInstanceState.containsKey("content")) {
@@ -605,18 +590,6 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 					//命名规则以当前时间戳顺序加一
 					interval++;
 				}
-				Timer timer = new Timer();
-				timer.schedule(new TimerTask() {
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						Message message = new Message();
-		                message.what = 1;
-		                handler.sendMessage(message);
-					}
-				}, 1000);
-
 				/*******************/
 //				// 做非空判断
 //				if (data != null) {
@@ -647,9 +620,6 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 //				}
 				break;
 			}
-		}else {
-			//恢复点击
-			rightLayout.setEnabled(true);
 		}
 
 		// 地理位置
@@ -657,22 +627,11 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 			String location = data.getStringExtra("location");
 			if (null != location && !"".equals(location)) {
 				locationString = location;
-				choiceLocationTextView.setText(location);
+				choiceLocationBtn.setText(location);
 			}
 		}
 	}
 
-	final Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            super.handleMessage(msg);
-            if(msg.what == 1){
-            	//恢复点击
-				rightLayout.setEnabled(true);
-            }
-        }
-    };
-	
 	/**
 	 * 发布动态完成发送广播
 	 * */

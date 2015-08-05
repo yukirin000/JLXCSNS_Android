@@ -6,8 +6,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_action_bar_default_height"
-        android:background="@color/main_yellow">
+        android:layout_height="50dp"
+        android:background="#AAAAAA" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,9 +19,8 @@
                 android:id="@+id/tv_discovey_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/main_brown"
-        		android:textSize="@dimen/abc_action_bar_title_text_size"
-                android:text="发现" />
+                android:text="发现"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -30,24 +29,13 @@
             android:gravity="center|right"
             android:orientation="vertical" >
 
-<!--             <TextView
+            <TextView
                 android:id="@+id/tv_dicovery_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="扫一扫"
-                android:textSize="15sp" /> -->
-           <ImageButton 
-                android:id="@+id/qrcode_scan_btn"
-               android:background="@color/main_clear"
-               android:layout_marginTop="1dip"
-               android:layout_marginBottom="1dip"
-               android:layout_width="wrap_content"
-               android:layout_height="match_parent"
-               android:layout_marginRight="10dip"
-               android:src="@drawable/qrcode_scan_selector"
-               />
-            
+                android:textSize="15sp" />
         </LinearLayout>
     </FrameLayout>
 

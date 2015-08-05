@@ -1,5 +1,7 @@
 package com.jlxc.app.discovery.ui.fragment;
 
+import it.sephiroth.android.library.exif2.IfdId;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +21,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -89,8 +90,8 @@ public class DiscoveryFragment extends BaseFragment {
 	@ViewInject(R.id.tv_discovey_title)
 	private TextView titleTextView;
 	// 扫一扫按钮
-	@ViewInject(R.id.qrcode_scan_btn)
-	private ImageButton qrcodeScanBtn;
+	@ViewInject(R.id.tv_dicovery_scan)
+	private TextView sweepTextView;
 	// 搜索框按钮
 	@ViewInject(R.id.tv_discovey_search)
 	private TextView searchTextView;
@@ -121,11 +122,11 @@ public class DiscoveryFragment extends BaseFragment {
 	/**
 	 * 点击事件监听
 	 * */
-	@OnClick(value = { R.id.qrcode_scan_btn, R.id.tv_discovey_search })
+	@OnClick(value = { R.id.tv_dicovery_scan, R.id.tv_discovey_search })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		// 扫一扫页面
-		case R.id.qrcode_scan_btn:
+		case R.id.tv_dicovery_scan:
 			Intent qrIntent = new Intent();
 			qrIntent.setClass(getActivity(), MipcaCaptureActivity.class);
 			qrIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

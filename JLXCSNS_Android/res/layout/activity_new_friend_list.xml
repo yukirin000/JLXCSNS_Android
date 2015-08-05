@@ -8,8 +8,6 @@
 
     <ListView
         android:id="@+id/new_friend_list_view"
-        android:listSelector="@color/main_clear" 
-        android:background="@color/main_white"        
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none" >
