@@ -212,7 +212,7 @@ public class PersonalFragment extends BaseFragment {
 		case R.id.school_layout:
 			Intent schoolIntent = new Intent(getActivity(), SelectSchoolActivity.class);
 			schoolIntent.putExtra("notRegister", true);
-			startActivity(schoolIntent);
+			startActivityWithRight(schoolIntent);
 			break;
 		//城市
 		case R.id.city_layout:

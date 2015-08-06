@@ -29,15 +29,16 @@
 
     <TextView
         android:id="@+id/unread_text_view"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="7dip"
+        android:layout_height="7dip"
+        android:background="@drawable/small_unread"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="15dp"
         android:gravity="center"
-        android:text="10"
         android:textColor="#e60028"
-        android:textSize="10sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:textSize="10sp"/>
+    
 
 </FrameLayout>
 

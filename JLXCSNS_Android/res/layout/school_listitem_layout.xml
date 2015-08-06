@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_white"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+		android:padding="8dip"        
         android:orientation="vertical" >
 
         <TextView
@@ -15,7 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="学校的名字"
-            android:textSize="18sp" />
+            android:textColor="@color/main_deep_black"
+            android:textSize="@dimen/font_size_small" />
 
         <TextView
             android:id="@+id/school_location_textView"
@@ -23,7 +25,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="所在的位置"
-            android:textSize="12sp" />
+            android:textColor="@color/main_deep_gary"
+            android:textSize="@dimen/font_size_tiny" />
     </LinearLayout>
+	
+    <View 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@color/main_light_gary"/>
 
 </LinearLayout>

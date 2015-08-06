@@ -129,7 +129,6 @@ public class MainTabActivity extends BaseActivity {
 	
 	//初始化融云
 	private void initRong(){
-		LogUtils.i("testestest", 1);
 		String token = "";
 		UserModel userModel = UserManager.getInstance().getUser();
 		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
@@ -186,7 +185,7 @@ public class MainTabActivity extends BaseActivity {
 				@Override
 				public void onFailure(IMqttToken arg0, Throwable arg1) {
 					Looper.prepare();
-					Toast.makeText(MainTabActivity.this, "yunba failr", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainTabActivity.this, "yunba fail", Toast.LENGTH_SHORT).show();
 					Looper.loop();
 				}
 			});
@@ -393,7 +392,8 @@ public class MainTabActivity extends BaseActivity {
 	    if (total > 99) {
 	        total = 99;
 	    }
-	    unreadTextView.setText(total+"");
+	    //暂时不显示未读消息
+//	    unreadTextView.setText(total+"");
 	    if (total == 0) {
 			unreadTextView.setVisibility(View.GONE);
 		}else {
