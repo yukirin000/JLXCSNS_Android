@@ -19,9 +19,10 @@
     <color name="main_brown">#86542f</color>
     <!-- 主橘色 -->
     <color name="main_orange">#ff8400</color>
-    <!-- 主纯白色 -->
+    <!-- 纯白色 -->
     <color name="main_deep_white">#FFFFFF</color>
-    <!-- 主页浅白色 -->
+    <!-- 微白色 -->    <color name="main_thin_white">#fafafa</color>
+    <!-- 浅白色 -->
     <color name="main_light_white">#ebebeb</color>
     <!-- 主深黑 -->
     <color name="main_deep_black">#4d4d4d</color>
@@ -40,6 +41,8 @@
     <color name="main_deep_blue">#00adad</color>
     <!-- 辅白色 -->
     <color name="main_white">#ffffff</color>
+    <!-- 辅褐色 -->
+    <color name="main_clear_brown">#9986542f</color>
     <!-- 辅粉色 -->
     <color name="main_pink">#f898c7</color>
     <!-- 辅浅蓝色 -->

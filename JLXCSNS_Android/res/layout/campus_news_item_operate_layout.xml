@@ -10,28 +10,14 @@
     android:paddingLeft="@dimen/news_item_margins_left"
     android:paddingRight="@dimen/news_item_margins_right" >
 
-    <FrameLayout
+    <!-- 评论按钮 -->
+
+    <com.jlxc.app.news.ui.view.CommentButton
         android:id="@+id/btn_campus_reply"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:padding="@dimen/item_interior_space_medium" >
+        android:layout_height="match_parent" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_comment_send_btn_click"
-            android:src="@drawable/btn_comment" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="right|center"
-            android:layout_marginRight="@dimen/item_interior_space_small"
-            android:gravity="center"
-            android:text="评论"
-            android:textColor="@color/main_brown"
-            android:textSize="@dimen/font_size_small" />
-    </FrameLayout>
+    <!-- 点赞按钮 -->
 
     <com.jlxc.app.news.ui.view.LikeButton
         android:id="@+id/btn_campus_like"

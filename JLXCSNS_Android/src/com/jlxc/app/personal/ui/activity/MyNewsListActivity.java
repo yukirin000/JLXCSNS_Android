@@ -1,6 +1,5 @@
 package com.jlxc.app.personal.ui.activity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,16 +9,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -39,9 +33,6 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
-import com.jlxc.app.base.ui.activity.BigImgLookActivity;
-import com.jlxc.app.base.ui.view.NoScrollGridView;
-import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -49,10 +40,13 @@ import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.LikeModel;
-import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsConstants;
+import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
-import com.jlxc.app.news.utils.DataToItem;
+import com.jlxc.app.news.ui.view.CommentButton;
+import com.jlxc.app.news.ui.view.LikeButton;
+import com.jlxc.app.news.ui.view.MultiImageView;
+import com.jlxc.app.news.ui.view.MultiImageView.JumpCallBack;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
 import com.jlxc.app.news.utils.NewsOperate.OperateCallBack;
@@ -62,10 +56,7 @@ import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsOperateItem;
 import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsTitleItem;
 import com.jlxc.app.personal.utils.NewsToItemData;
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.PauseOnScrollListener;
-import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
-import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
@@ -89,8 +80,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	private MultiItemTypeSupport<MyNewsListItemModel> multiItemTypeSupport = null;
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
-	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
 	// 当前的数据页
 	private int currentPage = 1;
 	// 是否是最后一页数据
@@ -101,14 +90,10 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	private boolean isRequestData = false;
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
-	// 点击图片监听
-	private ImageGridViewItemClick imageItemClickListener;
 	// 当前操作的动态id
 	private String currentNewsId = "";
 	// 对动态的操作
 	private NewsOperate newsOPerate;
-	// 当前操作的位置
-	private int indexAtNewsList = 0;
 	// 被查看者的用户ID
 	private String currentUid = "";
 
@@ -125,6 +110,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		newsListViewSet();
 
 		/******** 首次获取数据 ********/
+		showLoading("加载中...", true);
 		getMyNewsData(currentUid, String.valueOf(currentPage));
 		/*************************/
 	}
@@ -272,7 +258,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		userModel = UserManager.getInstance().getUser();
 
 		itemViewClickListener = new ItemViewClick();
-		imageItemClickListener = new ImageGridViewItemClick();
 		newsOperateSet();
 		initBitmapUtils();
 
@@ -282,13 +267,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		} else {
 			LogUtils.e("用户id传输错误，用户id为：" + currentUid);
 		}
-
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
-				+ screenHeight);
 	}
 
 	/**
@@ -359,40 +337,11 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			MyNewsListItemModel item) {
 		MyNewsTitleItem titleData = (MyNewsTitleItem) item;
 
-		// 设置头像
-		ImageView imgView = helper.getView(R.id.img_my_news_list_head);
-		// 设置图片
-		LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
-		laParams.width = laParams.height = (screenWidth) / 6;
-		imgView.setLayoutParams(laParams);
-		imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-		bitmapUtils.configDefaultBitmapMaxSize((screenWidth) / 4,
-				(screenWidth) / 4);
-		helper.setImageUrl(R.id.img_my_news_list_head, bitmapUtils,
-				titleData.getUserSubHeadImage(), new NewsBitmapLoadCallBack());
 		// 设置用户名,发布的时间
 		helper.setText(R.id.txt_my_news_list_name, titleData.getUserName());
 		helper.setText(R.id.txt_my_news_list_tiem,
 				TimeHandle.getShowTimeFormat(titleData.getSendTime()));
 
-		// 设置事件监听
-		final int postion = helper.getPosition();
-		OnClickListener listener = new OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-				itemViewClickListener.onClick(view, postion, view.getId());
-			}
-		};
-		if (currentUid.equals(String.valueOf(userModel.getUid()))) {
-			helper.setVisible(R.id.btn_my_news_delete, true);
-			helper.setOnClickListener(R.id.btn_my_news_delete, listener);
-		} else {
-			helper.setVisible(R.id.btn_my_news_delete, false);
-		}
-		helper.setOnClickListener(R.id.img_my_news_list_head, listener);
-		helper.setOnClickListener(R.id.layout_my_news_list_title_rootview,
-				listener);
 	}
 
 	/**
@@ -402,91 +351,16 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			MyNewsListItemModel item) {
 		MyNewsBodyItem bodyData = (MyNewsBodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
+		MultiImageView bodyImages = helper.getView(R.id.miv_my_newslist_images);
+		bodyImages.imageDataSet(pictureList);
 
-		// 绑定图片显示
-		if (pictureList.size() == 0) {
-			// 没有图片的情况
-			helper.setVisible(R.id.gv_my_news_list_body_image, false);
-			helper.setVisible(R.id.iv_my_news_list_body_picture, false);
-		} else if (pictureList.size() == 1) {
-			// 只有一张图片的情况
-			helper.setVisible(R.id.gv_my_news_list_body_image, false);
-			helper.setVisible(R.id.iv_my_news_list_body_picture, true);
-			ImageView imgView = helper
-					.getView(R.id.iv_my_news_list_body_picture);
-			ImageModel imageModel = pictureList.get(0);
-			LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
-			if (imageModel.getImageHheight() >= imageModel.getImageWidth()) {
-				laParams.height = screenWidth * 4 / 5;
-				laParams.width = (int) ((imageModel.getImageWidth()
-						* screenWidth * 4) / (5.0 * imageModel
-						.getImageHheight()));
-			} else {
-				laParams.height = (int) ((imageModel.getImageHheight()
-						* screenWidth * 4) / (5.0 * imageModel.getImageWidth()));
-				laParams.width = screenWidth * 4 / 5;
+		bodyImages.setJumpListener(new JumpCallBack() {
+
+			@Override
+			public void onImageClick(Intent intentToimageoBig) {
+				startActivity(intentToimageoBig);
 			}
-			imgView.setLayoutParams(laParams);
-			imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
-					screenWidth * 4 / 5);
-			helper.setImageUrl(R.id.iv_my_news_list_body_picture, bitmapUtils,
-					imageModel.getURL(), new NewsBitmapLoadCallBack());
-
-			// 设置点击事件
-			final int postion = helper.getPosition();
-			imgView.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View view) {
-					itemViewClickListener.onClick(view, postion, view.getId());
-				}
-			});
-		} else {
-			// 多张图片以九宫格显示
-			helper.setVisible(R.id.gv_my_news_list_body_image, true);
-			helper.setVisible(R.id.iv_my_news_list_body_picture, false);
-			NoScrollGridView bodyGridView = (NoScrollGridView) helper
-					.getView(R.id.gv_my_news_list_body_image);
-
-			HelloHaAdapter<ImageModel> newsGVAdapter = new HelloHaAdapter<ImageModel>(
-					MyNewsListActivity.this,
-					R.layout.my_news_list_gridview_item_layout, pictureList) {
-				@Override
-				protected void convert(HelloHaBaseAdapterHelper helper,
-						ImageModel item) {
-					// 设置显示图片的imageView大小
-					int desSize = (screenWidth - 20) / 3;
-					ImageView imgView = helper
-							.getView(R.id.iv_my_news_body_gridview_item);
-					LayoutParams laParams = (LayoutParams) imgView
-							.getLayoutParams();
-					laParams.width = laParams.height = desSize;
-					imgView.setLayoutParams(laParams);
-					imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-					bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
-							screenWidth);
-					helper.setImageUrl(R.id.iv_my_news_body_gridview_item,
-							bitmapUtils, item.getSubURL(),
-							new NewsBitmapLoadCallBack());
-				}
-			};
-			bodyGridView.setAdapter(newsGVAdapter);
-
-			/**
-			 * 点击图片事件
-			 * */
-			bodyGridView.setOnItemClickListener(imageItemClickListener);
-			// 点击空白区域时将事件传回给父控件
-			bodyGridView
-					.setOnTouchInvalidPositionListener(new OnTouchInvalidPositionListener() {
-
-						@Override
-						public boolean onTouchInvalidPosition(int motionEvent) {
-							return false;
-						}
-					});
-		}
+		});
 
 		// 创建点击事件监听对象
 		final int postion = helper.getPosition();
@@ -527,15 +401,18 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			MyNewsListItemModel item) {
 
 		MyNewsOperateItem opData = (MyNewsOperateItem) item;
-		helper.setText(R.id.btn_my_news_list_reply,
-				"评论 " + opData.getReplyCount());
+
+		// 点赞按钮
+		LikeButton likeBtn = helper.getView(R.id.btn_my_news_list_like);
 		if (opData.getIsLike()) {
-			helper.setText(R.id.btn_my_news_list_like,
-					"已赞 " + opData.getLikeCount());
+			likeBtn.setStatue(true, opData.getLikeCount());
 		} else {
-			helper.setText(R.id.btn_my_news_list_like,
-					"点赞 " + opData.getLikeCount());
+			likeBtn.setStatue(false, opData.getLikeCount());
 		}
+
+		// 评论按钮
+		CommentButton commentBtn = helper.getView(R.id.btn_my_news_list_reply);
+		commentBtn.setContent(opData.getReplyCount());
 		// 设置事件监听
 		final int postion = helper.getPosition();
 		OnClickListener listener = new OnClickListener() {
@@ -545,6 +422,15 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
+
+		// 删除按钮
+		if (currentUid.equals(String.valueOf(userModel.getUid()))) {
+			helper.setVisible(R.id.btn_my_news_delete, true);
+			helper.setOnClickListener(R.id.btn_my_news_delete, listener);
+		} else {
+			helper.setVisible(R.id.btn_my_news_delete, false);
+		}
+
 		helper.setOnClickListener(R.id.btn_my_news_list_reply, listener);
 		helper.setOnClickListener(R.id.btn_my_news_list_like, listener);
 		helper.setOnClickListener(R.id.layout_my_news_list_operate_rootview,
@@ -557,7 +443,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	private void getMyNewsData(String userID, String page) {
 		String path = JLXCConst.USER_NEWS_LIST + "?" + "user_id=" + userID
 				+ "&page=" + page + "&size=" + "";
-
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -568,6 +453,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
+							hideLoading();
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 获取动态列表
@@ -587,6 +473,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
+							hideLoading();
 							ToastUtil.show(MyNewsListActivity.this,
 									jsonResponse
 											.getString(JLXCConst.HTTP_MESSAGE));
@@ -602,6 +489,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
+						hideLoading();
 						ToastUtil.show(MyNewsListActivity.this, "网络有毒=_=");
 						newsListView.onRefreshComplete();
 						if (!islastPage) {
@@ -654,14 +542,14 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				if (isLike) {
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() + 1));
-					((Button) oprtView).setText("已赞 "
-							+ operateData.getLikeCount());
+					((LikeButton) oprtView).setStatue(true,
+							operateData.getLikeCount());
 					operateData.setIsLike("1");
 				} else {
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() - 1));
-					((Button) oprtView).setText("点赞 "
-							+ operateData.getLikeCount());
+					((LikeButton) oprtView).setStatue(false,
+							operateData.getLikeCount());
 					operateData.setIsLike("0");
 				}
 			}
@@ -671,14 +559,14 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				if (isLike) {
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() - 1));
-					((Button) oprtView).setText("点赞 "
-							+ operateData.getLikeCount());
+					((LikeButton) oprtView).setStatue(false,
+							operateData.getLikeCount());
 					operateData.setIsLike("0");
 				} else {
 					operateData.setLikeCount(String.valueOf(operateData
 							.getLikeCount() + 1));
-					((Button) oprtView).setText("已赞 "
-							+ operateData.getLikeCount());
+					((LikeButton) oprtView).setStatue(true,
+							operateData.getLikeCount());
 					operateData.setIsLike("1");
 				}
 			}
@@ -720,41 +608,18 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		@Override
 		public void onClick(View view, int postion, int viewID) {
 			switch (viewID) {
-			case R.id.layout_my_news_list_title_rootview:
-			case R.id.img_my_news_list_head:
-			case R.id.btn_my_news_delete:
-				MyNewsTitleItem titleData = (MyNewsTitleItem) newsAdapter
-						.getItem(postion);
-				if (R.id.layout_my_news_list_title_rootview == viewID) {
-					// 跳转到动态详情
-					jumpToNewsDetail(titleData,
-							NewsConstants.KEY_BOARD_CLOSE, null);
-				} else if (R.id.btn_my_news_delete == viewID) {
-					deleteCurrentNews(titleData.getNewsID());
-				} else {
-					jumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
-				}
-				break;
-
 			case R.id.layout_my_news_list_body_rootview:
 			case R.id.txt_my_news_list_content:
-			case R.id.iv_my_news_list_body_picture:
+			case R.id.miv_my_newslist_images:
 				MyNewsBodyItem bodyData = (MyNewsBodyItem) newsAdapter
 						.getItem(postion);
-				if (R.id.iv_my_news_list_body_picture == viewID) {
-					// 跳转到图片详情页面
-					String path = bodyData.getNewsImageListList().get(0)
-							.getURL();
-					jumpToBigImage(BigImgLookActivity.INTENT_KEY, path, 0);
-				} else {
-					// 跳转至动态详情
-					jumpToNewsDetail(bodyData,
-							NewsConstants.KEY_BOARD_CLOSE, null);
-				}
+				// 跳转至动态详情
+				jumpToNewsDetail(bodyData, NewsConstants.KEY_BOARD_CLOSE, null);
 				break;
 
 			case R.id.btn_my_news_list_reply:
 			case R.id.btn_my_news_list_like:
+			case R.id.btn_my_news_delete:
 			case R.id.layout_my_news_list_operate_rootview:
 
 				final MyNewsOperateItem operateData = (MyNewsOperateItem) newsAdapter
@@ -767,6 +632,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 					// 跳转至评论页面并打开评论框
 					jumpToNewsDetail(operateData,
 							NewsConstants.KEY_BOARD_COMMENT, null);
+				} else if (R.id.btn_my_news_delete == viewID) {
+					deleteCurrentNews(operateData.getNewsID());
 				} else {
 					// 进行点赞操作
 					likeOperate(postion, view, operateData);
@@ -790,25 +657,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
-	 * 图片gridview监听
-	 */
-	public class ImageGridViewItemClick implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			List<ImageModel> imageModelList = new ArrayList<ImageModel>();
-			for (int index = 0; index < parent.getAdapter().getCount(); index++) {
-				imageModelList.add((ImageModel) parent.getAdapter().getItem(
-						index));
-			}
-			// 跳转到图片详情页面
-			jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					imageModelList, position);
-		}
-	}
-
-	/**
 	 * 点赞gridview监听
 	 */
 	public class LikeGridViewItemClick implements OnItemClickListener {
@@ -819,76 +667,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			LikeModel likeUser = (LikeModel) parent.getAdapter().getItem(
 					position);
 			jumpToHomepage(JLXCUtils.stringToInt(likeUser.getUserID()));
-		}
-	}
-
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
-		}
-	}
-
-	/**
-	 * 跳转查看大图
-	 */
-	private void jumpToBigImage(String intentKey, Object path, int index) {
-		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
-			// 单张图片跳转
-			String pathUrl = (String) path;
-			Intent intentPicDetail = new Intent(MyNewsListActivity.this,
-					BigImgLookActivity.class);
-			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
-			startActivity(intentPicDetail);
-		} else if (intentKey
-				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
-			// 传递model列表
-			@SuppressWarnings("unchecked")
-			List<ImageModel> mdPath = (List<ImageModel>) path;
-			Intent intent = new Intent(MyNewsListActivity.this,
-					BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
-			// 传递String列表
-			@SuppressWarnings("unchecked")
-			List<String> mdPath = (List<String>) path;
-			Intent intent = new Intent(MyNewsListActivity.this,
-					BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else {
-			LogUtils.e("未传递图片地址");
 		}
 	}
 
@@ -913,20 +691,17 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		switch (keyBoardMode) {
 		// 键盘关闭
 		case NewsConstants.KEY_BOARD_CLOSE:
-			intentToNewsDetail.putExtra(
-					NewsConstants.INTENT_KEY_COMMENT_STATE,
+			intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_COMMENT_STATE,
 					NewsConstants.KEY_BOARD_CLOSE);
 			break;
 		// 键盘打开等待评论
 		case NewsConstants.KEY_BOARD_COMMENT:
-			intentToNewsDetail.putExtra(
-					NewsConstants.INTENT_KEY_COMMENT_STATE,
+			intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_COMMENT_STATE,
 					NewsConstants.KEY_BOARD_COMMENT);
 			break;
 		// 键盘打开等待回复
 		case NewsConstants.KEY_BOARD_REPLY:
-			intentToNewsDetail.putExtra(
-					NewsConstants.INTENT_KEY_COMMENT_STATE,
+			intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_COMMENT_STATE,
 					NewsConstants.KEY_BOARD_REPLY);
 			if (null != commentId) {
 				intentToNewsDetail.putExtra(
@@ -946,10 +721,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		// 找到当前的操作对象
 		for (int index = 0; index < newsList.size(); ++index) {
 			if (newsList.get(index).getNewsID().equals(itemModel.getNewsID())) {
-				intentToNewsDetail.putExtra(
-						NewsConstants.INTENT_KEY_NEWS_OBJ,
+				intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_NEWS_OBJ,
 						newsList.get(index));
-				indexAtNewsList = index;
 				break;
 			}
 		}
@@ -981,8 +754,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 							break;
 						}
 					}
-				} else if (resultIntent
-						.hasExtra(NewsConstants.OPERATE_DELETET)) {
+				} else if (resultIntent.hasExtra(NewsConstants.OPERATE_DELETET)) {
 					String resultID = resultIntent
 							.getStringExtra(NewsConstants.OPERATE_DELETET);
 					// 删除该动态
@@ -997,8 +769,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				} else if (resultIntent
 						.hasExtra(NewsConstants.OPERATE_NO_ACTION)) {
 					// 无改变
-				} else if (resultIntent
-						.hasExtra(NewsConstants.PUBLISH_FINISH)) {
+				} else if (resultIntent.hasExtra(NewsConstants.PUBLISH_FINISH)) {
 					if (!isRequestData) {
 						// 发布了动态
 						isRequestData = true;

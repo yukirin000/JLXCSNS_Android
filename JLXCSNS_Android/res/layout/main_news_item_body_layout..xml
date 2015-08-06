@@ -29,7 +29,7 @@
         android:id="@+id/txt_main_news_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawablePadding="5dp"
+        android:drawablePadding="@dimen/item_interior_space_small"
         android:drawableStart="@drawable/localtion"
         android:paddingTop="@dimen/news_item_margins_top"
         android:text="地理位置"

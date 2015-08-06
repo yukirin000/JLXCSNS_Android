@@ -19,28 +19,13 @@
         android:textColor="@color/main_gary"
         android:textSize="@dimen/font_size_tiny" />
 
-    <FrameLayout
+    <!-- 评论按钮 -->
+
+    <com.jlxc.app.news.ui.view.CommentButton
         android:id="@+id/btn_mian_reply"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:padding="10dp" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_comment_send_btn_click"
-            android:src="@drawable/btn_comment" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="right|center"
-            android:layout_marginRight="@dimen/item_interior_space_small"
-            android:gravity="center"
-            android:text="评论"
-            android:textColor="@color/main_brown"
-            android:textSize="@dimen/font_size_small" />
-    </FrameLayout>
+        android:layout_height="match_parent" />
+    <!-- 点赞按钮 -->
 
     <com.jlxc.app.news.ui.view.LikeButton
         android:id="@+id/btn_news_like"
