@@ -6,7 +6,6 @@
     <color name="color_2">#2a4253</color>
     <color name="color_3">#f26d7e</color>
     <color name="color_4">#a286c0</color>
-    <color name="item_pressed">#BBBBBB</color>
     <color name="province_line_border">#C7C7C7</color>
     <color name="transparent">#00000000</color>
     <color name="result_view">#b0000000</color>
@@ -46,10 +45,12 @@
     <!-- 辅浅蓝色 -->
     <color name="main_light_blue">#4bcbfa</color>
     <!-- 辅名片绿色 -->
-    <color name="main_card_green">#2ddd84</color>    
+    <color name="main_card_green">#2ddd84</color>
     <!-- 字用灰色 -->
     <color name="main_char_gary">#808080</color>
+    <!-- 透明灰色 -->
+    <color name="main_clear_gary">#55cccccc</color>
     <!-- 透明色 -->
-    <color name="main_clear">#00000000</color>    
+    <color name="main_clear">#00000000</color>
 
 </resources>

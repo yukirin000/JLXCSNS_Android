@@ -47,7 +47,7 @@
             android:id="@+id/txt_news_detail_comment_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/item_click_selector"
+            android:background="@drawable/selector_news_detail__comment_click"
             android:paddingBottom="@dimen/item_interior_space_small"
             android:paddingTop="@dimen/item_interior_space_small"
             android:text="哈哈哈哈 你是个大傻逼"

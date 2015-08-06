@@ -30,25 +30,39 @@
     <LinearLayout
         android:id="@+id/reply_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="0dp"
-        android:background="#C0C0C0"
+        android:layout_height="wrap_content"
+        android:background="@drawable/send_comment_background"
         android:focusable="true"
-        android:padding="5dp" >
+        android:gravity="center_vertical"
+        android:padding="@dimen/item_interior_space_small" >
 
         <com.rockerhieu.emojicon.EmojiconEditText
             android:id="@+id/edt_comment_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
+            android:background="@drawable/comment_edittext_background"
             android:hint="来条神评论..."
+            android:inputType="textMultiLine"
+            android:maxLength="140"
+            android:textColor="@color/main_deep_black"
+            android:textSize="@dimen/font_size_secondary"
             emojicon:emojiconSize="28sp" />
+
+        <View
+            android:id="@+id/view_space"
+            android:layout_width="3dp"
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/btn_comment_send"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:background="@drawable/selector_send_commnt_btn"
+            android:paddingLeft="@dimen/item_interior_space_small"
+            android:textColor="@color/main_brown"
+            android:textSize="@dimen/font_size_medium"
             android:text="发送" />
     </LinearLayout>
 

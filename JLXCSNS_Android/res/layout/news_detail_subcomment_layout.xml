@@ -15,7 +15,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="@dimen/subcomment_margins_left"
-        android:background="@drawable/item_click_selector"
+        android:background="@drawable/selector_news_detail__comment_click"
         android:orientation="vertical" >
 
         <LinearLayout

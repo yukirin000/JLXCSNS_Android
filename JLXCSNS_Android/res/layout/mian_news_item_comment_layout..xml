@@ -24,6 +24,7 @@
             android:id="@+id/txt_comment_contentA"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/secector_main_comment_click"
             android:text="评论的内容"
             android:textColor="@color/main_light_black"
             android:textSize="@dimen/font_size_small" />
@@ -48,6 +49,7 @@
             android:id="@+id/txt_comment_contentB"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/secector_main_comment_click"
             android:text="评论的内容"
             android:textColor="@color/main_light_black"
             android:textSize="@dimen/font_size_small" />
@@ -72,6 +74,7 @@
             android:id="@+id/txt_comment_contentC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/secector_main_comment_click"
             android:text="评论的内容"
             android:textColor="@color/main_light_black"
             android:textSize="@dimen/font_size_small" />
