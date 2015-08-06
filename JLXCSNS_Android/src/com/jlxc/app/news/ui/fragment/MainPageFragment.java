@@ -17,11 +17,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.jlxc.app.R;
+import com.jlxc.app.R.id;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.news.ui.activity.PublishNewsActivity;
@@ -35,6 +38,12 @@ public class MainPageFragment extends BaseFragment {
 	// 主页viewpager
 	@ViewInject(R.id.viewpager_main)
 	private ViewPager mainPager;
+	// 主页title
+	@ViewInject(R.id.layout_main_title_bar)
+	private LinearLayout titleBar;
+	// title的项目
+	@ViewInject(R.id.layout_title_content)
+	private LinearLayout titleContent;
 	// 主页viewpager
 	@ViewInject(R.id.tv_news_guid)
 	private TextView newsTitleTextView;
@@ -55,8 +64,6 @@ public class MainPageFragment extends BaseFragment {
 	private int cursorWidth;
 	// 图片移动的偏移量
 	private int offset;
-	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
 
 	@Override
 	public int setLayoutId() {
@@ -69,7 +76,7 @@ public class MainPageFragment extends BaseFragment {
 
 	@Override
 	public void setUpViews(View rootView) {
-		init();
+		mContext = this.getActivity().getApplicationContext();
 		InitImage();
 		InitViewPager();
 		imagePublish.setOnClickListener(new OnClickListener() {
@@ -83,51 +90,30 @@ public class MainPageFragment extends BaseFragment {
 		});
 	}
 
-	/**
-	 * 初始化函数
-	 * */
-	private void init() {
-		mContext = this.getActivity().getApplicationContext();
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-	}
-
 	/*
 	 * 初始化图片的位移像素
 	 */
 	public void InitImage() {
-		cursorWidth = 60;
-		int cursorheight = 10;
-		int publishBtnWidth = screenWidth / 8;
-		// 设置发布按钮的尺寸
-		LayoutParams pbtnParams = (LayoutParams) imagePublish.getLayoutParams();
-		pbtnParams.width = publishBtnWidth;
-		pbtnParams.height = publishBtnWidth;
-		imagePublish.setLayoutParams(pbtnParams);
-		imagePublish.setScaleType(ImageView.ScaleType.FIT_CENTER);
+		int screenWidth = getResources().getDisplayMetrics().widthPixels;
+		int contentLeftMargin = ((FrameLayout.LayoutParams) titleContent
+				.getLayoutParams()).leftMargin;
+		int contentWidth = screenWidth - (2 * contentLeftMargin);
 
-		offset = ((screenWidth - publishBtnWidth) / 2 - cursorWidth) / 2;
 		// 设置游标的尺寸与位置
 		LayoutParams cursorParams = (LayoutParams) imageCursor
 				.getLayoutParams();
-		cursorParams.width = cursorWidth;
-		cursorParams.height = cursorheight;
-		cursorParams.leftMargin = offset;
+		cursorWidth = cursorParams.width;
+		offset = contentWidth / 2;
+		cursorParams.leftMargin = (contentWidth / 2 - cursorWidth) / 2
+				+ contentLeftMargin;
 		imageCursor.setLayoutParams(cursorParams);
-		imageCursor.setScaleType(ImageView.ScaleType.FIT_XY);
 	}
 
 	/*
 	 * 初始化ViewPager
 	 */
 	public void InitViewPager() {
-		// 获取分辨率宽度
-		int TitleViewWisth = screenWidth / 4;
 
-		newsTitleTextView.setWidth(TitleViewWisth);
-		campusTitleTextView.setWidth(TitleViewWisth);
 		newsTitleTextView.setOnClickListener(new ViewClickListener(0));
 		campusTitleTextView.setOnClickListener(new ViewClickListener(1));
 		mFragmentList.add(new NewsListFragment());
@@ -200,7 +186,6 @@ public class MainPageFragment extends BaseFragment {
 	 */
 	public class MyOnPageChangeListener implements OnPageChangeListener {
 
-		int one = offset * 2 + cursorWidth;// 页卡1 -> 页卡2 偏移量
 		float lastpostion = 0;
 
 		public void onPageScrollStateChanged(int index) {
@@ -213,8 +198,8 @@ public class MainPageFragment extends BaseFragment {
 		public void onPageScrolled(int CurrentTab, float OffsetPercent,
 				int offsetPixel) {
 			// 下标的移动动画
-			Animation animation = new TranslateAnimation(one * lastpostion, one
-					* (CurrentTab + OffsetPercent), 0, 0);
+			Animation animation = new TranslateAnimation(offset * lastpostion,
+					offset * (CurrentTab + OffsetPercent), 0, 0);
 
 			lastpostion = OffsetPercent + CurrentTab;
 			// True:图片停在动画结束位置
@@ -223,8 +208,21 @@ public class MainPageFragment extends BaseFragment {
 			imageCursor.startAnimation(animation);
 		}
 
-		public void onPageSelected(int arg0) {
-
+		/**
+		 * 状态改变后
+		 * */
+		public void onPageSelected(int index) {
+			if (0 == index) {
+				newsTitleTextView.setTextColor(getResources().getColor(
+						R.color.main_brown));
+				campusTitleTextView.setTextColor(getResources().getColor(
+						R.color.main_clear_brown));
+			} else {
+				campusTitleTextView.setTextColor(getResources().getColor(
+						R.color.main_brown));
+				newsTitleTextView.setTextColor(getResources().getColor(
+						R.color.main_clear_brown));
+			}
 		}
 	}
 

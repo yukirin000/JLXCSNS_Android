@@ -114,8 +114,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private NewsModel currentNews;
 	// bitmap的处理
 	private BitmapUtils bitmapUtils;
-	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
 	// 使支持多种item
 	private MultiItemTypeSupport<ItemModel> multiItemTypeSupport = null;
 	// 点击view监听对象
@@ -233,16 +231,15 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-		setBarText("详情", getResources().getDimension(R.dimen.font_size_small),
-				getResources().getColorStateList(R.color.main_brown));
+		setBarText("详情");
 		dataList = new ArrayList<ItemModel>();
 		itemViewClickListener = new ItemViewClick();
-		initBitmapUtils();
+		// bitmapUtils初始化
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+				NewsDetailActivity.this, true, true);
 
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
+		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
 	}
 
 	/**
@@ -303,17 +300,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		default:
 			break;
 		}
-	}
-
-	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
-				NewsDetailActivity.this, true, true);
-
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
 	}
 
 	/**
@@ -1105,43 +1091,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		public void onLoadCompleted(ImageView container, String uri,
 				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
 			container.setImageBitmap(bitmap);
-		}
-	}
-
-	/**
-	 * 跳转查看大图
-	 */
-	private void jumpToBigImage(String intentKey, Object path, int index) {
-		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
-			// 单张图片跳转
-			String pathUrl = (String) path;
-			Intent intentPicDetail = new Intent(NewsDetailActivity.this,
-					BigImgLookActivity.class);
-			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
-			startActivity(intentPicDetail);
-		} else if (intentKey
-				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
-			// 传递model列表
-			@SuppressWarnings("unchecked")
-			List<ImageModel> mdPath = (List<ImageModel>) path;
-			Intent intent = new Intent(NewsDetailActivity.this,
-					BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
-			// 传递String列表
-			@SuppressWarnings("unchecked")
-			List<String> mdPath = (List<String>) path;
-			Intent intent = new Intent(NewsDetailActivity.this,
-					BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else {
-			LogUtils.e("未传递图片地址");
 		}
 	}
 

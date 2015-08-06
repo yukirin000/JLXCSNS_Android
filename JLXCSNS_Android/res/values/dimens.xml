@@ -12,20 +12,23 @@
     <dimen name="font_size_small">14sp</dimen>
     <dimen name="font_size_tiny">12sp</dimen>
     <dimen name="font_size_micro">10sp</dimen>
-    <!-- 动态页左边距 -->
+    <!-- 动态页边距 -->
     <dimen name="news_item_margins_left">12dp</dimen>
-    <!-- 动态页左边距 -->
     <dimen name="news_item_margins_right">12dp</dimen>
-    <!-- 动态页item上边距 -->
     <dimen name="news_item_margins_top">10dp</dimen>
-    <!-- item的内部间距 -->
+    <!-- item内部间距 -->
     <dimen name="item_interior_space_little">2dp</dimen>
     <dimen name="item_interior_space_small">5dp</dimen>
     <dimen name="item_interior_space_medium">10dp</dimen>
     <dimen name="item_interior_space_large">15dp</dimen>
     <dimen name="item_interior_space_huge">20dp</dimen>
-    <!-- 校园中的title的高度 -->
+    <!-- title相关的值 -->
     <dimen name="campus_title_high">40dp</dimen>
+    <dimen name="title_interior_size_tiny">3dp</dimen>
+    <dimen name="title_interior_size_small">10dp</dimen>
+    <dimen name="title_interior_size_mediu">20dp</dimen>
+    <dimen name="title_interior_size_large">40dp</dimen>
+    <dimen name="title_interior_size_huge">100dp</dimen>
     <!-- 头像的大小 -->
     <dimen name="head_image_size_small">30dp</dimen>
     <dimen name="head_image_size_medium">40dp</dimen>
