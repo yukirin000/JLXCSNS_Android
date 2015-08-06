@@ -7,7 +7,7 @@
     <FrameLayout
         android:id="@+id/layout_main_title_bar"
         android:layout_width="match_parent"
-        android:layout_height="38dp"
+        android:layout_height="@dimen/action_bar_height_size"
         android:background="@drawable/navbar"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
@@ -16,7 +16,7 @@
             android:id="@+id/layout_title_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/title_interior_size_tiny"
+            android:layout_marginBottom="@dimen/title_interior_size_small"
             android:layout_marginLeft="@dimen/title_interior_size_huge"
             android:layout_marginRight="@dimen/title_interior_size_huge"
             android:gravity="center_vertical"
@@ -30,7 +30,7 @@
                 android:gravity="center"
                 android:text="动态圈"
                 android:textColor="@color/main_brown"
-                android:textSize="15sp" />
+                android:textSize="@dimen/action_bar_title_size" />
 
             <TextView
                 android:id="@+id/tv_campus_guid"
@@ -40,14 +40,14 @@
                 android:gravity="center"
                 android:text="校 园"
                 android:textColor="@color/main_clear_brown"
-                android:textSize="15sp" />
+                android:textSize="@dimen/action_bar_title_size" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/title_interior_size_tiny"
+            android:layout_marginBottom="@dimen/title_interior_size_small"
             android:gravity="left"
             android:orientation="vertical" >
 
@@ -61,11 +61,11 @@
 
         <ImageView
             android:id="@+id/img_publish_news"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="@dimen/action_bar_height_size"
+            android:layout_height="@dimen/action_bar_height_size"
             android:layout_gravity="right|center_vertical"
-            android:layout_marginRight="@dimen/title_interior_size_small"
-            android:padding="@dimen/title_interior_size_tiny"
+            android:layout_marginRight="@dimen/title_interior_size_mediu"
+            android:padding="@dimen/title_interior_size_small"
             android:scaleType="fitCenter"
             android:src="@drawable/selector_publish_btn_click" />
     </FrameLayout>

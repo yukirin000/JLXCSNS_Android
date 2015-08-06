@@ -28,8 +28,8 @@
     <!-- title相关的值 -->
     <dimen name="campus_title_high">40dp</dimen>
     <dimen name="title_interior_size_tiny">2dp</dimen>
-    <dimen name="title_interior_size_small">10dp</dimen>
-    <dimen name="title_interior_size_mediu">20dp</dimen>
+    <dimen name="title_interior_size_small">5dp</dimen>
+    <dimen name="title_interior_size_mediu">10dp</dimen>
     <dimen name="title_interior_size_large">40dp</dimen>
     <dimen name="title_interior_size_huge">100dp</dimen>
     <!-- 头像的大小 -->
