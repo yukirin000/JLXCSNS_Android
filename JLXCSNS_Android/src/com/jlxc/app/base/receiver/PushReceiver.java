@@ -187,7 +187,7 @@ public class PushReceiver extends BroadcastReceiver {
 		Notification notification = new Notification();
 		notification.when = newWhen;
 		notification.flags = Notification.FLAG_AUTO_CANCEL;
-		notification.defaults = Notification.DEFAULT_SOUND;
+//		notification.defaults = Notification.DEFAULT_SOUND;
 		notification.icon = iconId;
 		notification.tickerText = tickerText;
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);

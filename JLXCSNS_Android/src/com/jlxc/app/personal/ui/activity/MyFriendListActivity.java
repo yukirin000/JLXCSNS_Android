@@ -221,7 +221,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			}
 		});
 	}
-
+	
 	private void JsonToPersonData(JSONArray jPersonList) {
 		List<Map<String, String>> List = new ArrayList<Map<String, String>>();
 		for (int index = 0; index < jPersonList.size(); index++) {
@@ -239,12 +239,9 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 		if (isPullDown) {
 			dataList = List;
 			friendAdapter.replaceAll(dataList);
-			if (lastPage.equals("0")) {
-				friendListView.setMode(Mode.BOTH);
-			}
 		} else {
 			dataList.addAll(List);
-			friendAdapter.addAll(dataList);
+			friendAdapter.addAll(List);
 		}
 
 		if (null != jPersonList) {

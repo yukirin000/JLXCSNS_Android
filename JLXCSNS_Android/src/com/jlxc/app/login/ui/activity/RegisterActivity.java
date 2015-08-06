@@ -153,7 +153,9 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	private void findPwd() {
 		showLoading("数据上传中^_^", false);
 		//先验证验证码
-		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+//		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+		finishPwd();
+		
 //		RequestParams params = new RequestParams();
 //		params.addBodyParameter("username", userPhoneNumber);
 //		params.addBodyParameter("password", Md5Utils.encode(password));
@@ -370,7 +372,6 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		
 		init();
-		backTextView.setText("返回");
 		titletTextView.setText("注册");
 		phonePromptTextView.setText("验证码已发送至：" + userPhoneNumber);
 		revalidatedTextView.setEnabled(false);
@@ -399,25 +400,34 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		//验证码接收器
-		EventHandler eh=new EventHandler(){
-			@Override
-			public void afterEvent(int event, int result, Object data) {
-				Message msg = new Message();
-				msg.arg1 = event;
-				msg.arg2 = result;
-				msg.obj = data;
-				handler.sendMessage(msg);
-			}
-		};
-		SMSSDK.registerEventHandler(eh);
+		try {
+			//验证码接收器
+			EventHandler eh=new EventHandler(){
+				@Override
+				public void afterEvent(int event, int result, Object data) {
+					Message msg = new Message();
+					msg.arg1 = event;
+					msg.arg2 = result;
+					msg.obj = data;
+					handler.sendMessage(msg);
+				}
+			};
+			SMSSDK.registerEventHandler(eh);
+		} catch (Exception e) {
+			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+		}
+		
 	}
 	
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		SMSSDK.unregisterAllEventHandler();
+		try{
+			SMSSDK.unregisterAllEventHandler();
+		} catch (Exception e) {
+			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+		}		
 	}
 
 	@Override
@@ -427,8 +437,14 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	// 获取验证码
 	private void getVerificationCode() {
-		//发送验证码
-		SMSSDK.getVerificationCode("86",userPhoneNumber);
+		
+		try {
+			//发送验证码
+			SMSSDK.getVerificationCode("86",userPhoneNumber);			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 //		// 设置字体颜色
 //		revalidatedTextView.setTextColor(Color.GRAY);
 //		// 网络请求

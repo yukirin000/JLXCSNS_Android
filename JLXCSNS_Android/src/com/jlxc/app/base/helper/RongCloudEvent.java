@@ -40,6 +40,7 @@ import io.rong.imlib.model.Group;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.ImageMessage;
+import io.rong.message.TextMessage;
 import io.rong.notification.PushNotificationMessage;
 
 /**
@@ -169,7 +170,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		Notification notification = new Notification();
 		notification.when = newWhen;
 		notification.flags = Notification.FLAG_AUTO_CANCEL;
-		notification.defaults = Notification.DEFAULT_SOUND;
+//		notification.defaults = Notification.DEFAULT_SOUND;
 		notification.icon = iconId;
 		notification.tickerText = "您有一条新消息";
 		notification.setLatestEventInfo(mContext, msg.getTargetUserName(), "您收到一条消息", contentIntent);
@@ -251,7 +252,24 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
 		mContext.sendBroadcast(tabIntent);
 		
-//		Log.i("MainTabActivity", "一条新消息");
+		
+		long newWhen = System.currentTimeMillis();
+		mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		int iconId = R.drawable.icon;
+		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
+		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		notificationIntent.setClass(mContext.getApplicationContext(), LoginActivity.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Notification notification = new Notification();
+		notification.when = newWhen;
+		notification.flags = Notification.FLAG_AUTO_CANCEL;
+//		notification.defaults = Notification.DEFAULT_SOUND;
+		notification.icon = iconId;
+		notification.tickerText = "您有一条新消息";
+		notification.setLatestEventInfo(mContext, "", "您收到一条消息", contentIntent);
+		// notification的id使用发送者的id
+		mNotificationManager.notify(0, notification);		
 //        MessageContent messageContent = message.getContent();
 //
 //        if (messageContent instanceof TextMessage) {//文本消息

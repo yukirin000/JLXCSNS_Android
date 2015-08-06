@@ -149,7 +149,7 @@ public class OtherPersonalActivity extends BaseActivity{
 			//头像
 			Intent headIntent = new Intent(this, BigImgLookActivity.class);
 			headIntent.putExtra(BigImgLookActivity.INTENT_KEY, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_image());
-			startActivityWithBottom(headIntent);
+			startActivity(headIntent);
 			break;
 		case R.id.setting_Button:
 			//设置点击

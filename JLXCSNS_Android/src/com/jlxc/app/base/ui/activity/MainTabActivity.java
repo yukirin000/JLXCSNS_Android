@@ -223,8 +223,6 @@ public class MainTabActivity extends BaseActivity {
 	@Override
 	protected void setUpView() {
 		
-		//只留下自己
-		ActivityManager.getInstence().popAllActivityExceptOne(MainTabActivity.class);
 		//初始化tab
 		initTab();
 		//初始化融云
@@ -247,14 +245,17 @@ public class MainTabActivity extends BaseActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			
-            ActivityManager.getInstence().exitApplication();
-            if (null != newMessageReceiver) {
-            	unregisterReceiver(newMessageReceiver);
-            	newMessageReceiver = null;
-			}	
-            if (RongIM.getInstance() != null)
-            	RongIM.getInstance().disconnect();
-            SMSSDK.unregisterAllEventHandler();
+//            ActivityManager.getInstence().exitApplication();
+//            if (null != newMessageReceiver) {
+//            	unregisterReceiver(newMessageReceiver);
+//            	newMessageReceiver = null;
+//			}	
+//            if (RongIM.getInstance() != null)
+//            	RongIM.getInstance().disconnect();
+//            SMSSDK.unregisterAllEventHandler();
+			moveTaskToBack(true);
+			
+			
 //			final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
 //	        alterDialog.setMessage("确定退出该账号吗？");
 //	        alterDialog.setCancelable(true);
@@ -291,15 +292,24 @@ public class MainTabActivity extends BaseActivity {
 	@Override
 	protected void onDestroy() {
 		
-		if (null != newMessageReceiver) {
-			unregisterReceiver(newMessageReceiver);
-			newMessageReceiver = null;
-		}
+        if (null != newMessageReceiver) {
+        	unregisterReceiver(newMessageReceiver);
+        	newMessageReceiver = null;
+		}	
+        if (RongIM.getInstance() != null)
+        	RongIM.getInstance().disconnect();
+        
+        try {
+        	SMSSDK.unregisterAllEventHandler();	
+		} catch (Exception e) {
+			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+		}        
+        
 		
 //		if (RongIM.getInstance() != null)
 //            RongIM.getInstance().logout();
 		
-		Process.killProcess(Process.myPid());
+//		Process.killProcess(Process.myPid());
 		super.onDestroy();  
 	}
 	
