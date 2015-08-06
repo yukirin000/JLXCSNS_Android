@@ -297,6 +297,7 @@
 		<!-- 高德部分 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
+            android:value="7ad1a3106acafa0b0f3fc9d4c5441f85" />
             android:value="028a516dcc7ca5977934426ea33801ba" />
         <!-- 028a516dcc7ca5977934426ea33801ba -->
         
