@@ -253,21 +253,23 @@ public class MessageMainFragment extends BaseFragment {
 	    if (pushCount > 99) {
 	        pushCount = 99;
 	    }
+	  //暂时不显示pushCount
 	    if (pushCount < 1) {
 	    	notifyUnreadTextView.setVisibility(View.GONE);
 	    }else{
 	    	notifyUnreadTextView.setVisibility(View.VISIBLE);
-	    	notifyUnreadTextView.setText(""+pushCount);
+//	    	notifyUnreadTextView.setText(""+pushCount);
 	    }
 	    
 	    if (IMUnreadCount > 99) {
 	        IMUnreadCount = 99;
 	    }
+	    //暂时不显示IMUnreadCount
 	    if (IMUnreadCount < 1) {
 	    	conversationUnreadTextView.setVisibility(View.GONE);
 	    }else{
 	    	conversationUnreadTextView.setVisibility(View.VISIBLE);
-	    	conversationUnreadTextView.setText(""+IMUnreadCount);
+//	    	conversationUnreadTextView.setText(""+IMUnreadCount);
 	    }
 	    
 		//如果正好是当前这个页面则设置成已读

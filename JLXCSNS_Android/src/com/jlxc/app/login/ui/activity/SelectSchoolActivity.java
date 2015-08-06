@@ -119,6 +119,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 
+		setBarText("选择学校");
 		// 设置是否是注册进入的
 		Intent intent = getIntent();
 		setNotRegister(intent.getBooleanExtra("notRegister", false));
@@ -156,6 +157,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		// 开始定位，每0.2s通知一次，距离变化10通知一次，超时时间为5秒
 		districtLocation = new Location(SelectSchoolActivity.this);
 		districtLocation.locateInit(200, 10, 5000);
+		showLoading("定位中..", true);
 	}
 
 	/***
@@ -456,6 +458,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 
 		@Override
 		public void onLocationChanged(AMapLocation location) {
+			//隐藏HUD
+			hideLoading();
 			if (location != null) {
 				districtCode = location.getAdCode();
 				LogUtils.i("get district Code successed.");

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
+    android:background="#fafafa"
     android:orientation="vertical" >
 
     <include layout="@layout/layout_title_bar" />
@@ -12,6 +13,7 @@
         android:id="@+id/ll_base_listview_search"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:background="@color/main_light_gary"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="horizontal" >
@@ -20,18 +22,23 @@
             android:id="@+id/search_edittext"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
+            android:background="@color/main_white"
+            android:textColor="@color/main_deep_black"
+            android:layout_margin="10dp"
+            android:padding="5dp"
             android:hint="伙计你的学校是..."
-            android:textSize="15sp" />
+            android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/school_list_title_textview"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="#D2691E"
-        android:gravity="center"
-        android:text="猜你在这些学校" />
+        android:layout_height="30dp"
+        android:gravity="left|center"
+        android:textSize="@dimen/font_size_tiny"
+        android:textColor="@color/main_deep_gary"
+        android:paddingLeft="7dip"
+        android:text="猜你在这些学校(·ω＜)" />
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/school_listview"
