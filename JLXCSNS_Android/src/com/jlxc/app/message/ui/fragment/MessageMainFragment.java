@@ -23,7 +23,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -41,6 +43,15 @@ public class MessageMainFragment extends BaseFragment {
 
 	@ViewInject(R.id.vPager)
 	private ViewPager mPager;//页卡内容
+	// title的layout
+	@ViewInject(R.id.layout_title_content)
+	private LinearLayout titleContent;
+	//会话tv
+	@ViewInject(R.id.conversation_text_view)
+	private TextView conversationTextView;
+	//通知tv
+	@ViewInject(R.id.notify_text_view)
+    private TextView notifyTextView;	
 	//会话未读tv
 	@ViewInject(R.id.conversation_unread_text_view)
 	private TextView conversationUnreadTextView;
@@ -91,6 +102,8 @@ public class MessageMainFragment extends BaseFragment {
 		initViewPager();
 		registerNotify();
 		
+		notifyTextView.setTextColor(getResources().getColor(
+				R.color.main_clear_brown));
 	}
 	
 	@Override
@@ -109,17 +122,19 @@ public class MessageMainFragment extends BaseFragment {
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
 		screenHeight = displayMet.heightPixels;
-		
-		cursorWidth = 60;
-		int cursorheight = 10;
+		int contentLeftMargin = ((LinearLayout.LayoutParams) titleContent
+				.getLayoutParams()).leftMargin;
+		int contentWidth = screenWidth - (2 * contentLeftMargin);
+//		cursorWidth = 60;
+//		int cursorheight = 10;
 
-		offset = (screenWidth / 2 - cursorWidth) / 2;
+		offset = contentWidth / 2;
 		// 设置游标的尺寸与位置
 		LayoutParams cursorParams = (LayoutParams) cursor
 				.getLayoutParams();
-		cursorParams.width = cursorWidth;
-		cursorParams.height = cursorheight;
-		cursorParams.leftMargin = offset;
+//		cursorParams.width = cursorWidth;
+//		cursorParams.height = cursorheight;
+		cursorParams.leftMargin = contentLeftMargin+(contentWidth/2-cursorParams.width)/2;
 		cursor.setLayoutParams(cursorParams);
 		cursor.setScaleType(ImageView.ScaleType.FIT_XY);
 	}
@@ -179,7 +194,6 @@ public class MessageMainFragment extends BaseFragment {
 */
     public class MyOnPageChangeListener implements OnPageChangeListener {
 
-    	int one = offset * 2 + cursorWidth;// 页卡1 -> 页卡2 偏移量
 		float lastpostion = 0;
 
 		public void onPageScrollStateChanged(int index) {
@@ -200,7 +214,7 @@ public class MessageMainFragment extends BaseFragment {
 		public void onPageScrolled(int CurrentTab, float OffsetPercent,
 				int offsetPixel) {
 			// 下标的移动动画
-			Animation animation = new TranslateAnimation(one * lastpostion, one
+			Animation animation = new TranslateAnimation(offset * lastpostion, offset
 					* (CurrentTab + OffsetPercent), 0, 0);
 
 			lastpostion = OffsetPercent + CurrentTab;
@@ -210,8 +224,18 @@ public class MessageMainFragment extends BaseFragment {
 			cursor.startAnimation(animation);
 		}
 
-		public void onPageSelected(int arg0) {
-
+		public void onPageSelected(int index) {
+			if (0 == index) {
+				conversationTextView.setTextColor(getResources().getColor(
+						R.color.main_brown));
+				notifyTextView.setTextColor(getResources().getColor(
+						R.color.main_clear_brown));
+			} else {
+				conversationTextView.setTextColor(getResources().getColor(
+						R.color.main_clear_brown));
+				notifyTextView.setTextColor(getResources().getColor(
+						R.color.main_brown));
+			}
 		}
     }
     
