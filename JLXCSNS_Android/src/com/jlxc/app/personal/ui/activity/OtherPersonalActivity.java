@@ -39,6 +39,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.message.model.IMModel;
 import com.lidroid.xutils.BitmapUtils;
@@ -387,7 +388,7 @@ public class OtherPersonalActivity extends BaseActivity{
 				settingButton.setVisibility(View.VISIBLE);
 				
 				LayoutParams layoutParams = (LayoutParams) sendMessageButton.getLayoutParams();
-				layoutParams.setMargins(50, 0, 50, 0);
+				layoutParams.setMargins(layoutParams.leftMargin*2, 0, layoutParams.rightMargin*2, 0);
 			}else {
 				addFriendLayout.setVisibility(View.VISIBLE);
 				settingButton.setVisibility(View.GONE);
@@ -445,6 +446,7 @@ public class OtherPersonalActivity extends BaseActivity{
 												ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 												
 												if (status == JLXCConst.STATUS_SUCCESS) {
+													settingButton.setVisibility(View.VISIBLE);
 													//本地数据持久化
 													IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
 													//如果存在更新
@@ -454,6 +456,7 @@ public class OtherPersonalActivity extends BaseActivity{
 //														imModel.setIsNew(0);
 //														imModel.setIsRead(1);
 														imModel.setCurrentState(IMModel.GroupHasAdd);
+														imModel.setAddDate(TimeHandle.getCurrentDataStr());
 														imModel.update();
 													}else {
 														imModel = new IMModel();
@@ -465,6 +468,7 @@ public class OtherPersonalActivity extends BaseActivity{
 														imModel.setIsRead(1);
 														imModel.setCurrentState(IMModel.GroupHasAdd);
 														imModel.setOwner(UserManager.getInstance().getUser().getUid());
+														imModel.setAddDate(TimeHandle.getCurrentDataStr());
 														imModel.save();
 													}
 													
@@ -548,6 +552,8 @@ public class OtherPersonalActivity extends BaseActivity{
 									//UI变化
 									addFriendLayout.setVisibility(View.VISIBLE);
 									settingButton.setVisibility(View.GONE);
+									LayoutParams layoutParams = (LayoutParams) sendMessageButton.getLayoutParams();
+									layoutParams.setMargins(layoutParams.leftMargin/2, 0, layoutParams.rightMargin/2, 0);
 								}
 							}
 

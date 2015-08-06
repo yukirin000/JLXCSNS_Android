@@ -192,8 +192,10 @@ public class NotifyNewsFragment extends BaseFragment {
 		int unreadNum = IMModel.unReadNewFriendsCount();
 		if (unreadNum > 0) {
 			unreadTextView.setText(""+unreadNum);
+			unreadTextView.setVisibility(View.VISIBLE);
 		}else {
 			unreadTextView.setText("");
+			unreadTextView.setVisibility(View.GONE);
 		}
 		
 	}

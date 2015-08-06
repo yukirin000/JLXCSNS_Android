@@ -51,7 +51,7 @@ public class IMModel {
 			}
 			String sql = "INSERT INTO jlxc_group values (null,'"+targetId+"','"+title+"','"+type+
 					"', '"+remark+"', '"+avatarPath+"', '"+currentState+"', '"+isRead+"', '"+isNew+"','"+owner+"','"+
-					System.currentTimeMillis()/1000+"')";
+					addDate+"')";
 			
 			DBManager.getInstance().excute(sql);
 		}
@@ -68,7 +68,7 @@ public class IMModel {
 		}
 		String sql = "UPDATE jlxc_group SET groupTitle = '"+title+"', type="+type+", " +
 					 "avatarPath='"+avatarPath+"', groupRemark='"+remark+"', isRead='"+isRead+"'" +
-					 " ,currentState='"+currentState+"', isNew='"+isNew+"' WHERE groupId='"+targetId+"'";
+					 " ,currentState='"+currentState+"', isNew='"+isNew+"', addDate='"+addDate+"' WHERE groupId='"+targetId+"'";
 		DBManager.getInstance().excute(sql);
 	}	
 	//删除数据

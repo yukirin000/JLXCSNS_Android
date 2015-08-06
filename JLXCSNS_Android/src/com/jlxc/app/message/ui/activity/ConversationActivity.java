@@ -17,9 +17,11 @@ public class ConversationActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
-//		Intent intent = getIntent();
+		Intent intent = getIntent();
+		setBarText(intent.getData().getQueryParameter("title"));
 //		Log.i("MainTabActivity", intent.getData().getQueryParameter("targetId"));
 //		Log.i("MainTabActivity", intent.getData().getQueryParameter("title"));
+		
 	}
 
 	@Override

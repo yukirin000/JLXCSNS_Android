@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_light_white"
     android:orientation="vertical" >
     
     <include layout="@layout/layout_title_bar" />
@@ -9,7 +10,10 @@
     <ListView
         android:id="@+id/new_friend_list_view"
         android:listSelector="@color/main_clear" 
-        android:background="@color/main_white"        
+        android:dividerHeight="0dp"
+        android:divider="@color/main_clear"
+        android:cacheColorHint="@color/main_clear"
+        android:footerDividersEnabled="false"  
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none" >

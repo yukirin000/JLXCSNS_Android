@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -26,6 +27,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
+import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
@@ -52,8 +54,8 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		
+		setBarText("新的好友");
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true);
-		
 		initListView();
 		refreshListView();
 		//发送通知
@@ -70,24 +72,39 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
 				//姓名
 				helper.setText(R.id.name_text_view, item.getTitle());
-				//好友管理本地持久化废弃 隐藏该按钮
-				TextView addTextView = helper.getView(R.id.add_text_view);
-				addTextView.setVisibility(View.GONE);
-				//点击添加
-				addTextView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						addFriend(item);
-					}
-				});
-				//按钮
-				if (item.getCurrentState() == IMModel.GroupHasAdd) {
-					addTextView.setText("已添加");
-					addTextView.setEnabled(false);
+				ImageView unreadImageView = helper.getView(R.id.unread_image_view);
+				//是否是新的
+				if (item.getIsRead() == 0) {
+					unreadImageView.setVisibility(View.VISIBLE);
 				}else {
-					addTextView.setText("添加");
-					addTextView.setEnabled(true);
+					unreadImageView.setVisibility(View.GONE);
 				}
+
+				if (null != item.getAddDate() && item.getAddDate().length()>4) {
+					//时间
+					helper.setText(R.id.time_text_view, TimeHandle.getShowTimeFormat(item.getAddDate()));
+				}else {
+					helper.setText(R.id.time_text_view, "");
+				}
+				
+//				//好友管理本地持久化废弃 隐藏该按钮
+//				TextView addTextView = helper.getView(R.id.add_text_view);
+//				addTextView.setVisibility(View.GONE);
+//				//点击添加
+//				addTextView.setOnClickListener(new OnClickListener() {
+//					@Override
+//					public void onClick(View v) {
+//						addFriend(item);
+//					}
+//				});
+//				//按钮
+//				if (item.getCurrentState() == IMModel.GroupHasAdd) {
+//					addTextView.setText("已添加");
+//					addTextView.setEnabled(false);
+//				}else {
+//					addTextView.setText("添加");
+//					addTextView.setEnabled(true);
+//				}
 			}
 		};
 		newFriendListView.setAdapter(newFriendAdapter);
@@ -113,9 +130,9 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						IMModel imModel = newFriendAdapter.getItem(position);
-//						imModel.setIsNew(0);
-//						imModel.update();
-						imModel.remove();
+						imModel.setIsNew(0);
+						imModel.update();
+//						imModel.remove();
 						refreshListView(); 
 					}
 				}).setNegativeButton("取消", null).show();
@@ -126,75 +143,75 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 	}
 	
 	private void refreshListView() {
-		//设置已读
-		IMModel.hasRead();
+
 		List<IMModel> newFriendList = IMModel.findAllNewFriends();
 		newFriendAdapter.replaceAll(newFriendList);
 		
+		//设置已读
+		IMModel.hasRead();
 		//通知
 		Intent notifyIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
 		sendBroadcast(notifyIntent);
-		
 	}
 
-	//添加好友
-	private void addFriend(final IMModel imModel) {
-
-		// 参数设置
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
-		params.addBodyParameter("friend_id", imModel.getTargetId().replace(JLXCConst.JLXC, "")+"");
-		
-		showLoading("添加中^_^", false);
-		HttpManager.post(JLXCConst.Add_FRIEND, params,
-				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						
-						hideLoading();
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-						ToastUtil.show(NewFriendsActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-						
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							//本地数据持久化
-							IMModel newModel = IMModel.findByGroupId(imModel.getTargetId());
-							//如果存在更新
-							if (null != newModel) {
-								newModel.setTitle(imModel.getTitle());
-								newModel.setAvatarPath(imModel.getAvatarPath());
-								newModel.setIsNew(1);
-								newModel.setIsRead(1);
-								newModel.setCurrentState(IMModel.GroupHasAdd);
-								newModel.update();
-							}else {
-								newModel = new IMModel();
-								newModel.setType(IMModel.ConversationType_PRIVATE);
-								newModel.setTargetId(imModel.getTargetId());
-								newModel.setTitle(imModel.getTitle());
-								newModel.setAvatarPath(imModel.getAvatarPath());
-								newModel.setIsNew(1);
-								newModel.setIsRead(1);
-								newModel.setCurrentState(IMModel.GroupHasAdd);
-								newModel.setOwner(UserManager.getInstance().getUser().getUid());
-								newModel.save();
-							}
-							
-							refreshListView();
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-						hideLoading();
-						ToastUtil.show(NewFriendsActivity.this,
-								"网络异常");
-					}
-				}, null));
-	}
+//	//添加好友
+//	private void addFriend(final IMModel imModel) {
+//
+//		// 参数设置
+//		RequestParams params = new RequestParams();
+//		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+//		params.addBodyParameter("friend_id", imModel.getTargetId().replace(JLXCConst.JLXC, "")+"");
+//		
+//		showLoading("添加中^_^", false);
+//		HttpManager.post(JLXCConst.Add_FRIEND, params,
+//				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+//
+//					@Override
+//					public void onSuccess(JSONObject jsonResponse, String flag) {
+//						super.onSuccess(jsonResponse, flag);
+//						
+//						hideLoading();
+//						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+//						ToastUtil.show(NewFriendsActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+//						
+//						if (status == JLXCConst.STATUS_SUCCESS) {
+//							//本地数据持久化
+//							IMModel newModel = IMModel.findByGroupId(imModel.getTargetId());
+//							//如果存在更新
+//							if (null != newModel) {
+//								newModel.setTitle(imModel.getTitle());
+//								newModel.setAvatarPath(imModel.getAvatarPath());
+//								newModel.setIsNew(1);
+//								newModel.setIsRead(1);
+//								newModel.setCurrentState(IMModel.GroupHasAdd);
+//								newModel.update();
+//							}else {
+//								newModel = new IMModel();
+//								newModel.setType(IMModel.ConversationType_PRIVATE);
+//								newModel.setTargetId(imModel.getTargetId());
+//								newModel.setTitle(imModel.getTitle());
+//								newModel.setAvatarPath(imModel.getAvatarPath());
+//								newModel.setIsNew(1);
+//								newModel.setIsRead(1);
+//								newModel.setCurrentState(IMModel.GroupHasAdd);
+//								newModel.setOwner(UserManager.getInstance().getUser().getUid());
+//								newModel.save();
+//							}
+//							
+//							refreshListView();
+//						}
+//					}
+//
+//					@Override
+//					public void onFailure(HttpException arg0, String arg1,
+//							String flag) {
+//						super.onFailure(arg0, arg1, flag);
+//						hideLoading();
+//						ToastUtil.show(NewFriendsActivity.this,
+//								"网络异常");
+//					}
+//				}, null));
+//	}
 	
 	//发送通知
 	private void sendNotify() {

@@ -91,6 +91,7 @@ public class PushReceiver extends BroadcastReceiver {
 			if (imModel.getIsNew() != 1) {
 				imModel.setTitle(pushObject.getString("name"));
 				imModel.setAvatarPath(pushObject.getString("avatar"));
+				imModel.setAddDate(pushObject.getString("time"));
 				imModel.setIsNew(1);
 				imModel.setCurrentState(IMModel.GroupNotAdd);
 				imModel.setIsRead(0);
@@ -114,6 +115,7 @@ public class PushReceiver extends BroadcastReceiver {
 			imModel.setTargetId(pushObject.getString("uid"));
 			imModel.setTitle(pushObject.getString("name"));
 			imModel.setAvatarPath(pushObject.getString("avatar"));
+			imModel.setAddDate(pushObject.getString("time"));
 			imModel.setIsNew(1);
 			imModel.setCurrentState(IMModel.GroupNotAdd);
 			imModel.setIsRead(0);

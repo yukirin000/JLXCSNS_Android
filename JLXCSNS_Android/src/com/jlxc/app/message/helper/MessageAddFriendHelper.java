@@ -1,6 +1,7 @@
 package com.jlxc.app.message.helper;
 
 import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.message.model.IMModel;
 
 //发现部分的 添加好友帮助类 好友管理本地持久化废弃
@@ -17,6 +18,7 @@ public class MessageAddFriendHelper {
 //			newModel.setIsNew(0);
 //			newModel.setIsRead(1);
 			newModel.setCurrentState(IMModel.GroupHasAdd);
+			newModel.setAddDate(TimeHandle.getCurrentDataStr());
 			newModel.update();
 		}else {
 			newModel = new IMModel();
@@ -24,6 +26,7 @@ public class MessageAddFriendHelper {
 			newModel.setTargetId(imModel.getTargetId());
 			newModel.setTitle(imModel.getTitle());
 			newModel.setAvatarPath(imModel.getAvatarPath());
+			newModel.setAddDate(TimeHandle.getCurrentDataStr());
 			newModel.setIsNew(0);
 			newModel.setIsRead(1);
 			newModel.setCurrentState(IMModel.GroupHasAdd);

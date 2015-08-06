@@ -1,5 +1,7 @@
 package com.jlxc.app.login.ui.activity;
 
+import io.rong.imlib.RongIMClient;
+
 import com.jlxc.app.R;
 import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.UserManager;
@@ -21,7 +23,7 @@ public class LaunchActivity extends BaseActivity {
 	}
 
 	@Override
-	protected void setUpView() {
+	protected void setUpView() {	
 		// TODO Auto-generated method stub
 		    
 		//如果后台有程序

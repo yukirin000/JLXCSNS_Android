@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 /***
  * 一天以内按距离现在的时间是多少，eg:4分钟前，16小时前 超过一天，两天以内显示为昨天+时间，例如：昨天 12:22
@@ -18,12 +19,13 @@ public class TimeHandle {
 	public static String getShowTimeFormat(String dateStr) {
 		String decTime = "";
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+		
 		Date dt = new Date();
 		Date time = null;
 
 		try {
 			time = format.parse(dateStr);
+			Log.i("MainTabActivity", time+" "+dateStr);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(time);
 
@@ -39,7 +41,7 @@ public class TimeHandle {
 			int year = calendar.get(Calendar.YEAR); // 获取年;
 			int month = calendar.get(Calendar.MONTH); // 获取月;
 			int day = calendar.get(Calendar.DATE); // 获取日;
-			int hour = calendar.get(Calendar.HOUR); // 获取小时;
+			int hour = calendar.get(Calendar.HOUR_OF_DAY); // 获取小时;
 			int min = calendar.get(Calendar.MINUTE); // 获取分钟;
 
 			String hourStr = String.valueOf(hour);
