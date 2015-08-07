@@ -26,7 +26,7 @@
 			android:singleLine="true"
 			android:padding="5dp"
 	        android:hint="搜索名字、哈哈号"
-	        android:textSize="15sp" />
+	        android:textSize="@dimen/font_size_small" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -43,7 +43,7 @@
 	        android:padding="8dip"
 	        android:visibility="gone"
 	        android:textColor="@color/main_brown"
-	        android:textSize="@dimen/font_size_small"
+	        android:textSize="@dimen/font_size_medium"
 	        android:text="查找helloha号：1231123sdfdsfdsf" />
 	    
 		<View

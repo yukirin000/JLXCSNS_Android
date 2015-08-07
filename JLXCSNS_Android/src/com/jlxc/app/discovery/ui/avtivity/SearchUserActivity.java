@@ -100,6 +100,7 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		
+		setBarText("查找");
 		findUserModels = new ArrayList<FindUserModel>();
 		userModel = UserManager.getInstance().getUser();
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true);
@@ -115,6 +116,10 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 		     if(inputMethodManager.isActive()){
 		             inputMethodManager.hideSoftInputFromWindow(SearchUserActivity.this.getCurrentFocus().getWindowToken(), 0);
 		     }
+		     showLoading("查找中...", false);
+		     // 下拉刷新
+			 isPullDowm = true;
+			 currentPage = 1;		     
 		     //点击查询
 		     getSearchData();
 		     return true;
@@ -141,14 +146,18 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 			}
 		}, 500);
 		
-		
-		
 		//设置内容
 		searchAdapter = new HelloHaAdapter<FindUserModel>(
 				SearchUserActivity.this, R.layout.search_user_adapter) {
 			@Override
 			protected void convert(final HelloHaBaseAdapterHelper helper,
 					final FindUserModel item) {
+				
+				if (helper.getPosition() == 0) {
+					helper.setVisible(R.id.top_text_view, true);
+				}else {
+					helper.setVisible(R.id.top_text_view, false);
+				}
 				
 				helper.setText(R.id.name_text_view, item.getName());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
@@ -264,7 +273,6 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 
 		String path = JLXCConst.FIND_USER_LIST + "?" + "user_id=" + userModel.getUid() + 
 				"&content=" + searchEditText.getText().toString().trim() + "&page="+currentPage;
-		showLoading("查找中...", false);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 

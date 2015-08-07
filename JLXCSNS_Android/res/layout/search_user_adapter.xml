@@ -3,12 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res/com.jlxc.app"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/main_white"
     android:orientation="vertical">
+    
+  	<TextView
+       android:id="@+id/top_text_view"
+       android:paddingTop="5dp"
+       android:paddingBottom="5dp"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="10dp"
+       android:visibility="gone"
+       android:textSize="11sp"
+       android:textColor="@color/main_deep_gary"
+       android:text="相关的人" />
     
     <RelativeLayout 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/main_white"
     android:paddingTop="10dp">
 	    <com.jlxc.app.base.ui.view.RoundImageView
 	        app:rect_adius="1dip"
@@ -26,7 +38,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_centerVertical="true"
 	        android:layout_marginLeft="10dp"
-	        android:textSize="@dimen/font_size_small"
+	        android:textSize="@dimen/font_size_medium"
 	        android:textColor="@color/main_deep_black"
 	        android:layout_toRightOf="@+id/head_image_view"
 	        android:text="测试姓名" />
