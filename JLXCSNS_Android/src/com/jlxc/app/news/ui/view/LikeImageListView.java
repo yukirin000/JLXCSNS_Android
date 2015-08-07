@@ -30,16 +30,20 @@ import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 
 public class LikeImageListView extends LinearLayout {
 
+	// 超小分辨率手机
+	private final static int TINY_PIX = 320;
 	// 小分辨率手机
 	private final static int SMALL_PIX = 480;
 	// 中等分辨率
 	private final static int MIDDLE_PIX = 540;
 	// 大分辨率
-	private final static int LAGER_PIX = 900;
-	//
+	private final static int LAGER_PIX = 1280;
+	// 超大分辨率
+	private final static int HUGE_PIX = 1680;
+	//上行文信息
 	private Context mContext;
 	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
+	private static int screenWidth = 0;
 	// 根布局
 	private RelativeLayout rootView;
 	// 赞的图片
@@ -151,15 +155,18 @@ public class LikeImageListView extends LinearLayout {
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
 
 		// 计算显示的头像个数
-		if (screenWidth <= SMALL_PIX) {
+		if (screenWidth <= TINY_PIX) {
+			maxLikeCount = 6;
+		} else if (screenWidth > TINY_PIX && screenWidth <= SMALL_PIX) {
 			maxLikeCount = 7;
 		} else if (screenWidth > SMALL_PIX && screenWidth <= MIDDLE_PIX) {
 			maxLikeCount = 8;
-		} else if (screenWidth > LAGER_PIX) {
+		} else if (screenWidth > LAGER_PIX && screenWidth <= HUGE_PIX) {
 			maxLikeCount = 9;
+		} else {
+			maxLikeCount = 10;
 		}
 	}
 

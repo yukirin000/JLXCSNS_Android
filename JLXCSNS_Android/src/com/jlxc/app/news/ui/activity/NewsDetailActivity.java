@@ -1,8 +1,8 @@
 package com.jlxc.app.news.ui.activity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,21 +12,13 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -43,15 +35,11 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
-import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.view.ItemDialog;
 import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
 import com.jlxc.app.base.ui.view.KeyboardLayout;
 import com.jlxc.app.base.ui.view.KeyboardLayout.onKeyboardsChangeListener;
-import com.jlxc.app.base.ui.view.NoScrollGridView;
-import com.jlxc.app.base.ui.view.RoundImageView;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -63,18 +51,16 @@ import com.jlxc.app.news.model.ItemModel;
 import com.jlxc.app.news.model.ItemModel.BodyItem;
 import com.jlxc.app.news.model.ItemModel.CommentItem;
 import com.jlxc.app.news.model.ItemModel.LikeListItem;
-import com.jlxc.app.news.model.ItemModel.OperateItem;
 import com.jlxc.app.news.model.ItemModel.SubCommentItem;
 import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
-import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.NewsConstants;
+import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.model.SubCommentModel;
-import com.jlxc.app.news.ui.fragment.CampusFragment.NewsBitmapLoadCallBack;
 import com.jlxc.app.news.ui.view.LikeButton;
 import com.jlxc.app.news.ui.view.LikeImageListView;
-import com.jlxc.app.news.ui.view.MultiImageView;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
+import com.jlxc.app.news.ui.view.MultiImageView;
 import com.jlxc.app.news.ui.view.MultiImageView.JumpCallBack;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
@@ -83,13 +69,11 @@ import com.jlxc.app.news.utils.NewsOperate.OperateCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
-import com.rockerhieu.emojicon.EmojiconEditText;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
@@ -102,7 +86,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private PullToRefreshListView newsDetailListView;
 	// 评论输入框
 	@ViewInject(R.id.edt_comment_input)
-	private EmojiconEditText commentEditText;
+	private EditText commentEditText;
 	// 评论发送按钮
 	@ViewInject(R.id.btn_comment_send)
 	private Button btnSendComment;

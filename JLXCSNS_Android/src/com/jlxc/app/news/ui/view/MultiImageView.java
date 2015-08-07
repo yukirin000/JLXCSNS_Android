@@ -17,11 +17,13 @@ import com.jlxc.app.news.ui.fragment.NewsListFragment.NewsBitmapLoadCallBack;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -31,11 +33,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MultiImageView extends RelativeLayout {
 
+	// 手机宽度
+	private final static int SMALL_PIX = 480;
+	private final static int MIDDLE_PIX = 720;
+	private final static int LARGE_PIX = 1080;
 	// 根布局
 	private RelativeLayout rootView;
 	// 多图
@@ -52,15 +59,22 @@ public class MultiImageView extends RelativeLayout {
 	private JumpCallBack jumpInterface;
 	// bitmap
 	private BitmapUtils bitmapUtils;
+	// 是否是大图
+	private boolean isLargeSize = true;
 
 	public MultiImageView(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
 
 	public MultiImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
+		TypedArray type = context.obtainStyledAttributes(attrs,
+				R.styleable.MultiImageView);
+		isLargeSize = type.getBoolean(R.styleable.MultiImageView_islargesize,
+				true);
+		// 为了保持以后使用该属性一致性,返回一个绑定资源结束的信号给资源
+		type.recycle();
 		init();
 		getWidget();
 	}
@@ -81,11 +95,49 @@ public class MultiImageView extends RelativeLayout {
 	}
 
 	/**
+	 * 快速滑动时是否加载图片
+	 * */
+	public void loadImageOnFastSlide(ListView listView, boolean isLoad) {
+		listView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
+				false, isLoad));
+	}
+
+	/**
 	 * 获取控件
 	 * */
 	private void getWidget() {
-		View view = View.inflate(mContext, R.layout.custom_multi_image_view,
-				this);
+		View view = null;
+		// 进行适配
+		if (isLargeSize) {
+			if (screenWidth <= SMALL_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_small, this);
+			} else if (screenWidth > SMALL_PIX && screenWidth <= MIDDLE_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_medium, this);
+			} else if (screenWidth > MIDDLE_PIX && screenWidth <= LARGE_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_large, this);
+			} else if (screenWidth > LARGE_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_major, this);
+			}
+		}else {
+			if (screenWidth <= SMALL_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_small, this);
+			} else if (screenWidth > SMALL_PIX && screenWidth <= MIDDLE_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_small, this);
+			} else if (screenWidth > MIDDLE_PIX && screenWidth <= LARGE_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_medium, this);
+			} else if (screenWidth > LARGE_PIX) {
+				view = View.inflate(mContext,
+						R.layout.custom_multi_image_large, this);
+			}
+		}
+
 		rootView = (RelativeLayout) view
 				.findViewById(R.id.layout_multi_pic_root_view);
 		singleImageView = (ImageView) view.findViewById(R.id.iv_custom_big_pic);

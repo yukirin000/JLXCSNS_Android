@@ -1,10 +1,8 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-	<dimen name="action_bar_height_size">40dp</dimen>
-	<dimen name="action_bar_title_size">15sp</dimen>
-
-
+    <dimen name="action_bar_height_size">40dp</dimen>
+    <dimen name="action_bar_title_size">15sp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="font_size_sper_large">30sp</dimen>
@@ -41,7 +39,9 @@
     <!-- 图片的大小 -->
     <dimen name="image_size_small">80dp</dimen>
     <dimen name="image_size_medium">100dp</dimen>
-    <dimen name="image_size_large">200dp</dimen>
+    <dimen name="image_size_large">120dp</dimen>
+    <dimen name="image_size_major">150dp</dimen>
+    <dimen name="image_size_huge">200dp</dimen>
     <!-- 子评论左边距 -->
     <dimen name="subcomment_margins_left">62dp</dimen>
 

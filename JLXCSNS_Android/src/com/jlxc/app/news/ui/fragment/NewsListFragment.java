@@ -306,9 +306,6 @@ public class NewsListFragment extends BaseFragment {
 						}
 					}
 				});
-		// 快速滑动时不加载图片
-		newsListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
-				false, true));
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		newsListView.setAdapter(newsAdapter);

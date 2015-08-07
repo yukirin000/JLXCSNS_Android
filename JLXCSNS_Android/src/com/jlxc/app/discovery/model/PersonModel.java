@@ -26,8 +26,10 @@ public class PersonModel {
 	private String type;
 	// 是否为朋友
 	private String isFriend = "0";
-	//电话号码
+	// 电话号码
 	private String phoneNumber;
+	// 性别
+	private String sex;
 
 	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
@@ -178,5 +180,13 @@ public class PersonModel {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
 	}
 }

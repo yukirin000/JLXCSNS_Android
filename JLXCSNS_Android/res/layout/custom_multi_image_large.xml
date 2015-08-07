@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_A"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_B"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_alignTop="@+id/iv_custom_picture_A"
         android:layout_marginLeft="@dimen/item_interior_space_small"
         android:layout_toRightOf="@+id/iv_custom_picture_A"
@@ -27,8 +27,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_C"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_alignTop="@+id/iv_custom_picture_A"
         android:layout_marginLeft="@dimen/item_interior_space_small"
         android:layout_toRightOf="@+id/iv_custom_picture_B"
@@ -37,8 +37,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_D"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_below="@+id/iv_custom_picture_A"
         android:layout_marginTop="@dimen/item_interior_space_small"
         android:scaleType="centerCrop"
@@ -46,8 +46,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_E"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_alignTop="@+id/iv_custom_picture_D"
         android:layout_marginLeft="@dimen/item_interior_space_small"
         android:layout_toRightOf="@+id/iv_custom_picture_D"
@@ -56,8 +56,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_F"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_alignTop="@+id/iv_custom_picture_D"
         android:layout_marginLeft="@dimen/item_interior_space_small"
         android:layout_toRightOf="@+id/iv_custom_picture_E"
@@ -66,8 +66,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_G"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_below="@+id/iv_custom_picture_D"
         android:layout_marginTop="@dimen/item_interior_space_small"
         android:scaleType="centerCrop"
@@ -75,8 +75,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_H"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_alignTop="@+id/iv_custom_picture_G"
         android:layout_marginLeft="@dimen/item_interior_space_small"
         android:layout_toRightOf="@+id/iv_custom_picture_G"
@@ -85,8 +85,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_picture_I"
-        android:layout_width="@dimen/image_size_small"
-        android:layout_height="@dimen/image_size_small"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
         android:layout_alignTop="@+id/iv_custom_picture_G"
         android:layout_marginLeft="@dimen/item_interior_space_small"
         android:layout_toRightOf="@+id/iv_custom_picture_H"
@@ -95,8 +95,8 @@
 
     <ImageView
         android:id="@+id/iv_custom_big_pic"
-        android:layout_width="@dimen/image_size_large"
-        android:layout_height="@dimen/image_size_large"
+        android:layout_width="@dimen/image_size_huge"
+        android:layout_height="@dimen/image_size_huge"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:scaleType="fitStart"

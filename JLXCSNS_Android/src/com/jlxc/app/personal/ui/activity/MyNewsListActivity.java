@@ -79,7 +79,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	// 使支持多种item
 	private MultiItemTypeSupport<MyNewsListItemModel> multiItemTypeSupport = null;
 	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
+	// private static BitmapUtils bitmapUtils;
 	// 当前的数据页
 	private int currentPage = 1;
 	// 是否是最后一页数据
@@ -243,9 +243,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 						}
 					}
 				});
-		// 快速滑动时不加载图片
-		newsListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
-				false, true));
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		newsListView.setAdapter(newsAdapter);
@@ -255,11 +252,11 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
+		setBarText("相册");
 		userModel = UserManager.getInstance().getUser();
 
 		itemViewClickListener = new ItemViewClick();
 		newsOperateSet();
-		initBitmapUtils();
 
 		Intent intent = this.getIntent();
 		if (null != intent && intent.hasExtra(INTNET_KEY_UID)) {
@@ -267,17 +264,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		} else {
 			LogUtils.e("用户id传输错误，用户id为：" + currentUid);
 		}
-	}
-
-	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
-				MyNewsListActivity.this, true, true);
-
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
 	}
 
 	/**
@@ -353,6 +339,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_my_newslist_images);
 		bodyImages.imageDataSet(pictureList);
+		bodyImages
+				.loadImageOnFastSlide(newsListView.getRefreshableView(), true);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
 

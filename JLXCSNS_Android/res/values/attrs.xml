@@ -5,15 +5,16 @@
     <declare-styleable name="CircleImageView">
         <attr name="border_width" format="dimension" />
         <attr name="border_color" format="color" />
-    </declare-styleable>
+    </declare-styleable>
     -->
-    <!-- <declare-styleable name="RoundImageView">
-        <attr name="rect_adius" format="dimension"></attr>
-    </declare-styleable> -->
+    <!--
     <declare-styleable name="RoundImageView">
-        <attr name="rect_adius" format="dimension" /> 
-    </declare-styleable> 
-    
+        <attr name="rect_adius" format="dimension"></attr>
+    </declare-styleable>
+    -->
+    <declare-styleable name="RoundImageView">
+        <attr name="rect_adius" format="dimension" />
+    </declare-styleable>
     <declare-styleable name="CircularImageView">
         <attr name="border" format="boolean"></attr>
         <attr name="border_width" format="dimension"></attr>
@@ -23,6 +24,11 @@
     <declare-styleable name="Theme">
         <attr name="circularImageViewStyle" format="reference"></attr>
         <attr name="roundImageViewStyle" format="reference"></attr>
+    </declare-styleable>
+
+    <!-- 图片大小 -->
+    <declare-styleable name="MultiImageView">
+        <attr name="islargesize" format="boolean" />
     </declare-styleable>
 
 </resources>

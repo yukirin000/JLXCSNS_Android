@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -84,7 +85,7 @@ public class DiscoveryFragment extends BaseFragment {
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
 	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
+	private int screenWidth = 0;
 	// 标头
 	@ViewInject(R.id.tv_discovey_title)
 	private TextView titleTextView;
@@ -156,6 +157,7 @@ public class DiscoveryFragment extends BaseFragment {
 		init();
 		multiItemTypeSet();
 		newsListViewSet();
+		// 添加title部分
 		RecommendTitleItem titleItem = new RecommendTitleItem();
 		personItemAdapter.add(titleItem);
 		// 首次更新数据
@@ -175,7 +177,6 @@ public class DiscoveryFragment extends BaseFragment {
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
 	}
 
 	/**
@@ -294,7 +295,6 @@ public class DiscoveryFragment extends BaseFragment {
 					setInfoItemView(helper, item);
 					break;
 				case R.layout.discovery_item_photolist:
-					LogUtils.i("调用setPhotoItemView");
 					setPhotoItemView(helper, item);
 					break;
 
@@ -344,8 +344,8 @@ public class DiscoveryFragment extends BaseFragment {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
-		helper.setOnClickListener(R.id.layout_add_contact_root_view, listener);
-		helper.setOnClickListener(R.id.layout_add_campus_root_view, listener);
+		helper.setOnClickListener(R.id.tv_add_contact_tips, listener);
+		helper.setOnClickListener(R.id.tv_add_campus_tips, listener);
 	}
 
 	/**
@@ -355,15 +355,6 @@ public class DiscoveryFragment extends BaseFragment {
 			RecommendItemData item) {
 		RecommendInfoItem titleData = (RecommendInfoItem) item;
 
-		// 设置头像
-		ImageView imgView = helper.getView(R.id.iv_recommend_head);
-		// 设置图片
-		LayoutParams laParams = (LayoutParams) imgView.getLayoutParams();
-		laParams.width = laParams.height = (screenWidth) / 6;
-		imgView.setLayoutParams(laParams);
-		imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-		bitmapUtils.configDefaultBitmapMaxSize((screenWidth) / 4,
-				(screenWidth) / 4);
 		helper.setImageUrl(R.id.iv_recommend_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
 		// 设置用户信息
@@ -371,12 +362,12 @@ public class DiscoveryFragment extends BaseFragment {
 		helper.setText(R.id.tv_recommend_tag, titleData.getRelationTag());
 		helper.setText(R.id.tv_recommend_school, titleData.getUserSchool());
 
-		Button addButton = helper.getView(R.id.btn_recomment_add);
+		ImageView addButton = helper.getView(R.id.btn_recomment_add);
 		if (titleData.isAdd()) {
 			addButton.setEnabled(false);
-			addButton.setText("已添加");
+			addButton.setImageResource(R.drawable.friend_btn_add_highlight);
 		} else {
-			addButton.setText("添加");
+			addButton.setImageResource(R.drawable.friend_btn_add_normal);
 			addButton.setEnabled(true);
 		}
 
@@ -400,9 +391,37 @@ public class DiscoveryFragment extends BaseFragment {
 	}
 
 	/**
-	 * 设置照片
+	 * 绑定相册
 	 * */
 	private void setPhotoItemView(HelloHaBaseAdapterHelper helper,
+			RecommendItemData item) {
+		RecommendPhotoItem photoListData = (RecommendPhotoItem) item;
+
+		helper.setImageUrl(R.id.iv_recommend_photo_A, bitmapUtils,
+				photoListData.getPhotoSubUrl().get(0),
+				new NewsBitmapLoadCallBack());
+		helper.setImageUrl(R.id.iv_recommend_photo_B, bitmapUtils,
+				photoListData.getPhotoSubUrl().get(1),
+				new NewsBitmapLoadCallBack());
+		helper.setImageUrl(R.id.iv_recommend_photo_C, bitmapUtils,
+				photoListData.getPhotoSubUrl().get(2),
+				new NewsBitmapLoadCallBack());
+
+		final int postion = helper.getPosition();
+		OnClickListener listener = new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				itemViewClickListener.onClick(view, postion, view.getId());
+			}
+		};
+		helper.setOnClickListener(R.id.layout_photos_root_view, listener);
+	}
+
+	/**
+	 * 设置可以左右滑动的相册
+	 * */
+	private void setPhotoItemView2(HelloHaBaseAdapterHelper helper,
 			RecommendItemData item) {
 		RecommendPhotoItem photoListData = (RecommendPhotoItem) item;
 		// 封装数据
@@ -420,7 +439,8 @@ public class DiscoveryFragment extends BaseFragment {
 		}
 
 		// 照片的尺寸,正方形显示
-		final int photoSize = (screenWidth - 20) / 3;
+		final int photoSize = screenWidth / 3;
+		final int horizontalSpace = 5;
 		HelloHaAdapter<Map<String, String>> newsGVAdapter = new HelloHaAdapter<Map<String, String>>(
 				mContext, R.layout.discovery_photos_gridview_item,
 				photoInfoList) {
@@ -429,7 +449,7 @@ public class DiscoveryFragment extends BaseFragment {
 					Map<String, String> data) {
 				String subAdd = data.get("PHOTO_SUB_URL");
 				if (subAdd.equals(LOOK_ALL_PHOTOS)) {
-					// 添加查看所有照片按钮
+					/********* 添加查看所有照片按钮 *******/
 					ImageView imgView = helper
 							.getView(R.id.iv_recommend_photos_item);
 					LayoutParams laParams = (LayoutParams) imgView
@@ -446,11 +466,9 @@ public class DiscoveryFragment extends BaseFragment {
 							.getView(R.id.iv_recommend_photos_item);
 					LayoutParams laParams = (LayoutParams) imgView
 							.getLayoutParams();
-					laParams.width = laParams.height = photoSize;
+					laParams.width = laParams.height = photoSize
+							- horizontalSpace;
 					imgView.setLayoutParams(laParams);
-					imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-					bitmapUtils.configDefaultBitmapMaxSize(screenWidth,
-							screenWidth);
 					helper.setImageUrl(R.id.iv_recommend_photos_item,
 							bitmapUtils, subAdd, new NewsBitmapLoadCallBack());
 				}
@@ -460,12 +478,12 @@ public class DiscoveryFragment extends BaseFragment {
 				.getView(R.id.gv_recommend_photos);
 		// 设置gridview的尺寸
 		int photoCount = photoInfoList.size();
-		int gridviewWidth = (int) ((photoCount - 1) * (photoSize + 4) + photoSize / 2);
+		int gridviewWidth = (int) ((photoCount - 1)
+				* (photoSize + horizontalSpace) + photoSize / 2);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
 		photoGridView.setColumnWidth(photoSize);
-		photoGridView.setHorizontalSpacing(4);
-		photoGridView.setStretchMode(GridView.NO_STRETCH);
+		photoGridView.setHorizontalSpacing(horizontalSpace);
 		photoGridView.setNumColumns(photoCount);
 		photoGridView.setLayoutParams(params);
 
@@ -589,7 +607,7 @@ public class DiscoveryFragment extends BaseFragment {
 		@Override
 		public void onClick(View view, int position, int viewID) {
 			switch (viewID) {
-			case R.id.layout_add_contact_root_view:
+			case R.id.tv_add_contact_tips:
 				// 跳转到添加通讯录好友页面
 				Intent intentToContacts = new Intent(mContext,
 						ContactsUserActivity.class);
@@ -597,7 +615,7 @@ public class DiscoveryFragment extends BaseFragment {
 				break;
 
 			// 添加同校好友
-			case R.id.layout_add_campus_root_view:
+			case R.id.tv_add_campus_tips:
 				Intent sameSchoolIntent = new Intent(getActivity(),
 						SameSchoolActivity.class);
 				startActivityWithRight(sameSchoolIntent);
@@ -627,7 +645,16 @@ public class DiscoveryFragment extends BaseFragment {
 				imModel.setTargetId(JLXCConst.JLXC + addInfoItem.getUserID());
 				imModel.setTitle(addInfoItem.getUserName());
 				addFriend(imModel, position);
+				break;
 
+			case R.id.layout_photos_root_view:
+				RecommendPhotoItem photoItem = (RecommendPhotoItem) personItemAdapter
+						.getItem(position);
+				Intent intent = new Intent(mContext, MyNewsListActivity.class);
+				intent.putExtra(MyNewsListActivity.INTNET_KEY_UID,
+						photoItem.getUserId());
+				startActivityWithRight(intent);
+				// 跳转到相册
 				break;
 			default:
 				break;
@@ -656,23 +683,24 @@ public class DiscoveryFragment extends BaseFragment {
 			HelloHaAdapter<Map<String, String>> photosAdapter = (HelloHaAdapter<Map<String, String>>) parent
 					.getAdapter();
 			Map<String, String> currentMap = photosAdapter.getItem(position);
-			String currentImgPath = currentMap.get("PHOTO_SUB_URL");
-			if (!currentImgPath.equals(LOOK_ALL_PHOTOS)) {
-				// 跳转到图片详情页面
-				List<String> imageList = new ArrayList<String>();
-				for (int index = 0; index < photosAdapter.getCount() - 1; index++) {
-					imageList.add(photosAdapter.getItem(index).get(
-							"PHOTO_SUB_URL"));
-				}
-				jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_LIST,
-						imageList, position);
-			} else {
-				// 跳转到动态列表
-				Intent intent = new Intent(mContext, MyNewsListActivity.class);
-				intent.putExtra(MyNewsListActivity.INTNET_KEY_UID,
-						currentMap.get("USER_ID"));
-				startActivity(intent);
-			}
+			// String currentImgPath = currentMap.get("PHOTO_SUB_URL");
+			// if (!currentImgPath.equals(LOOK_ALL_PHOTOS)) {
+			// // 跳转到图片详情页面
+			// List<String> imageList = new ArrayList<String>();
+			// for (int index = 0; index < photosAdapter.getCount() - 1;
+			// index++) {
+			// imageList.add(photosAdapter.getItem(index).get(
+			// "PHOTO_SUB_URL"));
+			// }
+			// jumpToBigImage(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+			// imageList, position);
+			// } else {
+			// 跳转到动态列表
+			Intent intent = new Intent(mContext, MyNewsListActivity.class);
+			intent.putExtra(MyNewsListActivity.INTNET_KEY_UID,
+					currentMap.get("USER_ID"));
+			startActivity(intent);
+			// }
 		}
 	}
 

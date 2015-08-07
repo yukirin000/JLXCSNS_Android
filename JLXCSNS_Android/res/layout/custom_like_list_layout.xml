@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res/com.jlxc.app"
     android:id="@+id/layout_like_list_root_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/head_image_size_medium"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/item_interior_space_small" >
 

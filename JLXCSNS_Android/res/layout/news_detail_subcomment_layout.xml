@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <com.rockerhieu.emojicon.EmojiconTextView
+            <TextView
                 android:id="@+id/txt_sub_comment_by_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:textColor="@color/main_light_black"
                 android:textSize="@dimen/font_size_small" />
 
-            <com.rockerhieu.emojicon.EmojiconTextView
+            <TextView
                 android:id="@+id/txt_by_sub_comment_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
