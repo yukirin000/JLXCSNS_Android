@@ -10,19 +10,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -33,19 +26,15 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
-import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
-import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.model.PersonModel;
-import com.jlxc.app.discovery.model.SameSchoolModel;
-import com.jlxc.app.login.ui.activity.SecondLoginActivity;
 import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
@@ -78,12 +67,8 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	private List<PersonModel> dataList = new ArrayList<PersonModel>();
 	// 适配器
 	private HelloHaAdapter<PersonModel> contactsAdapter;
-	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
-	// 用户实例
-	private UserModel userModel;
 
 	@Override
 	public int setLayoutId() {
@@ -96,41 +81,25 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 		getPhoneContacts();
 		getSIMContacts();
 		listviewSet();
-		
-		mContactsNumber.add("13736661234"); 
-		mContactsNumber.add("13736661220");
-		mContactsNumber.add("13736661229");
-		
-		mContactsName.add("11");
-		mContactsName.add("11");
-		mContactsName.add("11");
-		
-		getContactsPerson(String.valueOf(userModel.getUid()),
+
+		// 获取联系人数据
+		getContactsPerson(
+				String.valueOf(UserManager.getInstance().getUser().getUid()),
 				getContactsJSON(mContactsNumber));
 	}
-	
-	///////////////////////////////////private method///////////////////////////////////
+
+	// ////////////////////private method///////////////////////////////////
 	/**
 	 * 初始化
 	 * */
 	private void init() {
-		initBitmapUtils();
-		userModel = UserManager.getInstance().getUser();
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-	}
+		setBarText("通讯录中的小伙伴 (・ω・=)");
+		// bitmap初始化
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+				ContactsUserActivity.this, true, true);
 
-	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(ContactsUserActivity.this);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/**
@@ -138,8 +107,8 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	 * */
 	private void listviewSet() {
 		// 设置刷新模式
-		contactsListView.setMode(Mode.BOTH);
-
+		contactsListView.setMode(Mode.DISABLED);
+		contactsListView.setClickable(true);
 		contactsAdapter = new HelloHaAdapter<PersonModel>(
 				ContactsUserActivity.this, R.layout.add_contacts_item_layout,
 				dataList) {
@@ -148,19 +117,8 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			protected void convert(final HelloHaBaseAdapterHelper helper,
 					PersonModel item) {
 				final PersonModel currentPerson = item;
-				// 联系人头像
-				ImageView imgView = helper.getView(R.id.iv_contacts_head);
-				LayoutParams laParams = (LayoutParams) imgView
-						.getLayoutParams();
-				laParams.width = laParams.height = (screenWidth) / 7;
-				imgView.setLayoutParams(laParams);
-				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				bitmapUtils
-						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
 				// 绑定头像图片
-				bitmapUtils.configDefaultBitmapMaxSize(laParams.width,
-						laParams.width);
 				helper.setImageUrl(R.id.iv_contacts_head, bitmapUtils,
 						item.getHeadSubImage(), new NewsBitmapLoadCallBack());
 
@@ -191,15 +149,18 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							}
 						});
 
-				Button addButton = helper.getView(R.id.btn_contacts_add);
-				if (null != item.getIsFriend() && "1".equals(item.getIsFriend())) {
-					addButton.setText("已添加");
+				ImageView addButton = helper.getView(R.id.btn_contacts_add);
+				if (null != item.getIsFriend()
+						&& "1".equals(item.getIsFriend())) {
+					addButton
+							.setImageResource(R.drawable.friend_btn_add_highlight);
 					addButton.setEnabled(false);
-				}else{
-					addButton.setText("添加");
+				} else {
+					addButton
+							.setImageResource(R.drawable.friend_btn_add_normal);
 					addButton.setEnabled(true);
 				}
-					
+
 				// 点击添加按钮
 				helper.setOnClickListener(R.id.btn_contacts_add,
 						new OnClickListener() {
@@ -208,12 +169,14 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							public void onClick(View v) {
 								// 点击添加按钮
 								IMModel imModel = new IMModel();
-								imModel.setTargetId(JLXCConst.JLXC + currentPerson.getUerId());
+								imModel.setTargetId(JLXCConst.JLXC
+										+ currentPerson.getUerId());
 								imModel.setTitle(currentPerson.getUserName());
 								String headImage = currentPerson.getHeadImage();
 								if (headImage != null) {
-									headImage = headImage.replace(JLXCConst.ATTACHMENT_ADDR, "");
-								}else {
+									headImage = headImage.replace(
+											JLXCConst.ATTACHMENT_ADDR, "");
+								} else {
 									headImage = "";
 								}
 								imModel.setAvatarPath(headImage);
@@ -264,7 +227,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	 * */
 	private String getContactsJSON(ArrayList<String> numberList) {
 		JSONArray array = new JSONArray();
-		
+
 		for (String phoneNum : numberList) {
 			array.add(phoneNum);
 		}
@@ -325,7 +288,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	 * */
 	private void getContactsPerson(String userId, String contact) {
 		// 网络请求
-		showLoading("加载中...", true);
+		showLoading("信息获取中ミ ﾟДﾟ彡", true);
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("user_id", userId);
 		params.addBodyParameter("contact", contact);
@@ -414,15 +377,18 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			container.setImageBitmap(bitmap);
 		}
 	}
-	
-	//添加好友
+
+	// 添加好友
 	private void addFriend(final IMModel imModel, final int index) {
 
 		// 参数设置
 		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
-		params.addBodyParameter("friend_id", imModel.getTargetId().replace(JLXCConst.JLXC, "")+"");
-		
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser()
+				.getUid()
+				+ "");
+		params.addBodyParameter("friend_id",
+				imModel.getTargetId().replace(JLXCConst.JLXC, "") + "");
+
 		showLoading("添加中^_^", false);
 		HttpManager.post(JLXCConst.Add_FRIEND, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -430,15 +396,17 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onSuccess(JSONObject jsonResponse, String flag) {
 						super.onSuccess(jsonResponse, flag);
-						
+
 						hideLoading();
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-						ToastUtil.show(ContactsUserActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-						
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(ContactsUserActivity.this,
+								jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							//添加好友
+							// 添加好友
 							MessageAddFriendHelper.addFriend(imModel);
-							//更新
+							// 更新
 							PersonModel personModel = dataList.get(index);
 							personModel.setIsFriend("1");
 							contactsAdapter.replaceAll(dataList);
@@ -450,8 +418,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
 						hideLoading();
-						ToastUtil.show(ContactsUserActivity.this,
-								"网络异常");
+						ToastUtil.show(ContactsUserActivity.this, "网络异常");
 					}
 				}, null));
 	}

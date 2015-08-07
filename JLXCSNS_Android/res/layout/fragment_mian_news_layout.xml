@@ -11,11 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:cacheColorHint="#00000000"
-        android:divider="#19000000"
+        android:dividerHeight="0dp"
+        android:divider="@color/main_deep_white"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
+        android:scrollbars="none"
         android:smoothScrollbar="true" />
 
 </LinearLayout>

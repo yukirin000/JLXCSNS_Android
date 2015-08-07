@@ -22,7 +22,7 @@
             android:drawableTop="@drawable/selector_friend_phonebook_click"
             android:gravity="center"
             android:padding="@dimen/item_interior_space_small"
-            android:text="添加通讯录好友"
+            android:text="通讯录中的小伙伴"
             android:textColor="@color/main_light_black"
             android:textSize="@dimen/font_size_secondary" />
 
@@ -41,7 +41,7 @@
             android:drawableTop="@drawable/selector_friend_schoolmate_click"
             android:gravity="center"
             android:padding="@dimen/item_interior_space_small"
-            android:text="添加同校的好友"
+            android:text="同校中的小伙伴"
             android:textColor="@color/main_light_black"
             android:textSize="@dimen/font_size_secondary" />
     </LinearLayout>
@@ -52,7 +52,7 @@
         android:layout_height="@dimen/item_interior_space_huge"
         android:background="@color/main_light_white"
         android:paddingLeft="@dimen/item_interior_space_medium"
-        android:text="可能认识的人"
+        android:text="可能认识的同学 ╭(′▽`)╯"
         android:textColor="@color/main_light_black"
         android:textSize="@dimen/font_size_medium" />
 
