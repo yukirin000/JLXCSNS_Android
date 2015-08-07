@@ -154,9 +154,9 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 				ImageView headImageView = helper.getView(R.id.head_image_view);
 				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
 				//添加好友tv
-				TextView addTextView = helper.getView(R.id.add_text_view);
+				ImageView addImageView = helper.getView(R.id.add_image_view);
 				//点击添加
-				addTextView.setOnClickListener(new OnClickListener() {
+				addImageView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						IMModel imModel = new IMModel();
@@ -166,13 +166,14 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 						addFriend(imModel, helper.getPosition());
 					}
 				});
+				
 				//是否是好友
 				if (item.getIs_friend() == 1) {
-					addTextView.setText("已添加");
-					addTextView.setEnabled(false);
+					addImageView.setEnabled(false);
+					addImageView.setImageResource(R.drawable.friend_btn_add_highlight);
 				}else {
-					addTextView.setText("添加");
-					addTextView.setEnabled(true);
+					addImageView.setEnabled(true);
+					addImageView.setImageResource(R.drawable.friend_btn_add_normal);
 				}
 				
 				LinearLayout linearLayout = (LinearLayout) helper.getView();

@@ -42,8 +42,10 @@ import android.os.Environment;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -339,6 +341,23 @@ public class PersonalFragment extends BaseFragment {
 				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
 			}
 		};
+		
+		DisplayMetrics displayMet = getResources().getDisplayMetrics();
+		int screenWidth = displayMet.widthPixels;
+		
+		LinearLayout.LayoutParams layoutParams = (android.widget.LinearLayout.LayoutParams) myImageGridView.getLayoutParams();
+		float ratio =  layoutParams.leftMargin/10.0f;
+		//itemWidth
+		int columnWidth = (int) (ratio*100);
+		//宽度
+		int width = screenWidth-2*layoutParams.leftMargin;
+//		int height = layoutParams.height;
+		LogUtils.i(ratio+" "+layoutParams.leftMargin+" "+(columnWidth*3+50)+" "+width, 1);
+		if ((columnWidth*3+50)<width) {
+			layoutParams.width = columnWidth*3+50; 
+		}else {
+			myImageGridView.setHorizontalSpacing(10);
+		}
 		
 		//设置adapter
 		myImageGridView.setAdapter(myImageAdapter);

@@ -10,19 +10,22 @@
 	    android:id="@+id/search_layout"
 	    android:layout_width="match_parent"
 	    android:layout_height="50dp"
+	    android:background="@color/main_light_gary"
 	    android:focusable="true"
 	    android:focusableInTouchMode="true"
 	    android:orientation="horizontal" >
 
 	    <EditText
 	        android:id="@+id/search_edit_text"
+	        android:background="@color/main_white"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:focusable="true"
 	        android:layout_margin="5dp"
 	       	android:imeOptions="actionSearch"
 			android:singleLine="true"
-	        android:hint="请输入搜索内容....."
+			android:padding="5dp"
+	        android:hint="搜索名字、哈哈号"
 	        android:textSize="15sp" />
 	</LinearLayout>
 
@@ -36,10 +39,17 @@
 	        android:id="@+id/search_top_text_view"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="20dip"
+	        android:layout_marginLeft="10dip"
+	        android:padding="8dip"
 	        android:visibility="gone"
-	        android:padding="5dip"
+	        android:textColor="@color/main_brown"
+	        android:textSize="@dimen/font_size_small"
 	        android:text="查找helloha号：1231123sdfdsfdsf" />
+	    
+		<View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+			android:background="@color/main_light_gary" />		    
 	</LinearLayout>
 
 	<com.handmark.pulltorefresh.library.PullToRefreshListView
@@ -48,7 +58,7 @@
 	    android:layout_height="fill_parent"
 	    android:cacheColorHint="#00000000"
 	    android:divider="#19000000"
-	    android:dividerHeight="1dp"
+	    android:dividerHeight="0dp"
 	    android:fadingEdge="none"
 	    android:fastScrollEnabled="false"
 	    android:footerDividersEnabled="false"

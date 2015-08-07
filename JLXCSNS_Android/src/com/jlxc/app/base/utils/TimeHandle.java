@@ -25,7 +25,6 @@ public class TimeHandle {
 
 		try {
 			time = format.parse(dateStr);
-			Log.i("MainTabActivity", time+" "+dateStr);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(time);
 

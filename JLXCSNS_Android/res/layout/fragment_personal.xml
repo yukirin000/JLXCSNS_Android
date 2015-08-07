@@ -142,13 +142,12 @@
                     
                 <com.jlxc.app.base.ui.view.TouchInterceptGridView
                         android:id="@+id/my_image_grid_view"
-                        android:layout_width="320dip"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:stretchMode="spacingWidthUniform"
-                        android:horizontalSpacing="5dip"
-                        android:columnWidth="100dip"
+                        android:horizontalSpacing="0dip"
                         android:layout_marginBottom="5dip"
                         android:layout_marginLeft="10dip"
+                        android:layout_marginRight="10dip"
                         android:numColumns="3" >
                     </com.jlxc.app.base.ui.view.TouchInterceptGridView>
 
