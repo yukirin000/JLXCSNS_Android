@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="21"
-    android:versionName="0.20" >
+    android:versionCode="25"
+    android:versionName="0.24" >
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -260,17 +260,6 @@
             android:name="io.rong.imlib.HeartbeatReceiver"
             android:process=":ipc" />
 
-        <meta-data
-            android:name="RONG_CLOUD_APP_KEY"
-            android:value="lmxuhwagx83id" />
-        <!-- end -->
-
-
-        <!-- 云巴部分 -->
-        <meta-data
-            android:name="YUNBA_APPKEY"
-            android:value="55ab4554c75ecd535d69b955" />
-
         <service android:name="io.yunba.android.core.YunBaService" >
         </service>
 
@@ -291,10 +280,22 @@
             </intent-filter>
         </receiver>
 
+        <!-- rong -->
+        <meta-data
+            android:name="RONG_CLOUD_APP_KEY"
+            android:value="8luwapkvufv3l" />
+        <!-- end -->
+
+
+        <!-- 云巴部分 -->
+        <meta-data
+            android:name="YUNBA_APPKEY"
+            android:value="55ab4554c75ecd535d69b955" />        
+        
         <!-- 友盟部分 -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="55b38ab667e58e47020048b1" >
+            android:value="55c49ee5e0f55a501600021b" >
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
@@ -302,11 +303,10 @@
 		<!-- 高德部分 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7ad1a3106acafa0b0f3fc9d4c5441f85" />
             android:value="028a516dcc7ca5977934426ea33801ba" />
         <!-- 028a516dcc7ca5977934426ea33801ba -->
         <!-- ab92e548a0429b832749d8067cb47998 -->
-        
+        <!-- 19077737f995074601d57afc38a46358 -->
         
         <!-- *******************涂图 公共分组控制器******************* -->
         <activity
