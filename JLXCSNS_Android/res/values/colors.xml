@@ -53,6 +53,8 @@
     <color name="main_char_gary">#808080</color>
     <!-- 透明灰色 -->
     <color name="main_clear_gary">#55cccccc</color>
+    <!-- 透明黄色 -->
+    <color name="main_clear_yellow">#88ffc400</color>
     <!-- 透明色 -->
     <color name="main_clear">#00000000</color>
 	<!-- 登录部分editText颜色 -->

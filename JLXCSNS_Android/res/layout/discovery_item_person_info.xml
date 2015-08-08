@@ -46,7 +46,7 @@
             android:id="@+id/tv_recommend_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/tv_recommend_name"
+            android:layout_alignBottom="@id/tv_recommend_name"
             android:layout_marginLeft="@dimen/item_interior_space_medium"
             android:layout_toRightOf="@id/tv_recommend_name"
             android:maxLength="20"

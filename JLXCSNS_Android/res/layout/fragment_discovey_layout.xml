@@ -19,7 +19,7 @@
                 android:id="@+id/tv_discovey_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发现"
+                android:text="找同学"
                 android:textColor="@color/main_brown"
                 android:textSize="@dimen/action_bar_title_size" />
         </LinearLayout>
@@ -34,7 +34,7 @@
                 android:id="@+id/qrcode_scan_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="@dimen/title_interior_size_small"
+                android:padding="@dimen/title_interior_size_mediu"
                 android:layout_marginRight="@dimen/title_interior_size_mediu"
                 android:background="@color/main_clear"
                 android:src="@drawable/qrcode_scan_selector" />
@@ -43,8 +43,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#DDDDDD"
+        android:layout_height="wrap_content"
         android:gravity="center" >
 
         <TextView
@@ -56,7 +55,7 @@
             android:paddingLeft="@dimen/item_interior_space_large"
             android:textColor="@color/main_light_black"
             android:textSize="@dimen/font_size_small"
-            android:text="搜索名字、 HelloHa号" />
+            android:text="名字、 HelloHa号" />
     </LinearLayout>
 
     <!-- 发现listview -->

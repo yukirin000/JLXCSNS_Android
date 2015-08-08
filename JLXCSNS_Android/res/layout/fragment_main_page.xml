@@ -64,7 +64,7 @@
             android:layout_height="@dimen/action_bar_height_size"
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="@dimen/title_interior_size_mediu"
-            android:padding="@dimen/title_interior_size_small"
+            android:padding="@dimen/title_interior_size_mediu"
             android:scaleType="fitCenter"
             android:src="@drawable/selector_publish_btn_click" />
     </FrameLayout>

@@ -25,8 +25,11 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.view.ItemDialog;
+import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -77,51 +80,58 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 	 * 筛选按钮
 	 * */
 	private void setRightBtn() {
-		CharSequence[] items = { "只看帅哥", "只看美女", "全部都看" };
-		final Builder filterDialog = new AlertDialog.Builder(
-				CampusAllPersonActivity.this).setItems(items,
-				new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-						// 只看男生
-						case 0:
-							List<CampusPersonModel> boyList = new ArrayList<CampusPersonModel>();
-							for (CampusPersonModel personModel : personList) {
-								if (personModel.getSex().equals("0")) {
-									boyList.add(personModel);
-								}
-							}
-							personAdapter.replaceAll(boyList);
-							break;
-						// 只看女生
-						case 1:
-							List<CampusPersonModel> girlList = new ArrayList<CampusPersonModel>();
-							for (CampusPersonModel personModel : personList) {
-								if (personModel.getSex().equals("1")) {
-									girlList.add(personModel);
-								}
-							}
-							personAdapter.replaceAll(girlList);
-							break;
-						// 全部都看
-						case 2:
-							personAdapter.replaceAll(personList);
-							break;
+		// 筛选
+		List<String> menuList = new ArrayList<String>();
+		menuList.add("全部要看");
+		menuList.add("只看帅哥");
+		menuList.add("只看美女");
+		final ItemDialog downDialog = new ItemDialog(
+				CampusAllPersonActivity.this, menuList);
+		downDialog.setClickCallBack(new ClickCallBack() {
 
-						default:
-							break;
+			@Override
+			public void Onclick(View view, int which) {
+
+				switch (which) {
+				// 只看男生
+				case 0:
+					List<CampusPersonModel> boyList = new ArrayList<CampusPersonModel>();
+					for (CampusPersonModel personModel : personList) {
+						if (personModel.getSex().equals("0")) {
+							boyList.add(personModel);
 						}
 					}
-				});
+					personAdapter.replaceAll(boyList);
+					break;
+				// 只看女生
+				case 1:
+					List<CampusPersonModel> girlList = new ArrayList<CampusPersonModel>();
+					for (CampusPersonModel personModel : personList) {
+						if (personModel.getSex().equals("1")) {
+							girlList.add(personModel);
+						}
+					}
+					personAdapter.replaceAll(girlList);
+					break;
+				// 全部都看
+				case 2:
+					personAdapter.replaceAll(personList);
+					break;
+
+				default:
+					break;
+				}
+				downDialog.cancel();
+			}
+		});
 
 		filterBtn = this.addRightBtn("筛选");
 		filterBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				filterDialog.show();
+				downDialog.show();
 			}
 		});
 	}
@@ -139,19 +149,17 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
 		screenHeight = displayMet.heightPixels;
-		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
-				+ screenHeight);
 	}
 
 	/**
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(CampusAllPersonActivity.this);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+				CampusAllPersonActivity.this, true, true);
+
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
 		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
 	/***
@@ -168,7 +176,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 				ImageView imgView = helper.getView(R.id.iv_campus_person_head);
 				LayoutParams laParams = (LayoutParams) imgView
 						.getLayoutParams();
-				laParams.width = laParams.height = (screenWidth) / 5;
+				laParams.width = laParams.height = (screenWidth) / 6;
 				imgView.setLayoutParams(laParams);
 				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 				bitmapUtils
@@ -184,7 +192,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 				helper.setText(R.id.txt_campus_person_name, item.getUserName());
 			}
 		};
-
+		personListGridView.setSelector(R.drawable.selector_deep_white_click);
 		personListGridView.setAdapter(personAdapter);
 		PersonGridViewItemClick personItemClickListener = new PersonGridViewItemClick();
 		personListGridView.setOnItemClickListener(personItemClickListener);
@@ -212,10 +220,10 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 	 * 获取学校所有学生信息
 	 * */
 	private void getCampusAllPerson(String schoolCode) {
+		showLoading("一大波同学即将来袭..", true);
 		String path = JLXCConst.GET_SCHOOL_STUDENT_LIST + "?" + "&school_code="
 				+ schoolCode;
 
-		LogUtils.i("path=" + path);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -226,6 +234,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
+							hideLoading();
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 获取数据列表
@@ -235,6 +244,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
+							hideLoading();
 							ToastUtil.show(CampusAllPersonActivity.this,
 									jsonResponse
 											.getString(JLXCConst.HTTP_MESSAGE));
@@ -244,8 +254,10 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
+						hideLoading();
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(CampusAllPersonActivity.this, "网络有毒=_=");
+						ToastUtil.show(CampusAllPersonActivity.this,
+								"网络太烂，请检查=_=");
 					}
 
 				}, null));

@@ -41,6 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
+            android:paddingLeft="@dimen/item_interior_space_small"
             android:background="@drawable/comment_edittext_background"
             android:hint="来条神评论..."
             android:inputType="textMultiLine"

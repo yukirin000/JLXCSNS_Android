@@ -9,12 +9,13 @@
     <GridView
         android:id="@+id/gv_school_all_person"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:horizontalSpacing="5dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_deep_white_click"
+        android:horizontalSpacing="@dimen/item_interior_space_small"
         android:numColumns="4"
+        android:padding="@dimen/item_interior_space_medium"
         android:scrollbars="none"
-        android:verticalSpacing="5dp" >
+        android:verticalSpacing="@dimen/item_interior_space_large" >
     </GridView>
 
 </LinearLayout>
