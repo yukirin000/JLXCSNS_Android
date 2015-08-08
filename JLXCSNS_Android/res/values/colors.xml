@@ -55,5 +55,7 @@
     <color name="main_clear_gary">#55cccccc</color>
     <!-- 透明色 -->
     <color name="main_clear">#00000000</color>
-
+	<!-- 登录部分editText颜色 -->
+    <color name="login_edit_hint_color">#f2f2f2</color>
+    
 </resources>

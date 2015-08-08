@@ -187,16 +187,19 @@ public class CampusFragment extends BaseFragment {
 
 		JSONObject JObject = HttpCacheUtils.getHttpCache(path);
 		if (null != JObject) {
-			JSONObject jResult = JObject.getJSONObject(JLXCConst.HTTP_RESULT);
-			if (null != jResult) {
-				// 获取数据列表
-				List<JSONObject> JNewsList = (List<JSONObject>) jResult
-						.get(JLXCConst.HTTP_LIST);
-				List<JSONObject> JPersonList = (List<JSONObject>) jResult
-						.get("info");
+			int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
+			if (status == JLXCConst.STATUS_SUCCESS) {
+				JSONObject jResult = JObject.getJSONObject(JLXCConst.HTTP_RESULT);
+				if (null != jResult) {
+					// 获取数据列表
+					List<JSONObject> JNewsList = (List<JSONObject>) jResult
+							.get(JLXCConst.HTTP_LIST);
+					List<JSONObject> JPersonList = (List<JSONObject>) jResult
+							.get("info");
 
-				if (null != JNewsList && null != JPersonList) {
-					JsonToItemData(JNewsList, JPersonList);
+					if (null != JNewsList && null != JPersonList) {
+						JsonToItemData(JNewsList, JPersonList);
+					}
 				}
 			}
 		}

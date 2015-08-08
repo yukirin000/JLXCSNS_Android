@@ -5,9 +5,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="str_back">返回</string>
     <string name="str_register_title">注册</string>
-    <string name="str_register_phone_prompt">验证码已发送至：</string>
+    <string name="str_register_phone_prompt">验证码已发送至手机：</string>
     <string name="str_input_verificationcode_prompt">输入验证码哦...</string>
-    <string name="str_reacquire_verification">重新验证</string>
+    <string name="str_reacquire_verification">重新发送</string>
     <string name="str_password_prompt">你的密码是什么...</string>
     <string name="str_next">下一步</string>
 

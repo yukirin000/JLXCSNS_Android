@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="25"
-    android:versionName="0.24" >
+    android:versionCode="26"
+    android:versionName="0.25" >
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -85,6 +85,8 @@
         <activity android:name="com.jlxc.app.login.ui.activity.LoginActivity" >
         </activity>
         <activity android:name="com.jlxc.app.login.ui.activity.SecondLoginActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.login.ui.activity.VerifyActivity" >
         </activity>
         <activity android:name="com.jlxc.app.login.ui.activity.RegisterActivity" >
         </activity>

@@ -1,82 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:id="@+id/register_activity">
+    android:id="@+id/register_activity"
+    android:gravity="center_horizontal">
+    
+	<ImageView
+	    android:src="@drawable/login_back_image"
+	    android:scaleType="centerCrop" 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"/> 
 
     <include layout="@layout/layout_title_bar" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/phone_prompt_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/str_register_phone_prompt" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <EditText
-                android:id="@+id/verificationcode_edittext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/str_input_verificationcode_prompt"
-                android:maxLength="6"
-                android:numeric="integer"
-                android:text="" />
-
-            <Button
-                android:id="@+id/next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/str_next" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/revalidated_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/str_reacquire_verification" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <EditText
-                android:id="@+id/passwd_edittext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/str_password_prompt"
-                android:inputType="textPassword"
-                android:maxLength="24"
-                android:numeric="integer"
-                android:text="" />
-        </LinearLayout>
-    </LinearLayout>
-
-</LinearLayout>
+    
+     <EditText
+         android:id="@+id/passwd_edittext"
+         android:layout_marginTop="150dip"
+         android:layout_centerHorizontal="true"
+         android:layout_width="280dip"
+         android:layout_height="wrap_content"
+         android:drawablePadding="10dp"
+         android:maxLength="24"
+         android:padding="5dip"
+         android:background="@color/main_clear"
+         android:hint="请输入密码"
+         android:textColorHint="@color/login_edit_hint_color"   
+         android:textColor="@color/main_deep_black"      
+         android:singleLine="true"
+         android:inputType="textPassword"
+         android:textSize="@dimen/font_size_medium" />  
+    
+     <ImageView
+         android:layout_alignLeft="@+id/passwd_edittext"
+         android:layout_below="@+id/passwd_edittext" 
+         android:background="@drawable/login_edit_text_view"
+         android:layout_width="280dip"
+         android:layout_height="1dip"/>      
+     
+     <TextView
+         android:layout_width="wrap_content" 
+         android:layout_height="wrap_content"
+         android:textSize="@dimen/font_size_tiny"
+         android:layout_marginTop="10dip"
+         android:text="密码只能是6到24位的英文或数字哦"
+         android:textColor="@color/main_brown"
+         android:layout_below="@+id/passwd_edittext"
+         android:layout_centerHorizontal="true"/>
+    
+     <Button
+         android:layout_centerHorizontal="true"
+         android:id="@+id/next_button"
+         android:layout_below="@id/passwd_edittext"
+         android:textSize="@dimen/font_size_small"
+         android:textColor="@color/main_brown"
+         android:layout_width="280dip"
+         android:background="@drawable/login_button"
+         android:layout_height="45dip"
+         android:layout_marginTop="40dip"
+         android:text="完成" />       
+     
+</RelativeLayout>
