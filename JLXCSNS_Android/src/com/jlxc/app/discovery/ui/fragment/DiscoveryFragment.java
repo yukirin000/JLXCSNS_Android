@@ -474,8 +474,9 @@ public class DiscoveryFragment extends BaseFragment {
 				}
 			}
 		};
-		NoScrollGridView photoGridView = (NoScrollGridView) helper
-				.getView(R.id.gv_recommend_photos);
+		NoScrollGridView photoGridView =null;
+//		NoScrollGridView photoGridView = (NoScrollGridView) helper
+//				.getView(R.id.gv_recommend_photos);
 		// 设置gridview的尺寸
 		int photoCount = photoInfoList.size();
 		int gridviewWidth = (int) ((photoCount - 1)

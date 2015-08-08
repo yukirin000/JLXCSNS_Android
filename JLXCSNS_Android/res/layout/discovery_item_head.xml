@@ -10,7 +10,7 @@
         android:background="@color/main_light_white"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="@dimen/item_interior_space_medium" >
+        android:paddingBottom="@dimen/item_interior_space_large" >
 
         <TextView
             android:id="@+id/tv_add_contact_tips"
@@ -49,11 +49,12 @@
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_interior_space_huge"
+        android:layout_height="wrap_content"
         android:background="@color/main_light_white"
         android:paddingLeft="@dimen/item_interior_space_medium"
         android:text="可能认识的同学 ╭(′▽`)╯"
         android:textColor="@color/main_light_black"
-        android:textSize="@dimen/font_size_medium" />
+        android:textSize="@dimen/font_size_secondary"
+        android:paddingBottom="@dimen/item_interior_space_small" />
 
 </LinearLayout>

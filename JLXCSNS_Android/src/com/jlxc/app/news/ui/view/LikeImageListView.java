@@ -35,12 +35,10 @@ public class LikeImageListView extends LinearLayout {
 	// 小分辨率手机
 	private final static int SMALL_PIX = 480;
 	// 中等分辨率
-	private final static int MIDDLE_PIX = 540;
+	private final static int MIDDLE_PIX = 720;
 	// 大分辨率
 	private final static int LAGER_PIX = 1280;
-	// 超大分辨率
-	private final static int HUGE_PIX = 1680;
-	//上行文信息
+	// 上行文信息
 	private Context mContext;
 	// 屏幕的尺寸
 	private static int screenWidth = 0;
@@ -155,7 +153,7 @@ public class LikeImageListView extends LinearLayout {
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
-
+		LogUtils.i("----screenWidth=" + screenWidth);
 		// 计算显示的头像个数
 		if (screenWidth <= TINY_PIX) {
 			maxLikeCount = 6;
@@ -163,7 +161,7 @@ public class LikeImageListView extends LinearLayout {
 			maxLikeCount = 7;
 		} else if (screenWidth > SMALL_PIX && screenWidth <= MIDDLE_PIX) {
 			maxLikeCount = 8;
-		} else if (screenWidth > LAGER_PIX && screenWidth <= HUGE_PIX) {
+		} else if (screenWidth > MIDDLE_PIX && screenWidth <= LAGER_PIX) {
 			maxLikeCount = 9;
 		} else {
 			maxLikeCount = 10;

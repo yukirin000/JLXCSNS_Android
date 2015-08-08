@@ -319,16 +319,19 @@ public class NewsListFragment extends BaseFragment {
 		Map<String, Integer> commentMap = new HashMap<String, Integer>();
 		commentMap.put("NAME", R.id.txt_comment_nameA);
 		commentMap.put("CONTENT", R.id.txt_comment_contentA);
+		commentMap.put("LAYOUT", R.id.layout_comment_A);
 		commentViewList.add(commentMap);
 
 		commentMap = new HashMap<String, Integer>();
 		commentMap.put("NAME", R.id.txt_comment_nameB);
 		commentMap.put("CONTENT", R.id.txt_comment_contentB);
+		commentMap.put("LAYOUT", R.id.layout_comment_B);
 		commentViewList.add(commentMap);
 
 		commentMap = new HashMap<String, Integer>();
 		commentMap.put("NAME", R.id.txt_comment_nameC);
 		commentMap.put("CONTENT", R.id.txt_comment_contentC);
+		commentMap.put("LAYOUT", R.id.layout_comment_C);
 		commentViewList.add(commentMap);
 	}
 
@@ -503,9 +506,7 @@ public class NewsListFragment extends BaseFragment {
 		for (int iCount = 0; iCount < NEWS_COMMENT_NUM; ++iCount) {
 			if (iCount < commentList.size()) {
 				// 设为显示
-				helper.setVisible(commentViewList.get(iCount).get("NAME")
-						.intValue(), true);
-				helper.setVisible(commentViewList.get(iCount).get("CONTENT")
+				helper.setVisible(commentViewList.get(iCount).get("LAYOUT")
 						.intValue(), true);
 				// 绑定数据
 				helper.setText(commentViewList.get(iCount).get("NAME")
@@ -515,9 +516,7 @@ public class NewsListFragment extends BaseFragment {
 						+ commentList.get(iCount).getCommentContent());
 			} else {
 				// 设为隐藏
-				helper.setVisible(commentViewList.get(iCount).get("NAME")
-						.intValue(), false);
-				helper.setVisible(commentViewList.get(iCount).get("CONTENT")
+				helper.setVisible(commentViewList.get(iCount).get("LAYOUT")
 						.intValue(), false);
 			}
 
@@ -545,9 +544,10 @@ public class NewsListFragment extends BaseFragment {
 		for (int iCount = 0; iCount < NEWS_COMMENT_NUM; ++iCount) {
 			helper.setOnClickListener(commentViewList.get(iCount).get("NAME")
 					.intValue(), listener);
-			helper.setOnClickListener(commentViewList.get(iCount)
-					.get("CONTENT").intValue(), listener);
+			helper.setOnClickListener(commentViewList.get(iCount).get("LAYOUT")
+					.intValue(), listener);
 		}
+
 	}
 
 	/**
@@ -682,9 +682,9 @@ public class NewsListFragment extends BaseFragment {
 			case R.id.txt_comment_nameA:
 			case R.id.txt_comment_nameC:
 			case R.id.txt_comment_nameB:
-			case R.id.txt_comment_contentA:
-			case R.id.txt_comment_contentB:
-			case R.id.txt_comment_contentC:
+			case R.id.layout_comment_A:
+			case R.id.layout_comment_B:
+			case R.id.layout_comment_C:
 			case R.id.tv_more_comment:
 				CommentListItem commentData = (CommentListItem) newsAdapter
 						.getItem(postion);
@@ -698,13 +698,13 @@ public class NewsListFragment extends BaseFragment {
 							jumpToHomepage(JLXCUtils.stringToInt(commentData
 									.getCommentList().get(iCount).getUserId()));
 						} else if (viewID == commentViewList.get(iCount).get(
-								"CONTENT")) {
+								"LAYOUT")) {
 							if (!commentData
 									.getCommentList()
 									.get(iCount)
 									.getUserId()
-									.equals(UserManager.getInstance().getUser()
-											.getUid())) {
+									.equals(String.valueOf(UserManager
+											.getInstance().getUser().getUid()))) {
 								// 跳转至评论页面并打开评论框,并变为回复某某的状态
 								jumpToNewsDetail(commentData,
 										NewsConstants.KEY_BOARD_REPLY,

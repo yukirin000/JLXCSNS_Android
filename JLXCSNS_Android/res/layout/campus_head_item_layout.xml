@@ -33,9 +33,10 @@
         android:layout_height="@dimen/campus_title_high"
         android:background="@drawable/campus_person_title"
         android:gravity="center_vertical"
-        android:text="  这个学校的学生"
+        android:paddingLeft="@dimen/item_interior_space_medium"
+        android:text="这个学校的学生"
         android:textColor="@color/main_deep_black"
-        android:textSize="@dimen/font_size_large" />
+        android:textSize="@dimen/font_size_medium" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -85,10 +86,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/item_interior_space_small"
+            android:paddingLeft="@dimen/item_interior_space_medium"
             android:text="动态列表"
             android:textColor="@color/main_deep_black"
-            android:textSize="@dimen/font_size_large" />
+            android:textSize="@dimen/font_size_medium" />
     </FrameLayout>
 
 </LinearLayout>

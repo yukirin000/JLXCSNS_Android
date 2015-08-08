@@ -1,12 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_photos_root_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/main_deep_white"
-    android:orientation="vertical" >
+    android:gravity="right|center_vertical"
+    android:orientation="horizontal"
+    android:paddingRight="@dimen/item_interior_space_small" >
 
-    <!-- 可以左右滑动的相册隐藏 -->
+    <ImageView
+        android:id="@+id/iv_recommend_photo_A"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
+        android:clickable="false"
+        android:cropToPadding="true"
+        android:padding="@dimen/item_interior_space_small"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher" />
 
+    <ImageView
+        android:id="@+id/iv_recommend_photo_B"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
+        android:clickable="false"
+        android:cropToPadding="true"
+        android:padding="@dimen/item_interior_space_small"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/iv_recommend_photo_C"
+        android:layout_width="@dimen/image_size_large"
+        android:layout_height="@dimen/image_size_large"
+        android:clickable="false"
+        android:cropToPadding="true"
+        android:padding="@dimen/item_interior_space_small"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher" />
+    <!--
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,41 +62,6 @@
             </com.jlxc.app.base.ui.view.NoScrollGridView>
         </LinearLayout>
     </HorizontalScrollView>
-
-    <LinearLayout
-        android:id="@+id/layout_photos_root_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/main_deep_white"
-        android:gravity="right"
-        android:paddingRight="@dimen/item_interior_space_small" >
-
-        <ImageView
-            android:id="@+id/iv_recommend_photo_A"
-            android:layout_width="@dimen/image_size_medium"
-            android:layout_height="@dimen/image_size_medium"
-            android:clickable="false"
-            android:padding="@dimen/item_interior_space_small"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher" />
-
-        <ImageView
-            android:id="@+id/iv_recommend_photo_B"
-            android:layout_width="@dimen/image_size_medium"
-            android:layout_height="@dimen/image_size_medium"
-            android:clickable="false"
-            android:padding="@dimen/item_interior_space_small"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher" />
-
-        <ImageView
-            android:id="@+id/iv_recommend_photo_C"
-            android:layout_width="@dimen/image_size_medium"
-            android:layout_height="@dimen/image_size_medium"
-            android:clickable="false"
-            android:padding="@dimen/item_interior_space_small"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher" />
-    </LinearLayout>
+    -->
 
 </LinearLayout>

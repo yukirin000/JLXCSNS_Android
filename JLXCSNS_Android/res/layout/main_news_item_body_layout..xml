@@ -16,6 +16,7 @@
         android:id="@+id/txt_main_news_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/selector_deep_white_click"
         android:text="内容"
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />

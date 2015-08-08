@@ -42,7 +42,7 @@ public class MultiImageView extends RelativeLayout {
 	// 手机宽度
 	private final static int SMALL_PIX = 480;
 	private final static int MIDDLE_PIX = 720;
-	private final static int LARGE_PIX = 1080;
+	private final static int LARGE_PIX = 1280;
 	// 根布局
 	private RelativeLayout rootView;
 	// 多图

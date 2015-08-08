@@ -313,6 +313,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			public void onStart(int operateType) {
 				switch (operateType) {
 				case NewsOperate.OP_Type_Delete_News:
+					// 删除动态
 					break;
 
 				case NewsOperate.OP_Type_Add_Comment:
@@ -366,10 +367,27 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 
 				case NewsOperate.OP_Type_Delete_Comment:
 					if (isSucceed) {
-						ToastUtil.show(NewsDetailActivity.this, "删除成功");
 						detailAdapter.remove(currentOperateIndex);
+						String topID = currentCommentModel.getCommentID();
+						// 删除所属的子评论
+						while ( currentOperateIndex < detailAdapter
+								.getCount()) {
+							if (ItemModel.NEWS_DETAIL_SUB_COMMENT == detailAdapter
+									.getItem(currentOperateIndex).getItemType()) {
+								if (((SubCommentItem) detailAdapter
+										.getItem(currentOperateIndex)).getSubCommentModel()
+										.getTopCommentId().equals(topID)) {
+									detailAdapter.remove(currentOperateIndex);
+								} else {
+									break;
+								}
+							} else {
+								break;
+							}
+						}
+						ToastUtil.show(NewsDetailActivity.this, "删除成功");
 					} else {
-						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败");
+						ToastUtil.show(NewsDetailActivity.this, "竟然删除失败，检查网络");
 					}
 					break;
 
@@ -683,7 +701,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 		};
 		helper.setOnClickListener(R.id.iv_comment_head, listener);
-		helper.setOnClickListener(R.id.txt_news_detail_comment_content,
+		helper.setOnClickListener(R.id.layout_commnt_root_view,
 				listener);
 		helper.setOnClickListener(R.id.txt_news_detail_comment_name, listener);
 	}
@@ -874,12 +892,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				likeOperate();
 				break;
 
-			case R.id.txt_news_detail_comment_content:
+			case R.id.layout_commnt_root_view:
 			case R.id.iv_comment_head:
 			case R.id.txt_news_detail_comment_name:
 				currentCommentModel = ((CommentItem) detailAdapter
 						.getItem(postion)).getCommentModel();
-				if (viewID == R.id.txt_news_detail_comment_content) {
+				if (viewID == R.id.layout_commnt_root_view) {
 					currentOperateIndex = postion;
 					if (currentCommentModel.getUserId().equals(
 							String.valueOf(UserManager.getInstance().getUser()
