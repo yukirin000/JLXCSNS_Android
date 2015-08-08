@@ -21,7 +21,7 @@
     <color name="main_orange">#ff8400</color>
     <!-- 纯白色 -->
     <color name="main_deep_white">#FFFFFF</color>
-    <!-- 微白色 -->    <color name="main_thin_white">#fafafa</color>
+    <!-- 微白色 -->    <color name="main_thin_white">#e0e0e0</color>
     <!-- 浅白色 -->
     <color name="main_light_white">#ebebeb</color>
     <!-- 主深黑 -->
