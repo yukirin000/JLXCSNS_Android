@@ -42,7 +42,7 @@
          android:layout_height="wrap_content"
          android:textSize="@dimen/font_size_tiny"
          android:layout_marginTop="10dip"
-         android:text="密码只能是6到24位的英文或数字哦"
+         android:text="密码长度只能是6到24位哦"
          android:textColor="@color/main_brown"
          android:layout_below="@+id/passwd_edittext"
          android:layout_centerHorizontal="true"/>
