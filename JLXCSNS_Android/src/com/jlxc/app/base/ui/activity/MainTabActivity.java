@@ -147,6 +147,7 @@ public class MainTabActivity extends BaseActivity {
 			@Override
 			public void onSuccess(String arg0) {
 //				Toast.makeText(MainTabActivity.this, "connect onSuccess", Toast.LENGTH_SHORT).show();
+				LogUtils.i("rong init ok", 1);
 				RongCloudEvent.getInstance().setOtherListener();
 				//设置im未读监听
 				final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
@@ -173,10 +174,10 @@ public class MainTabActivity extends BaseActivity {
 //		registerMessageRecevier();
 		final UserModel userModel = UserManager.getInstance().getUser();
 		if (userModel.getUid() != 0) {
-			LogUtils.i("yunba test", 1);
 			YunBaManager.subscribe(this, new String[]{JLXCConst.JLXC+userModel.getUid()}, new IMqttActionListener() {
 				@Override
 				public void onSuccess(IMqttToken arg0) {
+					LogUtils.i("yunba init ok", 1);
 //					LogUtils.i("yunba success"+JLXCConst.JLXC+userModel.getUid(), 1);
 //					Looper.prepare();
 //					Toast.makeText(MainTabActivity.this, "yunba success", Toast.LENGTH_SHORT).show();

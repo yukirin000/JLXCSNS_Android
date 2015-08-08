@@ -1,25 +1,17 @@
 package com.jlxc.app.login.ui.activity;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.R.bool;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
-
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
@@ -31,7 +23,6 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
@@ -45,14 +36,8 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	// 是否是忘记密码
 	private Boolean isFindPwd;
-	// 当前倒计时的值
-	private int countdownValue = 0;
-	// 倒计时对象
-	private CountDownTimer verifyCountdownTimer = null;
 	// 用户 的电话号码
 	private String userPhoneNumber;
-	// 用户输入的验证码
-	private String verifyCodeEditTextValue;
 	// 密码
 	private String password = "";
 	// 返回按钮
@@ -61,24 +46,15 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	// 页面标头
 	@ViewInject(R.id.base_tv_title)
 	private TextView titletTextView;
-	// 提示电话的textview
-	@ViewInject(R.id.phone_prompt_textview)
-	private TextView phonePromptTextView;
-	// 验证码输入框
-	@ViewInject(R.id.verificationcode_edittext)
-	private EditText verifycodeEditText;
-	// 下一步按钮
+	// 完成按钮
 	@ViewInject(R.id.next_button)
 	private Button nextButton;
-	// 重新验证
-	@ViewInject(R.id.revalidated_textview)
-	private TextView revalidatedTextView;
 	// 密码框
 	@ViewInject(R.id.passwd_edittext)
 	private EditText passwdeEditText;
 
 	// 点击事件绑定
-	@OnClick({ R.id.base_tv_back, R.id.next_button, R.id.revalidated_textview,
+	@OnClick({ R.id.base_tv_back, R.id.next_button,
 			R.id.register_activity })
 	public void viewCickListener(View view) {
 		switch (view.getId()) {
@@ -89,9 +65,9 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 			// 点击下一步
 			nextClick();
 			break;
-		case R.id.revalidated_textview:
-			getVerificationCode();
-			break;
+//		case R.id.revalidated_textview:
+//			getVerificationCode();
+//			break;
 		case R.id.register_activity:
 			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -110,33 +86,25 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	// 点击返回
 	private void backClick() {
-		if (countdownValue > 0) {
-			new AlertDialog.Builder(RegisterActivity.this)
-					.setTitle("提示")
-					.setMessage("已经发送验证码了，再等会儿")
-					.setPositiveButton("好的", null)
-					.setNegativeButton("不了",
-							new DialogInterface.OnClickListener() {// 添加返回按钮
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									verifyCountdownTimer.cancel();
-									finishWithRight();
-								}
-							}).show();
-		} else {
-			finishWithRight();
-		}
+		new AlertDialog.Builder(RegisterActivity.this)
+				.setTitle("提示")
+				.setMessage("确定不注册了么T_T")
+				.setPositiveButton("不了", null)
+				.setNegativeButton("是的",
+						new DialogInterface.OnClickListener() {// 添加返回按钮
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								finishWithRight();
+							}
+						}).show();
 	}
 
 	// 点击下一步按钮
 	private void nextClick() {
-		verifyCodeEditTextValue = verifycodeEditText.getText().toString();
 		password = passwdeEditText.getText().toString();
 		// 判断输入值是否正确
-		if (verifyCodeEditTextValue.length() == 0) {
-			ToastUtil.show(RegisterActivity.this, "验证码未输入");
-		} else if (password.length() < 6) {
+		if (password.length() < 6) {
 			ToastUtil.show(RegisterActivity.this, "密码最少得6位啦");
 		} else {
 			// 忘记密码
@@ -210,8 +178,6 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("username", userPhoneNumber);
 		params.addBodyParameter("password", Md5Utils.encode(password));
-		params.addBodyParameter("verify_code",
-				String.valueOf(verifyCodeEditTextValue));
 
 		HttpManager.post(JLXCConst.FIND_PWD, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -373,49 +339,30 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		
 		init();
 		titletTextView.setText("注册");
-		phonePromptTextView.setText("验证码已发送至：" + userPhoneNumber);
-		revalidatedTextView.setEnabled(false);
-		revalidatedTextView.setTextColor(Color.GRAY);
-		verifyCountdownTimer = new CountDownTimer(60000, 1000) {
-
-			@Override
-			public void onTick(long millisUntilFinished) {
-				countdownValue = (int) millisUntilFinished / 1000;
-				revalidatedTextView.setText(countdownValue + "s 后重发");
-			}
-
-			@Override
-			public void onFinish() {
-				countdownValue = 0;
-				revalidatedTextView.setEnabled(true);
-				revalidatedTextView.setText("获取验证码");
-				revalidatedTextView.setTextColor(Color.BLUE);
-			}
-		};
-		// 开始倒计时
-		verifyCountdownTimer.start();
+		RelativeLayout rlBar = (RelativeLayout) findViewById(R.id.layout_base_title);
+		rlBar.setBackgroundResource(R.color.main_clear);		
 	}
 	
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		try {
-			//验证码接收器
-			EventHandler eh=new EventHandler(){
-				@Override
-				public void afterEvent(int event, int result, Object data) {
-					Message msg = new Message();
-					msg.arg1 = event;
-					msg.arg2 = result;
-					msg.obj = data;
-					handler.sendMessage(msg);
-				}
-			};
-			SMSSDK.registerEventHandler(eh);
-		} catch (Exception e) {
-			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
-		}
+//		try {
+//			//验证码接收器
+//			EventHandler eh=new EventHandler(){
+//				@Override
+//				public void afterEvent(int event, int result, Object data) {
+//					Message msg = new Message();
+//					msg.arg1 = event;
+//					msg.arg2 = result;
+//					msg.obj = data;
+//					handler.sendMessage(msg);
+//				}
+//			};
+//			SMSSDK.registerEventHandler(eh);
+//		} catch (Exception e) {
+//			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+//		}
 		
 	}
 	
@@ -423,11 +370,11 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		try{
-			SMSSDK.unregisterAllEventHandler();
-		} catch (Exception e) {
-			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
-		}		
+//		try{
+//			SMSSDK.unregisterAllEventHandler();
+//		} catch (Exception e) {
+//			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+//		}		
 	}
 
 	@Override
@@ -436,14 +383,14 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	}
 
 	// 获取验证码
-	private void getVerificationCode() {
-		
-		try {
-			//发送验证码
-			SMSSDK.getVerificationCode("86",userPhoneNumber);			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+//	private void getVerificationCode() {
+//		
+//		try {
+//			//发送验证码
+//			SMSSDK.getVerificationCode("86",userPhoneNumber);			
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
 		
 //		// 设置字体颜色
 //		revalidatedTextView.setTextColor(Color.GRAY);
@@ -479,7 +426,7 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 //						showConfirmAlert("提示", "获取失败，请检查网络连接!");
 //					}
 //				}, null));
-	}
+//	}
 
 	/**
 	 * 重写返回操作
@@ -493,47 +440,47 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 			return super.onKeyDown(keyCode, event);
 	}
 	
-	@SuppressLint("HandlerLeak") 
-	Handler handler=new Handler(){
-
-		@Override
-		public void handleMessage(Message msg) {
-			hideLoading();
-			// TODO Auto-generated method stub
-			super.handleMessage(msg);
-			int event = msg.arg1;
-			int result = msg.arg2;
-			Object data = msg.obj;
-			Log.e("event", "event="+event);
-			if (result == SMSSDK.RESULT_COMPLETE) {
-				//短信注册成功后，返回MainActivity,然后提示新好友
-				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
-					//完成注册或者找回密码
-					if (isFindPwd) {
-						finishPwd();
-					} else {
-						// 注册
-						finishRegister();
-					}
-				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-					ToastUtil.show(RegisterActivity.this, "验证码已发送至您的手机");	
-					
-				}else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){//返回支持发送验证码的国家列表
-//					Toast.makeText(getApplicationContext(), "获取国家列表成功", Toast.LENGTH_SHORT).show();
-					
-				}
-			} else {
-				((Throwable) data).printStackTrace();
-				ToastUtil.show(RegisterActivity.this, "验证码错误");
-				System.out.println(((Throwable) data).toString());
-//				int resId = getStringRes(RegisterActivity.this, "smssdk_network_error");
-//				Toast.makeText(MainActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
-//				if (resId > 0) {
-//					Toast.makeText(MainActivity.this, resId, Toast.LENGTH_SHORT).show();
+//	@SuppressLint("HandlerLeak") 
+//	Handler handler=new Handler(){
+//
+//		@Override
+//		public void handleMessage(Message msg) {
+//			hideLoading();
+//			// TODO Auto-generated method stub
+//			super.handleMessage(msg);
+//			int event = msg.arg1;
+//			int result = msg.arg2;
+//			Object data = msg.obj;
+//			Log.e("event", "event="+event);
+//			if (result == SMSSDK.RESULT_COMPLETE) {
+//				//短信注册成功后，返回MainActivity,然后提示新好友
+//				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
+//					//完成注册或者找回密码
+//					if (isFindPwd) {
+//						finishPwd();
+//					} else {
+//						// 注册
+//						finishRegister();
+//					}
+//				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+//					ToastUtil.show(RegisterActivity.this, "验证码已发送至您的手机");	
+//					
+//				}else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){//返回支持发送验证码的国家列表
+////					Toast.makeText(getApplicationContext(), "获取国家列表成功", Toast.LENGTH_SHORT).show();
+//					
 //				}
-			}
-			
-		}
-		
-	};
+//			} else {
+//				((Throwable) data).printStackTrace();
+//				ToastUtil.show(RegisterActivity.this, "验证码错误");
+//				System.out.println(((Throwable) data).toString());
+////				int resId = getStringRes(RegisterActivity.this, "smssdk_network_error");
+////				Toast.makeText(MainActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
+////				if (resId > 0) {
+////					Toast.makeText(MainActivity.this, resId, Toast.LENGTH_SHORT).show();
+////				}
+//			}
+//			
+//		}
+//		
+//	};
 }

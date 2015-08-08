@@ -3,6 +3,7 @@ package com.jlxc.app.login.ui.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.smssdk.EventHandler;
@@ -43,13 +46,16 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 	//登录注册按钮
 	@ViewInject(R.id.loginBtn)
 	private Button loginBtn;
+	//找回密码按钮
+	@ViewInject(R.id.find_pwd_text_view)
+	private TextView findPwdTextView;	
 	//布局文件
 	@ViewInject(R.id.second_login_activity)
-	private LinearLayout secondLoginLayout;
+	private RelativeLayout secondLoginLayout;
 	
 	private String username;
 	
-	@OnClick(value={R.id.loginBtn,R.id.second_login_activity,R.id.findPwdBtn})
+	@OnClick(value={R.id.loginBtn,R.id.second_login_activity,R.id.find_pwd_text_view})
 	public void viewClick(View v) {
 		
 		switch (v.getId()) {
@@ -57,7 +63,7 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 			//登录
 			login();
 			break;
-		case R.id.findPwdBtn:
+		case R.id.find_pwd_text_view:
 			//找回密码
 			findPwd();
 			break;	
@@ -141,7 +147,7 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 //		showLoading("验证码获取中..", false);
 //		//发送验证码
 //		SMSSDK.getVerificationCode("86",username);
-    	Intent intent = new Intent(SecondLoginActivity.this, RegisterActivity.class);
+    	Intent intent = new Intent(SecondLoginActivity.this, VerifyActivity.class);
     	intent.putExtra("username", username);
     	intent.putExtra("isFindPwd", true);
     	startActivityWithRight(intent);			
@@ -192,11 +198,17 @@ public class SecondLoginActivity extends BaseActivityWithTopBar {
 		return R.layout.activity_second_login;
 	}
 
-	@Override
+	@SuppressLint("ResourceAsColor") @Override
 	protected void setUpView() {
 		//设置用户名
 		Intent intent =	getIntent();
 		setUsername(intent.getStringExtra("username"));
+		setBarText("登录");
+		RelativeLayout rlBar = (RelativeLayout) findViewById(R.id.layout_base_title);
+		rlBar.setBackgroundResource(R.color.main_clear);
+		
+//		findPwdTextView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG ); //下划线
+		
 //		passwordEt.setText("123456");
 //		EventHandler eh=new EventHandler(){
 //			@Override

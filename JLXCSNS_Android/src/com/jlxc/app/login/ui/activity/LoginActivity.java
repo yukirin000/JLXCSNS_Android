@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import cn.smssdk.EventHandler;
@@ -44,7 +45,7 @@ public class LoginActivity extends BaseActivity {
 	private Button loginRegisterBtn;
 	//布局文件
 	@ViewInject(R.id.login_activity)
-	private LinearLayout loginLayout;
+	private RelativeLayout loginLayout;
 	
 	@OnClick(value={R.id.loginRegisterBtn,R.id.login_activity})
 	public void loginOrRegisterClick(View v) {
@@ -69,7 +70,7 @@ public class LoginActivity extends BaseActivity {
 	public void loginOrRegister() {
 		final String username = usernameEt.getText().toString().trim();
 		if (!username.matches(JLXCConst.PHONENUMBER_PATTERN)) {
-			Toast.makeText(LoginActivity.this, "请输入正确的手机号码",
+			Toast.makeText(LoginActivity.this, "真笨，手机号码都写错了 （︶︿︶）",
 					Toast.LENGTH_SHORT).show();
 			return; 
 		}
@@ -88,6 +89,7 @@ public class LoginActivity extends BaseActivity {
 				int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
+					hideLoading();
 					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
 					//登录
 			        int loginDirection    = 1;
@@ -95,7 +97,6 @@ public class LoginActivity extends BaseActivity {
 			        int registerDirection = 2;
 			        int direction = result.getIntValue("direction");
 		            if (direction == loginDirection) {
-		            	hideLoading();
 		            	//跳转
 		            	Intent intent = new Intent(LoginActivity.this, SecondLoginActivity.class);
 		            	intent.putExtra("username", username);
@@ -131,7 +132,7 @@ public class LoginActivity extends BaseActivity {
 //		//发送验证码
 //		SMSSDK.getVerificationCode("86",usernameEt.getText().toString().trim());
 		
-		Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+		Intent intent = new Intent(LoginActivity.this, VerifyActivity.class);
     	intent.putExtra("username", usernameEt.getText().toString().trim());
     	startActivityWithRight(intent);	
 		

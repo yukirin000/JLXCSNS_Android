@@ -38,9 +38,6 @@ public class MainPageFragment extends BaseFragment {
 	// 主页viewpager
 	@ViewInject(R.id.viewpager_main)
 	private ViewPager mainPager;
-	// 主页title
-	@ViewInject(R.id.layout_main_title_bar)
-	private LinearLayout titleBar;
 	// title的项目
 	@ViewInject(R.id.layout_title_content)
 	private LinearLayout titleContent;
