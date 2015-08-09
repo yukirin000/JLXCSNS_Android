@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.jlxc.app.R;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
-public class ImageLoadingDialog {
+public class CustomImageLoadingDialog {
 
 	/**
 	 * 得到自定义的加载大图的Dialog

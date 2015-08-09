@@ -36,8 +36,9 @@ import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
-import com.jlxc.app.base.ui.view.ItemDialog;
-import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
 import com.jlxc.app.base.ui.view.KeyboardLayout;
 import com.jlxc.app.base.ui.view.KeyboardLayout.onKeyboardsChangeListener;
 import com.jlxc.app.base.utils.JLXCConst;
@@ -370,13 +371,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						detailAdapter.remove(currentOperateIndex);
 						String topID = currentCommentModel.getCommentID();
 						// 删除所属的子评论
-						while ( currentOperateIndex < detailAdapter
-								.getCount()) {
+						while (currentOperateIndex < detailAdapter.getCount()) {
 							if (ItemModel.NEWS_DETAIL_SUB_COMMENT == detailAdapter
 									.getItem(currentOperateIndex).getItemType()) {
 								if (((SubCommentItem) detailAdapter
-										.getItem(currentOperateIndex)).getSubCommentModel()
-										.getTopCommentId().equals(topID)) {
+										.getItem(currentOperateIndex))
+										.getSubCommentModel().getTopCommentId()
+										.equals(topID)) {
 									detailAdapter.remove(currentOperateIndex);
 								} else {
 									break;
@@ -701,8 +702,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 		};
 		helper.setOnClickListener(R.id.iv_comment_head, listener);
-		helper.setOnClickListener(R.id.layout_commnt_root_view,
-				listener);
+		helper.setOnClickListener(R.id.layout_commnt_root_view, listener);
 		helper.setOnClickListener(R.id.txt_news_detail_comment_name, listener);
 	}
 
@@ -802,25 +802,22 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 删除动态
 	 * */
 	private void deleteCurrentNews() {
-		final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
-		alterDialog.setMessage("真的狠心删除吗？");
-		alterDialog.setCancelable(true);
-
-		alterDialog.setPositiveButton("是的",
-				new DialogInterface.OnClickListener() {
+		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+				NewsDetailActivity.this, "真的狠心删除吗？", "狠心", "舍不得");
+		confirmDialog.show();
+		confirmDialog
+				.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
+					public void doConfirm() {
 						newsOPerate.deleteNews(currentNews.getNewsID());
+						confirmDialog.dismiss();
 					}
-				});
-		alterDialog.setNegativeButton("舍不得",
-				new DialogInterface.OnClickListener() {
+
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
+					public void doCancel() {
+						confirmDialog.dismiss();
 					}
 				});
-		alterDialog.show();
 	}
 
 	// 点击回复发送按钮
@@ -905,7 +902,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						// 如果是自己发布的评论，则删除评论
 						List<String> menuList = new ArrayList<String>();
 						menuList.add("删除评论");
-						final ItemDialog downDialog = new ItemDialog(
+						final CustomListViewDialog downDialog = new CustomListViewDialog(
 								NewsDetailActivity.this, menuList);
 						downDialog.setClickCallBack(new ClickCallBack() {
 
@@ -947,7 +944,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						// 如果是自己发布的评论，则删除评论
 						List<String> menuList = new ArrayList<String>();
 						menuList.add("删除评论");
-						final ItemDialog downDialog = new ItemDialog(
+						final CustomListViewDialog downDialog = new CustomListViewDialog(
 								NewsDetailActivity.this, menuList);
 						downDialog.setClickCallBack(new ClickCallBack() {
 

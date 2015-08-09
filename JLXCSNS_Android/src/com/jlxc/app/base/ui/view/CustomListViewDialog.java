@@ -18,7 +18,7 @@ import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 
-public class ItemDialog extends Dialog {
+public class CustomListViewDialog extends Dialog {
 
 	private Context mContext;
 	// layout
@@ -30,7 +30,7 @@ public class ItemDialog extends Dialog {
 	// 适配器
 	private HelloHaAdapter<String> itemAdapter;
 
-	public ItemDialog(Context context, List<String> list) {
+	public CustomListViewDialog(Context context, List<String> list) {
 		super(context, R.style.item_dialog);
 		this.listContent = list;
 		this.mContext = context;

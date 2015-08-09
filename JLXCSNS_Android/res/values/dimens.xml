@@ -23,6 +23,12 @@
     <dimen name="item_interior_space_medium">10dp</dimen>
     <dimen name="item_interior_space_large">15dp</dimen>
     <dimen name="item_interior_space_huge">20dp</dimen>
+    <!-- 自定义dialog相关尺寸 -->
+    <dimen name="dialog_interior_size_tiny">10dp</dimen>
+    <dimen name="dialog_interior_size_small">20dp</dimen>
+    <dimen name="dialog_interior_size_secondary">40dp</dimen>
+    <dimen name="dialog_interior_size_medium">50dp</dimen>
+    <dimen name="dialog_interior_size_large">110dp</dimen>
     <!-- title相关的值 -->
     <dimen name="campus_title_high">40dp</dimen>
     <dimen name="title_interior_size_tiny">2dp</dimen>

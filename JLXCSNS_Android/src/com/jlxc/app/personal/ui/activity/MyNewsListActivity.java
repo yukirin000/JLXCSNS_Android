@@ -476,9 +476,9 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
-						super.onFailure(arg0, arg1, flag);
 						hideLoading();
-						ToastUtil.show(MyNewsListActivity.this, "网络有毒=_=");
+						super.onFailure(arg0, arg1, flag);
+						ToastUtil.show(MyNewsListActivity.this, "网络 太差，请检查 =_=||");
 						newsListView.onRefreshComplete();
 						if (!islastPage) {
 							newsListView.setMode(Mode.BOTH);

@@ -28,8 +28,8 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
-import com.jlxc.app.base.ui.view.ItemDialog;
-import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
+import com.jlxc.app.base.ui.view.CustomListViewDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -86,7 +86,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		menuList.add("全部要看");
 		menuList.add("只看帅哥");
 		menuList.add("只看美女");
-		final ItemDialog downDialog = new ItemDialog(
+		final CustomListViewDialog downDialog = new CustomListViewDialog(
 				CampusAllPersonActivity.this, menuList);
 		downDialog.setClickCallBack(new ClickCallBack() {
 

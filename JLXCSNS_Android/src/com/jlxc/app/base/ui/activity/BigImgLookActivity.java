@@ -34,9 +34,9 @@ import android.widget.LinearLayout;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.manager.BitmapManager;
-import com.jlxc.app.base.ui.view.ImageLoadingDialog;
-import com.jlxc.app.base.ui.view.ItemDialog;
-import com.jlxc.app.base.ui.view.ItemDialog.ClickCallBack;
+import com.jlxc.app.base.ui.view.CustomImageLoadingDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
 import com.jlxc.app.base.ui.view.TouchImageView;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -90,7 +90,7 @@ public class BigImgLookActivity extends BaseActivity {
 	// 加载动画
 	private Dialog loadingDialog;
 	// 保存dialog
-	private ItemDialog downDialog;
+	private CustomListViewDialog downDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +121,7 @@ public class BigImgLookActivity extends BaseActivity {
 
 	@SuppressWarnings("unchecked")
 	private void init() {
-		loadingDialog = ImageLoadingDialog
+		loadingDialog = CustomImageLoadingDialog
 				.createLoadingDialog(BigImgLookActivity.this);
 		Intent intent = this.getIntent();
 		if (intent.hasExtra(INTENT_KEY)) {
@@ -240,7 +240,7 @@ public class BigImgLookActivity extends BaseActivity {
 	private void imageLongClick() {
 		List<String> menuList = new ArrayList<String>();
 		menuList.add("保存到手机");
-		downDialog = new ItemDialog(BigImgLookActivity.this, menuList);
+		downDialog = new CustomListViewDialog(BigImgLookActivity.this, menuList);
 		downDialog.setClickCallBack(new ClickCallBack() {
 
 			@Override

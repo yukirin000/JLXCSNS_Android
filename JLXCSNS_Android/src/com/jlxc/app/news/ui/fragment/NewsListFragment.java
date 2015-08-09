@@ -132,7 +132,7 @@ public class NewsListFragment extends BaseFragment {
 	 * 数据的初始化
 	 * */
 	private void init() {
-		mContext = this.getActivity().getApplicationContext();
+		mContext = this.getActivity();
 
 		itemViewClickListener = new ItemViewClick();
 		newsOPerate = new NewsOperate(mContext);
@@ -510,10 +510,11 @@ public class NewsListFragment extends BaseFragment {
 						.intValue(), true);
 				// 绑定数据
 				helper.setText(commentViewList.get(iCount).get("NAME")
-						.intValue(), commentList.get(iCount).getPublishName());
+						.intValue(), commentList.get(iCount).getPublishName()
+						+ " : ");
 				helper.setText(commentViewList.get(iCount).get("CONTENT")
-						.intValue(), " : "
-						+ commentList.get(iCount).getCommentContent());
+						.intValue(), commentList.get(iCount)
+						.getCommentContent());
 			} else {
 				// 设为隐藏
 				helper.setVisible(commentViewList.get(iCount).get("LAYOUT")
