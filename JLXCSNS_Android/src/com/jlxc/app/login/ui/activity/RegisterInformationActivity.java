@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
@@ -71,9 +72,6 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	//姓名
 	@ViewInject(R.id.nameEt)
 	private EditText nameEditText;
-	//确定按钮
-	@ViewInject(R.id.confirmBtn)
-	private Button confirmButton;
 	//点击头像的image弹窗
 	AlertDialog imageDialog;
 	
@@ -374,7 +372,10 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 //		radioGroup.getCheckedRadioButtonId();
 		radioGroup.check(R.id.radioMale);
-		addRightBtn("跳过");
+//		addRightBtn("跳过");
+		setBarText("登录");
+		RelativeLayout rlBar = (RelativeLayout) findViewById(R.id.layout_base_title);
+		rlBar.setBackgroundResource(R.color.main_clear);
 		
 	}
 	
