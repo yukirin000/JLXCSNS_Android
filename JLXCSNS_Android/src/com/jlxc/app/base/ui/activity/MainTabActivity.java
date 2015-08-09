@@ -134,14 +134,14 @@ public class MainTabActivity extends BaseActivity {
 		if (null != userModel.getIm_token() && userModel.getIm_token().length()>0) {
 			token = userModel.getIm_token();
 		}
-		
+		LogUtils.i(""+token, 1);
 		//先设置一次 避免重启的时候因为已连接而导致没设置
 		RongCloudEvent.getInstance().setOtherListener();
 		RongIM.connect(token, new ConnectCallback() {
 
 			@Override 
 			public void onError(ErrorCode arg0) {
-				Toast.makeText(MainTabActivity.this, "connect onError", Toast.LENGTH_SHORT).show();
+				LogUtils.i("error", 1);
 			}
 
 			@Override
@@ -164,7 +164,7 @@ public class MainTabActivity extends BaseActivity {
 
 			@Override
 			public void onTokenIncorrect() {
-				Toast.makeText(MainTabActivity.this, "token error", Toast.LENGTH_SHORT).show();
+				LogUtils.i("token incorrect", 1);
 			}
 
 		});

@@ -28,7 +28,9 @@ import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -131,16 +133,31 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 						@Override
 						public boolean onLongClick(View v) {
 							//长按弹窗
-							Builder deleteBuilder = new AlertDialog.Builder(VisitListActivity.this);
-							deleteBuilder.setTitle("确定要删除吗");
-							deleteBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									deleteVisitModel(index);
-								}
-							});
-							deleteBuilder.setNegativeButton("取消", null);
-							deleteBuilder.show();
+//							Builder deleteBuilder = new AlertDialog.Builder(VisitListActivity.this);
+//							deleteBuilder.setTitle("确定要删除吗");
+//							deleteBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//								@Override
+//								public void onClick(DialogInterface dialog, int which) {
+//									deleteVisitModel(index);
+//								}
+//							});
+//							deleteBuilder.setNegativeButton("取消", null);
+//							deleteBuilder.show();
+							
+							final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+									VisitListActivity.this, "确定要删除吗", "确定", "取消");
+							confirmDialog.show();
+							confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+										@Override
+										public void doConfirm() {
+											deleteVisitModel(index); 
+											confirmDialog.dismiss();
+										}
+										@Override
+										public void doCancel() {
+											confirmDialog.dismiss();
+										}
+									});								
 							
 							return false;
 						}

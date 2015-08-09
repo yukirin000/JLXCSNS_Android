@@ -13,6 +13,7 @@ import android.net.Uri;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
@@ -57,20 +58,23 @@ public class NewVersionCheckManager {
 							if (0 != localVersion && remoteVersion > localVersion) {
 //								createNewVersionDialog(summary, fileAbsolutePath, isForceUpdate, isClearData);
 								
-								Builder alertBuilder = new AlertDialog.Builder(context);
-								alertBuilder.setTitle("发现新版本");
-								alertBuilder.setMessage("是否要更新吗?");
-								alertBuilder.setNegativeButton("取消", null);
-								alertBuilder.setPositiveButton("确定", new OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
-										Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(versionPath));
-										intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-										activity.startActivity(intent);										
-									}
-								});
-								alertBuilder.show();
+								final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+										context, "发现新版本？", "确定", "取消");
+								confirmDialog.show();
+								confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+											@Override
+											public void doConfirm() {
+												Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(versionPath));
+												intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+												activity.startActivity(intent);	
+												confirmDialog.dismiss();
+											}
 
+											@Override
+											public void doCancel() {
+												confirmDialog.dismiss();
+											}
+										});								
 							}else{
 								if (showToast) {
 									ToastUtil.show(context, "已经是最新版本");	

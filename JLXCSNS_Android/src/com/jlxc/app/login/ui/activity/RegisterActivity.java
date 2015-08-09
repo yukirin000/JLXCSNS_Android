@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.CountDownTimer;
 
 import com.alibaba.fastjson.JSONObject;
@@ -22,6 +23,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -86,18 +88,22 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 
 	// 点击返回
 	private void backClick() {
-		new AlertDialog.Builder(RegisterActivity.this)
-				.setTitle("提示")
-				.setMessage("确定不注册了么T_T")
-				.setPositiveButton("不了", null)
-				.setNegativeButton("是的",
-						new DialogInterface.OnClickListener() {// 添加返回按钮
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								finishWithRight();
-							}
-						}).show();
+		
+		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+				this, "确定不注册了么T_T", "是的", "不了");
+		confirmDialog.show();
+		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+					@Override
+					public void doConfirm() {
+						finishWithRight();
+						confirmDialog.dismiss();
+					}
+
+					@Override
+					public void doCancel() {
+						confirmDialog.dismiss();
+					}
+				});			
 	}
 
 	// 点击下一步按钮

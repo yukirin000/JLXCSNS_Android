@@ -38,6 +38,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -425,70 +426,90 @@ public class OtherPersonalActivity extends BaseActivity{
 	//添加好友
 	private void addFriend() {
 		
-		new AlertDialog.Builder(this).setTitle("确定要添加好友吗？").setNegativeButton("取消", null)
-						.setPositiveButton("确定", new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								// 参数设置
-								RequestParams params = new RequestParams();
-								params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
-								params.addBodyParameter("friend_id", otherUserModel.getUid()+"");
-								
-								showLoading("添加中^_^", false);
-								HttpManager.post(JLXCConst.Add_FRIEND, params,
-										new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+//		new AlertDialog.Builder(this).setTitle("确定要添加好友吗？").setNegativeButton("取消", null)
+//						.setPositiveButton("确定", new OnClickListener() {
+//							@Override
+//							public void onClick(DialogInterface dialog, int which) {
+//								addFriendConfirm();
+//							}
+//						}).show();
+		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+				this, "确定要添加好友吗？", "确定", "取消");
+		confirmDialog.show();
+		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+					@Override
+					public void doConfirm() {
+						addFriendConfirm();
+						confirmDialog.dismiss();
+					}
 
-											@Override
-											public void onSuccess(JSONObject jsonResponse, String flag) {
-												super.onSuccess(jsonResponse, flag);
-												hideLoading();
-												int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-												ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-												
-												if (status == JLXCConst.STATUS_SUCCESS) {
-													settingButton.setVisibility(View.VISIBLE);
-													//本地数据持久化
-													IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
-													//如果存在更新
-													if (null != imModel) {
-														imModel.setTitle(otherUserModel.getName());
-														imModel.setAvatarPath(otherUserModel.getHead_image());
-//														imModel.setIsNew(0);
-//														imModel.setIsRead(1);
-														imModel.setCurrentState(IMModel.GroupHasAdd);
-														imModel.setAddDate(TimeHandle.getCurrentDataStr());
-														imModel.update();
-													}else {
-														imModel = new IMModel();
-														imModel.setType(IMModel.ConversationType_PRIVATE);
-														imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
-														imModel.setTitle(otherUserModel.getName());
-														imModel.setAvatarPath(otherUserModel.getHead_image());
-														imModel.setIsNew(0);
-														imModel.setIsRead(1);
-														imModel.setCurrentState(IMModel.GroupHasAdd);
-														imModel.setOwner(UserManager.getInstance().getUser().getUid());
-														imModel.setAddDate(TimeHandle.getCurrentDataStr());
-														imModel.save();
-													}
-													
-													//成功隐藏 
-													addFriendLayout.setVisibility(View.GONE);
-												}
-											}
+					@Override
+					public void doCancel() {
+						confirmDialog.dismiss();
+					}
+				});			
+		
+	}
+	
+	private void addFriendConfirm(){
+		// 参数设置
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+		params.addBodyParameter("friend_id", otherUserModel.getUid()+"");
+		
+		showLoading("添加中^_^", false);
+		HttpManager.post(JLXCConst.Add_FRIEND, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
-											@Override
-											public void onFailure(HttpException arg0, String arg1,
-													String flag) {
-												super.onFailure(arg0, arg1, flag);
-												hideLoading();
-												ToastUtil.show(OtherPersonalActivity.this,
-														"网络异常");
-											}
-										}, null));
-								
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						hideLoading();
+						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							settingButton.setVisibility(View.VISIBLE);
+							//本地数据持久化
+							IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
+							//如果存在更新
+							if (null != imModel) {
+								imModel.setTitle(otherUserModel.getName());
+								imModel.setAvatarPath(otherUserModel.getHead_image());
+//								imModel.setIsNew(0);
+//								imModel.setIsRead(1);
+								imModel.setCurrentState(IMModel.GroupHasAdd);
+								imModel.setAddDate(TimeHandle.getCurrentDataStr());
+								imModel.update();
+							}else {
+								imModel = new IMModel();
+								imModel.setType(IMModel.ConversationType_PRIVATE);
+								imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+								imModel.setTitle(otherUserModel.getName());
+								imModel.setAvatarPath(otherUserModel.getHead_image());
+								imModel.setIsNew(0);
+								imModel.setIsRead(1);
+								imModel.setCurrentState(IMModel.GroupHasAdd);
+								imModel.setOwner(UserManager.getInstance().getUser().getUid());
+								imModel.setAddDate(TimeHandle.getCurrentDataStr());
+								imModel.save();
 							}
-						}).show();
+							
+							//成功隐藏 
+							addFriendLayout.setVisibility(View.GONE);
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						hideLoading();
+						ToastUtil.show(OtherPersonalActivity.this,
+								"网络异常");
+					}
+				}, null));		
+		
 	}
 	
 	//popWindow
@@ -522,50 +543,71 @@ public class OtherPersonalActivity extends BaseActivity{
 	private void deleteFriend() {
 //		popupWindow.dismiss();
 		
-		new AlertDialog.Builder(this).setTitle("确定要删除好友"+otherUserModel.getName()+"吗").setPositiveButton("确定", new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// 参数设置
-				RequestParams params = new RequestParams();
-				params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
-				params.addBodyParameter("friend_id", otherUserModel.getUid()+"");
-				
-				showLoading("删除中..", false);
-				HttpManager.post(JLXCConst.DELETE_FRIEND, params,
-						new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+				this, "确定要删除好友"+otherUserModel.getName()+"吗", "确定", "取消");
+		confirmDialog.show();
+		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+					@Override
+					public void doConfirm() {
+						deleteFriendConfirm();
+						confirmDialog.dismiss();
+					}
 
-							@Override
-							public void onSuccess(JSONObject jsonResponse, String flag) {
-								super.onSuccess(jsonResponse, flag);
-								hideLoading();
-								int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-								ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-								
-								if (status == JLXCConst.STATUS_SUCCESS) {
-									//本地删除 好友管理本地持久化废弃
-//									IMModel imModel = new IMModel();
-//									imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
-//									imModel.setOwner(UserManager.getInstance().getUser().getUid());
-//									imModel.remove();
-									RongIMClient.getInstance().removeConversation(ConversationType.PRIVATE, JLXCConst.JLXC+otherUserModel.getUid(), null);
-									//UI变化
-									addFriendLayout.setVisibility(View.VISIBLE);
-									settingButton.setVisibility(View.GONE);
-									LayoutParams layoutParams = (LayoutParams) sendMessageButton.getLayoutParams();
-									layoutParams.setMargins(layoutParams.leftMargin/2, 0, layoutParams.rightMargin/2, 0);
-								}
-							}
+					@Override
+					public void doCancel() {
+						confirmDialog.dismiss();
+					}
+				});		
+		
+//		new AlertDialog.Builder(this).setTitle("确定要删除好友"+otherUserModel.getName()+"吗").setPositiveButton("确定", new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) {
+//				
+//			}
+//		}).setNegativeButton("取消", null).show();
+	}
+	
+	private void deleteFriendConfirm(){
+		// 参数设置
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+		params.addBodyParameter("friend_id", otherUserModel.getUid()+"");
+		
+		showLoading("删除中..", false);
+		HttpManager.post(JLXCConst.DELETE_FRIEND, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
-							@Override
-							public void onFailure(HttpException arg0, String arg1,
-									String flag) {
-								super.onFailure(arg0, arg1, flag);
-								hideLoading();
-							}
-						}, null));
-			}
-		}).setNegativeButton("取消", null).show();
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						hideLoading();
+						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(OtherPersonalActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							//本地删除 好友管理本地持久化废弃
+//							IMModel imModel = new IMModel();
+//							imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+//							imModel.setOwner(UserManager.getInstance().getUser().getUid());
+//							imModel.remove();
+							RongIMClient.getInstance().removeConversation(ConversationType.PRIVATE, JLXCConst.JLXC+otherUserModel.getUid(), null);
+							//UI变化
+							addFriendLayout.setVisibility(View.VISIBLE);
+							settingButton.setVisibility(View.GONE);
+							LayoutParams layoutParams = (LayoutParams) sendMessageButton.getLayoutParams();
+							layoutParams.setMargins(layoutParams.leftMargin/2, 0, layoutParams.rightMargin/2, 0);
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						hideLoading();
+					}
+				}, null));
+		
 	}
 	
 }

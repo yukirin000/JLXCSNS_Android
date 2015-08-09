@@ -46,7 +46,6 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.Md5Utils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.SchoolModel;
 import com.lidroid.xutils.exception.HttpException;
@@ -94,13 +93,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	// 注册的时候使用或者修改信息的时候使用
 	private boolean notRegister;
 
-	@OnClick({ R.id.base_tv_back, R.id.root_layout })
+	@OnClick({R.id.root_layout })
 	public void viewCickListener(View view) {
 		switch (view.getId()) {
-		case R.id.base_tv_back:
-			back();
-			break;
-
 		case R.id.root_layout:
 			// 隐藏输入键盘
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -158,6 +153,16 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		districtLocation = new Location(SelectSchoolActivity.this);
 		districtLocation.locateInit(200, 10, 5000);
 		showLoading("定位中..", true);
+		
+		TextView backBtn = (TextView) findViewById(R.id.base_tv_back);
+		backBtn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				back();
+			}
+		});		
+		
 	}
 
 	/***
