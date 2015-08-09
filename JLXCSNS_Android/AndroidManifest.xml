@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="26"
-    android:versionName="0.25" >
+    android:versionCode="27"
+    android:versionName="0.26" >
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -292,7 +292,7 @@
         <!-- 云巴部分 -->
         <meta-data
             android:name="YUNBA_APPKEY"
-            android:value="55ab4554c75ecd535d69b955" />        
+            android:value="55c499f19477ebf5246955f3" />        
         
         <!-- 友盟部分 -->
         <meta-data
