@@ -37,19 +37,19 @@ public class LikeButton extends FrameLayout {
 	public void setStatue(boolean statue) {
 		if (statue) {
 			textView.setText("已赞 ");
-			imageView.setImageResource(R.drawable.like_have);
+			imageView.setImageResource(R.drawable.btn_like_selected);
 		} else {
 			textView.setText("点赞 ");
-			imageView.setImageResource(R.drawable.like_no);
+			imageView.setImageResource(R.drawable.btn_like_normal);
 		}
 	}
 
 	/** 设置点赞的状态 */
 	public void setStatue(boolean statue, int count) {
 		if (statue) {
-			imageView.setImageResource(R.drawable.like_have);
+			imageView.setImageResource(R.drawable.btn_like_selected);
 		} else {
-			imageView.setImageResource(R.drawable.like_no);
+			imageView.setImageResource(R.drawable.btn_like_normal);
 		}
 
 		FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) textView

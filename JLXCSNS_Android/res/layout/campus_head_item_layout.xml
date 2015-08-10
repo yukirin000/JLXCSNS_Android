@@ -23,6 +23,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="深圳市高级中学"
+            android:background="@drawable/campus_name_background"
             android:textColor="@color/main_deep_white"
             android:textSize="@dimen/font_size_sper_large" />
     </FrameLayout>
@@ -34,7 +35,7 @@
         android:background="@drawable/campus_person_title"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/item_interior_space_medium"
-        android:text="这个学校的学生"
+        android:text="学校的帅锅与妹子 (●'◡'●)ﾉ♥"
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />
 
@@ -89,7 +90,7 @@
             android:background="@drawable/campus_news_title"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/item_interior_space_medium"
-            android:text="动态列表"
+            android:text="大家的点点滴滴  (•ㅂ•)/♥"
             android:textColor="@color/main_deep_black"
             android:textSize="@dimen/font_size_medium" />
     </LinearLayout>
