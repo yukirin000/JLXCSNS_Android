@@ -141,8 +141,8 @@ public class NewsListFragment extends BaseFragment {
 		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
 				true, true);
 
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
+		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 	}
 
 	/**
