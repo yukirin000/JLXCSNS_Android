@@ -377,7 +377,7 @@ public class OtherPersonalActivity extends BaseActivity{
 			sendMessageButton.setVisibility(View.GONE);
 			settingButton.setVisibility(View.GONE);
 		}else {
-			
+			addSendLayout.setVisibility(View.VISIBLE);
 			boolean isFriend = false;
 			if (jsonObject.getInteger("isFriend") > 0) {
 				isFriend = true;

@@ -1,6 +1,5 @@
 package com.jlxc.app.base.app;
 
-import org.lasque.tusdk.core.TuSdk;
 
 import io.rong.imkit.RongIM;
 import io.yunba.android.manager.YunBaManager;
@@ -52,8 +51,8 @@ public class JLXCApplication extends Application {
         //友盟测试模式
         MobclickAgent.setDebugMode(true);
 		 //初始化TuTuSDK
-		TuSdk.enableDebugLog(true);
-		TuSdk.init(this.getApplicationContext(),"f1c31a2ee6e0fe88-00-t14qn1");
+//		TuSdk.enableDebugLog(true);
+//		TuSdk.init(this.getApplicationContext(),"f1c31a2ee6e0fe88-00-t14qn1");
 //		// 填写从短信SDK应用后台注册得到的APPKEY 
 //		String APPKEY = "94025949f2d3";//463db7238681  27fe7909f8e8
 //		// 填写从短信SDK应用后台注册得到的APPSECRET

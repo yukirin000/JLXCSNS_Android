@@ -86,6 +86,7 @@
 
                 <!-- 发消息添加按钮 -->
                 <LinearLayout
+                    android:visibility="gone"
                     android:id="@+id/add_send_layout"
                     android:layout_width="match_parent"
                     android:layout_height="70dip"

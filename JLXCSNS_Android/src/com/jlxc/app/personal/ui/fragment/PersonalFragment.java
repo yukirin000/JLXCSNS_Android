@@ -14,11 +14,11 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.lasque.tusdk.core.TuSdk;
-import org.lasque.tusdk.core.TuSdkResult;
-import org.lasque.tusdk.impl.activity.TuFragment;
-import org.lasque.tusdk.impl.components.TuEditComponent;
-import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
+//import org.lasque.tusdk.core.TuSdk;
+//import org.lasque.tusdk.core.TuSdkResult;
+//import org.lasque.tusdk.impl.activity.TuFragment;
+//import org.lasque.tusdk.impl.components.TuEditComponent;
+//import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -628,7 +628,8 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 					int[] screenSize = getScreenSize();
 					if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0],
 							screenSize[1])) {
-						filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+//						filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+						uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
 					}
 				}
 
@@ -647,7 +648,8 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 								screenSize1[0], screenSize1[1])) {
 							// bitmapUtils.display(backImageView,
 							// FileUtil.BIG_IMAGE_PATH + tmpImageName);
-							filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+//							filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+							uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
 						}
 
 					}
@@ -664,7 +666,8 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 						if (file.exists()) {
 							file.delete();
 						}
-						filterImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
+//						filterImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
+						uploadImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
 					}
 
 					// Bundle bundle = data.getExtras();
@@ -1195,48 +1198,48 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 	}
 
 	// 图片滤镜
-	private void filterImage(final String path) {
-		File filterFile = new File(path);
-		// 组件委托
-		TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
-			@Override
-			public void onComponentFinished(TuSdkResult result, Error error,
-					TuFragment lastFragment) {
-				File oriFile = result.imageFile;
-				File newFile = new File(path);
-				boolean filterOK = oriFile.renameTo(newFile);
-				if (filterOK) {
-					uploadImage(path);
-				} else {
-					ToastUtil.show(getActivity(), "图片处理失败T_T");
-				}
-			}
-		};
-
-		TuEditComponent component = TuSdk.editCommponent(getActivity(),
-				delegate);
-		component.componentOption().editEntryOption().setEnableCuter(false);
-		component.componentOption().editEntryOption().setEnableSticker(false);
-		component.componentOption().editEntryOption().setSaveToAlbum(false);
-		component.componentOption().editEntryOption().setAutoRemoveTemp(false);
-		component.componentOption().editEntryOption().setSaveToTemp(true);
-		component.componentOption().editEntryOption().setOutputCompress(80);
-
-		TuSdkResult result = new TuSdkResult();
-		result.imageFile = filterFile;
-
-		// 设置图片
-		component.setImage(result.image)
-		// 设置系统照片
-				.setImageSqlInfo(result.imageSqlInfo)
-				// 设置临时文件
-				.setTempFilePath(result.imageFile)
-				// 在组件执行完成后自动关闭组件
-				.setAutoDismissWhenCompleted(true)
-				// 开启组件
-				.showComponent();
-
-	}
+//	private void filterImage(final String path) {
+//		File filterFile = new File(path);
+//		// 组件委托
+//		TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
+//			@Override
+//			public void onComponentFinished(TuSdkResult result, Error error,
+//					TuFragment lastFragment) {
+//				File oriFile = result.imageFile;
+//				File newFile = new File(path);
+//				boolean filterOK = oriFile.renameTo(newFile);
+//				if (filterOK) {
+//					uploadImage(path);
+//				} else {
+//					ToastUtil.show(getActivity(), "图片处理失败T_T");
+//				}
+//			}
+//		};
+//
+//		TuEditComponent component = TuSdk.editCommponent(getActivity(),
+//				delegate);
+//		component.componentOption().editEntryOption().setEnableCuter(false);
+//		component.componentOption().editEntryOption().setEnableSticker(false);
+//		component.componentOption().editEntryOption().setSaveToAlbum(false);
+//		component.componentOption().editEntryOption().setAutoRemoveTemp(false);
+//		component.componentOption().editEntryOption().setSaveToTemp(true);
+//		component.componentOption().editEntryOption().setOutputCompress(80);
+//
+//		TuSdkResult result = new TuSdkResult();
+//		result.imageFile = filterFile;
+//
+//		// 设置图片
+//		component.setImage(result.image)
+//		// 设置系统照片
+//				.setImageSqlInfo(result.imageSqlInfo)
+//				// 设置临时文件
+//				.setTempFilePath(result.imageFile)
+//				// 在组件执行完成后自动关闭组件
+//				.setAutoDismissWhenCompleted(true)
+//				// 开启组件
+//				.showComponent();
+//
+//	}
 
 	// 上传头像
 	private void uploadImage(final String path) {
