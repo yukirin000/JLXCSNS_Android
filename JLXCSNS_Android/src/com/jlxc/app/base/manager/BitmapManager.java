@@ -57,6 +57,7 @@ public class BitmapManager {
 		//不适用单例utils
 		BitmapUtils newHeadPicBmpUtils = new BitmapUtils(context);
 		newHeadPicBmpUtils.configDefaultLoadFailedImage(loadFailImage);
+		newHeadPicBmpUtils.configDefaultLoadingImage(loadFailImage);
 		newHeadPicBmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 		newHeadPicBmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
 		newHeadPicBmpUtils.configDiskCacheEnabled(isEnableDiskCache);

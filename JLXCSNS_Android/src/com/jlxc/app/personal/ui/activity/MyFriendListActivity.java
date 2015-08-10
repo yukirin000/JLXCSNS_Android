@@ -116,8 +116,8 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	private void initBitmapUtils() {
 		bitmapUtils = new BitmapUtils(MyFriendListActivity.this);
 		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
+		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 	}
 
