@@ -3,6 +3,7 @@ package com.jlxc.app.login.ui.fragment;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.jlxc.app.R;
@@ -20,7 +21,7 @@ public class LaunchCircleFragment3 extends BaseFragment{
 	@ViewInject(R.id.launch_image_view)
 	private ImageView launchImageView;
 	@ViewInject(R.id.enter_button)
-	private Button enterButton;
+	private ImageButton enterButton;
 	
 	@OnClick({R.id.enter_button})
 	private void methodClick(View view){
@@ -54,6 +55,7 @@ public class LaunchCircleFragment3 extends BaseFragment{
 	@Override
 	public void setUpViews(View rootView) {
 		enterButton.setVisibility(View.VISIBLE);
+		launchImageView.setImageResource(R.drawable.guide_page3);
 	}
 	
 }

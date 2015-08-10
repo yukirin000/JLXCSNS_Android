@@ -14,27 +14,39 @@ android:layout_height = "fill_parent">
         android:background="@color/main_yellow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="修改昵称╮(╯_╰)╭" />       
+        android:text="选择性别Poi~" />    
     
-	<EditText
-	   android:layout_marginTop="20dip"
-	   android:id = "@+id/name_edit_text"
-	   android:layout_marginLeft="20dip"
-	   android:layout_marginRight="20dip"
-	   android:hint="请输入爆炸昵称！"
-	   android:textColor="@color/main_deep_gary"
-	   android:layout_width = "fill_parent"
-	   android:layout_height = "wrap_content"
-	   android:background="@color/main_white"
-	   android:gravity = "left"
-	   android:inputType="text"/>
+    <TextView
+        android:id="@+id/boy_text_view"
+        android:paddingLeft="20dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:textSize="@dimen/font_size_medium"
+        android:textColor="@color/main_deep_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="男孩纸" />
 	
     <View
-       android:background="@color/main_deep_gary"
+       android:background="@color/main_light_gary"
        android:layout_width="fill_parent"
-	   android:layout_marginLeft="20dip"
-	   android:layout_marginRight="20dip"       
        android:layout_height="1dip"/>
+    
+    <TextView
+        android:id="@+id/girl_text_view"
+        android:paddingLeft="20dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:textSize="@dimen/font_size_medium"
+        android:textColor="@color/main_deep_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="女孩纸" />
+	
+    <View
+       android:background="@color/main_light_gary"
+       android:layout_width="fill_parent"
+       android:layout_height="1dip"/>    
 	
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,20 +66,6 @@ android:layout_height = "fill_parent">
             android:textColor="@color/main_deep_black"
             android:textSize="@dimen/font_size_medium" />
 
-        <View
-            android:id="@+id/view_space"
-            android:layout_width="@dimen/dialog_interior_size_small"
-            android:layout_height="1dp" />
-
-        <TextView
-            android:id="@+id/tv_custom_alert_dialog_confirm"
-            android:layout_width="@dimen/dialog_interior_size_large"
-            android:layout_height="@dimen/dialog_interior_size_secondary"
-            android:background="@drawable/selector_dialog_confirm_btn_click"
-            android:gravity="center"
-            android:text="确认"
-            android:textColor="@color/main_deep_black"
-            android:textSize="@dimen/font_size_medium" />
     </LinearLayout>   
 
 </LinearLayout>

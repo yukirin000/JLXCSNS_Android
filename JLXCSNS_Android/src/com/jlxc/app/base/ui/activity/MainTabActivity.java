@@ -80,6 +80,7 @@ public class MainTabActivity extends BaseActivity {
 		layoutInflater = LayoutInflater.from(this);
 
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+		mTabHost.getTabWidget().setDividerDrawable(null);
 		int count = fragmentArray.length;
 		for (int i = 0; i < count; i++) {
 			TabSpec tabSpec = mTabHost.newTabSpec(mTextviewArray[i])

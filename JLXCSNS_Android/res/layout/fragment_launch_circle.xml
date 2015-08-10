@@ -7,17 +7,18 @@
         android:id="@+id/launch_image_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:src="@drawable/campus_background" />
 
-    <Button
+    <ImageButton
         android:id="@+id/enter_button"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:layout_width="105dip"
+        android:layout_height="30dip"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:text="进入" />
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/guide_commit_btn"
+        />
 
 </RelativeLayout>

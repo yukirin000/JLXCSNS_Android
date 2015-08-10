@@ -25,7 +25,7 @@ public class LaunchCircleFragment1 extends BaseFragment{
 
 	@Override
 	public void setUpViews(View rootView) {
-		
+		launchImageView.setImageResource(R.drawable.guide_page1);
 	}
 	
 }

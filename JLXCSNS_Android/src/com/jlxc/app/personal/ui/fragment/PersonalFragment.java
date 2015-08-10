@@ -6,9 +6,9 @@ import io.rong.imlib.model.UserInfo;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
@@ -16,7 +16,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.lasque.tusdk.core.TuSdk;
 import org.lasque.tusdk.core.TuSdkResult;
-import org.lasque.tusdk.core.utils.TLog;
 import org.lasque.tusdk.impl.activity.TuFragment;
 import org.lasque.tusdk.impl.components.TuEditComponent;
 import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
@@ -24,9 +23,7 @@ import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelega
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.AlertDialog.Builder;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,26 +31,21 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.DatePicker.OnDateChangedListener;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -73,14 +65,10 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.discovery.ui.avtivity.QRCodeScanActivity;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.model.CityModel;
 import com.jlxc.app.personal.model.ProvinceModel;
-import com.jlxc.app.personal.ui.activity.AccountSettingActivity;
-import com.jlxc.app.personal.ui.activity.ContactFriendListActivity;
-import com.jlxc.app.personal.ui.activity.FriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyCardActivity;
 import com.jlxc.app.personal.ui.activity.MyFriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
@@ -92,7 +80,6 @@ import com.jlxc.app.personal.ui.view.cityView.WheelView;
 import com.jlxc.app.personal.ui.view.cityView.adapters.ArrayWheelAdapter;
 import com.jlxc.app.personal.utils.XmlParserHandler;
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.core.BitmapCache;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -758,18 +745,27 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 	private void nameClick() {
 
 		// dialog
-		Builder nameAlertDialog = new AlertDialog.Builder(getActivity())
-				.setNegativeButton("取消", null).setTitle("修改昵称");
+		Builder nameAlertDialog = new AlertDialog.Builder(getActivity());
 		LinearLayout textViewLayout = (LinearLayout) View.inflate(
 				getActivity(), R.layout.dialog_text_view, null);
 		nameAlertDialog.setView(textViewLayout);
 		final EditText et_search = (EditText) textViewLayout
-				.findViewById(R.id.searchC);
+				.findViewById(R.id.name_edit_text);
 		et_search.setText(userModel.getName());
-		// 设置确定
-		nameAlertDialog.setPositiveButton("确定", new OnClickListener() {
+		
+		final Dialog dialog = nameAlertDialog.show();
+		TextView cancelTextView = (TextView) textViewLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
+		cancelTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		TextView confirmTextView = (TextView) textViewLayout.findViewById(R.id.tv_custom_alert_dialog_confirm);
+		confirmTextView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
 				String name = et_search.getText().toString();
 				if (name.length() < 1) {
 					ToastUtil.show(getActivity(), "昵称不能为空");
@@ -781,14 +777,91 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 				}
 				uploadInformation("name", et_search.getText().toString());
 				nameTextView.setText(name);
+				dialog.dismiss();
 			}
-		});
-
-		nameAlertDialog.show();
+		});			
+		
+//		// 设置确定
+//		nameAlertDialog.setPositiveButton("确定", new OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) {
+//				String name = et_search.getText().toString();
+//				if (name.length() < 1) {
+//					ToastUtil.show(getActivity(), "昵称不能为空");
+//					return;
+//				}
+//				if (name.length() > 8) {
+//					ToastUtil.show(getActivity(), "昵称不能超过八个字");
+//					return;
+//				}
+//				uploadInformation("name", et_search.getText().toString());
+//				nameTextView.setText(name);
+//			}
+//		});
+//
+//		nameAlertDialog.show();
 	}
 
-	@SuppressLint("NewApi")
+	@SuppressLint({ "NewApi", "InflateParams" })
 	private void birthClick() {
+		
+		LinearLayout dateTimeLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.birth_picker_view, null);
+		final DatePicker datePicker = (DatePicker) dateTimeLayout.findViewById(R.id.datepicker);
+		Calendar calendar = Calendar.getInstance();
+		if (userModel.getBirthday().length()>0) {
+			String[] date = userModel.getBirthday().split("-");
+			if (date.length == 3) {
+				calendar.set(JLXCUtils.stringToInt(date[0]), JLXCUtils.stringToInt(date[1])-1, JLXCUtils.stringToInt(date[2]));	
+			}
+		}
+		
+		datePicker.init(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH), new OnDateChangedListener() {
+					
+					@Override
+					public void onDateChanged(DatePicker view, int year, int monthOfYear,
+							int dayOfMonth) {
+						Log.i("haha", year+" "+" "+monthOfYear+" "+dayOfMonth);
+					}
+				});
+		
+		Builder builder = new AlertDialog.Builder(getActivity())
+		.setView(dateTimeLayout);
+//		.setPositiveButton("设置", new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int whichButton) {
+//				String date = datePicker.getYear() + "-"
+//						+ datePicker.getMonth() + "-"
+//						+ datePicker.getDayOfMonth();
+//				birthTextView.setText(date);
+//				uploadInformation("birthday", date);
+//			}
+//		})
+//		.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int whichButton) {
+//			}
+//		});				
+		
+		final Dialog dialog = builder.show();
+		TextView cancelTextView = (TextView) dateTimeLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
+		cancelTextView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		TextView confirmTextView = (TextView) dateTimeLayout.findViewById(R.id.tv_custom_alert_dialog_confirm);
+		confirmTextView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String date = datePicker.getYear() + "-"
+						+ (datePicker.getMonth()+1) + "-"
+						+ datePicker.getDayOfMonth();
+				LogUtils.i(date, 1);
+				birthTextView.setText(date);
+				uploadInformation("birthday", date);
+				dialog.dismiss();
+			}
+		});	
 		
 		
 		
@@ -831,23 +904,59 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 	private void sexClick() {
 
 		// dialog
-		Builder nameAlertDialog = new AlertDialog.Builder(getActivity())
-				.setNegativeButton("取消", null).setTitle("选择性别");
-		String[] sexStrings = new String[] { "男孩纸", "女孩纸" };
-		nameAlertDialog.setItems(sexStrings, new OnClickListener() {
+		Builder sexAlertDialog = new AlertDialog.Builder(getActivity());
+		LinearLayout sexViewLayout = (LinearLayout) View.inflate(
+				getActivity(), R.layout.dialog_sex_view, null);
+		sexAlertDialog.setView(sexViewLayout);
+		
+		final Dialog dialog = sexAlertDialog.show();
+		TextView cancelTextView = (TextView) sexViewLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
+		cancelTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if (which == 0) {
-					sexTextView.setText("男孩纸");
-					sexImageView.setImageResource(R.drawable.sex_boy);
-				} else {
-					sexTextView.setText("女孩纸");
-					sexImageView.setImageResource(R.drawable.sex_girl);
-				}
-				uploadInformation("sex", "" + which);
+			public void onClick(View v) {
+				dialog.dismiss();
 			}
 		});
-		nameAlertDialog.show();
+		//性别男
+		TextView boyTextView = (TextView) sexViewLayout.findViewById(R.id.boy_text_view);
+		boyTextView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sexTextView.setText("男孩纸");
+				sexImageView.setImageResource(R.drawable.sex_boy);
+				dialog.dismiss();
+			}
+		});
+		//性别女
+		TextView girlTextView = (TextView) sexViewLayout.findViewById(R.id.girl_text_view);
+		girlTextView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sexTextView.setText("女孩纸");
+				sexImageView.setImageResource(R.drawable.sex_girl);
+				dialog.dismiss();
+			}
+		});
+		
+		
+//		// dialog
+//		Builder nameAlertDialog = new AlertDialog.Builder(getActivity())
+//				.setNegativeButton("取消", null).setTitle("选择性别");
+//		String[] sexStrings = new String[] { "男孩纸", "女孩纸" };
+//		nameAlertDialog.setItems(sexStrings, new OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) {
+//				if (which == 0) {
+//					sexTextView.setText("男孩纸");
+//					sexImageView.setImageResource(R.drawable.sex_boy);
+//				} else {
+//					sexTextView.setText("女孩纸");
+//					sexImageView.setImageResource(R.drawable.sex_girl);
+//				}
+//				uploadInformation("sex", "" + which);
+//			}
+//		});
+//		nameAlertDialog.show();
 	}
 
 	// 初始化adapter

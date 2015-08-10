@@ -1,8 +1,5 @@
 package com.jlxc.app.login.ui.activity;
 
-import io.rong.imkit.fragment.ConversationListFragment;
-import io.rong.imlib.model.Conversation;
-
 import com.jlxc.app.R;
 import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.UserManager;
@@ -10,18 +7,13 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.ConfigUtils;
-import com.jlxc.app.base.utils.HttpCacheUtils;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.login.ui.fragment.LaunchCircleFragment1;
 import com.jlxc.app.login.ui.fragment.LaunchCircleFragment2;
 import com.jlxc.app.login.ui.fragment.LaunchCircleFragment3;
-import com.jlxc.app.message.ui.fragment.NotifyNewsFragment;
-import com.jlxc.app.message.ui.fragment.MessageMainFragment.MyOnPageChangeListener;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

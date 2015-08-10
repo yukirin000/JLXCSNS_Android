@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/hello_world"
         android:scaleType="centerInside"
-        android:src="@drawable/icon"/>
+        android:src="@drawable/launch_image"/>
     
     <android.support.v4.view.ViewPager
         android:id="@+id/vPager"

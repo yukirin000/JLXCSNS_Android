@@ -53,6 +53,7 @@ public class PersonalSignActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		// TODO Auto-generated method stub
+		setBarText("签名");
 		addRightBtn("保存");
 		signEditText.setText(UserManager.getInstance().getUser().getSign());
 	}
