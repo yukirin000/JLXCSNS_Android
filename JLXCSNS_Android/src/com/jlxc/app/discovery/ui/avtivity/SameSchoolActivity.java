@@ -76,7 +76,7 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 		setBarText("同校的好友~");
 		sameSchoolModels = new ArrayList<SameSchoolModel>();
 		userModel = UserManager.getInstance().getUser();
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		initListViewSet();
 		getSameData();
 	}

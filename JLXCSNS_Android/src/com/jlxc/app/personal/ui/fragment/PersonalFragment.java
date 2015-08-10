@@ -482,7 +482,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 		// 设置照片和背景图
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-				getActivity(), R.drawable.ic_launcher, true, true);
+				getActivity(), R.drawable.default_avatar, true, true);
 		// 无缓存bitmap
 		// noCacheBitmapUtils =
 		// BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(),
@@ -518,7 +518,9 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
 				+ userModel.getHead_image());
 		// 背景 2015-07-02/191435808476.png
-		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
+		BitmapUtils backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+				getActivity(), R.drawable.default_back_image, true, true);
+		backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
 				+ userModel.getBackground_image());
 		// 姓名
 		if (null == userModel.getName() || "".equals(userModel.getName())) {

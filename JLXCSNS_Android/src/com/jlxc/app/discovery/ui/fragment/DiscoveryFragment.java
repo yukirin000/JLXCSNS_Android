@@ -459,7 +459,7 @@ public class DiscoveryFragment extends BaseFragment {
 					imgView.setLayoutParams(laParams);
 					imgView.setScaleType(ImageView.ScaleType.FIT_XY);
 					helper.setImageResource(R.id.iv_recommend_photos_item,
-							R.drawable.ic_launcher);
+							R.drawable.default_avatar);
 				} else {
 					// 设置相册的尺寸的图片大小
 					ImageView imgView = helper

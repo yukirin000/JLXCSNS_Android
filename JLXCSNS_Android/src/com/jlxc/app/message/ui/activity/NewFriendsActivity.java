@@ -56,7 +56,7 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		
 		setBarText("新的好友");
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		initListView();
 		refreshListView();
 		//发送通知

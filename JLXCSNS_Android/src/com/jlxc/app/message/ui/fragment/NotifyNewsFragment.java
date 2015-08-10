@@ -67,7 +67,7 @@ public class NotifyNewsFragment extends BaseFragment {
 	@Override
 	public void setUpViews(View rootView) {
 		
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.ic_launcher, true, true);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.default_avatar, true, true);
 		//注册通知
 		registerNotify();
 //		//初始化list
@@ -75,6 +75,13 @@ public class NotifyNewsFragment extends BaseFragment {
 		setListView();
 		//刷新列表
 		refreshList();
+	}
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		getActivity().unregisterReceiver(messageReceiver);
 	}
 	
 	////////////////////////////private method/////////////////////////////

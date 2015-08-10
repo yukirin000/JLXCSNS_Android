@@ -33,6 +33,7 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -222,11 +223,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		hisImageGridView.setEnabled(false);
 		hisFriendsGridView.setEnabled(false);
 		//设置照片和背景图
-		bitmapUtils = new BitmapUtils(this);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
-		bitmapUtils.configMemoryCacheEnabled(true);
-		bitmapUtils.configDiskCacheEnabled(true);		
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.ic_launcher);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		
 		//获取数据
 		getPersonalInformation();
@@ -332,7 +329,8 @@ public class OtherPersonalActivity extends BaseActivity{
 		//头像
 		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_sub_image());
 		//背景
-		bitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getBackground_image());
+		BitmapUtils backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_back_image, true, true);
+		backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getBackground_image());
 		
 		//他的朋友
 		JSONArray friendArray = jsonObject.getJSONArray("friend_list");

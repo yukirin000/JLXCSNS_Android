@@ -113,6 +113,13 @@ public class MessageMainFragment extends BaseFragment {
 		super.onStart();
 	}
 	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		getActivity().unregisterReceiver(newMessageReceiver);
+	}
+	
 	/*
 	 * 初始化图片的位移像素
 	 */

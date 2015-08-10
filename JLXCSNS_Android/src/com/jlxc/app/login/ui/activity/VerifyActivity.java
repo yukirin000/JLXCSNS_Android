@@ -100,13 +100,13 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 			confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 						@Override
 						public void doConfirm() {
-							verifyCountdownTimer.cancel();
-							finishWithRight();
 							confirmDialog.dismiss();
 						}
 
 						@Override
 						public void doCancel() {
+							verifyCountdownTimer.cancel();
+							finishWithRight();
 							confirmDialog.dismiss();
 						}
 					});					

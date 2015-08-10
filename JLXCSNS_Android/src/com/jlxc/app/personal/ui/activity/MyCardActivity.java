@@ -102,7 +102,7 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 			setButton.setVisibility(View.VISIBLE);
 		}
 		
-		bitmapUtil = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true);
+		bitmapUtil = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		nameTextView.setText(userModel.getName());
 		bitmapUtil.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
 		

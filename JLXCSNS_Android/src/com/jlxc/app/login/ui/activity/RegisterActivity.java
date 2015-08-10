@@ -95,12 +95,12 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 					@Override
 					public void doConfirm() {
-						finishWithRight();
 						confirmDialog.dismiss();
 					}
 
 					@Override
 					public void doCancel() {
+						finishWithRight();
 						confirmDialog.dismiss();
 					}
 				});			

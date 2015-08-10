@@ -52,7 +52,7 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		Intent intent = getIntent();
 		setUid(intent.getIntExtra(INTENT_KEY, 0));
-		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true));
+		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true));
 		
 		setBarText("共同好友");
 		

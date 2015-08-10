@@ -44,7 +44,7 @@ public class FriendListActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		// TODO Auto-generated method stub
-		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.ic_launcher, true, true));
+		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true));
 		initListView();
 		//同步好友
 		syncFriends();

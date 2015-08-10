@@ -85,7 +85,7 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
 		bitmapUtils.configMemoryCacheEnabled(true);
 		bitmapUtils.configDiskCacheEnabled(true);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.ic_launcher);
+		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 		initListViewSet();
 		getVisitsData();
 	}
