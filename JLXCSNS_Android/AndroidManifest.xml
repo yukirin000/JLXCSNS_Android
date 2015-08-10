@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="27"
-    android:versionName="0.26" >
+    android:versionCode="31"
+    android:versionName="0.30" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -79,8 +79,9 @@
         <activity
             android:name="com.jlxc.app.base.ui.activity.MainTabActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Holo.Light"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" tools:ignore="NewApi">
         </activity>
         <activity android:name="com.jlxc.app.login.ui.activity.LoginActivity" >
         </activity>
@@ -305,7 +306,7 @@
 		<!-- 高德部分 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="028a516dcc7ca5977934426ea33801ba" />
+            android:value="19077737f995074601d57afc38a46358" />
         <!-- 028a516dcc7ca5977934426ea33801ba -->
         <!-- ab92e548a0429b832749d8067cb47998 -->
         <!-- 19077737f995074601d57afc38a46358 -->
