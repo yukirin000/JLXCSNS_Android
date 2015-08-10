@@ -11,7 +11,7 @@
         android:id="@+id/iv_custom_btn_like_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/like_no" />
+        android:src="@drawable/btn_like_normal" />
 
     <TextView
         android:id="@+id/tv_custom_btn_like"

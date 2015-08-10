@@ -26,7 +26,7 @@ public class CommentButton extends FrameLayout {
 		// 将自定义组合控件的布局渲染成View
 		View view = View.inflate(context,
 				R.layout.custom_view_comment_btn_layout, this);
-		imageView = (ImageView) view.findViewById(R.id.iv_comment_background);
+		//imageView = (ImageView) view.findViewById(R.id.iv_comment_background);
 		textView = (TextView) view.findViewById(R.id.tv_comment_content);
 	}
 
