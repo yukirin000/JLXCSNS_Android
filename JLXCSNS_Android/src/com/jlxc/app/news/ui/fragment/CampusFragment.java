@@ -973,6 +973,7 @@ public class CampusFragment extends BaseFragment {
 				} else if (resultIntent.hasExtra(NewsConstants.PUBLISH_FINISH)) {
 					if (!isRequestData) {
 						// 发布了动态
+						smoothToTop();
 						pageIndex = 1;
 						isRequestData = true;
 						isPullDowm = true;
@@ -987,4 +988,22 @@ public class CampusFragment extends BaseFragment {
 			}
 		}
 	};
+	
+	// 平滑滚动到顶
+		private void smoothToTop() {
+			int firstVisiblePosition = campusListView.getRefreshableView()
+					.getFirstVisiblePosition();
+			if (0 == firstVisiblePosition) {
+				// 已经在顶部
+				campusListView.setRefreshing(true);
+			} else {
+				if (firstVisiblePosition < 20) {
+					campusListView.getRefreshableView().smoothScrollToPosition(0);
+				} else {
+					campusListView.getRefreshableView().setSelection(20);
+					campusListView.getRefreshableView().smoothScrollToPosition(0);
+				}
+				campusListView.getRefreshableView().clearFocus();
+			}
+		}
 }
