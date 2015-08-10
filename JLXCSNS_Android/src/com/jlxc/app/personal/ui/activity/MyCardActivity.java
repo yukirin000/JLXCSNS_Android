@@ -21,6 +21,7 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.BitmapUtils;
@@ -149,13 +150,29 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 			return;
 		}
 		
-		//提示
-		new AlertDialog.Builder(this).setPositiveButton("确定", new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				setHelloHaId();
-			}
-		}).setNegativeButton("取消", null).setTitle("注意").setMessage("账号设置后不能更改，你愿意和它相伴一生吗").show();
+		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+				this, "账号设置后不能更改，你愿意和它相伴一生吗", "确定", "取消");
+		confirmDialog.show();
+		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+					@Override
+					public void doConfirm() {
+						setHelloHaId();
+						confirmDialog.dismiss();
+					}
+
+					@Override
+					public void doCancel() {
+						confirmDialog.dismiss();
+					}
+				});				
+		
+//		//提示
+//		new AlertDialog.Builder(this).setPositiveButton("确定", new OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) {
+//				setHelloHaId();
+//			}
+//		}).setNegativeButton("取消", null).setTitle("注意").setMessage("账号设置后不能更改，你愿意和它相伴一生吗").show();
 	}
 	
 	//设置HelloHaId

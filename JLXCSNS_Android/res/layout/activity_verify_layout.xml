@@ -44,7 +44,6 @@
          android:textColorHint="@color/login_edit_hint_color"   
          android:textColor="@color/main_deep_black"      
          android:singleLine="true"
-         android:inputType="textPassword"
          android:textSize="@dimen/font_size_medium" />  
     <TextView
         android:id="@+id/revalidated_textview"

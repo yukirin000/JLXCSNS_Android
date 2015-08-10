@@ -27,6 +27,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
@@ -46,6 +47,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -96,7 +98,7 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
-public class PersonalFragment extends BaseFragment {
+@SuppressLint("NewApi") public class PersonalFragment extends BaseFragment {
 
 	public static final int TAKE_PHOTO = 1;// 拍照
 	public static final int ALBUM_SELECT = 2;// 相册选取
@@ -229,20 +231,41 @@ public class PersonalFragment extends BaseFragment {
 			mViewProvince = (WheelView) linearLayout
 					.findViewById(R.id.id_province);
 			mViewCity = (WheelView) linearLayout.findViewById(R.id.id_city);
+			
 			cityBuilder.setView(linearLayout);
 			setUpListener();
 			setUpData();
-			cityBuilder.show();
+			
+			final Dialog dialog = cityBuilder.show();
+			
+			TextView cancelTextView = (TextView) linearLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
+			cancelTextView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+				}
+			});
+			
+			TextView confirmTextView = (TextView) linearLayout.findViewById(R.id.tv_custom_alert_dialog_confirm);
+			confirmTextView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					cityTextView.setText(mCurrentProviceName + mCurrentCityName);
+					uploadInformation("city", mCurrentProviceName + "," + mCurrentCityName);
+					dialog.dismiss();
+				}
+			});			
+			
 			break;
 		// 头像点击
 		case R.id.head_image_view:
-			// 拍照
 			// dialog
+			// 设置为头像
+			imageType = HEAD_IMAGE;			
 			final CustomSelectPhotoDialog selectDialog = new CustomSelectPhotoDialog(
 					this.getActivity());
 			selectDialog.show();
-			selectDialog
-					.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
+			selectDialog.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
 
 						@Override
 						public void onSelectGallery() {
@@ -307,36 +330,70 @@ public class PersonalFragment extends BaseFragment {
 		case R.id.back_click_layout:
 			// 拍照
 			// dialog
-			Builder backAlertDialog = new AlertDialog.Builder(getActivity())
-					.setNegativeButton("取消", null).setTitle("修改背景");
-			String[] backStrings = new String[] { "拍照", "相册" };
-			backAlertDialog.setItems(backStrings, new OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+//			Builder backAlertDialog = new AlertDialog.Builder(getActivity())
+//					.setNegativeButton("取消", null).setTitle("修改背景");
+//			String[] backStrings = new String[] { "拍照", "相册" };
+//			backAlertDialog.setItems(backStrings, new OnClickListener() {
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+//
+//					// 设置为头像
+//					imageType = BACK_IMAGE;
+//					if (which == 0) {
+//						// 相机
+//						Intent intentCamera = new Intent(
+//								MediaStore.ACTION_IMAGE_CAPTURE);
+//						tmpImageName = JLXCUtils.getPhotoFileName() + "";
+//						File tmpFile = new File(FileUtil.TEMP_PATH
+//								+ tmpImageName);
+//						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
+//								Uri.fromFile(tmpFile));
+//						startActivityForResult(intentCamera, TAKE_PHOTO);
+//					} else {
+//						// 相册
+//						tmpImageName = JLXCUtils.getPhotoFileName() + "";
+//						Intent intentAlbum = new Intent(
+//								Intent.ACTION_GET_CONTENT);
+//						intentAlbum.setType(IMAGE_UNSPECIFIED);
+//						startActivityForResult(intentAlbum, ALBUM_SELECT);
+//					}
+//				}
+//			});
+//			backAlertDialog.show();
+			// 设置为背景
+			imageType = BACK_IMAGE;
+			final CustomSelectPhotoDialog selectBackDialog = new CustomSelectPhotoDialog(
+					this.getActivity());
+			selectBackDialog.show();
+			selectBackDialog.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
 
-					// 设置为头像
-					imageType = BACK_IMAGE;
-					if (which == 0) {
-						// 相机
-						Intent intentCamera = new Intent(
-								MediaStore.ACTION_IMAGE_CAPTURE);
-						tmpImageName = JLXCUtils.getPhotoFileName() + "";
-						File tmpFile = new File(FileUtil.TEMP_PATH
-								+ tmpImageName);
-						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
-								Uri.fromFile(tmpFile));
-						startActivityForResult(intentCamera, TAKE_PHOTO);
-					} else {
-						// 相册
-						tmpImageName = JLXCUtils.getPhotoFileName() + "";
-						Intent intentAlbum = new Intent(
-								Intent.ACTION_GET_CONTENT);
-						intentAlbum.setType(IMAGE_UNSPECIFIED);
-						startActivityForResult(intentAlbum, ALBUM_SELECT);
-					}
-				}
-			});
-			backAlertDialog.show();
+						@Override
+						public void onSelectGallery() {
+							// 相册
+							tmpImageName = JLXCUtils.getPhotoFileName() + "";
+							Intent intentAlbum = new Intent(
+									Intent.ACTION_GET_CONTENT);
+							intentAlbum.setType(IMAGE_UNSPECIFIED);
+							startActivityForResult(intentAlbum, ALBUM_SELECT);
+							selectBackDialog.dismiss();
+						}
+
+						@Override
+						public void onSelectCamera() {
+							// 相机
+							Intent intentCamera = new Intent(
+									MediaStore.ACTION_IMAGE_CAPTURE);
+							tmpImageName = JLXCUtils.getPhotoFileName() + "";
+							File tmpFile = new File(FileUtil.TEMP_PATH
+									+ tmpImageName);
+							intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
+									Uri.fromFile(tmpFile));
+							startActivityForResult(intentCamera, TAKE_PHOTO);
+							selectBackDialog.dismiss();
+						}
+
+					});			
+			
 			break;
 		case R.id.my_image_layout:
 			// 图片点击
@@ -376,8 +433,7 @@ public class PersonalFragment extends BaseFragment {
 		}
 	}
 
-	// ////////////////////////////////life
-	// cycle/////////////////////////////////
+	//////////////////////////////////life cycle/////////////////////////////////
 	@Override
 	public int setLayoutId() {
 		// TODO Auto-generated method stub
@@ -446,19 +502,19 @@ public class PersonalFragment extends BaseFragment {
 		// R.drawable.ic_launcher, false, false);
 		// 解析省份城市xml
 		initProvinceDatas();
-		cityBuilder = new AlertDialog.Builder(getActivity());
-		cityBuilder.setPositiveButton("确定",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						cityTextView.setText(mCurrentProviceName
-								+ mCurrentCityName);
-
-						uploadInformation("city", mCurrentProviceName + ","
-								+ mCurrentCityName);
-					}
-				});
-		cityBuilder.setNegativeButton("取消", null);
+		
+		cityBuilder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+//		cityBuilder.setPositiveButton("确定",
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						cityTextView.setText(mCurrentProviceName
+//								+ mCurrentCityName);
+//
+//						uploadInformation("city", mCurrentProviceName + ","
+//								+ mCurrentCityName);
+//					}
+//				});
 
 	}
 
@@ -733,39 +789,42 @@ public class PersonalFragment extends BaseFragment {
 
 	@SuppressLint("NewApi")
 	private void birthClick() {
-		DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-				new OnDateSetListener() {
-					@Override
-					public void onDateSet(DatePicker view, int year,
-							int monthOfYear, int dayOfMonth) {
-
-					}
-				}, 2000, 0, 0);
-		// 取消按钮
-		datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						LogUtils.i("cancel~~cancel~~", 1);
-					}
-				});
-		// 确定按钮
-		final DatePicker picker = datePickerDialog.getDatePicker();
-		datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-
-						LogUtils.i("ok~~ok~~", 1);
-						String date = picker.getYear() + "-"
-								+ picker.getMonth() + "-"
-								+ picker.getDayOfMonth();
-						LogUtils.i(date, 1);
-						birthTextView.setText(date);
-						uploadInformation("birthday", date);
-					}
-				});
-		datePickerDialog.show();
+		
+		
+		
+//		DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+//				new OnDateSetListener() {
+//					@Override
+//					public void onDateSet(DatePicker view, int year,
+//							int monthOfYear, int dayOfMonth) {
+//
+//					}
+//				}, 2000, 0, 0);
+//		// 取消按钮
+//		datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						LogUtils.i("cancel~~cancel~~", 1);
+//					}
+//				});
+//		// 确定按钮
+//		final DatePicker picker = datePickerDialog.getDatePicker();
+//		datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//
+//						LogUtils.i("ok~~ok~~", 1);
+//						String date = picker.getYear() + "-"
+//								+ picker.getMonth() + "-"
+//								+ picker.getDayOfMonth();
+//						LogUtils.i(date, 1);
+//						birthTextView.setText(date);
+//						uploadInformation("birthday", date);
+//					}
+//				});
+//		datePickerDialog.show();
 	}
 
 	// 姓名点击

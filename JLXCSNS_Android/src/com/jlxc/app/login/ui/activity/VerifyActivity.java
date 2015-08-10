@@ -8,13 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.R.bool;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
@@ -22,21 +19,10 @@ import android.os.Message;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
-import com.jlxc.app.base.helper.JsonRequestCallBack;
-import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.HttpManager;
-import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
-import com.jlxc.app.base.ui.activity.MainTabActivity;
-import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.base.utils.Md5Utils;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
@@ -107,19 +93,24 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 	// 点击返回
 	private void backClick() {
 		if (countdownValue > 0) {
-			new AlertDialog.Builder(VerifyActivity.this)
-					.setTitle("提示")
-					.setMessage("已经发送验证码了，再等会儿")
-					.setPositiveButton("好的", null)
-					.setNegativeButton("不了",
-							new DialogInterface.OnClickListener() {// 添加返回按钮
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									verifyCountdownTimer.cancel();
-									finishWithRight();
-								}
-							}).show();
+			
+			final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+					this, "已经发送验证码了，再等会儿", "好的", "不了");
+			confirmDialog.show();
+			confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+						@Override
+						public void doConfirm() {
+							verifyCountdownTimer.cancel();
+							finishWithRight();
+							confirmDialog.dismiss();
+						}
+
+						@Override
+						public void doCancel() {
+							confirmDialog.dismiss();
+						}
+					});					
+			
 		} else {
 			finishWithRight();
 		}
@@ -169,6 +160,9 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 	
 	//验证成功 下一页
 	private void nextActivity() {
+		
+		hideLoading();
+		
 		Intent intent = new Intent(this, RegisterActivity.class);
     	intent.putExtra("username", userPhoneNumber);
     	intent.putExtra("isFindPwd", isFindPwd);

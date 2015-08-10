@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
@@ -38,6 +39,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
+import com.jlxc.app.base.ui.view.CustomSelectPhotoDialog;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -71,11 +73,8 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	//姓名
 	@ViewInject(R.id.nameEt)
 	private EditText nameEditText;
-	//确定按钮
-	@ViewInject(R.id.confirmBtn)
-	private Button confirmButton;
 	//点击头像的image弹窗
-	AlertDialog imageDialog;
+//	AlertDialog imageDialog;
 	
 	//统计处理点击
 	@OnClick({R.id.headImageView,R.id.register_information_activity,R.id.confirmBtn,R.id.base_ll_right_btns})
@@ -203,13 +202,51 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	}
 	
 	private void showChoiceImageAlert() {
-		if (imageDialog == null) {
-			imageDialog = new AlertDialog.Builder(this).setTitle("选择照片").setItems(new String[]{"拍照","相册"}, new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					
-					if (which == 0) {
+//		if (imageDialog == null) {
+//			imageDialog = new AlertDialog.Builder(this).setTitle("选择照片").setItems(new String[]{"拍照","相册"}, new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+//					
+//					if (which == 0) {
+//						//相机
+//						Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//						tmpImageName = JLXCUtils.getPhotoFileName()+"";
+//						File tmpFile = new File(FileUtil.TEMP_PATH+tmpImageName);
+//						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
+//				                Uri.fromFile(tmpFile));
+//						startActivityForResult(intentCamera, TAKE_PHOTO);
+//					}else {
+//						//相册
+//						tmpImageName = JLXCUtils.getPhotoFileName()+"";
+//						Intent intentAlbum = new Intent(Intent.ACTION_GET_CONTENT);
+//						intentAlbum.setType(IMAGE_UNSPECIFIED);
+//						startActivityForResult(intentAlbum, ALBUM_SELECT);
+//						
+//					}					
+//				}
+//			}).setNegativeButton("取消", null).create();
+//		}
+//		
+//		imageDialog.show();
+		
+		// 设置为头像
+		final CustomSelectPhotoDialog selectDialog = new CustomSelectPhotoDialog(this);
+		selectDialog.show();
+		selectDialog.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
+
+					@Override
+					public void onSelectGallery() {
+						//相册
+						tmpImageName = JLXCUtils.getPhotoFileName()+"";
+						Intent intentAlbum = new Intent(Intent.ACTION_GET_CONTENT);
+						intentAlbum.setType(IMAGE_UNSPECIFIED);
+						startActivityForResult(intentAlbum, ALBUM_SELECT);
+						selectDialog.dismiss();
+					}
+
+					@Override
+					public void onSelectCamera() {
 						//相机
 						Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 						tmpImageName = JLXCUtils.getPhotoFileName()+"";
@@ -217,20 +254,10 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
 				                Uri.fromFile(tmpFile));
 						startActivityForResult(intentCamera, TAKE_PHOTO);
-					}else {
-						//相册
-						tmpImageName = JLXCUtils.getPhotoFileName()+"";
-						Intent intentAlbum = new Intent(Intent.ACTION_GET_CONTENT);
-						intentAlbum.setType(IMAGE_UNSPECIFIED);
-						startActivityForResult(intentAlbum, ALBUM_SELECT);
-						
-					}					
-				}
-			}).setNegativeButton("取消", null).create();
-		}
-		
-		imageDialog.show();
-		
+						selectDialog.dismiss();
+					}
+
+				});		
 	}
 	
 	//图片滤镜
@@ -374,7 +401,10 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 //		radioGroup.getCheckedRadioButtonId();
 		radioGroup.check(R.id.radioMale);
-		addRightBtn("跳过");
+//		addRightBtn("跳过");
+		setBarText("登录");
+		RelativeLayout rlBar = (RelativeLayout) findViewById(R.id.layout_base_title);
+		rlBar.setBackgroundResource(R.color.main_clear);
 		
 	}
 	

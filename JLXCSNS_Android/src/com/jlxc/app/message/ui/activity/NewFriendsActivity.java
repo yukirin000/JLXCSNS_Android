@@ -25,6 +25,7 @@ import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.TimeHandle;
@@ -126,16 +127,36 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					final int position, long id) {
-				new AlertDialog.Builder(NewFriendsActivity.this).setTitle("确定要删除吗").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						IMModel imModel = newFriendAdapter.getItem(position);
-						imModel.setIsNew(0);
-						imModel.update();
-//						imModel.remove();
-						refreshListView(); 
-					}
-				}).setNegativeButton("取消", null).show();
+//				new AlertDialog.Builder(NewFriendsActivity.this).setTitle("确定要删除吗").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						IMModel imModel = newFriendAdapter.getItem(position);
+//						imModel.setIsNew(0);
+//						imModel.update();
+////						imModel.remove();
+//						refreshListView(); 
+//					}
+//				}).setNegativeButton("取消", null).show();
+				
+				final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+						NewFriendsActivity.this, "确定要删除吗", "确定", "取消");
+				confirmDialog.show();
+				confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+							@Override
+							public void doConfirm() {
+								IMModel imModel = newFriendAdapter.getItem(position);
+								imModel.setIsNew(0);
+								imModel.update();
+//								imModel.remove();
+								refreshListView(); 
+								confirmDialog.dismiss();
+							}
+
+							@Override
+							public void doCancel() {
+								confirmDialog.dismiss();
+							}
+						});					
 				
 				return true;
 			}
