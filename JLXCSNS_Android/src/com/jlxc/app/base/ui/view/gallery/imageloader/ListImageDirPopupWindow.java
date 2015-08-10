@@ -8,6 +8,7 @@ import com.jlxc.app.base.ui.view.gallery.utils.BasePopupWindowForListView;
 import com.jlxc.app.base.ui.view.gallery.utils.CommonAdapter;
 import com.jlxc.app.base.ui.view.gallery.utils.ViewHolder;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;

@@ -153,7 +153,6 @@ public class LikeImageListView extends LinearLayout {
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
-		LogUtils.i("----screenWidth=" + screenWidth);
 		// 计算显示的头像个数
 		if (screenWidth <= TINY_PIX) {
 			maxLikeCount = 6;

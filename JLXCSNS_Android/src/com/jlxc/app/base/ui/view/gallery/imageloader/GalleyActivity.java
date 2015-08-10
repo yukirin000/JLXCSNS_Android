@@ -114,7 +114,9 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 			return;
 		}
 
-		mImgs = Arrays.asList(defaultImgDir.list());
+		if (null != defaultImgDir.list()) {
+			mImgs = Arrays.asList(defaultImgDir.list());
+		}
 
 		/**
 		 * 可以看到文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
@@ -158,9 +160,9 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 			Toast.makeText(this, "暂无外部存储", Toast.LENGTH_SHORT).show();
 			return;
 		}
+
 		// 显示进度条
 		showLoading("正在加载...", true);
-
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -200,8 +202,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 						imageFloder.setDir(dirPath);
 						imageFloder.setFirstImagePath(path);
 					}
-
-					int picSize = parentFile.list(new FilenameFilter() {
+					FilenameFilter tpFilenameFilter = new FilenameFilter() {
 						@Override
 						public boolean accept(File dir, String filename) {
 							if (filename.endsWith(".jpg")
@@ -210,11 +211,19 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 								return true;
 							return false;
 						}
-					}).length;
-					totalCount += picSize;
+					};
+					int picSize = 0;
+					if (null != parentFile.list(tpFilenameFilter)) {
+						picSize = parentFile.list(tpFilenameFilter).length;
+					}
 
-					imageFloder.setCount(picSize);
-					mImageFloders.add(imageFloder);
+					if (picSize > 0) {
+						totalCount += picSize;
+						imageFloder.setCount(picSize);
+						mImageFloders.add(imageFloder);
+					}else {
+						continue;
+					}
 
 					if (picSize > mPicsSize) {
 						mPicsSize = picSize;
@@ -237,7 +246,6 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 				mHandler.sendEmptyMessage(0x110);
 			}
 		}).start();
-
 	}
 
 	/**
@@ -273,6 +281,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 							(Serializable) list);
 					setResult(Activity.RESULT_OK, intentFinish);
 					finish();
+
 					finishView.setEnabled(false);
 				}
 			}
@@ -286,7 +295,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 	public void selected(ImageFloder floder) {
 
 		defaultImgDir = new File(floder.getDir());
-		mImgs = Arrays.asList(defaultImgDir.list(new FilenameFilter() {
+		FilenameFilter tpfFilter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String filename) {
 				if (filename.endsWith(".jpg") || filename.endsWith(".png")
@@ -294,7 +303,10 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 					return true;
 				return false;
 			}
-		}));
+		};
+		if (null != defaultImgDir.list(tpfFilter)) {
+			mImgs = Arrays.asList(defaultImgDir.list(tpfFilter));
+		}
 
 		// 文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
 		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,

@@ -23,6 +23,8 @@ public class GalleyAdapter extends CommonAdapter<String> {
 	private int haveSelectCount = 0;
 	// 回调接口
 	private OnItemClickClass onItemClickClass;
+	//
+	private Context mContext;
 	/**
 	 * 文件夹路径
 	 */
@@ -33,6 +35,7 @@ public class GalleyAdapter extends CommonAdapter<String> {
 		super(context, mDatas, itemLayoutId);
 		this.mDirPath = dirPath;
 		this.haveSelectCount = count;
+		this.mContext = context;
 	}
 
 	@Override

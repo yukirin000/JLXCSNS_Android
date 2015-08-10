@@ -172,11 +172,11 @@ public class BigImgLookActivity extends BaseActivity {
 		if (imageUrlList.size() > 1) {
 			for (int index = 0; index < imageUrlList.size(); index++) {
 				ImageView dotImage = new ImageView(this);
-				dotImage.setLayoutParams(new LayoutParams(10, 10));
+				dotImage.setLayoutParams(new LayoutParams(8, 8));
 				if (index == currentPage) {
-					dotImage.setBackgroundResource(R.drawable.dot_select);
+					dotImage.setBackgroundResource(R.drawable.cursor_point_selected);
 				} else {
-					dotImage.setBackgroundResource(R.drawable.dot_notselect);
+					dotImage.setBackgroundResource(R.drawable.cursor_point_not_selected);
 				}
 				tipList.add(dotImage);
 				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -349,8 +349,8 @@ public class BigImgLookActivity extends BaseActivity {
 			bitmapUtils.display(imageViewList.get(position),
 					imageUrlList.get(position), loadImageCallBack);
 			tipList.get(currentPage).setBackgroundResource(
-					R.drawable.dot_notselect);
-			tipList.get(position).setBackgroundResource(R.drawable.dot_select);
+					R.drawable.cursor_point_not_selected);
+			tipList.get(position).setBackgroundResource(R.drawable.cursor_point_selected);
 			currentPage = position;
 		}
 	}

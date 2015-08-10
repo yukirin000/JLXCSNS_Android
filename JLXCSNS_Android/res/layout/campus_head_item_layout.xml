@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/main_gary"
+    android:background="@color/main_deep_white"
     android:orientation="vertical" >
 
     <FrameLayout
@@ -30,7 +30,7 @@
     <TextView
         android:id="@+id/tv_campus_person_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/campus_title_high"
+        android:layout_height="wrap_content"
         android:background="@drawable/campus_person_title"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/item_interior_space_medium"
@@ -47,7 +47,7 @@
             android:id="@+id/hsv_person_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/item_interior_space_small"
+            android:padding="@dimen/item_interior_space_medium"
             android:scrollbars="none" >
 
             <LinearLayout
@@ -69,27 +69,29 @@
         </HorizontalScrollView>
     </LinearLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/main_light_white"
+        android:orientation="vertical"
         android:paddingBottom="1dp" >
 
-        <ImageView
-            android:id="@+id/iv_campus_news_title"
+        <View
+            android:id="@+id/view_space"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/campus_title_high"
-            android:scaleType="fitXY"
-            android:src="@drawable/campus_news_title" />
+            android:layout_height="@dimen/item_interior_space_medium"
+            android:background="@color/main_light_white" />
 
         <TextView
             android:id="@+id/tv_campus_news_title"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/campus_title_high"
+            android:background="@drawable/campus_news_title"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/item_interior_space_medium"
             android:text="动态列表"
             android:textColor="@color/main_deep_black"
             android:textSize="@dimen/font_size_medium" />
-    </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -5,7 +5,7 @@
     <dimen name="action_bar_title_size">15sp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="font_size_sper_large">30sp</dimen>
+    <dimen name="font_size_sper_large">25sp</dimen>
     <dimen name="font_size_huge">20sp</dimen>
     <dimen name="font_size_large">18sp</dimen>
     <dimen name="font_size_medium">16sp</dimen>
@@ -29,8 +29,9 @@
     <dimen name="dialog_interior_size_secondary">40dp</dimen>
     <dimen name="dialog_interior_size_medium">50dp</dimen>
     <dimen name="dialog_interior_size_large">110dp</dimen>
+    <!-- 校园title尺寸 -->
+    <dimen name="campus_title_high">30dp</dimen>
     <!-- title相关的值 -->
-    <dimen name="campus_title_high">40dp</dimen>
     <dimen name="title_interior_size_tiny">2dp</dimen>
     <dimen name="title_interior_size_small">5dp</dimen>
     <dimen name="title_interior_size_mediu">10dp</dimen>
