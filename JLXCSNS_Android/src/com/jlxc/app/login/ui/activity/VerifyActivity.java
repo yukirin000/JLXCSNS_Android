@@ -256,6 +256,7 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 			//发送验证码
 			SMSSDK.getVerificationCode("86",userPhoneNumber);	
 			verifyCountdownTimer.start();
+			showLoading("获取中..", true);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -321,6 +322,7 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 			Object data = msg.obj;
 			Log.e("event", "event="+event);
 			if (result == SMSSDK.RESULT_COMPLETE) {
+				hideLoading();
 				//短信注册成功后，返回MainActivity,然后提示新好友
 				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
 					//完成注册或者找回密码

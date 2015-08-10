@@ -96,11 +96,12 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 					@Override
 					public void doConfirm() {
 						confirmDialog.dismiss();
+						finishWithRight();
 					}
 
 					@Override
 					public void doCancel() {
-						finishWithRight();
+						
 						confirmDialog.dismiss();
 					}
 				});			
