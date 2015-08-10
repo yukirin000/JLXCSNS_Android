@@ -12,6 +12,7 @@
 
     <ImageButton
         android:id="@+id/enter_button"
+        android:visibility="gone"
         android:scaleType="fitXY"
         android:layout_width="105dip"
         android:layout_height="30dip"
