@@ -28,7 +28,6 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -55,8 +54,6 @@ import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsBodyItem;
 import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsOperateItem;
 import com.jlxc.app.personal.model.MyNewsListItemModel.MyNewsTitleItem;
 import com.jlxc.app.personal.utils.NewsToItemData;
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 

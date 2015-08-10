@@ -121,6 +121,7 @@ public class BigImgLookActivity extends BaseActivity {
 
 	@SuppressWarnings("unchecked")
 	private void init() {
+		//创建加载dialog
 		loadingDialog = CustomImageLoadingDialog
 				.createLoadingDialog(BigImgLookActivity.this);
 		Intent intent = this.getIntent();
@@ -160,8 +161,8 @@ public class BigImgLookActivity extends BaseActivity {
 		}
 
 		BitmapManager bmpManager = BitmapManager.getInstance();
-		bitmapUtils = bmpManager.getHeadPicBitmapUtils(BigImgLookActivity.this,
-				R.drawable.image_download_fail, true, true);
+		bitmapUtils = bmpManager.getBitmapUtils(BigImgLookActivity.this, true,
+				true);
 		loadImageCallBack = new BigImgLoadCallBack();
 	}
 
@@ -213,7 +214,7 @@ public class BigImgLookActivity extends BaseActivity {
 
 				@Override
 				public boolean onLongClick(View view) {
-					
+
 					isLoneClick = true;
 					imageLongClick();
 					return true;
@@ -244,7 +245,7 @@ public class BigImgLookActivity extends BaseActivity {
 		downDialog.setClickCallBack(new ClickCallBack() {
 
 			@Override
-			public void Onclick(View view,int which) {
+			public void Onclick(View view, int which) {
 				String imagePath = imageUrlList.get(currentPage);
 				int nameIndex = imagePath.lastIndexOf("/");
 				String imageName = imagePath.substring(nameIndex + 1);
@@ -350,7 +351,8 @@ public class BigImgLookActivity extends BaseActivity {
 					imageUrlList.get(position), loadImageCallBack);
 			tipList.get(currentPage).setBackgroundResource(
 					R.drawable.cursor_point_not_selected);
-			tipList.get(position).setBackgroundResource(R.drawable.cursor_point_selected);
+			tipList.get(position).setBackgroundResource(
+					R.drawable.cursor_point_selected);
 			currentPage = position;
 		}
 	}

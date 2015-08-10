@@ -74,6 +74,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	public static final int ALBUM_SELECT = 2;// 相册选取
 	public static final int PHOTO_ZOOM = 3; // 缩放
 	public static final int PHOTO_RESOULT = 4;// 结果
+	public static final int PHOTO_DELETE = 5;// 删除
 
 	public static final int LOCATION_SELECT = 100;// 地理位置返回
 	public static final String IMAGE_UNSPECIFIED = "image/*";
@@ -86,13 +87,13 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	private ImageView addImageView;
 	@ViewInject(R.id.contentEt)
 	private EditText contentEditText;
-	//选地点layout
+	// 选地点layout
 	@ViewInject(R.id.choice_location_layout)
 	private LinearLayout choiceLocationLayout;
-	//选地点textview
+	// 选地点textview
 	@ViewInject(R.id.choice_location_text_view)
 	private TextView choiceLocationTextView;
-	//发布按钮
+	// 发布按钮
 	@ViewInject(R.id.base_ll_right_btns)
 	private LinearLayout rightLayout;
 
@@ -101,7 +102,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	// 间隔
 	private int space;
 	// 点击加号的image弹窗
-//	private AlertDialog imageDialog;
+	// private AlertDialog imageDialog;
 	private CustomSelectPhotoDialog selectDialog;
 	// 临时文件名
 	private String tmpImageName;
@@ -139,93 +140,100 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	}
 
 	private void showChoiceImageAlert() {
-//		if (imageDialog == null) {
-//			imageDialog = new AlertDialog.Builder(this)
-//					.setTitle("选择照片")
-//					.setItems(new String[] { "拍照", "相册" },
-//							new OnClickListener() {
-//
-//								@Override
-//								public void onClick(DialogInterface dialog,
-//										int which) {
-//
-//									switch (which) {
-//									case 0:
-//										// 拍照
-//										Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//										tmpImageName = JLXCUtils.getPhotoFileName() + "";
-//										LogUtils.i(tmpImageName, 1);
-//										File tmpFile = new File(FileUtil.TEMP_PATH+ tmpImageName);
-//										intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(tmpFile));
-//										startActivityForResult(intentCamera,
-//												TAKE_PHOTO);
-//										break;
-//									case 1:
-//										// 相册
-//										// Intent intentAlbum = new Intent(
-//										// Intent.ACTION_GET_CONTENT);
-//										// tmpImageName = JLXCUtils
-//										// .getPhotoFileName() + "";
-//										// intentAlbum.setType(IMAGE_UNSPECIFIED);
-//										// startActivityForResult(intentAlbum,
-//										// ALBUM_SELECT);
-//										Intent intentAlbum = new Intent(PublishNewsActivity.this,GalleyActivity.class);
-//										int imageCount = addImageLayout.getChildCount()-1;
-//										if (imageCount < 0) {
-//											imageCount = 0;
-//										}
-//										intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,imageCount);
-//										startActivityForResult(intentAlbum,
-//												ALBUM_SELECT);
-//										rightLayout.setEnabled(false);
-//										break;
-//									default:
-//										break;
-//									}
-//								}
-//							}).setNegativeButton("取消", null).create();
-//		}
-//
-//		imageDialog.show();
-		
+		// if (imageDialog == null) {
+		// imageDialog = new AlertDialog.Builder(this)
+		// .setTitle("选择照片")
+		// .setItems(new String[] { "拍照", "相册" },
+		// new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(DialogInterface dialog,
+		// int which) {
+		//
+		// switch (which) {
+		// case 0:
+		// // 拍照
+		// Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		// tmpImageName = JLXCUtils.getPhotoFileName() + "";
+		// LogUtils.i(tmpImageName, 1);
+		// File tmpFile = new File(FileUtil.TEMP_PATH+ tmpImageName);
+		// intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(tmpFile));
+		// startActivityForResult(intentCamera,
+		// TAKE_PHOTO);
+		// break;
+		// case 1:
+		// // 相册
+		// // Intent intentAlbum = new Intent(
+		// // Intent.ACTION_GET_CONTENT);
+		// // tmpImageName = JLXCUtils
+		// // .getPhotoFileName() + "";
+		// // intentAlbum.setType(IMAGE_UNSPECIFIED);
+		// // startActivityForResult(intentAlbum,
+		// // ALBUM_SELECT);
+		// Intent intentAlbum = new
+		// Intent(PublishNewsActivity.this,GalleyActivity.class);
+		// int imageCount = addImageLayout.getChildCount()-1;
+		// if (imageCount < 0) {
+		// imageCount = 0;
+		// }
+		// intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,imageCount);
+		// startActivityForResult(intentAlbum,
+		// ALBUM_SELECT);
+		// rightLayout.setEnabled(false);
+		// break;
+		// default:
+		// break;
+		// }
+		// }
+		// }).setNegativeButton("取消", null).create();
+		// }
+		//
+		// imageDialog.show();
+
 		// 设置为头像
 		if (selectDialog == null) {
-			selectDialog = new CustomSelectPhotoDialog(this);	
-			selectDialog.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
+			selectDialog = new CustomSelectPhotoDialog(this);
+			selectDialog
+					.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
 
-				@Override
-				public void onSelectGallery() {
-					//相册
-					Intent intentAlbum = new Intent(PublishNewsActivity.this,GalleyActivity.class);
-					int imageCount = addImageLayout.getChildCount()-1;
-					if (imageCount < 0) {
-						imageCount = 0;
-					}
-					intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,imageCount);
-					startActivityForResult(intentAlbum,ALBUM_SELECT);
-					rightLayout.setEnabled(false);
-					selectDialog.dismiss();
-				}
+						@Override
+						public void onSelectGallery() {
+							// 相册
+							Intent intentAlbum = new Intent(
+									PublishNewsActivity.this,
+									GalleyActivity.class);
+							int imageCount = addImageLayout.getChildCount() - 1;
+							if (imageCount < 0) {
+								imageCount = 0;
+							}
+							intentAlbum.putExtra(
+									GalleyActivity.INTENT_KEY_SELECTED_COUNT,
+									imageCount);
+							startActivityForResult(intentAlbum, ALBUM_SELECT);
+							rightLayout.setEnabled(false);
+							selectDialog.dismiss();
+						}
 
-				@Override
-				public void onSelectCamera() {
-					// 拍照
-					Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					tmpImageName = JLXCUtils.getPhotoFileName() + "";
-					LogUtils.i(tmpImageName, 1);
-					File tmpFile = new File(FileUtil.TEMP_PATH+ tmpImageName);
-					intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(tmpFile));
-					startActivityForResult(intentCamera,
-							TAKE_PHOTO);
-					selectDialog.dismiss();
-				}
+						@Override
+						public void onSelectCamera() {
+							// 拍照
+							Intent intentCamera = new Intent(
+									MediaStore.ACTION_IMAGE_CAPTURE);
+							tmpImageName = JLXCUtils.getPhotoFileName() + "";
+							LogUtils.i(tmpImageName, 1);
+							File tmpFile = new File(FileUtil.TEMP_PATH
+									+ tmpImageName);
+							intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
+									Uri.fromFile(tmpFile));
+							startActivityForResult(intentCamera, TAKE_PHOTO);
+							selectDialog.dismiss();
+						}
 
-			});	
+					});
 		}
-		
+
 		selectDialog.show();
-		
-		
+
 	}
 
 	private void addNewsImageView(String filePath) {
@@ -258,71 +266,82 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				// 相册
-//				final String tmpFilePath = (String) v.getTag();
-//				new AlertDialog.Builder(PublishNewsActivity.this)
-//						.setTitle("操作")
-//						.setItems(new String[] { "删除", "查看大图", "滤镜处理" },
-//								new OnClickListener() {
-//
-//									@Override
-//									public void onClick(DialogInterface dialog,int which) {
-//
-//										switch (which) {
-//										case 0:
-//											// 删除
-//											deleteNewsImageView(tmpFilePath);
-//											break;
-//										case 1:
-//											// 查看大图
-//											Intent intent = new Intent(PublishNewsActivity.this,BigImgLookActivity.class);
-//											intent.putExtra(BigImgLookActivity.INTENT_KEY,tmpFilePath);
-//											startActivityWithBottom(intent);
-//											break;
-//										case 2:
-//											// 滤镜
-//											filterImage(tmpFilePath, false);
-//											break;
-//										default:
-//											break;
-//										}
-//									}
-//								}).setNegativeButton("取消", null).show();
-				
+				// final String tmpFilePath = (String) v.getTag();
+				// new AlertDialog.Builder(PublishNewsActivity.this)
+				// .setTitle("操作")
+				// .setItems(new String[] { "删除", "查看大图", "滤镜处理" },
+				// new OnClickListener() {
+				//
+				// @Override
+				// public void onClick(DialogInterface dialog,int which) {
+				//
+				// switch (which) {
+				// case 0:
+				// // 删除
+				// deleteNewsImageView(tmpFilePath);
+				// break;
+				// case 1:
+				// // 查看大图
+				// Intent intent = new
+				// Intent(PublishNewsActivity.this,BigImgLookActivity.class);
+				// intent.putExtra(BigImgLookActivity.INTENT_KEY,tmpFilePath);
+				// startActivityWithBottom(intent);
+				// break;
+				// case 2:
+				// // 滤镜
+				// filterImage(tmpFilePath, false);
+				// break;
+				// default:
+				// break;
+				// }
+				// }
+				// }).setNegativeButton("取消", null).show();
+
 				final String tmpFilePath = (String) v.getTag();
-				List<String> menuList = new ArrayList<String>();
-				menuList.add("删除");
-				menuList.add("查看大图");
-//				menuList.add("滤镜处理");
-				final CustomListViewDialog downDialog = new CustomListViewDialog(
-						PublishNewsActivity.this, menuList);
-				downDialog.setClickCallBack(new ClickCallBack() {
-					@Override
-					public void Onclick(View view, int which) {
-						switch (which) {
-						case 0:
-							// 删除
-							deleteNewsImageView(tmpFilePath);
-							break;
-						case 1:
-							// 查看大图
-							Intent intent = new Intent(PublishNewsActivity.this,BigImgLookActivity.class);
-							intent.putExtra(BigImgLookActivity.INTENT_KEY,tmpFilePath);
-//							startActivityWithBottom(intent);
-							startActivity(intent);
-							break;
-						case 2:
-							// 滤镜
-//							filterImage(tmpFilePath, false);
-							
-							break;
-						default:
-							break;
-						}						
-						downDialog.cancel();
-					}
-				});
-				downDialog.show();				
-				
+
+				Intent intent = new Intent(PublishNewsActivity.this,
+						PublisPhotoHandelActivity.class);
+				intent.putExtra(PublisPhotoHandelActivity.INTENT_KEY,
+						tmpFilePath);
+				startActivityForResult(intent, PHOTO_DELETE);
+
+//				List<String> menuList = new ArrayList<String>();
+//				menuList.add("删除");
+//				menuList.add("查看大图");
+//				// menuList.add("滤镜处理");
+//				final CustomListViewDialog downDialog = new CustomListViewDialog(
+//						PublishNewsActivity.this, menuList);
+//				downDialog.setClickCallBack(new ClickCallBack() {
+//					@Override
+//					public void Onclick(View view, int which) {
+//						switch (which) {
+//						case 0:
+//							// 删除
+//							deleteNewsImageView(tmpFilePath);
+//							break;
+//						case 1:
+//							// 查看大图
+//							Intent intent = new Intent(
+//									PublishNewsActivity.this,
+//									BigImgLookActivity.class);
+//							intent.putExtra(BigImgLookActivity.INTENT_KEY,
+//									tmpFilePath);
+//							// startActivityWithBottom(intent);
+//							startActivity(intent);
+//							break;
+//						case 2:
+//							// 滤镜
+//							// filterImage(tmpFilePath, false);
+//
+//							break;
+//						default:
+//							break;
+//						}
+//						downDialog.cancel();
+//					}
+//				});
+//				downDialog.show();
+
 			}
 		});
 
@@ -382,64 +401,64 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	}
 
 	// 图片滤镜
-//	private void filterImage(final String path, final boolean isAdd) {
-//		File filterFile = new File(path);
-//		// 组件委托
-//		TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
-//			@Override
-//			public void onComponentFinished(TuSdkResult result, Error error,
-//					TuFragment lastFragment) {
-//				File oriFile = result.imageFile;
-//				File newFile = new File(path);
-//				// 滤镜成功后重命名 之前的临时文件就被覆盖掉
-//				boolean filterOK = oriFile.renameTo(newFile);
-//				if (filterOK) {
-//					// 添加
-//					if (isAdd) {
-//						addNewsImageView(path);
-//					} else {
-//						// 图片
-//						for (int i = 0; i < addImageLayout.getChildCount(); i++) {
-//							View view = addImageLayout.getChildAt(i);
-//							// 添加成功处理
-//							if (view != addImageView
-//									&& view.getTag().equals(path)) {
-//								// 设置照片
-//								bitmapUtils.display(view, path);
-//							}
-//						}
-//					}
-//
-//				} else {
-//					ToastUtil.show(PublishNewsActivity.this, "图片处理失败T_T");
-//				}
-//			}
-//
-//		};
-//
-//		TuEditComponent component = TuSdk.editCommponent(this, delegate);
-//		component.componentOption().editEntryOption().setEnableCuter(false);
-//		component.componentOption().editEntryOption().setEnableSticker(false);
-//		component.componentOption().editEntryOption().setSaveToAlbum(false);
-//		component.componentOption().editEntryOption().setAutoRemoveTemp(false);
-//		component.componentOption().editEntryOption().setSaveToTemp(true);
-//		component.componentOption().editEntryOption().setOutputCompress(80);
-//
-//		TuSdkResult result = new TuSdkResult();
-//		result.imageFile = filterFile;
-//
-//		// 设置图片
-//		component.setImage(result.image)
-//		// 设置系统照片
-//				.setImageSqlInfo(result.imageSqlInfo)
-//				// 设置临时文件
-//				.setTempFilePath(result.imageFile)
-//				// 在组件执行完成后自动关闭组件
-//				.setAutoDismissWhenCompleted(true)
-//				// 开启组件
-//				.showComponent();
-//
-//	}
+	// private void filterImage(final String path, final boolean isAdd) {
+	// File filterFile = new File(path);
+	// // 组件委托
+	// TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
+	// @Override
+	// public void onComponentFinished(TuSdkResult result, Error error,
+	// TuFragment lastFragment) {
+	// File oriFile = result.imageFile;
+	// File newFile = new File(path);
+	// // 滤镜成功后重命名 之前的临时文件就被覆盖掉
+	// boolean filterOK = oriFile.renameTo(newFile);
+	// if (filterOK) {
+	// // 添加
+	// if (isAdd) {
+	// addNewsImageView(path);
+	// } else {
+	// // 图片
+	// for (int i = 0; i < addImageLayout.getChildCount(); i++) {
+	// View view = addImageLayout.getChildAt(i);
+	// // 添加成功处理
+	// if (view != addImageView
+	// && view.getTag().equals(path)) {
+	// // 设置照片
+	// bitmapUtils.display(view, path);
+	// }
+	// }
+	// }
+	//
+	// } else {
+	// ToastUtil.show(PublishNewsActivity.this, "图片处理失败T_T");
+	// }
+	// }
+	//
+	// };
+	//
+	// TuEditComponent component = TuSdk.editCommponent(this, delegate);
+	// component.componentOption().editEntryOption().setEnableCuter(false);
+	// component.componentOption().editEntryOption().setEnableSticker(false);
+	// component.componentOption().editEntryOption().setSaveToAlbum(false);
+	// component.componentOption().editEntryOption().setAutoRemoveTemp(false);
+	// component.componentOption().editEntryOption().setSaveToTemp(true);
+	// component.componentOption().editEntryOption().setOutputCompress(80);
+	//
+	// TuSdkResult result = new TuSdkResult();
+	// result.imageFile = filterFile;
+	//
+	// // 设置图片
+	// component.setImage(result.image)
+	// // 设置系统照片
+	// .setImageSqlInfo(result.imageSqlInfo)
+	// // 设置临时文件
+	// .setTempFilePath(result.imageFile)
+	// // 在组件执行完成后自动关闭组件
+	// .setAutoDismissWhenCompleted(true)
+	// // 开启组件
+	// .showComponent();
+	//
+	// }
 
 	// 发布动态
 	private void publishNews() {
@@ -479,7 +498,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				}
 			}
 		}
-		
+
 		// 姓名
 		HttpManager.post(JLXCConst.PUBLISH_NEWS, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -522,22 +541,22 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				}, null));
 	}
 
-//	private String getRealPathFromURI(Uri contentURI) {
-//		String result;
-//		Cursor cursor = getContentResolver().query(contentURI, null, null,
-//				null, null);
-//		if (cursor == null) { // Source is Dropbox or other similar local file
-//								// path
-//			result = contentURI.getPath();
-//		} else {
-//			cursor.moveToFirst();
-//			int idx = cursor
-//					.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-//			result = cursor.getString(idx);
-//			cursor.close();
-//		}
-//		return result;
-//	}
+	// private String getRealPathFromURI(Uri contentURI) {
+	// String result;
+	// Cursor cursor = getContentResolver().query(contentURI, null, null,
+	// null, null);
+	// if (cursor == null) { // Source is Dropbox or other similar local file
+	// // path
+	// result = contentURI.getPath();
+	// } else {
+	// cursor.moveToFirst();
+	// int idx = cursor
+	// .getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+	// result = cursor.getString(idx);
+	// cursor.close();
+	// }
+	// return result;
+	// }
 
 	// /////////////////////////////////////Override//////////////////////////////////////////
 	@Override
@@ -619,10 +638,10 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 			// 地理位置
 			if (savedInstanceState.containsKey("location")) {
 				locationString = savedInstanceState.getString("location");
-				if (null == locationString || locationString.length()<1) {
-					choiceLocationTextView.setText("告诉我你在哪里....");					
-				}else {
-					choiceLocationTextView.setText(locationString);	
+				if (null == locationString || locationString.length() < 1) {
+					choiceLocationTextView.setText("告诉我你在哪里....");
+				} else {
+					choiceLocationTextView.setText(locationString);
 				}
 			}
 			// 内容
@@ -663,42 +682,48 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				int[] screenSize = getScreenSize();
 				if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0],
 						screenSize[1])) {
-//					filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName, true);
+					// filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName,
+					// true);
 					addNewsImageView(FileUtil.BIG_IMAGE_PATH + tmpImageName);
 				}
 				break;
 			case ALBUM_SELECT:// 当选择从本地获取图片时
 				/*******************/
-				
+
 				@SuppressWarnings("unchecked")
-				List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
+				List<String> resultList = (List<String>) data
+						.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
 				int[] screenSize1 = getScreenSize();
-				long interval = System.currentTimeMillis()/1000;
-				//循环处理图片
+				long interval = System.currentTimeMillis() / 1000;
+				// 循环处理图片
 				for (String fileRealPath : resultList) {
-					//用户id+时间戳
-			    	String fileName = UserManager.getInstance().getUser().getUid()+""+interval+".jpg";
-					if (fileRealPath != null&& FileUtil.tempToLocalPath(fileRealPath,fileName, screenSize1[0],screenSize1[1])) {
+					// 用户id+时间戳
+					String fileName = UserManager.getInstance().getUser()
+							.getUid()
+							+ "" + interval + ".jpg";
+					if (fileRealPath != null
+							&& FileUtil.tempToLocalPath(fileRealPath, fileName,
+									screenSize1[0], screenSize1[1])) {
 						addNewsImageView(FileUtil.BIG_IMAGE_PATH + fileName);
 					}
-					//命名规则以当前时间戳顺序加一
+					// 命名规则以当前时间戳顺序加一
 					interval++;
 				}
-				
+
 				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
-					
+
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-//						Message message = new Message();
-//		                message.what = 1;
-//		                handler.sendMessage(message);
-		                timerHandler.post(new Runnable() {
+						// Message message = new Message();
+						// message.what = 1;
+						// handler.sendMessage(message);
+						timerHandler.post(new Runnable() {
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-				            	//恢复点击
+								// 恢复点击
 								rightLayout.setEnabled(true);
 							}
 						});
@@ -706,37 +731,46 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				}, 1000);
 
 				/*******************/
-//				// 做非空判断
-//				if (data != null) {
-//					Uri uri = data.getData();
-//					try {
-//						ContentResolver cr = this.getContentResolver();
-//						if (uri.toString().endsWith(".png")
-//								|| uri.toString().endsWith(".jpg")
-//								|| "image/jpeg".equals(cr.getType(uri))
-//								|| "image/png".equals(cr.getType(uri))) {
-//							// 压缩存储
-//							int[] screenSize1 = getScreenSize();
-//							String fileRealPath = getRealPathFromURI(uri);
-//							if (fileRealPath != null
-//									&& FileUtil.tempToLocalPath(fileRealPath,
-//											tmpImageName, screenSize1[0],
-//											screenSize1[1])) {
-//								filterImage(FileUtil.BIG_IMAGE_PATH
-//										+ tmpImageName, true);
-//							}
-//						} else {
-//
-//						}
-//
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
+				// // 做非空判断
+				// if (data != null) {
+				// Uri uri = data.getData();
+				// try {
+				// ContentResolver cr = this.getContentResolver();
+				// if (uri.toString().endsWith(".png")
+				// || uri.toString().endsWith(".jpg")
+				// || "image/jpeg".equals(cr.getType(uri))
+				// || "image/png".equals(cr.getType(uri))) {
+				// // 压缩存储
+				// int[] screenSize1 = getScreenSize();
+				// String fileRealPath = getRealPathFromURI(uri);
+				// if (fileRealPath != null
+				// && FileUtil.tempToLocalPath(fileRealPath,
+				// tmpImageName, screenSize1[0],
+				// screenSize1[1])) {
+				// filterImage(FileUtil.BIG_IMAGE_PATH
+				// + tmpImageName, true);
+				// }
+				// } else {
+				//
+				// }
+				//
+				// } catch (Exception e) {
+				// e.printStackTrace();
+				// }
+				// }
+				break;
+
+			// 删除选中的照片
+			case PHOTO_DELETE:
+				if (data.hasExtra(PublisPhotoHandelActivity.INTENT_KEY_DELETE_URL)) {
+					String tmpFilePath = data
+							.getStringExtra(PublisPhotoHandelActivity.INTENT_KEY_DELETE_URL);
+					deleteNewsImageView(tmpFilePath);
+				}
 				break;
 			}
-		}else {
-			//恢复点击
+		} else {
+			// 恢复点击
 			rightLayout.setEnabled(true);
 		}
 
@@ -746,7 +780,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 			if (null != location && !"".equals(location)) {
 				locationString = location;
 				choiceLocationTextView.setText(location);
-			}else {
+			} else {
 				locationString = "";
 				choiceLocationTextView.setText("告诉我你在哪里....");
 			}
@@ -755,7 +789,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 
 	final Handler timerHandler = new Handler();
 	final Handler photoHandler = new Handler();
-	
+
 	/**
 	 * 发布动态完成发送广播
 	 * */

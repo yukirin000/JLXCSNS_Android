@@ -531,12 +531,8 @@ public class CampusFragment extends BaseFragment {
 				laParams.width = laParams.height = headImageSize;
 				imgView.setLayoutParams(laParams);
 				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				bitmapUtils
-						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
 				// 绑定图片
-				bitmapUtils.configDefaultBitmapMaxSize(laParams.width,
-						laParams.width);
 				helper.setImageUrl(R.id.iv_campus_person_gridview_item,
 						bitmapUtils, item.getHeadSubImage(),
 						new NewsBitmapLoadCallBack());
