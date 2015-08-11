@@ -34,6 +34,7 @@
         android:drawableStart="@drawable/localtion"
         android:paddingTop="@dimen/news_item_margins_top"
         android:text="地理位置"
-        android:textColor="@color/main_light_blue" />
+        android:textColor="@color/main_light_blue"
+        android:textSize="@dimen/font_size_small" />
 
 </LinearLayout>

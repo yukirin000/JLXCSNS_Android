@@ -59,7 +59,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
 	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
+	private int screenWidth = 0;
 
 	@Override
 	public int setLayoutId() {
@@ -94,8 +94,12 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 			public void Onclick(View view, int which) {
 
 				switch (which) {
-				// 只看男生
+				// 全部都看
 				case 0:
+					personAdapter.replaceAll(personList);
+					break;
+				// 只看男生
+				case 1:
 					List<CampusPersonModel> boyList = new ArrayList<CampusPersonModel>();
 					for (CampusPersonModel personModel : personList) {
 						if (personModel.getSex().equals("0")) {
@@ -105,7 +109,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 					personAdapter.replaceAll(boyList);
 					break;
 				// 只看女生
-				case 1:
+				case 2:
 					List<CampusPersonModel> girlList = new ArrayList<CampusPersonModel>();
 					for (CampusPersonModel personModel : personList) {
 						if (personModel.getSex().equals("1")) {
@@ -113,10 +117,6 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 						}
 					}
 					personAdapter.replaceAll(girlList);
-					break;
-				// 全部都看
-				case 2:
-					personAdapter.replaceAll(personList);
 					break;
 
 				default:
@@ -148,7 +148,6 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
 	}
 
 	/**

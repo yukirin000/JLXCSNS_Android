@@ -34,9 +34,7 @@ public class LikeImageListView extends LinearLayout {
 	private final static int TINY_PIX = 320;
 	// 小分辨率手机
 	private final static int SMALL_PIX = 480;
-	// 中等分辨率
-	private final static int MIDDLE_PIX = 720;
-	// 大分辨率
+	// 大
 	private final static int LAGER_PIX = 1280;
 	// 上行文信息
 	private Context mContext;
@@ -158,12 +156,10 @@ public class LikeImageListView extends LinearLayout {
 			maxLikeCount = 6;
 		} else if (screenWidth > TINY_PIX && screenWidth <= SMALL_PIX) {
 			maxLikeCount = 7;
-		} else if (screenWidth > SMALL_PIX && screenWidth <= MIDDLE_PIX) {
+		} else if (screenWidth > SMALL_PIX && screenWidth <= LAGER_PIX) {
 			maxLikeCount = 8;
-		} else if (screenWidth > MIDDLE_PIX && screenWidth <= LAGER_PIX) {
-			maxLikeCount = 9;
 		} else {
-			maxLikeCount = 10;
+			maxLikeCount = 9;
 		}
 	}
 
