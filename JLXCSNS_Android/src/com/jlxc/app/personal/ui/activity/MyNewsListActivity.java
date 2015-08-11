@@ -32,6 +32,7 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
+import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -475,7 +476,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 							String flag) {
 						hideLoading();
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(MyNewsListActivity.this, "网络 太差，请检查 =_=||");
+						ToastUtil.show(MyNewsListActivity.this,
+								"网络 太差，请检查 =_=||");
 						newsListView.onRefreshComplete();
 						if (!islastPage) {
 							newsListView.setMode(Mode.BOTH);
@@ -490,26 +492,23 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 删除当前评论
 	 * */
 	private void deleteCurrentNews(final String newsID) {
-		final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
-		alterDialog.setMessage("真的狠心删除吗？");
-		alterDialog.setCancelable(true);
-
-		alterDialog.setPositiveButton("是的",
-				new DialogInterface.OnClickListener() {
+		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+				MyNewsListActivity.this, "真的狠心删除吗？", "狠心", "舍不得");
+		confirmDialog.show();
+		confirmDialog
+				.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
+					public void doConfirm() {
 						currentNewsId = newsID;
 						newsOPerate.deleteNews(newsID);
+						confirmDialog.dismiss();
 					}
-				});
-		alterDialog.setNegativeButton("舍不得",
-				new DialogInterface.OnClickListener() {
+
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
+					public void doCancel() {
+						confirmDialog.dismiss();
 					}
 				});
-		alterDialog.show();
 	}
 
 	/**

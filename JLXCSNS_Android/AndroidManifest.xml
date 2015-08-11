@@ -125,6 +125,8 @@
         </activity>
         <activity android:name="com.jlxc.app.news.ui.activity.PublishNewsActivity" >
         </activity>
+          <activity android:name="com.jlxc.app.news.ui.activity.PublisPhotoHandelActivity" >
+        </activity>
         <activity android:name="com.jlxc.app.news.ui.activity.AllLikePersonActivity" >
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.MyNewsListActivity" >

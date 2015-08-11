@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.jlxc.app"
     android:id="@+id/layout_my_news_list_body_rootview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,7 +8,7 @@
     android:clickable="true"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/item_interior_space_medium"
-    android:paddingRight="@dimen/item_interior_space_medium" xmlns:app="http://schemas.android.com/apk/res/com.jlxc.app">
+    android:paddingRight="@dimen/item_interior_space_medium" >
 
     <LinearLayout
         android:layout_width="@dimen/item_interior_space_huge"
@@ -55,7 +56,8 @@
             android:drawableStart="@drawable/localtion"
             android:paddingTop="@dimen/news_item_margins_top"
             android:text="地理位置"
-            android:textColor="@color/main_light_blue" />
+            android:textColor="@color/main_light_blue"
+            android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 
 </LinearLayout>

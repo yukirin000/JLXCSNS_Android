@@ -32,6 +32,7 @@
         android:drawablePadding="@dimen/item_interior_space_small"
         android:paddingTop="@dimen/item_interior_space_medium"
         android:text="地理位置"
-        android:textColor="@color/main_light_blue" />
+        android:textColor="@color/main_light_blue"
+        android:textSize="@dimen/font_size_small" />
 
 </LinearLayout>
