@@ -878,6 +878,8 @@ public class FileUtil {
 			// 选择宽和高中最小的比率作为inSampleSize的值，这样可以保证最终图片的宽和高
 			// 一定都会大于等于目标的宽和高。
 			inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
+			//再次缩小图片
+			inSampleSize++;
 		} 
 //		Log.d("kkk", "originWidth" + width + " originHeight" + height + " reqWidth" + reqWidth + " reqHeight"
 //				+ reqHeight + " sampleSize" + inSampleSize);
