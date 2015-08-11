@@ -85,10 +85,17 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 		listviewSet();
 
 		isPullDown = true;
-		getFriends(String.valueOf(currentPage), String.valueOf(pageCount));
 
 		// 同步好友到本地
 		syncFriends();
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		//每次进入页面都更新
+		getFriends(String.valueOf(currentPage), String.valueOf(pageCount));
 	}
 
 	/**

@@ -2,6 +2,7 @@ package com.jlxc.app.base.helper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
+import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -11,6 +12,7 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.model.IMModel;
+import com.jlxc.app.message.ui.activity.ConversationActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 
@@ -253,6 +255,11 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		//底部更新
 		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
 		mContext.sendBroadcast(tabIntent);
+		//如果当前页面是会话页面 不显示通知
+		Activity currentActivity = ActivityManager.getInstence().currentActivity();
+		if (null != currentActivity && currentActivity instanceof ConversationActivity) {
+			return false;
+		}
 		
 		long newWhen = System.currentTimeMillis();
 		mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -506,7 +513,6 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
     	intent.putExtra(OtherPersonalActivity.INTENT_KEY, JLXCUtils.stringToInt(user.getUserId().replace(JLXCConst.JLXC, "")));
     	context.startActivity(intent);
     	((Activity) context).overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-    	
         /**
          * demo 代码  开发者需替换成自己的代码。
          */

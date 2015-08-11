@@ -444,6 +444,7 @@
 
 	<ImageButton
 	    android:id="@+id/setting_Button"
+	    android:visibility="gone"
 	    android:layout_width="40dip"
 	    android:layout_height="40dip"
 	    android:layout_alignParentRight="true"

@@ -73,13 +73,13 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
 				//姓名
 				helper.setText(R.id.name_text_view, item.getTitle());
-				ImageView unreadImageView = helper.getView(R.id.unread_image_view);
+//				ImageView unreadImageView = helper.getView(R.id.unread_image_view);
 				//是否是新的
-				if (item.getIsRead() == 0) {
-					unreadImageView.setVisibility(View.VISIBLE);
-				}else {
-					unreadImageView.setVisibility(View.GONE);
-				}
+//				if (item.getIsRead() == 0) {
+//					unreadImageView.setVisibility(View.VISIBLE);
+//				}else {
+//					unreadImageView.setVisibility(View.GONE);
+//				}
 
 				if (null != item.getAddDate() && item.getAddDate().length()>4) {
 					//时间
