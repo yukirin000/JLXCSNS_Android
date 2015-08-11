@@ -54,15 +54,19 @@ public class BitmapManager {
 //		headPicBmpUtils.configDiskCacheEnabled(isEnableDiskCache);
 //		headPicBmpUtils.configDefaultLoadFailedImage(loadFailImage);
 		
-		//不适用单例utils
-		BitmapUtils newHeadPicBmpUtils = new BitmapUtils(context);
-		newHeadPicBmpUtils.configDefaultLoadFailedImage(loadFailImage);
-		newHeadPicBmpUtils.configDefaultLoadingImage(loadFailImage);
-		newHeadPicBmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
-		newHeadPicBmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
-		newHeadPicBmpUtils.configDiskCacheEnabled(isEnableDiskCache);
-		return newHeadPicBmpUtils;
+		BitmapUtils newHeadPicBmpUtils = new BitmapUtils(context);		
+		try {
+			//不适用单例utils
+			newHeadPicBmpUtils.configDefaultLoadFailedImage(loadFailImage);
+			newHeadPicBmpUtils.configDefaultLoadingImage(loadFailImage);
+			newHeadPicBmpUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+			newHeadPicBmpUtils.configMemoryCacheEnabled(isEnableMemoryCache);
+			newHeadPicBmpUtils.configDiskCacheEnabled(isEnableDiskCache);
+		} catch (Exception e) {
+		}
 		
+		return newHeadPicBmpUtils;
+
 //		headPicBmpUtils.configDefaultLoadingImage(bitmap)
 		
 //		headPicBmpUtils.configDiskCacheFileNameGenerator(new FileNameGenerator() {

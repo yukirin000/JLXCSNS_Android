@@ -123,7 +123,7 @@ public class DBManager {
                 }
                 fos.close();
                 is.close();
-                asset.close();
+//                asset.close();
             }
         }
         catch (Exception e)

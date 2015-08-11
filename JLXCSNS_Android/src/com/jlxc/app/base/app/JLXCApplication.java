@@ -43,7 +43,7 @@ public class JLXCApplication extends Application {
 		//融云初始化
 		RongIM.init(this);
 		// 融云SDK事件监听处理
-        RongCloudEvent.init(this);
+        RongCloudEvent.init(this); 
 		//云巴初始化
 		YunBaManager.start(getApplicationContext());
         //初始化用户模型
@@ -51,29 +51,23 @@ public class JLXCApplication extends Application {
         //友盟测试模式
         MobclickAgent.setDebugMode(true);
 		 //初始化TuTuSDK
-//		TuSdk.enableDebugLog(true);
-//		TuSdk.init(this.getApplicationContext(),"f1c31a2ee6e0fe88-00-t14qn1");
-		// 填写从短信SDK应用后台注册得到的APPKEY 
-		String APPKEY = "94025949f2d3";//463db7238681  27fe7909f8e8
-		// 填写从短信SDK应用后台注册得到的APPSECRET
-		String APPSECRET = "f3d6e97c5b3a1872336ff370a08d1aeb";
-		//初始化验证码
-		SMSSDK.initSDK(this,APPKEY,APPSECRET);
+////		TuSdk.enableDebugLog(true);
+////		TuSdk.init(this.getApplicationContext(),"f1c31a2ee6e0fe88-00-t14qn1");
 	}  
 
-	public static String getCurProcessName(Context context) {
-        int pid = android.os.Process.myPid();
-        ActivityManager activityManager = (ActivityManager) context
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager
-                .getRunningAppProcesses()) {
-            if (appProcess.pid == pid) {
-                return appProcess.processName;
-            }
-        }
-        return null;
-    }
-	
+//	public static String getCurProcessName(Context context) {
+//        int pid = android.os.Process.myPid();
+//        ActivityManager activityManager = (ActivityManager) context
+//                .getSystemService(Context.ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager
+//                .getRunningAppProcesses()) {
+//            if (appProcess.pid == pid) {
+//                return appProcess.processName;
+//            }
+//        }
+//        return null;
+//    }
+//	
 ////	private void init() {
 ////		new Thread(new Runnable() {
 ////			@Override

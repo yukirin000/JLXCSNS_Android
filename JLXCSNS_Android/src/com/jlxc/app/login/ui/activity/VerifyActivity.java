@@ -136,8 +136,14 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 	// 找回密码
 	private void findPwd() {
 		showLoading("数据上传中^_^", false);
-		//先验证验证码
-		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+		try {
+			//先验证验证码
+			SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());			
+		} catch (Exception e) {
+			hideLoading();
+			showLoading("。。。您先等会，好像有点问题", false);
+		}
+
 //		nextActivity();
 	}
 	
@@ -152,8 +158,13 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 	// 开始注册
 	private void startRegister() {
 		VerifyActivity.this.showLoading("验证中︿(￣︶￣)︿", false);
-		//先验证验证码 测试注释掉
-		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+		try {
+			//先验证验证码 测试注释掉
+			SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());			
+		} catch (Exception e) {
+			hideLoading();
+			showLoading("。。。您先等会，好像有点问题", false);
+		}
 		
 //		nextActivity();
 	}
@@ -183,6 +194,14 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
+		// 填写从短信SDK应用后台注册得到的APPKEY 
+		String APPKEY = "94025949f2d3";//463db7238681  27fe7909f8e8
+		// 填写从短信SDK应用后台注册得到的APPSECRET
+		String APPSECRET = "f3d6e97c5b3a1872336ff370a08d1aeb";
+		//初始化验证码
+		SMSSDK.initSDK(this,APPKEY,APPSECRET);
+		
 		
 		init();
 		

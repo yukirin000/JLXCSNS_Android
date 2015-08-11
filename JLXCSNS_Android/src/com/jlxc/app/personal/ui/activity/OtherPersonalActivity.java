@@ -222,6 +222,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		//不能点击
 		hisImageGridView.setEnabled(false);
 		hisFriendsGridView.setEnabled(false);
+		
 		//设置照片和背景图
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		
