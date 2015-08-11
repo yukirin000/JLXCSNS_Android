@@ -1,6 +1,7 @@
 package com.jlxc.app.base.ui.activity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.Window;
 
 import com.lidroid.xutils.ViewUtils;
 import com.jlxc.app.base.manager.ActivityManager;
+import com.jlxc.app.base.ui.view.CustomProgressDialog;
 import com.jlxc.app.R;
 
 /**
@@ -23,17 +25,19 @@ import com.jlxc.app.R;
  * 
  */
 public abstract class BaseActivity extends FragmentActivity {
-	private ProgressDialog progressDialog;
+	// private ProgressDialog progressDialog;
+	private Dialog progressDialog;
 
 	/**
 	 */
 	public boolean hasActiveNetwork(Context context) {
-		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager connManager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		if (connManager.getActiveNetworkInfo() != null) {
 			return connManager.getActiveNetworkInfo().isConnected();
 		}
-		
+
 		return false;
 	}
 
@@ -56,7 +60,7 @@ public abstract class BaseActivity extends FragmentActivity {
 			ViewUtils.inject(this);
 			loadLayout(v);
 		}
-		
+
 		setUpView();
 	}
 
@@ -113,10 +117,17 @@ public abstract class BaseActivity extends FragmentActivity {
 	 * 显示加载动画
 	 */
 	public void showLoading(String message, boolean cancleable) {
+		// if (progressDialog == null) {
+		// progressDialog = new ProgressDialog(this);
+		// progressDialog.setCancelable(cancleable);
+		// progressDialog.setMessage(message + "");
+		// }
+		// if (!progressDialog.isShowing()) {
+		// progressDialog.show();
+		// }
 		if (progressDialog == null) {
-			progressDialog = new ProgressDialog(this);
-			progressDialog.setCancelable(cancleable);
-			progressDialog.setMessage(message + "");
+			progressDialog = CustomProgressDialog.createLoadingDialog(
+					BaseActivity.this, message, cancleable);
 		}
 		if (!progressDialog.isShowing()) {
 			progressDialog.show();
@@ -137,17 +148,18 @@ public abstract class BaseActivity extends FragmentActivity {
 	 * 显示alert
 	 */
 	public void showConfirmAlert(String title, String message) {
-		new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("确认", null).show();
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
+				.setPositiveButton("确认", null).show();
 	}
 
 	public void onResume() {
 		super.onResume();
-//		MobclickAgent.onResume(this);
+		// MobclickAgent.onResume(this);
 	}
 
 	public void onPause() {
 		super.onPause();
-//		MobclickAgent.onPause(this);
+		// MobclickAgent.onPause(this);
 	}
 
 	/**

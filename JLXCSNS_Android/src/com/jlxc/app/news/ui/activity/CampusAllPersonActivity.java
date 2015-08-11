@@ -158,7 +158,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 				CampusAllPersonActivity.this, true, true);
 
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 	}
 
 	/***

@@ -597,7 +597,7 @@ public class DiscoveryFragment extends BaseFragment {
 			dataList.clear();
 		}
 		
-		if (personItemAdapter.getCount() == 0) {
+		if (personItemAdapter.getCount() <= 1) {
 			recommendPrompt.setVisibility(View.VISIBLE);
 			recommendPrompt.setText("好像出了点什么问题 (；′⌒`)");
 		} else {

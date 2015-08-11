@@ -91,8 +91,8 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			getContactsPerson(String.valueOf(UserManager.getInstance()
 					.getUser().getUid()), getContactsJSON(mContactsNumber));
 		} else {
-				promptTextView.setVisibility(View.VISIBLE);
-				promptTextView.setText("真替你感到寂寞，一个好友都没有 (´•︵•`)");
+			promptTextView.setVisibility(View.VISIBLE);
+			promptTextView.setText("真替你感到寂寞，一个好友都没有 (´•︵•`)");
 		}
 	}
 
@@ -257,8 +257,10 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 				}
 				String contactName = phoneCursor
 						.getString(PHONES_DISPLAY_NAME_INDEX);
-				mContactsName.add(contactName);
-				mContactsNumber.add(phoneNumber);
+				if (phoneNumber.length() == 11) {
+					mContactsName.add(contactName);
+					mContactsNumber.add(phoneNumber);
+				}
 			}
 			phoneCursor.close();
 		}
@@ -282,8 +284,10 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 				}
 				String contactName = phoneCursor
 						.getString(PHONES_DISPLAY_NAME_INDEX);
-				mContactsName.add(contactName);
-				mContactsNumber.add(phoneNumber);
+				if (phoneNumber.length() == 11) {
+					mContactsName.add(contactName);
+					mContactsNumber.add(phoneNumber);
+				}
 			}
 			phoneCursor.close();
 		}
@@ -345,7 +349,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	 * 数据解析
 	 * */
 	private void jsonToPersonData(List<JSONObject> jPersonList) {
-		
+
 		dataList.clear();
 		for (JSONObject likeObj : jPersonList) {
 			PersonModel tempPerson = new PersonModel();
@@ -353,7 +357,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			dataList.add(tempPerson);
 		}
 		contactsAdapter.addAll(dataList);
-		
+
 		if (contactsAdapter.getCount() == 0) {
 			promptTextView.setVisibility(View.VISIBLE);
 			promptTextView.setText("真替你感到寂寞，一个好友都没有 (´•︵•`)");

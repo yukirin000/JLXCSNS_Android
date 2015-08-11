@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -48,8 +48,8 @@
         <!-- 模糊 -->
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-    
-     <!-- 自定alertDialog的样式 -->
+
+    <!-- 自定alertDialog的样式 -->
     <style name="alert_dialog" parent="android:style/Theme.Dialog">
 
         <!-- 边框 -->
@@ -65,8 +65,25 @@
         <!-- 模糊 -->
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-    
-    
+    <!-- 自定progressDialog的样式 -->
+    <style name="progess_dialog" parent="android:style/Theme.Dialog">
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowFrame">@null</item>
+        <!-- 边框 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 无标题 -->
+        <item name="android:background">@drawable/progress_dialog_shape</item>
+        <!-- dialog背景样式 -->
+        <item name="android:windowBackground">@color/transparent</item>
+        <!-- 背景透明 -->
+        <item name="android:backgroundDimEnabled">false</item>
+        <!-- 模糊 -->
+    </style>
+
     <!-- 相册部分 弹出框动画 -->
     <style name="anim_popup_dir">
         <item name="android:windowEnterAnimation">@anim/gallery_slide_in</item>
