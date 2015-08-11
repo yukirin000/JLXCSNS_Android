@@ -137,8 +137,8 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 	private void findPwd() {
 		showLoading("数据上传中^_^", false);
 		//先验证验证码
-//		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
-		nextActivity();
+		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+//		nextActivity();
 	}
 	
 //	// 找回密码
@@ -153,9 +153,9 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 	private void startRegister() {
 		VerifyActivity.this.showLoading("验证中︿(￣︶￣)︿", false);
 		//先验证验证码 测试注释掉
-//		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
+		SMSSDK.submitVerificationCode("86", userPhoneNumber, verifycodeEditText.getText().toString().trim());
 		
-		nextActivity();
+//		nextActivity();
 	}
 	
 	//验证成功 下一页
@@ -184,10 +184,14 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		
+		init();
+		
+		//初始化获取一次验证码
+		SMSSDK.getVerificationCode("86",userPhoneNumber);	
+		
 		RelativeLayout rlBar = (RelativeLayout) findViewById(R.id.layout_base_title);
 		rlBar.setBackgroundResource(R.color.main_clear);
 		
-		init();
 		titletTextView.setText("验证码");
 		phonePromptTextView.setText("验证码已发送至：" + userPhoneNumber);
 		revalidatedTextView.setEnabled(false);
@@ -256,7 +260,7 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 			//发送验证码
 			SMSSDK.getVerificationCode("86",userPhoneNumber);	
 			verifyCountdownTimer.start();
-			showLoading("获取中..", true);
+			showLoading("验证码获取中..", true);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -321,8 +325,8 @@ public class VerifyActivity extends BaseActivityWithTopBar {
 			int result = msg.arg2;
 			Object data = msg.obj;
 			Log.e("event", "event="+event);
+			
 			if (result == SMSSDK.RESULT_COMPLETE) {
-				hideLoading();
 				//短信注册成功后，返回MainActivity,然后提示新好友
 				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
 					//完成注册或者找回密码

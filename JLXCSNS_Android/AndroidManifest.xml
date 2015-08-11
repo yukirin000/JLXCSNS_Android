@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="31"
-    android:versionName="0.30" xmlns:tools="http://schemas.android.com/tools">
+    android:versionCode="34"
+    android:versionName="0.33" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -146,6 +146,8 @@
         <activity android:name="com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity" >
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.AboutUsActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.news.ui.activity.PublisPhotoHandelActivity" >
         </activity>
 
         
