@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,12 +15,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -98,6 +95,9 @@ public class DiscoveryFragment extends BaseFragment {
 	// 推荐的人列表
 	@ViewInject(R.id.listview_discovey)
 	private PullToRefreshListView rcmdPersonListView;
+	// 提示信息
+	@ViewInject(R.id.tv_recommend_prompt)
+	private TextView recommendPrompt;
 	// 原始数据
 	private List<PersonModel> personList = new ArrayList<PersonModel>();
 	// item数据
@@ -177,6 +177,8 @@ public class DiscoveryFragment extends BaseFragment {
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
+		// 提示信息初始化
+		recommendPrompt.setText("一大波童鞋即将来袭  (•ิ _ •ิ )");
 	}
 
 	/**
@@ -474,9 +476,9 @@ public class DiscoveryFragment extends BaseFragment {
 				}
 			}
 		};
-		NoScrollGridView photoGridView =null;
-//		NoScrollGridView photoGridView = (NoScrollGridView) helper
-//				.getView(R.id.gv_recommend_photos);
+		NoScrollGridView photoGridView = null;
+		// NoScrollGridView photoGridView = (NoScrollGridView) helper
+		// .getView(R.id.gv_recommend_photos);
 		// 设置gridview的尺寸
 		int photoCount = photoInfoList.size();
 		int gridviewWidth = (int) ((photoCount - 1)
@@ -559,6 +561,12 @@ public class DiscoveryFragment extends BaseFragment {
 	 * 数据解析
 	 * */
 	private void JsonToItemData(List<JSONObject> dataList) {
+		if (dataList.size() == 0) {
+			recommendPrompt.setVisibility(View.VISIBLE);
+			recommendPrompt.setText("好像出了点什么问题 (；′⌒`)");
+		} else {
+			recommendPrompt.setVisibility(View.GONE);
+		}
 		if (isPullDowm) {
 			// 下拉
 			personList.clear();

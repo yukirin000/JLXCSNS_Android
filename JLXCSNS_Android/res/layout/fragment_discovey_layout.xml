@@ -34,9 +34,9 @@
                 android:id="@+id/qrcode_scan_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="@dimen/title_interior_size_mediu"
                 android:layout_marginRight="@dimen/title_interior_size_mediu"
                 android:background="@color/main_clear"
+                android:padding="@dimen/title_interior_size_mediu"
                 android:src="@drawable/qrcode_scan_selector" />
         </LinearLayout>
     </FrameLayout>
@@ -53,19 +53,34 @@
             android:background="@drawable/btn_search_background"
             android:gravity="left|center_vertical"
             android:paddingLeft="@dimen/item_interior_space_large"
+            android:text="名字、 HelloHa号"
             android:textColor="@color/main_light_black"
-            android:textSize="@dimen/font_size_small"
-            android:text="名字、 HelloHa号" />
+            android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 
     <!-- 发现listview -->
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/listview_discovey"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:footerDividersEnabled="true"
-        android:headerDividersEnabled="false"
-        android:smoothScrollbar="true" />
+        android:layout_height="match_parent" >
+
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            android:id="@+id/listview_discovey"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="false"
+            android:smoothScrollbar="true" >
+        </com.handmark.pulltorefresh.library.PullToRefreshListView>
+
+        <TextView
+            android:id="@+id/tv_recommend_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="TextView"
+            android:textColor="@color/main_light_black"
+            android:textSize="@dimen/font_size_medium" />
+    </FrameLayout>
 
 </LinearLayout>

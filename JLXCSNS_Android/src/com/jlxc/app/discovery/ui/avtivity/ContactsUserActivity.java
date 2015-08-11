@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -63,6 +64,9 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	// 联系人listview
 	@ViewInject(R.id.listview_contacts_user)
 	private PullToRefreshListView contactsListView;
+	// 提示信息
+	@ViewInject(R.id.tv_contacts_prompt)
+	private TextView promptTextView;
 	// 数据源
 	private List<PersonModel> dataList = new ArrayList<PersonModel>();
 	// 适配器
@@ -82,10 +86,14 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 		getSIMContacts();
 		listviewSet();
 
-		// 获取联系人数据
-		getContactsPerson(
-				String.valueOf(UserManager.getInstance().getUser().getUid()),
-				getContactsJSON(mContactsNumber));
+		if (mContactsNumber.size() > 0) {
+			// 获取联系人数据
+			getContactsPerson(String.valueOf(UserManager.getInstance()
+					.getUser().getUid()), getContactsJSON(mContactsNumber));
+		} else {
+				promptTextView.setVisibility(View.VISIBLE);
+				promptTextView.setText("真替你感到寂寞，一个好友都没有 (´•︵•`)");
+		}
 	}
 
 	// ////////////////////private method///////////////////////////////////
@@ -99,7 +107,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 				ContactsUserActivity.this, true, true);
 
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
+		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 	}
 
 	/**
@@ -216,8 +224,6 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 				});
 
 		// 快速滑动时不加载图片
-		contactsListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
 		contactsListView.setAdapter(contactsAdapter);
 		contactsListView.setClickable(true);
 	}
@@ -310,7 +316,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							@SuppressWarnings("unchecked")
 							List<JSONObject> JPersonList = (List<JSONObject>) jResult
 									.get("list");
-							JsonToPersonData(JPersonList);
+							jsonToPersonData(JPersonList);
 							break;
 
 						case JLXCConst.STATUS_FAIL:
@@ -326,7 +332,10 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
 						hideLoading();
-						ToastUtil.show(ContactsUserActivity.this, "网络有毒=_=");
+						promptTextView.setVisibility(View.VISIBLE);
+						promptTextView.setText("网络太差了吧 (´•︵•`)");
+						ToastUtil.show(ContactsUserActivity.this,
+								"网络太差，请检查 =_=");
 					}
 
 				}, null));
@@ -335,7 +344,13 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	/**
 	 * 数据解析
 	 * */
-	private void JsonToPersonData(List<JSONObject> jPersonList) {
+	private void jsonToPersonData(List<JSONObject> jPersonList) {
+		if (jPersonList.size() == 0) {
+			promptTextView.setVisibility(View.VISIBLE);
+			promptTextView.setText("真替你感到寂寞，一个好友都没有 (´•︵•`)");
+		} else {
+			promptTextView.setVisibility(View.GONE);
+		}
 		dataList.clear();
 		for (JSONObject likeObj : jPersonList) {
 			PersonModel tempPerson = new PersonModel();

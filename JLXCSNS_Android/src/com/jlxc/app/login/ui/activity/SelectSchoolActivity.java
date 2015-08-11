@@ -75,6 +75,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	// 学校列表listview
 	@ViewInject(R.id.school_listview)
 	private PullToRefreshListView schoolListView;
+	// 提示信息
+	@ViewInject(R.id.tv_school_prompt)
+	private TextView promptTextView;
 	// 用户当前所在的区域编码
 	private String districtCode = "110101";
 	// 需要搜索的学校名字
@@ -93,7 +96,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	// 注册的时候使用或者修改信息的时候使用
 	private boolean notRegister;
 
-	@OnClick({R.id.root_layout })
+	@OnClick({ R.id.root_layout })
 	public void viewCickListener(View view) {
 		switch (view.getId()) {
 		case R.id.root_layout:
@@ -153,7 +156,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		districtLocation = new Location(SelectSchoolActivity.this);
 		districtLocation.locateInit(200, 10, 5000);
 		showLoading("定位中..", true);
-		
+
 		TextView backBtn = (TextView) findViewById(R.id.base_tv_back);
 		backBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -161,8 +164,8 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			public void onClick(View v) {
 				back();
 			}
-		});		
-		
+		});
+
 	}
 
 	/***
@@ -272,7 +275,13 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	/**
 	 * 数据转化
 	 * */
-	private void schoolDataHandle(List<JSONObject> dataList) {
+	private void jsonToSchoolData(List<JSONObject> dataList) {
+		if (dataList.size() == 0) {
+			promptTextView.setVisibility(View.VISIBLE);
+			promptTextView.setText("然而并没有任何学校  ヽ(.◕ฺˇд ˇ◕ฺ;)ﾉ");
+		} else {
+			promptTextView.setVisibility(View.GONE);
+		}
 		List<SchoolModel> newDatas = new ArrayList<SchoolModel>();
 		for (JSONObject schoolobj : dataList) {
 			SchoolModel tempModel = new SchoolModel();
@@ -294,6 +303,9 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	 * */
 	private void getSchoolList(String page, String districtCode,
 			String schoolName) {
+		if (districtCode.length() == 0) {
+			districtCode = "110101";
+		}
 		// 参数设置
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("page", page);
@@ -316,7 +328,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 							schoolListView.onRefreshComplete();
 							List<JSONObject> objList = (List<JSONObject>) jResult
 									.get("list");
-							schoolDataHandle(objList);
+							jsonToSchoolData(objList);
 							if (jResult.getString("is_last").equals("1")) {
 								isLastPage = true;
 								schoolListView.setMode(Mode.PULL_FROM_START);
@@ -463,7 +475,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 
 		@Override
 		public void onLocationChanged(AMapLocation location) {
-			//隐藏HUD
+			// 隐藏HUD
 			hideLoading();
 			if (location != null) {
 				districtCode = location.getAdCode();
