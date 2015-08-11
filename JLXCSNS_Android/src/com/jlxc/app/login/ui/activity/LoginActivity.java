@@ -2,20 +2,14 @@ package com.jlxc.app.login.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
@@ -23,10 +17,7 @@ import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
-import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
-import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
@@ -90,6 +81,7 @@ public class LoginActivity extends BaseActivity {
 				switch (status) {
 				case JLXCConst.STATUS_SUCCESS:
 					hideLoading();
+					
 					JSONObject result = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
 					//登录
 			        int loginDirection    = 1;
@@ -129,8 +121,11 @@ public class LoginActivity extends BaseActivity {
 	
 	//发送验证码
 	public void sendVerify(final String username) {
-//		//发送验证码
-//		SMSSDK.getVerificationCode("86",usernameEt.getText().toString().trim());
+		//发送验证码
+//		try {
+//			SMSSDK.getVerificationCode("86",usernameEt.getText().toString().trim());			
+//		} catch (Exception e) {
+//		}
 		
 		Intent intent = new Intent(LoginActivity.this, VerifyActivity.class);
     	intent.putExtra("username", usernameEt.getText().toString().trim());
@@ -215,65 +210,65 @@ public class LoginActivity extends BaseActivity {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		try {
-			EventHandler eh=new EventHandler(){
-				@Override
-				public void afterEvent(int event, int result, Object data) {
-					Message msg = new Message();
-					msg.arg1 = event;
-					msg.arg2 = result;
-					msg.obj = data;
-					handler.sendMessage(msg);
-				}
-			};
-			SMSSDK.registerEventHandler(eh);
-		} catch (Exception e) {
-			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
-		}
+//		try {
+//			EventHandler eh=new EventHandler(){
+//				@Override
+//				public void afterEvent(int event, int result, Object data) {
+//					Message msg = new Message();
+//					msg.arg1 = event;
+//					msg.arg2 = result;
+//					msg.obj = data;
+//					handler.sendMessage(msg);
+//				}
+//			};
+//			SMSSDK.registerEventHandler(eh);
+//		} catch (Exception e) {
+//			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+//		}
 	}
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		try {
-			SMSSDK.unregisterAllEventHandler();	
-		} catch (Exception e) {
-			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
-		}
+//		try {
+//			SMSSDK.unregisterAllEventHandler();	
+//		} catch (Exception e) {
+//			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
+//		}
 	}
 	
-	@SuppressLint("HandlerLeak") 
-	Handler handler=new Handler(){
-
-		@Override
-		public void handleMessage(Message msg) {
-			hideLoading();
-			// TODO Auto-generated method stub
-			super.handleMessage(msg);
-			int event = msg.arg1;
-			int result = msg.arg2;
-			Object data = msg.obj;
-			Log.e("event", "event="+event);
-			if (result == SMSSDK.RESULT_COMPLETE) {
-				//短信注册成功后，返回MainActivity,然后提示新好友
-				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
-//					Toast.makeText(getApplicationContext(), "提交验证码成功", Toast.LENGTH_SHORT).show();
-				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-	            	Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-	            	intent.putExtra("username", usernameEt.getText().toString().trim());
-	            	startActivityWithRight(intent);	
-	            	
-				}else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){//返回支持发送验证码的国家列表
-//					Toast.makeText(getApplicationContext(), "获取国家列表成功", Toast.LENGTH_SHORT).show();
-					
-				}
-			} else {
-				((Throwable) data).printStackTrace();
-				ToastUtil.show(LoginActivity.this, "网络有点小问题");
-			}
-			
-		}
-		
-	};
+//	@SuppressLint("HandlerLeak") 
+//	Handler handler=new Handler(){
+//
+//		@Override
+//		public void handleMessage(Message msg) {
+//			hideLoading();
+//			// TODO Auto-generated method stub
+//			super.handleMessage(msg);
+//			int event = msg.arg1;
+//			int result = msg.arg2;
+//			Object data = msg.obj;
+//			Log.e("event", "event="+event);
+//			if (result == SMSSDK.RESULT_COMPLETE) {
+//				//短信注册成功后，返回MainActivity,然后提示新好友
+//				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
+////					Toast.makeText(getApplicationContext(), "提交验证码成功", Toast.LENGTH_SHORT).show();
+//				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+//	            	Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+//	            	intent.putExtra("username", usernameEt.getText().toString().trim());
+//	            	startActivityWithRight(intent);	
+//	            	
+//				}else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){//返回支持发送验证码的国家列表
+////					Toast.makeText(getApplicationContext(), "获取国家列表成功", Toast.LENGTH_SHORT).show();
+//					
+//				}
+//			} else {
+//				((Throwable) data).printStackTrace();
+//				ToastUtil.show(LoginActivity.this, "网络有点小问题");
+//			}
+//			
+//		}
+//		
+//	};
 
 }
