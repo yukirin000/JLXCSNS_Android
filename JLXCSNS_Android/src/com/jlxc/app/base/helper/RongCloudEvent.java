@@ -8,6 +8,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
@@ -38,6 +39,7 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Group;
 import io.rong.imlib.model.Message;
+import io.rong.imlib.model.MessageContent;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.ImageMessage;
 import io.rong.message.TextMessage;
@@ -173,7 +175,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 //		notification.defaults = Notification.DEFAULT_SOUND;
 		notification.icon = iconId;
 		notification.tickerText = "您有一条新消息";
-		notification.setLatestEventInfo(mContext, msg.getTargetUserName(), "您收到一条消息", contentIntent);
+		notification.setLatestEventInfo(mContext, msg.getTargetUserName(), "给您发了一条消息", contentIntent);
 		// notification的id使用发送者的id
 		mNotificationManager.notify(0, notification);
         
@@ -244,14 +246,13 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
      */
     @Override
     public boolean onReceived(Message message, int left) {
-
+        
 		//顶部更新
 		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
 		mContext.sendBroadcast(messageIntent);
 		//底部更新
 		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
 		mContext.sendBroadcast(tabIntent);
-		
 		
 		long newWhen = System.currentTimeMillis();
 		mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -267,11 +268,17 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 //		notification.defaults = Notification.DEFAULT_SOUND;
 		notification.icon = iconId;
 		notification.tickerText = "您有一条新消息";
-		notification.setLatestEventInfo(mContext, "", "您收到一条消息", contentIntent);
+		//名字
+		String titleName = "某位同学";
+		String targetId = message.getTargetId();
+		IMModel imModel = IMModel.findByGroupId(targetId);
+		if (null != imModel.getTitle() && imModel.getTitle().length()>0) {
+			titleName = imModel.getTitle();
+		}
+		notification.setLatestEventInfo(mContext, titleName, "给您发了一条消息", contentIntent);
 		// notification的id使用发送者的id
 		mNotificationManager.notify(0, notification);		
-//        MessageContent messageContent = message.getContent();
-//
+
 //        if (messageContent instanceof TextMessage) {//文本消息
 //            TextMessage textMessage = (TextMessage) messageContent;
 //            Log.d(TAG, "onReceived-TextMessage:" + textMessage.getContent());
@@ -311,7 +318,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 //            Log.d(TAG, "onReceived-其他消息，自己来判断处理");
 //        }
 
-        return true;
+        return false;
 
     }
 
