@@ -561,12 +561,6 @@ public class DiscoveryFragment extends BaseFragment {
 	 * 数据解析
 	 * */
 	private void JsonToItemData(List<JSONObject> dataList) {
-		if (dataList.size() == 0) {
-			recommendPrompt.setVisibility(View.VISIBLE);
-			recommendPrompt.setText("好像出了点什么问题 (；′⌒`)");
-		} else {
-			recommendPrompt.setVisibility(View.GONE);
-		}
 		if (isPullDowm) {
 			// 下拉
 			personList.clear();
@@ -601,6 +595,13 @@ public class DiscoveryFragment extends BaseFragment {
 
 		if (null != dataList) {
 			dataList.clear();
+		}
+		
+		if (personItemAdapter.getCount() == 0) {
+			recommendPrompt.setVisibility(View.VISIBLE);
+			recommendPrompt.setText("好像出了点什么问题 (；′⌒`)");
+		} else {
+			recommendPrompt.setVisibility(View.GONE);
 		}
 	}
 

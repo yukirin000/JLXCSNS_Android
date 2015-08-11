@@ -276,12 +276,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 	 * 数据转化
 	 * */
 	private void jsonToSchoolData(List<JSONObject> dataList) {
-		if (dataList.size() == 0) {
-			promptTextView.setVisibility(View.VISIBLE);
-			promptTextView.setText("然而并没有任何学校  ヽ(.◕ฺˇд ˇ◕ฺ;)ﾉ");
-		} else {
-			promptTextView.setVisibility(View.GONE);
-		}
 		List<SchoolModel> newDatas = new ArrayList<SchoolModel>();
 		for (JSONObject schoolobj : dataList) {
 			SchoolModel tempModel = new SchoolModel();
@@ -295,6 +289,13 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		}
 		if (null != dataList) {
 			dataList.clear();
+		}
+		
+		if (schoolAdapter.getCount() == 0) {
+			promptTextView.setVisibility(View.VISIBLE);
+			promptTextView.setText("然而并没有任何学校  ヽ(.◕ฺˇд ˇ◕ฺ;)ﾉ");
+		} else {
+			promptTextView.setVisibility(View.GONE);
 		}
 	}
 

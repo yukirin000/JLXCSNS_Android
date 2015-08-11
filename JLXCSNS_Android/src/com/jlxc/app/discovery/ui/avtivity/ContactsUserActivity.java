@@ -345,12 +345,7 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	 * 数据解析
 	 * */
 	private void jsonToPersonData(List<JSONObject> jPersonList) {
-		if (jPersonList.size() == 0) {
-			promptTextView.setVisibility(View.VISIBLE);
-			promptTextView.setText("真替你感到寂寞，一个好友都没有 (´•︵•`)");
-		} else {
-			promptTextView.setVisibility(View.GONE);
-		}
+		
 		dataList.clear();
 		for (JSONObject likeObj : jPersonList) {
 			PersonModel tempPerson = new PersonModel();
@@ -358,6 +353,13 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			dataList.add(tempPerson);
 		}
 		contactsAdapter.addAll(dataList);
+		
+		if (contactsAdapter.getCount() == 0) {
+			promptTextView.setVisibility(View.VISIBLE);
+			promptTextView.setText("真替你感到寂寞，一个好友都没有 (´•︵•`)");
+		} else {
+			promptTextView.setVisibility(View.GONE);
+		}
 	}
 
 	/**
