@@ -197,7 +197,7 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 					//布局改变
 					hellohalLayout.setVisibility(View.GONE);
 					hellohaTextView.setVisibility(View.VISIBLE);
-					hellohaTextView.setText("HelloHa号"+userModel.getHelloha_id());
+					hellohaTextView.setText("HelloHa号："+userModel.getHelloha_id());
 				}else {
 					if (jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT).getIntValue("flag") == 1) {
 						//有号

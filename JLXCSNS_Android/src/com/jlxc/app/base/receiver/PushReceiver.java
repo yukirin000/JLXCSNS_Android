@@ -86,6 +86,8 @@ public class PushReceiver extends BroadcastReceiver {
 	private void handleNewFriend(JSONObject jsonObject, Context context) {
 		JSONObject pushObject = jsonObject.getJSONObject("content");
 		IMModel imModel = IMModel.findByGroupId(pushObject.getString("uid"));
+		String title = "有同学添加了你~";
+		String content = pushObject.getString("name")+"添加了你";
 		if (null != imModel) {
 			//存在 加好友 但是有新朋友
 			if (imModel.getIsNew() != 1) {
@@ -96,7 +98,7 @@ public class PushReceiver extends BroadcastReceiver {
 				imModel.setCurrentState(IMModel.GroupNotAdd);
 				imModel.setIsRead(0);
 				imModel.update();
-				showNotification(context, "您有一条新消息", "您有一条新消息", "");
+				showNotification(context, title, title, content);
 				
 				//发送通知
 				Intent newsGroupIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
@@ -107,7 +109,7 @@ public class PushReceiver extends BroadcastReceiver {
 			}
 		}else {
 			
-			showNotification(context, "您有一条新消息", "您有一条新消息", "");
+			showNotification(context, title, title, content);
 			
 			imModel = new IMModel();
 			//保存群组信息
@@ -138,9 +140,31 @@ public class PushReceiver extends BroadcastReceiver {
 	//新闻回复点赞到来 处理消息
 	private void handleNewsPush(JSONObject jsonObject, Context context) {
 		
-		showNotification(context, "您有一条新消息", "您有一条新消息", "");
-		
 		JSONObject pushObject = jsonObject.getJSONObject("content");
+		
+		int type = jsonObject.getIntValue("type");
+		String title = "";
+		String content = "";
+		switch (type) {
+		case NewsPushModel.PushNewsAnwser:
+			title = "有人为你评论辣";
+			content = pushObject.getString("name")+":"+pushObject.getString("comment_content");
+			break;
+		case NewsPushModel.PushSecondComment:
+			title = "有人为你评论辣";
+			content = pushObject.getString("name")+":"+pushObject.getString("comment_content");
+			break;
+		case NewsPushModel.PushLikeNews:
+			title = "有人为你点赞辣";
+			content = pushObject.getString("name")+"赞了你";
+			break;
+		default:
+			break;
+		}
+		
+		showNotification(context, title, title, content);
+		
+		
 		NewsPushModel pushModel = new NewsPushModel();
 		//存储
 		pushModel.setUid(pushObject.getIntValue("uid"));
