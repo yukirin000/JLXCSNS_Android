@@ -121,11 +121,17 @@ public class BigImgLookActivity extends BaseActivity {
 
 	@SuppressWarnings("unchecked")
 	private void init() {
+		
+		BitmapManager bmpManager = BitmapManager.getInstance();
+		bitmapUtils = bmpManager.getBitmapUtils(BigImgLookActivity.this, true,
+				true);
+		
 		//创建加载dialog
 		loadingDialog = CustomImageLoadingDialog
 				.createLoadingDialog(BigImgLookActivity.this);
 		Intent intent = this.getIntent();
 		if (intent.hasExtra(INTENT_KEY)) {
+			bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 			// 传递的是单张图片url
 			if (intent.hasExtra(INTENT_KEY)) {
 				imageUrlList.add(intent.getStringExtra(INTENT_KEY));
@@ -160,9 +166,6 @@ public class BigImgLookActivity extends BaseActivity {
 			LogUtils.e("未传递图片地址,图片数为：" + imageUrlList.size());
 		}
 
-		BitmapManager bmpManager = BitmapManager.getInstance();
-		bitmapUtils = bmpManager.getBitmapUtils(BigImgLookActivity.this, true,
-				true);
 		loadImageCallBack = new BigImgLoadCallBack();
 	}
 

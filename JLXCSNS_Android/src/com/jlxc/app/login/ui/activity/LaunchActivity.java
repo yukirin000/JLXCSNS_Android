@@ -7,6 +7,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.utils.ConfigUtils;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.login.ui.fragment.LaunchCircleFragment1;
 import com.jlxc.app.login.ui.fragment.LaunchCircleFragment2;
 import com.jlxc.app.login.ui.fragment.LaunchCircleFragment3;
@@ -19,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.WindowManager;
 
 public class LaunchActivity extends BaseActivity {
 
@@ -33,6 +35,10 @@ public class LaunchActivity extends BaseActivity {
 
 	@Override
 	protected void setUpView() {
+
+		// 隐藏状态栏
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		boolean launchConfig = ConfigUtils.getBooleanConfig("launchTest");
 		
@@ -46,12 +52,14 @@ public class LaunchActivity extends BaseActivity {
 		}else {
 			//如果后台有程序
 			if (ActivityManager.getActivityStack().size()>1) {
-				UserModel userModel = UserManager.getInstance().getUser();
-				if (null != userModel.getUsername() && null != userModel.getLogin_token()) {
-					startActivity(new Intent(LaunchActivity.this, MainTabActivity.class));
-				} else {
-					startActivity(new Intent(LaunchActivity.this, LoginActivity.class));
-				}
+//				UserModel userModel = UserManager.getInstance().getUser();
+//				if (null != userModel.getUsername() && null != userModel.getLogin_token()) {
+//					
+////					startActivity(new Intent(LaunchActivity.this, MainTabActivity.class));
+////					startActivity(new Intent(LaunchActivity.this, ActivityManager.getInstence().currentActivity()));
+//				} else {
+//					startActivity(new Intent(LaunchActivity.this, LoginActivity.class));
+//				}
 				finish();
 				return;
 			}
