@@ -35,7 +35,7 @@
         android:background="@drawable/campus_person_title"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/item_interior_space_medium"
-        android:text="学校的帅锅与妹子 (●'◡'●)ﾉ♥"
+        android:text="本校的帅锅与美女 (•'◡'•)ﾉ♥"
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />
 
@@ -90,7 +90,7 @@
             android:background="@drawable/campus_news_title"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/item_interior_space_medium"
-            android:text="大家的点点滴滴  (•ㅂ•)/♥"
+            android:text="帅锅美女们的日常  (•ㅂ•)/♥"
             android:textColor="@color/main_deep_black"
             android:textSize="@dimen/font_size_medium" />
     </LinearLayout>

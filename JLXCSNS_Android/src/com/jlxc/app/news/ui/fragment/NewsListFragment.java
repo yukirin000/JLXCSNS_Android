@@ -960,7 +960,9 @@ public class NewsListFragment extends BaseFragment {
 				.getFirstVisiblePosition();
 		if (0 == firstVisiblePosition) {
 			// 已经在顶部
-			newsListView.setRefreshing(true);
+			if (!newsListView.isRefreshing()) {
+				newsListView.setRefreshing(true);
+			}
 		} else {
 			if (firstVisiblePosition < 20) {
 				newsListView.getRefreshableView().smoothScrollToPosition(0);

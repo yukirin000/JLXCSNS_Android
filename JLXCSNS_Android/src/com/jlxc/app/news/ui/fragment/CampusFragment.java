@@ -991,7 +991,9 @@ public class CampusFragment extends BaseFragment {
 					.getFirstVisiblePosition();
 			if (0 == firstVisiblePosition) {
 				// 已经在顶部
-				campusListView.setRefreshing(true);
+				if (!campusListView.isRefreshing()) {
+					campusListView.setRefreshing(true);
+				}
 			} else {
 				if (firstVisiblePosition < 20) {
 					campusListView.getRefreshableView().smoothScrollToPosition(0);
