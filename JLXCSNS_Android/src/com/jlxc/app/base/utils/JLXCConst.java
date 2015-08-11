@@ -2,6 +2,7 @@ package com.jlxc.app.base.utils;
 
 public interface JLXCConst {
 
+	// 正式环境 112.74.202.59
 	// 测试环境
 	public static final String DOMIN = "http://192.168.1.100/jlxc_php/index.php/Home/MobileApi";
 	public static final String ATTACHMENT_ADDR = "http://192.168.1.100/jlxc_php/Uploads/";
