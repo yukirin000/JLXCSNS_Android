@@ -20,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.WindowManager;
 
 public class LaunchActivity extends BaseActivity {
 
@@ -34,8 +35,10 @@ public class LaunchActivity extends BaseActivity {
 
 	@Override
 	protected void setUpView() {
-		
-		LogUtils.i("testest", 1);
+
+		// 隐藏状态栏
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		boolean launchConfig = ConfigUtils.getBooleanConfig("launchTest");
 		
