@@ -19,6 +19,7 @@
         android:gravity="top"
         android:orientation="horizontal"
         android:paddingRight="@dimen/item_interior_space_medium"
+        android:paddingBottom="@dimen/item_interior_space_little"
         android:paddingTop="@dimen/item_interior_space_medium" >
 
         <com.jlxc.app.base.ui.view.RoundImageView

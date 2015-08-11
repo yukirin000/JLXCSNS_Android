@@ -7,8 +7,7 @@
     android:clickable="true"
     android:orientation="vertical"
     android:paddingLeft="@dimen/news_item_margins_left"
-    android:paddingRight="@dimen/news_item_margins_right"
-    android:paddingTop="@dimen/news_item_margins_top" >
+    android:paddingRight="@dimen/news_item_margins_right" >
 
     <!-- 动态的文字内容 -->
 
@@ -17,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_deep_white_click"
+        android:paddingTop="@dimen/news_item_margins_top"
         android:text="内容"
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />

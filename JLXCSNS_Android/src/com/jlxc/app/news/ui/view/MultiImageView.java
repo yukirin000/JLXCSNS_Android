@@ -69,6 +69,7 @@ public class MultiImageView extends RelativeLayout {
 	public MultiImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
+		//获取要显示的尺寸
 		TypedArray type = context.obtainStyledAttributes(attrs,
 				R.styleable.MultiImageView);
 		isLargeSize = type.getBoolean(R.styleable.MultiImageView_islargesize,
