@@ -345,7 +345,12 @@ public class RegisterActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		
 		init();
-		titletTextView.setText("注册");
+		if (isFindPwd) {
+			titletTextView.setText("修改密码");
+		}else {
+			titletTextView.setText("注册");	
+		}
+		
 		RelativeLayout rlBar = (RelativeLayout) findViewById(R.id.layout_base_title);
 		rlBar.setBackgroundResource(R.color.main_clear);		
 	}
