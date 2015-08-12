@@ -9,8 +9,6 @@ import io.rong.imlib.RongIMClient.ErrorCode;
 import io.rong.imlib.model.Conversation;
 import io.yunba.android.manager.YunBaManager;
 
-import cn.smssdk.SMSSDK;
-
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.ActivityManager;
@@ -300,13 +298,6 @@ public class MainTabActivity extends BaseActivity {
         if (RongIM.getInstance() != null)
         	RongIM.getInstance().disconnect();
         
-        try {
-        	SMSSDK.unregisterAllEventHandler();	
-		} catch (Exception e) {
-			System.out.println("没初始化SMSSDK 因为这个短信sdk对DEBUG有影响 所以不是RELEASE不初始化");
-		}        
-        
-		
 //		if (RongIM.getInstance() != null)
 //            RongIM.getInstance().logout();
 		

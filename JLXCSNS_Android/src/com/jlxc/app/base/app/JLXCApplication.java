@@ -4,9 +4,6 @@ package com.jlxc.app.base.app;
 import io.rong.imkit.RongIM;
 import io.yunba.android.manager.YunBaManager;
 
-
-import cn.smssdk.SMSSDK;
-
 import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.DBManager;
 import com.jlxc.app.base.manager.UserManager;
