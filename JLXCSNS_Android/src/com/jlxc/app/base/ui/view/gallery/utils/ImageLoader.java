@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
+import com.jlxc.app.base.utils.LogUtils;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -363,7 +365,8 @@ public class ImageLoader
 			// 计算出实际宽度和目标宽度的比率
 			int widthRatio = Math.round((float) width / (float) reqWidth);
 			int heightRatio = Math.round((float) width / (float) reqWidth);
-			inSampleSize = Math.max(widthRatio, heightRatio)+1;
+			inSampleSize = Math.max(widthRatio, heightRatio);
+			inSampleSize = (int) (inSampleSize * 1.5);
 		}
 		return inSampleSize;
 	}
