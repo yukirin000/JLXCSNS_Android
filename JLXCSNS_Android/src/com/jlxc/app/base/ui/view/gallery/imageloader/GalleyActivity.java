@@ -18,12 +18,14 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,6 +46,8 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 	public static final String INTENT_KEY_SELECTED_COUNT = "selected_count";
 	// 所有的图片
 	private List<String> mImgs;
+	@ViewInject(R.id.layout_gallery_root_view)
+	private LinearLayout rootView;
 	// 其余相册
 	@ViewInject(R.id.layout_galley_bottom_ly)
 	private RelativeLayout mBottomLy;
@@ -221,7 +225,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 						totalCount += picSize;
 						imageFloder.setCount(picSize);
 						mImageFloders.add(imageFloder);
-					}else {
+					} else {
 						continue;
 					}
 
@@ -259,7 +263,8 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 			public void onClick(View v) {
 				mListImageDirPopupWindow
 						.setAnimationStyle(R.style.anim_popup_dir);
-				mListImageDirPopupWindow.showAsDropDown(mBottomLy, 0, 0);
+				mListImageDirPopupWindow.showAsDropDown(mBottomLy, 0,
+						-mBottomLy.getHeight());
 
 				// 设置背景颜色变暗
 				WindowManager.LayoutParams lp = getWindow().getAttributes();

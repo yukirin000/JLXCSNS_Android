@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -47,19 +51,20 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+
 //同校的人
 public class SearchUserActivity extends BaseActivityWithTopBar {
 
-	//下拉列表
+	// 下拉列表
 	@ViewInject(R.id.search_user_refresh_list)
 	private PullToRefreshListView searchListView;
-	//搜索et
+	// 搜索et
 	@ViewInject(R.id.search_edit_text)
 	private EditText searchEditText;
-	//显示helloHa号tv
+	// 显示helloHa号tv
 	@ViewInject(R.id.search_top_text_view)
 	private TextView searchTopTextView;
-	//adapter
+	// adapter
 	HelloHaAdapter<FindUserModel> searchAdapter;
 	// 下拉模式
 	public static final int PULL_DOWM_MODE = 0;
@@ -67,23 +72,23 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 	public static final int PULL_UP_MODE = 1;
 	// 是否下拉刷新
 	private boolean isPullDowm = true;
-	//是否是最后一页
-	private boolean isLast = false; 
+	// 是否是最后一页
+	private boolean isLast = false;
 	private BitmapUtils bitmapUtils;
-	//当前的页数
+	// 当前的页数
 	private int currentPage = 1;
-	//自己
+	// 自己
 	private UserModel userModel;
-	//source list
+	// source list
 	private List<FindUserModel> findUserModels;
-	//当前的helloHaID
+	// 当前的helloHaID
 	private String currentHelloHaID;
 
-	@OnClick({R.id.search_top_layout})
+	@OnClick({ R.id.search_top_layout })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		case R.id.search_top_layout:
-			//查找该helloHaId
+			// 查找该helloHaId
 			searchHaHaId();
 			break;
 
@@ -91,7 +96,7 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 			break;
 		}
 	}
-	
+
 	@Override
 	public int setLayoutId() {
 		return R.layout.activity_search_user;
@@ -99,72 +104,108 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
-		
+
 		setBarText("查找");
 		findUserModels = new ArrayList<FindUserModel>();
 		userModel = UserManager.getInstance().getUser();
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
+				R.drawable.default_avatar, true, true);
 		initListViewSet();
+
+		// 设置搜索框内容改变的监听事件
+		searchEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence str, int start, int before,
+					int count) {
+				String inputStr = String.valueOf(str);
+				// 如果是helloHa号格式
+				if (inputStr.trim().matches("^[a-zA-Z0-9]{1,20}+$")) {
+					searchTopTextView.setVisibility(View.VISIBLE);
+					searchTopTextView.setText("查找HelloHa号："
+							+ searchEditText.getText().toString().trim());
+					currentHelloHaID = searchEditText.getText().toString()
+							.trim();
+				} else {
+					searchTopTextView.setVisibility(View.GONE);
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
+
 	}
-	
+
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-		
-		if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
-		     /*隐藏软键盘*/
-		     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-		     if(inputMethodManager.isActive()){
-		             inputMethodManager.hideSoftInputFromWindow(SearchUserActivity.this.getCurrentFocus().getWindowToken(), 0);
-		     }
-		     showLoading("查找中...", false);
-		     // 下拉刷新
-			 isPullDowm = true;
-			 currentPage = 1;		     
-		     //点击查询
-		     getSearchData();
-		     return true;
+
+		if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+			/* 隐藏软键盘 */
+			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+			if (inputMethodManager.isActive()) {
+				inputMethodManager.hideSoftInputFromWindow(
+						SearchUserActivity.this.getCurrentFocus()
+								.getWindowToken(), 0);
+			}
+			showLoading("查找中...", false);
+			// 下拉刷新
+			isPullDowm = true;
+			currentPage = 1;
+			// 点击查询
+			getSearchData();
+			return true;
 		}
 		return super.dispatchKeyEvent(event);
 	}
-	
-	////////////////////////////////////private method//////////////////////////////////////
+
+	// //////////////////////////////////private
+	// method//////////////////////////////////////
 	/***
 	 * listview的设置
 	 */
 	private void initListViewSet() {
-		
+
 		searchEditText.setFocusable(true);
 		searchEditText.setFocusableInTouchMode(true);
 		searchEditText.requestFocus();
-		
+
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				InputMethodManager inputManager = (InputMethodManager)searchEditText.getContext().getSystemService(INPUT_METHOD_SERVICE);
-		        inputManager.showSoftInput(searchEditText, 0);		
+				InputMethodManager inputManager = (InputMethodManager) searchEditText
+						.getContext().getSystemService(INPUT_METHOD_SERVICE);
+				inputManager.showSoftInput(searchEditText, 0);
 			}
 		}, 500);
-		
-		//设置内容
+
+		// 设置内容
 		searchAdapter = new HelloHaAdapter<FindUserModel>(
 				SearchUserActivity.this, R.layout.search_user_adapter) {
 			@Override
 			protected void convert(final HelloHaBaseAdapterHelper helper,
 					final FindUserModel item) {
-				
+
 				if (helper.getPosition() == 0) {
 					helper.setVisible(R.id.top_text_view, true);
-				}else {
+				} else {
 					helper.setVisible(R.id.top_text_view, false);
 				}
-				
+
 				helper.setText(R.id.name_text_view, item.getName());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
-				//添加好友tv
+				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
+						+ item.getHead_sub_image());
+				// 添加好友tv
 				ImageView addImageView = helper.getView(R.id.add_image_view);
-				//点击添加
+				// 点击添加
 				addImageView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -175,28 +216,32 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 						addFriend(imModel, helper.getPosition());
 					}
 				});
-				
-				//是否是好友
+
+				// 是否是好友
 				if (item.getIs_friend() == 1) {
 					addImageView.setEnabled(false);
-					addImageView.setImageResource(R.drawable.friend_btn_add_highlight);
-				}else {
+					addImageView
+							.setImageResource(R.drawable.friend_btn_add_highlight);
+				} else {
 					addImageView.setEnabled(true);
-					addImageView.setImageResource(R.drawable.friend_btn_add_normal);
+					addImageView
+							.setImageResource(R.drawable.friend_btn_add_normal);
 				}
-				
+
 				LinearLayout linearLayout = (LinearLayout) helper.getView();
-				//点击事件
+				// 点击事件
 				linearLayout.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						//跳转到其他人页面
-						Intent intent = new Intent(SearchUserActivity.this, OtherPersonalActivity.class);
-						intent.putExtra(OtherPersonalActivity.INTENT_KEY, item.getUid());
+						// 跳转到其他人页面
+						Intent intent = new Intent(SearchUserActivity.this,
+								OtherPersonalActivity.class);
+						intent.putExtra(OtherPersonalActivity.INTENT_KEY,
+								item.getUid());
 						startActivityWithRight(intent);
 					}
 				});
-				
+
 			}
 		};
 
@@ -219,24 +264,25 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-//				if (isLast) {
-//					CountDownTimer countdownTimer = new CountDownTimer(500, 1000) {
-//						@Override
-//						public void onTick(long millisUntilFinished) {
-//						}
-//						@Override
-//						public void onFinish() {
-//							searchListView.onRefreshComplete();
-//						}
-//					};
-//					// 开始倒计时
-//					countdownTimer.start();
-//					return;
-//				}
-//				currentPage++;
-//				// 上拉刷新
-//				isPullDowm = false;
-//				getSearchData();
+				// if (isLast) {
+				// CountDownTimer countdownTimer = new CountDownTimer(500, 1000)
+				// {
+				// @Override
+				// public void onTick(long millisUntilFinished) {
+				// }
+				// @Override
+				// public void onFinish() {
+				// searchListView.onRefreshComplete();
+				// }
+				// };
+				// // 开始倒计时
+				// countdownTimer.start();
+				// return;
+				// }
+				// currentPage++;
+				// // 上拉刷新
+				// isPullDowm = false;
+				// getSearchData();
 			}
 
 		});
@@ -259,20 +305,21 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 						getSearchData();
 					}
 				});
-		
+
 		// 快宿滑动时不加载图片
-		searchListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
-				false, true));
+		searchListView.setOnScrollListener(new PauseOnScrollListener(
+				bitmapUtils, false, true));
 	}
-	
-	
+
 	/**
 	 * 获取动态数据
 	 * */
 	private void getSearchData() {
 
-		String path = JLXCConst.FIND_USER_LIST + "?" + "user_id=" + userModel.getUid() + 
-				"&content=" + searchEditText.getText().toString().trim() + "&page="+currentPage;
+		String path = JLXCConst.FIND_USER_LIST + "?" + "user_id="
+				+ userModel.getUid() + "&content="
+				+ searchEditText.getText().toString().trim() + "&page="
+				+ currentPage;
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -280,59 +327,66 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 					public void onSuccess(JSONObject jsonResponse, String flag) {
 						super.onSuccess(jsonResponse, flag);
 						hideLoading();
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
-							//最后一页
+							// 最后一页
 							if (0 < jResult.getIntValue("is_last")) {
-								isLast = true;								
-							}else {
+								isLast = true;
+							} else {
 								isLast = false;
 							}
-							
-							// 获取动态列表							
-							String jsonArrayStr = jResult.getString(JLXCConst.HTTP_LIST);
-							List<FindUserModel> list = JSON.parseArray(jsonArrayStr, FindUserModel.class);
+
+							// 获取动态列表
+							String jsonArrayStr = jResult
+									.getString(JLXCConst.HTTP_LIST);
+							List<FindUserModel> list = JSON.parseArray(
+									jsonArrayStr, FindUserModel.class);
 							if (list.size() < 1) {
 								ToastUtil.show(SearchUserActivity.this, "没这人");
 							}
-							
-							//如果是下拉刷新
+
+							// 如果是下拉刷新
 							if (isPullDowm) {
 								findUserModels.clear();
 								findUserModels.addAll(list);
 								searchAdapter.replaceAll(findUserModels);
-							}else {
+							} else {
 								findUserModels.addAll(list);
 								searchAdapter.addAll(findUserModels);
 							}
 							searchListView.onRefreshComplete();
-							//是否是最后一页
+							// 是否是最后一页
 							if (isLast) {
 								searchListView.setMode(Mode.PULL_FROM_START);
-							}else {
+							} else {
 								searchListView.setMode(Mode.BOTH);
 							}
-							
-							//如果是helloHa号格式
-							if (searchEditText.getText().toString().trim().matches(JLXCConst.USER_ACCOUNT_PATTERN)) {
-								searchTopTextView.setVisibility(View.VISIBLE);
-								searchTopTextView.setText("查找HelloHa号："+searchEditText.getText().toString().trim());
-								currentHelloHaID = searchEditText.getText().toString().trim();
-							}else {
-								searchTopTextView.setVisibility(View.GONE);
-							}
+
+							// 如果是helloHa号格式
+							// if
+							// (searchEditText.getText().toString().trim().matches(JLXCConst.USER_ACCOUNT_PATTERN))
+							// {
+							// searchTopTextView.setVisibility(View.VISIBLE);
+							// searchTopTextView.setText("查找HelloHa号："+searchEditText.getText().toString().trim());
+							// currentHelloHaID =
+							// searchEditText.getText().toString().trim();
+							// }else {
+							// searchTopTextView.setVisibility(View.GONE);
+							// }
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(SearchUserActivity.this, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
+							ToastUtil.show(SearchUserActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 							searchListView.onRefreshComplete();
-							//是否是最后一页
+							// 是否是最后一页
 							if (isLast) {
 								searchListView.setMode(Mode.PULL_FROM_START);
-							}else {
+							} else {
 								searchListView.setMode(Mode.BOTH);
 							}
 						}
@@ -345,26 +399,28 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 						hideLoading();
 						ToastUtil.show(SearchUserActivity.this, "网络有毒=_=");
 						searchListView.onRefreshComplete();
-						//是否是最后一页
+						// 是否是最后一页
 						if (isLast) {
 							searchListView.setMode(Mode.PULL_FROM_START);
-						}else {
+						} else {
 							searchListView.setMode(Mode.BOTH);
 						}
 					}
 
 				}, null));
 	}
-	
-	
-	//添加好友
+
+	// 添加好友
 	private void addFriend(final IMModel imModel, final int index) {
 
 		// 参数设置
 		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
-		params.addBodyParameter("friend_id", imModel.getTargetId().replace(JLXCConst.JLXC, "")+"");
-		
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser()
+				.getUid()
+				+ "");
+		params.addBodyParameter("friend_id",
+				imModel.getTargetId().replace(JLXCConst.JLXC, "") + "");
+
 		showLoading("添加中^_^", false);
 		HttpManager.post(JLXCConst.Add_FRIEND, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -372,16 +428,19 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onSuccess(JSONObject jsonResponse, String flag) {
 						super.onSuccess(jsonResponse, flag);
-						
+
 						hideLoading();
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-						ToastUtil.show(SearchUserActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-						
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(SearchUserActivity.this,
+								jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							//添加好友
+							// 添加好友
 							MessageAddFriendHelper.addFriend(imModel);
-							//更新
-							FindUserModel FindUserModel = findUserModels.get(index);
+							// 更新
+							FindUserModel FindUserModel = findUserModels
+									.get(index);
 							FindUserModel.setIs_friend(1);
 							searchAdapter.replaceAll(findUserModels);
 						}
@@ -392,15 +451,15 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
 						hideLoading();
-						ToastUtil.show(SearchUserActivity.this,
-								"网络异常");
+						ToastUtil.show(SearchUserActivity.this, "网络异常");
 					}
 				}, null));
 	}
-	
-	//查找HelloHa号
-	private void searchHaHaId(){
-		String path = JLXCConst.HELLOHA_ID_EXISTS + "?" + "helloha_id=" + currentHelloHaID;
+
+	// 查找HelloHa号
+	private void searchHaHaId() {
+		String path = JLXCConst.HELLOHA_ID_EXISTS + "?" + "helloha_id="
+				+ currentHelloHaID;
 		LogUtils.i(path, 1);
 		showLoading("", false);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
@@ -410,18 +469,24 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 					public void onSuccess(JSONObject jsonResponse, String flag) {
 						super.onSuccess(jsonResponse, flag);
 						hideLoading();
-						
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-						
+
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
 							int uid = jResult.getIntValue("uid");
-							//跳转到其他人页面
-							Intent intent = new Intent(SearchUserActivity.this, OtherPersonalActivity.class);
-							intent.putExtra(OtherPersonalActivity.INTENT_KEY, uid);
+							// 跳转到其他人页面
+							Intent intent = new Intent(SearchUserActivity.this,
+									OtherPersonalActivity.class);
+							intent.putExtra(OtherPersonalActivity.INTENT_KEY,
+									uid);
 							startActivityWithRight(intent);
-						}else {
-							ToastUtil.show(SearchUserActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						} else {
+							ToastUtil.show(SearchUserActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 						}
 
 					}
@@ -435,9 +500,9 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 					}
 
 				}, null));
-		
+
 	}
-	
+
 	public UserModel getUserModel() {
 		return userModel;
 	}
@@ -452,5 +517,5 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 
 	public void setCurrentHelloHaID(String currentHelloHaID) {
 		this.currentHelloHaID = currentHelloHaID;
-	}	 
+	}
 }
