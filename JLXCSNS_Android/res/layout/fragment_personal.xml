@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/abc_ab_bottom_solid_light_holo" />
+            android:src="@drawable/default_back_image" />
 
     </RelativeLayout>
      

@@ -1,6 +1,7 @@
 package com.jlxc.app.login.ui.activity;
 
 import java.io.File;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -29,6 +30,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.ui.view.CustomSelectPhotoDialog;
+import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -226,9 +228,15 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 					public void onSelectGallery() {
 						//相册
 						tmpImageName = JLXCUtils.getPhotoFileName()+"";
-						Intent intentAlbum = new Intent(Intent.ACTION_GET_CONTENT);
-						intentAlbum.setType(IMAGE_UNSPECIFIED);
+//						Intent intentAlbum = new Intent(Intent.ACTION_GET_CONTENT);
+//						intentAlbum.setType(IMAGE_UNSPECIFIED);
+//						startActivityForResult(intentAlbum, ALBUM_SELECT);
+						// 相册
+						Intent intentAlbum = new Intent(RegisterInformationActivity.this,GalleyActivity.class);
+						intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
+						intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE, true);
 						startActivityForResult(intentAlbum, ALBUM_SELECT);
+						
 						selectDialog.dismiss();
 					}
 
@@ -312,7 +320,16 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	            case ALBUM_SELECT:// 当选择从本地获取图片时
 	                // 做非空判断，当我们觉得不满意想重新剪裁的时候便不会报异常，下同
 	                if (data != null) {
-	                    startPhotoZoom(data.getData());
+//	                    startPhotoZoom(data.getData());
+						@SuppressWarnings("unchecked")
+						List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
+						// 循环处理图片
+						for (String fileRealPath : resultList) {
+							//只取一张
+							File tmpAlbumFile = new File(fileRealPath);
+							startPhotoZoom(Uri.fromFile(tmpAlbumFile));
+							break;
+						}
 	                }
 	                break;
 	            case PHOTO_RESOULT:// 返回的结果

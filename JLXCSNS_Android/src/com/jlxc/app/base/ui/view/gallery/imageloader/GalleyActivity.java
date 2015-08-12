@@ -17,8 +17,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,7 +34,6 @@ import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.view.gallery.bean.ImageFloder;
 import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyAdapter.OnItemClickClass;
 import com.jlxc.app.base.ui.view.gallery.imageloader.ListImageDirPopupWindow.OnImageDirSelected;
-import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class GalleyActivity extends BaseActivityWithTopBar implements
@@ -44,6 +41,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 
 	public static final String INTENT_KEY_PHOTO_LIST = "select_result";
 	public static final String INTENT_KEY_SELECTED_COUNT = "selected_count";
+	public static final String INTENT_KEY_ONE = "one_pic";
 	// 所有的图片
 	private List<String> mImgs;
 	@ViewInject(R.id.layout_gallery_root_view)
@@ -76,6 +74,8 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 	private ListImageDirPopupWindow mListImageDirPopupWindow;
 	// 已选照片的数量
 	private int selectedCount = 0;
+	//是否是只选单张
+	private boolean isSingle = false;
 
 	@Override
 	public int setLayoutId() {
@@ -92,7 +92,13 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		if (intent.hasExtra(INTENT_KEY_SELECTED_COUNT)) {
 			selectedCount = intent.getIntExtra(INTENT_KEY_SELECTED_COUNT, 0);
 		}
-		setBarText("选取照片 (" + selectedCount + "/9)");
+		isSingle = intent.getBooleanExtra(INTENT_KEY_ONE, false);
+		if (isSingle) {
+			setBarText("选取照片poi~");
+		}else {
+			setBarText("选取照片 (" + selectedCount + "/9)");
+		}
+		
 		GalleyAdapter.clearSelectedImageList();
 		getImages();
 		initEvent();
@@ -128,6 +134,13 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
 				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
 				selectedCount);
+		//设置最多
+		if (isSingle) {
+			mAdapter.setMAX_SELECT_COUNT(1);
+		}else {
+			mAdapter.setMAX_SELECT_COUNT(9);
+		}
+		
 		mGirdView.setAdapter(mAdapter);
 		mAdapter.setClickCallBack(onItemClickClass);
 	};
@@ -317,6 +330,12 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
 				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
 				selectedCount);
+		//设置最多
+		if (isSingle) {
+			mAdapter.setMAX_SELECT_COUNT(1);
+		}else {
+			mAdapter.setMAX_SELECT_COUNT(9);
+		}
 		mGirdView.setAdapter(mAdapter);
 		mAdapter.setClickCallBack(onItemClickClass);
 		mChooseDir.setText(floder.getName().replace("/", ""));
@@ -330,7 +349,11 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 
 		@Override
 		public void OnItemClick(int count) {
-			setBarText("选取照片 (" + count + "/9)");
+			if (isSingle) {
+				setBarText("选取照片poi~");
+			}else {
+				setBarText("选取照片 (" + count + "/9)");	
+			}
 		}
 	};
 

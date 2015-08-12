@@ -16,7 +16,7 @@ import com.jlxc.app.base.ui.view.gallery.utils.ViewHolder;
 
 public class GalleyAdapter extends CommonAdapter<String> {
 
-	private final static int MAX_SELECT_COUNT = 9;
+	private int MAX_SELECT_COUNT = 9;
 	// 用户选择的图片，存储为图片的完整路径
 	private static List<String> mSelectedImage = new LinkedList<String>();
 	// 已经选中的数量
@@ -29,6 +29,14 @@ public class GalleyAdapter extends CommonAdapter<String> {
 	 * 文件夹路径
 	 */
 	private String mDirPath;
+	
+	public int getMAX_SELECT_COUNT() {
+		return MAX_SELECT_COUNT;
+	}
+
+	public void setMAX_SELECT_COUNT(int mAX_SELECT_COUNT) {
+		MAX_SELECT_COUNT = mAX_SELECT_COUNT;
+	}
 
 	public GalleyAdapter(Context context, List<String> mDatas,
 			int itemLayoutId, String dirPath, int count) {
@@ -40,6 +48,7 @@ public class GalleyAdapter extends CommonAdapter<String> {
 
 	@Override
 	public void convert(final ViewHolder helper, final String item) {
+		
 		// 设置no_pic
 		helper.setImageResource(R.id.btn_galley_item_select,
 				R.drawable.pictures_no);
@@ -51,6 +60,11 @@ public class GalleyAdapter extends CommonAdapter<String> {
 
 		final ImageView mImageView = helper.getView(R.id.img_galley_item);
 		final ImageView mSelect = helper.getView(R.id.btn_galley_item_select);
+		if (MAX_SELECT_COUNT == 1) {
+			mSelect.setVisibility(View.GONE);
+		}else {
+			mSelect.setVisibility(View.VISIBLE);
+		}
 
 		mImageView.setColorFilter(null);
 		// 设置ImageView的点击事件
