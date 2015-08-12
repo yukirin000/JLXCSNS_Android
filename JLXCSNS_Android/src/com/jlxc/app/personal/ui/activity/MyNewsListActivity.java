@@ -248,7 +248,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-		setBarText("日常记录 （＾∀＾）");
+		setBarText("生活与日常 （＾∀＾）");
 		itemViewClickListener = new ItemViewClick();
 		newsOperateSet();
 
