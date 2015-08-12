@@ -172,18 +172,8 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					CampusPersonModel item) {
-				ImageView imgView = helper.getView(R.id.iv_campus_person_head);
-				LayoutParams laParams = (LayoutParams) imgView
-						.getLayoutParams();
-				laParams.width = laParams.height = (screenWidth) / 6;
-				imgView.setLayoutParams(laParams);
-				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				bitmapUtils
-						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
 				// 绑定头像图片
-				bitmapUtils.configDefaultBitmapMaxSize(laParams.width,
-						laParams.width);
 				helper.setImageUrl(R.id.iv_campus_person_head, bitmapUtils,
 						item.getHeadSubImage(), new NewsBitmapLoadCallBack());
 
