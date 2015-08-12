@@ -84,10 +84,11 @@ public class DataToItem {
 			item.setHeadSubImage(news.getUserHeadSubImage());
 			item.setUserName(news.getUserName());
 			item.setSendTime(news.getSendTime());
-			item.setUserTag(news.getUserSchool());
+			item.setUserSchool(news.getUserSchool());
 			item.setIsLike(news.getIsLike());
 			item.setUserID(news.getUid());
 			item.setLikeCount(news.getLikeQuantity());
+			item.setTagContent(news.getTypeContent());
 		} catch (Exception e) {
 			LogUtils.e("createNewsTitle error.");
 		}

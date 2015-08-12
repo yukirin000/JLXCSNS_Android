@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
@@ -364,9 +365,17 @@ public class NewsListFragment extends BaseFragment {
 		TitleItem titleData = (TitleItem) item;
 		helper.setImageUrl(R.id.img_mian_news_user_head, bitmapUtils,
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
-		// 设置用户名，标签
+		// 设置用户名，学校，标签
 		helper.setText(R.id.txt_main_news_user_name, titleData.getUserName());
-		helper.setText(R.id.txt_main_news_user_tag, titleData.getUserTag());
+		helper.setText(R.id.txt_main_news_user_school,
+				titleData.getUserSchool());
+		if (titleData.getTagContent().equals("")) {
+			helper.setVisible(R.id.txt_main_news_user_tag, false);
+		} else {
+			helper.setVisible(R.id.txt_main_news_user_tag, true);
+			helper.setText(R.id.txt_main_news_user_tag,
+					" ◆ "+titleData.getTagContent());
+		}
 
 		// 设置事件监听
 		final int postion = helper.getPosition();
@@ -559,6 +568,7 @@ public class NewsListFragment extends BaseFragment {
 		String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
 				+ "&page=" + desPage + "&frist_time=" + lastTime;
 
+		LogUtils.i("path=" + path);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 

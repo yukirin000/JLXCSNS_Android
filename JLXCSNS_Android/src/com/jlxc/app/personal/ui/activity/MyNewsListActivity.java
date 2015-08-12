@@ -63,8 +63,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 
 	// 其他Activity传递进入的被查看的用户id
 	public final static String INTNET_KEY_UID = "user_id";
-	// 用户实例
-	private UserModel userModel;
 	// 动态listview
 	@ViewInject(R.id.listview_my_news_list)
 	private PullToRefreshListView newsListView;
@@ -250,9 +248,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-		setBarText("相册");
-		userModel = UserManager.getInstance().getUser();
-
+		setBarText("日常记录 （＾∀＾）");
 		itemViewClickListener = new ItemViewClick();
 		newsOperateSet();
 
@@ -408,14 +404,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
-
-		// 删除按钮
-		if (currentUid.equals(String.valueOf(userModel.getUid()))) {
-			helper.setVisible(R.id.btn_my_news_delete, true);
-			helper.setOnClickListener(R.id.btn_my_news_delete, listener);
-		} else {
-			helper.setVisible(R.id.btn_my_news_delete, false);
-		}
 
 		helper.setOnClickListener(R.id.btn_my_news_list_reply, listener);
 		helper.setOnClickListener(R.id.btn_my_news_list_like, listener);
@@ -603,7 +591,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 
 			case R.id.btn_my_news_list_reply:
 			case R.id.btn_my_news_list_like:
-			case R.id.btn_my_news_delete:
 			case R.id.layout_my_news_list_operate_rootview:
 
 				final MyNewsOperateItem operateData = (MyNewsOperateItem) newsAdapter
@@ -616,8 +603,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 					// 跳转至评论页面并打开评论框
 					jumpToNewsDetail(operateData,
 							NewsConstants.KEY_BOARD_COMMENT, null);
-				} else if (R.id.btn_my_news_delete == viewID) {
-					deleteCurrentNews(operateData.getNewsID());
 				} else {
 					// 进行点赞操作
 					likeOperate(postion, view, operateData);

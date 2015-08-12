@@ -84,7 +84,7 @@ public class ItemModel {
 		// 动态发布者的名字
 		private String userName;
 		// 显示的标签
-		private String userTag;
+		private String userSchool;
 		// 显示用户的id
 		private String userID;
 		// 显示是否已赞
@@ -93,6 +93,8 @@ public class ItemModel {
 		private int likeCount;
 		// 发布的时间
 		private String sendTime;
+		// 标签来源
+		private String tagContent="";
 
 		public String getHeadSubImage() {
 			return headSubImage;
@@ -118,12 +120,12 @@ public class ItemModel {
 			this.userName = userNameStr;
 		}
 
-		public String getUserTag() {
-			return userTag;
+		public String getUserSchool() {
+			return userSchool;
 		}
 
-		public void setUserTag(String userTag) {
-			this.userTag = userTag;
+		public void setUserSchool(String userSchool) {
+			this.userSchool = userSchool;
 		}
 
 		public boolean getIsLike() {
@@ -164,6 +166,14 @@ public class ItemModel {
 
 		public void setSendTime(String sendTime) {
 			this.sendTime = sendTime;
+		}
+
+		public String getTagContent() {
+			return tagContent;
+		}
+
+		public void setTagContent(String tagContent) {
+			this.tagContent = tagContent;
 		}
 	}
 

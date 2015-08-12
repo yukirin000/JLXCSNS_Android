@@ -26,42 +26,37 @@
         android:id="@+id/layout_my_news_list_operate_rootview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/item_interior_space_medium"
-        android:layout_marginLeft="@dimen/item_interior_space_medium"
-        android:background="@drawable/multi_background_buttom"
         android:clickable="true"
         android:paddingBottom="@dimen/item_interior_space_medium"
         android:paddingLeft="@dimen/item_interior_space_medium" >
 
-        <!-- 评论按钮 -->
+        <ImageView
+            android:id="@+id/imageView_background_buttom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/btn_my_news_list_reply"
+            android:scaleType="fitXY"
+            android:src="@drawable/multi_background_buttom" />
+
+        <!-- 点赞按钮 -->
 
         <com.jlxc.app.news.ui.view.LikeButton
             android:id="@+id/btn_my_news_list_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_centerInParent="true" />
-
-        <!-- 点赞按钮 -->
+            android:layout_marginRight="@dimen/item_interior_space_medium" />
+        <!-- 评论按钮 -->
 
         <com.jlxc.app.news.ui.view.CommentButton
             android:id="@+id/btn_my_news_list_reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/btn_my_news_list_like" >
+            android:layout_toLeftOf="@id/btn_my_news_list_like" >
         </com.jlxc.app.news.ui.view.CommentButton>
-
-        <ImageView
-            android:id="@+id/btn_my_news_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="@dimen/item_interior_space_medium"
-            android:scaleType="centerInside"
-            android:src="@drawable/delete_btn_click_selector" />
     </RelativeLayout>
 
 </LinearLayout>

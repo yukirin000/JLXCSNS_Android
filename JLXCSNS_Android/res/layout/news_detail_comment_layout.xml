@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.jlxc.app"
-    android:id="@+id/layout_news_detail_comment_root_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <View
         android:id="@+id/view_divier"
-        android:background="@color/main_thin_white"
         android:layout_width="match_parent"
-        android:layout_height="1px" />
+        android:layout_height="1px"
+        android:background="@color/main_thin_white" />
 
     <LinearLayout
+        android:id="@+id/layout_news_detail_comment_root_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/main_light_white"
+        android:background="@drawable/selector_news_detail_comment_click"
+        android:clickable="true"
         android:gravity="top"
         android:orientation="horizontal"
-        android:paddingRight="@dimen/item_interior_space_medium"
         android:paddingBottom="@dimen/item_interior_space_little"
+        android:paddingRight="@dimen/item_interior_space_medium"
         android:paddingTop="@dimen/item_interior_space_medium" >
 
         <com.jlxc.app.base.ui.view.RoundImageView
@@ -32,15 +33,11 @@
             app:rect_adius="2dp" />
 
         <RelativeLayout
-            android:id="@+id/layout_commnt_root_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/item_interior_space_medium"
-            android:background="@drawable/selector_news_detail_comment_click"
-            android:paddingBottom="@dimen/item_interior_space_little"
-            android:clickable="true"
-            
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/item_interior_space_little" >
 
             <TextView
                 android:id="@+id/txt_news_detail_comment_name"
@@ -70,7 +67,6 @@
                 android:text="哈哈哈哈 你是个大傻逼"
                 android:textColor="@color/main_light_black"
                 android:textSize="@dimen/font_size_small" />
-            
         </RelativeLayout>
     </LinearLayout>
 

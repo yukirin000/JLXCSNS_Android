@@ -361,7 +361,11 @@ public class DiscoveryFragment extends BaseFragment {
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
 		// 设置用户信息
 		helper.setText(R.id.tv_recommend_name, titleData.getUserName());
-		helper.setText(R.id.tv_recommend_tag, titleData.getRelationTag());
+		if (!titleData.getRelationTag().equals("")) {
+			helper.setText(R.id.tv_recommend_tag, " ◆ "+titleData.getRelationTag());
+		}else {
+			helper.setText(R.id.tv_recommend_tag, "");
+		}
 		helper.setText(R.id.tv_recommend_school, titleData.getUserSchool());
 
 		ImageView addButton = helper.getView(R.id.btn_recomment_add);

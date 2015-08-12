@@ -140,21 +140,31 @@ public class NewsModel implements Serializable {
 			setTimesTamp(object.getString("add_time"));
 		}
 
-		if (object.containsKey("type")) {
-			Map<String, String> tempMap = new HashMap<String, String>();
-			JSONObject typeObject = (JSONObject) object.get("type");
-			if (object.containsKey("type")) {
+		// 类别
+		Map<String, String> tempMap = new HashMap<String, String>();
+		JSONObject typeObject = (JSONObject) object.get("type");
+		if (null != typeObject) {
+			if (typeObject.containsKey("type")) {
 				tempMap.put("type", typeObject.getString("type"));
+			} else {
+				tempMap.put("type", "");
 			}
-			if (object.containsKey("fid")) {
+			if (typeObject.containsKey("fid")) {
 				tempMap.put("fid", typeObject.getString("fid"));
+			} else {
+				tempMap.put("fid", "");
 			}
-			if (object.containsKey("content")) {
+			if (typeObject.containsKey("content")) {
 				tempMap.put("content", typeObject.getString("content"));
+			} else {
+				tempMap.put("content", "");
 			}
-			setTYPE(tempMap);
+		} else {
+			tempMap.put("type", "");
+			tempMap.put("fid", "");
+			tempMap.put("content", "");
 		}
-
+		setTYPE(tempMap);
 	}
 
 	public String getUid() {
@@ -301,4 +311,7 @@ public class NewsModel implements Serializable {
 		TYPE = tYPE;
 	}
 
+	public String getTypeContent() {
+		return TYPE.get("content");
+	}
 }

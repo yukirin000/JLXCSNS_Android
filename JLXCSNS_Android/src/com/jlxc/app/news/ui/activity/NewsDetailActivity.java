@@ -585,7 +585,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
 		// 设置用户名,发布的时间，标签
 		helper.setText(R.id.txt_news_detail_user_name, titleData.getUserName());
-		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserTag());
+		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserSchool());
 		// 点赞按钮
 		likeBtn = helper.getView(R.id.btn_news_detail_like);
 		if (titleData.getIsLike()) {
@@ -702,7 +702,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 		};
 		helper.setOnClickListener(R.id.iv_comment_head, listener);
-		helper.setOnClickListener(R.id.layout_commnt_root_view, listener);
+		helper.setOnClickListener(R.id.layout_news_detail_comment_root_view, listener);
 		helper.setOnClickListener(R.id.txt_news_detail_comment_name, listener);
 	}
 
@@ -889,12 +889,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				likeOperate();
 				break;
 
-			case R.id.layout_commnt_root_view:
+			case R.id.layout_news_detail_comment_root_view:
 			case R.id.iv_comment_head:
 			case R.id.txt_news_detail_comment_name:
 				currentCommentModel = ((CommentItem) detailAdapter
 						.getItem(postion)).getCommentModel();
-				if (viewID == R.id.layout_commnt_root_view) {
+				if (viewID == R.id.layout_news_detail_comment_root_view) {
 					currentOperateIndex = postion;
 					if (currentCommentModel.getUserId().equals(
 							String.valueOf(UserManager.getInstance().getUser()
