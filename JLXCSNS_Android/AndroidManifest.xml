@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="34"
-    android:versionName="0.33" xmlns:tools="http://schemas.android.com/tools">
+    android:versionCode="43"
+    android:versionName="0.42" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -147,9 +147,6 @@
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.AboutUsActivity" >
         </activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.PublisPhotoHandelActivity" >
-        </activity>
-
         
         <!-- 会话 Activity -->
         <activity
@@ -290,7 +287,7 @@
         <!-- rong -->
         <meta-data
             android:name="RONG_CLOUD_APP_KEY"
-            android:value="8luwapkvufv3l" />
+            android:value="8brlm7ufr4fw3" />
         <!-- end -->
 
 

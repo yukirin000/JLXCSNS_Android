@@ -867,11 +867,13 @@ public class FileUtil {
 	 */
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 		// 源图片的高度和宽度
-		final int height = options.outHeight+1000;
-		final int width = options.outWidth+1000;
+		int height = options.outHeight;
+		int width = options.outWidth;
 		
 		int inSampleSize = 1;
-		if (height > reqHeight || width > reqWidth) {
+		if (height > (reqHeight+100) || width > (reqWidth+100)) {
+			height += 500;
+			width += 500;
 			// 计算出实际宽高和目标宽高的比率
 			final int heightRatio = Math.round((float) height / (float) reqHeight);
 			final int widthRatio = Math.round((float) width / (float) reqWidth);
