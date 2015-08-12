@@ -60,6 +60,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.CustomSelectPhotoDialog;
+import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -67,6 +68,7 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
 import com.jlxc.app.message.model.IMModel;
+import com.jlxc.app.news.ui.activity.PublishNewsActivity;
 import com.jlxc.app.personal.model.CityModel;
 import com.jlxc.app.personal.model.ProvinceModel;
 import com.jlxc.app.personal.ui.activity.MyCardActivity;
@@ -166,8 +168,10 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 	// 用户模型
 	private UserModel userModel;
-	// 单例bitmapUtils的引用
+	// bitmapUtils的引用
 	private BitmapUtils bitmapUtils;
+	// bitmapUtils的引用
+	private BitmapUtils backBitmapUtils;	
 	// 无缓存的
 	// private BitmapUtils noCacheBitmapUtils;
 	// 我的相片adapter
@@ -258,10 +262,17 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 						public void onSelectGallery() {
 							// 相册
 							tmpImageName = JLXCUtils.getPhotoFileName() + "";
-							Intent intentAlbum = new Intent(
-									Intent.ACTION_GET_CONTENT);
-							intentAlbum.setType(IMAGE_UNSPECIFIED);
+//							Intent intentAlbum = new Intent(
+//									Intent.ACTION_GET_CONTENT);
+//							intentAlbum.setType(IMAGE_UNSPECIFIED);
+//							startActivityForResult(intentAlbum, ALBUM_SELECT);
+							
+							// 相册
+							Intent intentAlbum = new Intent(getActivity(),GalleyActivity.class);
+							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
+							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE, true);
 							startActivityForResult(intentAlbum, ALBUM_SELECT);
+							
 							selectDialog.dismiss();
 						}
 
@@ -358,10 +369,16 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 						public void onSelectGallery() {
 							// 相册
 							tmpImageName = JLXCUtils.getPhotoFileName() + "";
-							Intent intentAlbum = new Intent(
-									Intent.ACTION_GET_CONTENT);
-							intentAlbum.setType(IMAGE_UNSPECIFIED);
+//							Intent intentAlbum = new Intent(
+//									Intent.ACTION_GET_CONTENT);
+//							intentAlbum.setType(IMAGE_UNSPECIFIED);
+//							startActivityForResult(intentAlbum, ALBUM_SELECT);
+							// 相册
+							Intent intentAlbum = new Intent(getActivity(),GalleyActivity.class);
+							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
+							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE, true);
 							startActivityForResult(intentAlbum, ALBUM_SELECT);
+							
 							selectBackDialog.dismiss();
 						}
 
@@ -483,6 +500,10 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 		// 设置照片和背景图
 		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
 				getActivity(), R.drawable.default_avatar, true, true);
+		// 背景 2015-07-02/191435808476.png
+		backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+				getActivity(), R.drawable.default_back_image, true, true);		
+		
 		// 无缓存bitmap
 		// noCacheBitmapUtils =
 		// BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(),
@@ -517,9 +538,6 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 		// 头像 2015-07-07/01436273216_sub.jpg
 		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
 				+ userModel.getHead_image());
-		// 背景 2015-07-02/191435808476.png
-		BitmapUtils backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-				getActivity(), R.drawable.default_back_image, true, true);
 		backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
 				+ userModel.getBackground_image());
 		// 姓名
@@ -603,6 +621,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 		// }
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
@@ -639,17 +658,39 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 				if (data != null) {
 					// 头像 获取剪切
 					if (imageType == HEAD_IMAGE) {
-						startPhotoZoom(data.getData());
+						List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
+						// 循环处理图片
+						for (String fileRealPath : resultList) {
+							//只取一张
+							File tmpFile = new File(fileRealPath);
+							startPhotoZoom(Uri.fromFile(tmpFile));
+							break;
+						}
+						
+//						startPhotoZoom(data.getData());	
+						
 					} else {
-						String path = getRealPathFromURI(data.getData());
-						// 图片压缩
+//						String path = getRealPathFromURI(data.getData());
+//						// 图片压缩
+//						int[] screenSize1 = getScreenSize();
+//						if (FileUtil.tempToLocalPath(path, tmpImageName,
+//								screenSize1[0], screenSize1[1])) {
+//							// bitmapUtils.display(backImageView,
+//							// FileUtil.BIG_IMAGE_PATH + tmpImageName);
+////							filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+//							uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+//						}
+						
+						List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
 						int[] screenSize1 = getScreenSize();
-						if (FileUtil.tempToLocalPath(path, tmpImageName,
-								screenSize1[0], screenSize1[1])) {
-							// bitmapUtils.display(backImageView,
-							// FileUtil.BIG_IMAGE_PATH + tmpImageName);
-//							filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
-							uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+						// 循环处理图片
+						for (String fileRealPath : resultList) {
+							// 用户id+时间戳
+							if (fileRealPath != null&& FileUtil.tempToLocalPath(fileRealPath, tmpImageName,
+											screenSize1[0], screenSize1[1])) {
+								uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+								break;
+							}
 						}
 
 					}
