@@ -85,7 +85,7 @@
 
         <TextView
             android:id="@+id/tv_campus_news_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/campus_title_high"
             android:background="@drawable/campus_news_title"
             android:gravity="center_vertical"
