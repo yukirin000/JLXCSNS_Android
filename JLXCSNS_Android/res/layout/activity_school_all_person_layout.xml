@@ -12,8 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/selector_deep_white_click"
+        android:columnWidth="@dimen/head_image_size_super_large"
         android:horizontalSpacing="@dimen/item_interior_space_small"
-        android:numColumns="4"
+        android:numColumns="auto_fit"
         android:padding="@dimen/item_interior_space_medium"
         android:scrollbars="none"
         android:verticalSpacing="@dimen/item_interior_space_large" >

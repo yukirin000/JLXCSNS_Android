@@ -8,15 +8,15 @@
 
     <com.jlxc.app.base.ui.view.RoundImageView
         android:id="@+id/iv_campus_person_head"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/head_image_size_huge"
+        android:layout_height="@dimen/head_image_size_huge"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_launcher"
         app:rect_adius="2dp" />
 
     <TextView
         android:id="@+id/txt_campus_person_name"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/head_image_size_huge"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center"

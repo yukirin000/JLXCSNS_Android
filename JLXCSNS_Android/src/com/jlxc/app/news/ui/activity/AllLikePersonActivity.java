@@ -26,6 +26,7 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
+import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
@@ -57,8 +58,6 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 	private HelloHaAdapter<LikeModel> allPersonAdapter;
 	// bitmap的处理
 	private static BitmapUtils bitmapUtils;
-	// 屏幕的尺寸
-	private int screenWidth = 0, screenHeight = 0;
 	// 当前的刷新模式
 	private boolean isPullDown = false;
 	// 当前的数据页
@@ -67,6 +66,8 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 	private String newsId;
 	// 是否是最后一页数据
 	private String lastPage = "0";
+	// 是否正在请求数据
+	private boolean isRequestingData = false;
 
 	@Override
 	public int setLayoutId() {
@@ -75,6 +76,7 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		setBarText("点了赞的小伙伴 (ｏ・_・)");
 		init();
 		listviewSet();
 
@@ -92,23 +94,17 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
 		newsId = bundle.getString(INTENT_KEY_NEWS_ID);
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-		LogUtils.i("screenWidth=" + screenWidth + " screenHeight="
-				+ screenHeight);
 	}
 
 	/**
 	 * 初始化BitmapUtils
 	 * */
 	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(AllLikePersonActivity.this);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+				AllLikePersonActivity.this, R.drawable.default_avatar, true,
+				true);
 		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 	}
 
 	/**
@@ -125,23 +121,15 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					LikeModel item) {
-				ImageView imgView = helper.getView(R.id.iv_user_head);
-				LayoutParams laParams = (LayoutParams) imgView
-						.getLayoutParams();
-				laParams.width = laParams.height = (screenWidth) / 7;
-				imgView.setLayoutParams(laParams);
-				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				bitmapUtils
-						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
 				// 绑定头像图片
-				bitmapUtils.configDefaultBitmapMaxSize(laParams.width,
-						laParams.width);
-				helper.setImageUrl(R.id.iv_user_head, bitmapUtils,
-						item.getHeadSubImage(), new NewsBitmapLoadCallBack());
+				helper.setImageUrl(R.id.iv_all_like_person_item_head,
+						bitmapUtils, item.getHeadSubImage(),
+						new NewsBitmapLoadCallBack());
 
 				// 绑定昵称
-				helper.setText(R.id.tv_user_name, item.getName());
+				helper.setText(R.id.tv_all_like_person_item_name,
+						item.getName());
 			}
 		};
 
@@ -154,24 +142,20 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 					@Override
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-						currentPage = 1;
-						isPullDown = true;
-						getCampusAllPerson(newsId, String.valueOf(currentPage));
+						if (!isRequestingData) {
+							isRequestingData = true;
+							currentPage = 1;
+							isPullDown = true;
+							getCampusAllPerson(newsId,
+									String.valueOf(currentPage));
+						}
 					}
 
 					@Override
 					public void onPullUpToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-						if (lastPage.equals("1")) {
-							allPersonListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									allPersonListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(AllLikePersonActivity.this,
-									"没有数据了,哦哦");
-						} else {
+						if (!lastPage.equals("1") && !isRequestingData) {
+							isRequestingData = true;
 							isPullDown = false;
 							getCampusAllPerson(newsId,
 									String.valueOf(currentPage));
@@ -187,16 +171,8 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 
 					@Override
 					public void onLastItemVisible() {
-						if (lastPage.equals("1")) {
-							allPersonListView.postDelayed(new Runnable() {
-								@Override
-								public void run() {
-									allPersonListView.onRefreshComplete();
-								}
-							}, 1000);
-							ToastUtil.show(AllLikePersonActivity.this,
-									"没有数据了,哦哦");
-						} else {
+						if (!lastPage.equals("1") && !isRequestingData) {
+							isRequestingData = true;
 							allPersonListView.setMode(Mode.PULL_FROM_END);
 							allPersonListView.setRefreshing(true);
 							isPullDown = false;
@@ -237,14 +213,12 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 			List.add(tempPerson);
 		}
 		if (isPullDown) {
-			dataList = List;
-			allPersonAdapter.replaceAll(dataList);
-			if (null != jPersonList) {
-				jPersonList.clear();
-			}
+			allPersonAdapter.replaceAll(List);
 		} else {
-			dataList.addAll(List);
-			allPersonAdapter.addAll(dataList);
+			allPersonAdapter.addAll(List);
+		}
+		if (null != jPersonList) {
+			jPersonList.clear();
 		}
 	}
 
@@ -271,22 +245,29 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 							// 获取数据列表
 							List<JSONObject> JPersonList = (List<JSONObject>) jResult
 									.get("list");
+							JsonToPersonData(JPersonList);
+							allPersonListView.onRefreshComplete();
+
 							lastPage = jResult.getString("is_last");
 							if (lastPage.equals("0")) {
 								currentPage++;
+								allPersonListView.setMode(Mode.BOTH);
+							} else {
+								allPersonListView.setMode(Mode.PULL_FROM_START);
 							}
-							JsonToPersonData(JPersonList);
-							allPersonListView.onRefreshComplete();
-							allPersonListView.setMode(Mode.BOTH);
+							isRequestingData = false;
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							allPersonListView.onRefreshComplete();
-							allPersonListView.setMode(Mode.BOTH);
+							if (lastPage.equals("0")) {
+								allPersonListView.setMode(Mode.BOTH);
+							}
 							ToastUtil.show(AllLikePersonActivity.this,
 									jsonResponse
 											.getString(JLXCConst.HTTP_MESSAGE));
 						}
+						isRequestingData = false;
 					}
 
 					@Override
@@ -294,10 +275,13 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
 						allPersonListView.onRefreshComplete();
-						allPersonListView.setMode(Mode.BOTH);
-						ToastUtil.show(AllLikePersonActivity.this, "网络有毒=_=");
+						if (lastPage.equals("0")) {
+							allPersonListView.setMode(Mode.BOTH);
+						}
+						ToastUtil.show(AllLikePersonActivity.this,
+								"网络故障，请检查=_=");
+						isRequestingData = false;
 					}
-
 				}, null));
 	}
 
