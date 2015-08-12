@@ -3,6 +3,7 @@ package com.jlxc.app.personal.ui.activity;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.UserInfo;
 import io.rong.imlib.model.Conversation.ConversationType;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
@@ -369,6 +371,11 @@ public class OtherPersonalActivity extends BaseActivity{
 		}else {
 			commonFriendCountTextView.setText("");
 		}
+		
+		//融云刷新信息
+		UserInfo userInfo = new UserInfo(JLXCConst.JLXC + otherUserModel.getUid(), otherUserModel.getName(), Uri.parse(JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_image()));
+		//刷新信息
+		RongIM.getInstance().refreshUserInfoCache(userInfo);
 		
 		//如果是自己
 		if (UserManager.getInstance().getUser().getUid() == uid) {

@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.view.gallery.bean.ImageFloder;
 import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyAdapter.OnItemClickClass;
 import com.jlxc.app.base.ui.view.gallery.imageloader.ListImageDirPopupWindow.OnImageDirSelected;
+import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class GalleyActivity extends BaseActivityWithTopBar implements
@@ -128,6 +130,7 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 			mImgs = Arrays.asList(defaultImgDir.list());
 		}
 
+		Collections.reverse(mImgs);
 		/**
 		 * 可以看到文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
 		 */
@@ -325,7 +328,8 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		if (null != defaultImgDir.list(tpfFilter)) {
 			mImgs = Arrays.asList(defaultImgDir.list(tpfFilter));
 		}
-
+		
+		Collections.reverse(mImgs);
 		// 文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
 		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
 				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
