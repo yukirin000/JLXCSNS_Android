@@ -248,7 +248,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			friendAdapter.replaceAll(dataList);
 		} else {
 			dataList.addAll(List);
-			friendAdapter.addAll(List);
+			friendAdapter.replaceAll(dataList);
 		}
 
 		if (null != jPersonList) {

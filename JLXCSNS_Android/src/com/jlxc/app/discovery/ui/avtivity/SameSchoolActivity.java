@@ -30,6 +30,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.model.SameSchoolModel;
 import com.jlxc.app.message.helper.MessageAddFriendHelper;
@@ -215,6 +216,7 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 
 		String path = JLXCConst.GET_SAME_SCHOOL_LIST + "?" + "user_id=" + userModel.getUid() + 
 				"&school_code=" + userModel.getSchool_code() + "&page="+currentPage;
+		LogUtils.i(path, 1); 
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -243,7 +245,7 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 								sameAdapter.replaceAll(sameSchoolModels);
 							}else {
 								sameSchoolModels.addAll(list);
-								sameAdapter.addAll(sameSchoolModels);
+								sameAdapter.replaceAll(sameSchoolModels);
 							}
 							sameListView.onRefreshComplete();
 							//是否是最后一页

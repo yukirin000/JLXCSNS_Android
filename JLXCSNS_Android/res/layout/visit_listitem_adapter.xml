@@ -39,6 +39,9 @@
 	        android:layout_alignLeft="@+id/name_text_view"
 	        android:layout_alignBottom="@id/head_image_view"
 	        android:textColor="@color/main_deep_gary"
+	        android:layout_marginRight="30dip"
+	        android:singleLine="true"
+	        android:ellipsize = "end"
 	        android:text="签名在这里" />
 	
 	    <TextView

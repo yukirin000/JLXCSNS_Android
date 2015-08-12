@@ -867,8 +867,8 @@ public class FileUtil {
 	 */
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 		// 源图片的高度和宽度
-		final int height = options.outHeight;
-		final int width = options.outWidth;
+		final int height = options.outHeight+1000;
+		final int width = options.outWidth+1000;
 		
 		int inSampleSize = 1;
 		if (height > reqHeight || width > reqWidth) {
@@ -880,6 +880,8 @@ public class FileUtil {
 			inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
 			//再次缩小图片
 			inSampleSize++;
+			LogUtils.i(" "+height+" "+reqHeight+" "+width+" "+reqWidth+" ", 1);
+			LogUtils.i(" "+inSampleSize+" "+heightRatio+" "+widthRatio+" ", 1);
 		} 
 //		Log.d("kkk", "originWidth" + width + " originHeight" + height + " reqWidth" + reqWidth + " reqHeight"
 //				+ reqHeight + " sampleSize" + inSampleSize);

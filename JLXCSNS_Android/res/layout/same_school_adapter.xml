@@ -34,12 +34,14 @@
 
 	    <TextView
 	        android:id="@+id/sign_text_view"
-	        android:layout_width="wrap_content"
+	        android:layout_width="150dip"
 	        android:layout_height="wrap_content"
 	        android:textSize="@dimen/font_size_tiny"
 	        android:layout_alignLeft="@+id/name_text_view"
 	        android:layout_alignBottom="@id/head_image_view"
 	        android:textColor="@color/main_deep_gary"
+	        android:singleLine="true"
+	        android:ellipsize = "end"
 	        android:text="签名在这里" />
 
 	    <ImageView

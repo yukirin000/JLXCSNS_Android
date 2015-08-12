@@ -68,15 +68,17 @@
                 android:layout_marginRight="10dp" >
                 
                 <TextView
-                android:visibility="gone"
-	            android:layout_marginLeft="5dp"
-	            android:layout_marginBottom="10dp"
+	            android:layout_margin="5dip"
 	            android:textSize="@dimen/font_size_micro"
 	            android:textColor="@color/main_deep_black"
 	            android:id="@+id/news_text_view"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="内容内容内容内容内容" />
+	            android:maxHeight="55dip"
+	            android:maxWidth="55dip"
+	            android:maxLines="3"
+	            android:ellipsize="end"
+	            android:text="内容内容内容内" />
                 
                 <ImageView
                 android:visibility="gone"

@@ -39,13 +39,14 @@
               <LinearLayout
                   android:id="@+id/sign_layout"
                   android:layout_width="match_parent"
-                  android:layout_height="45dip"
+                  android:layout_height="wrap_content"
                   android:gravity="center_vertical"
                   android:orientation="horizontal" >
 
                   <TextView
                       android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
+                      android:layout_height="45dip"
+                      android:gravity="center_vertical"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"
                       android:layout_marginLeft="15dip"
