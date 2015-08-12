@@ -225,7 +225,7 @@ public class MultiImageView extends RelativeLayout {
 			bitmapUtils.display(singleImageView, pictureList.get(0).getURL(),
 					new NewsBitmapLoadCallBack());
 			// 隐藏其余的imageview
-			for (int index = 1; index < imageViewsList.size(); index++) {
+			for (int index = 0; index < imageViewsList.size(); index++) {
 				imageViewsList.get(index).setVisibility(View.GONE);
 			}
 		} else {
