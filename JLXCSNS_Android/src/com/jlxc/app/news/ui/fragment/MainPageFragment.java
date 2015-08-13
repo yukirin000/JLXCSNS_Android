@@ -7,11 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -20,15 +18,12 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
-import com.jlxc.app.R;
-import com.jlxc.app.R.id;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.news.ui.activity.PublishNewsActivity;
-import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
+import com.jlxc.app.R;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 public class MainPageFragment extends BaseFragment {

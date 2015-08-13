@@ -374,7 +374,7 @@ public class NewsListFragment extends BaseFragment {
 		} else {
 			helper.setVisible(R.id.txt_main_news_user_tag, true);
 			helper.setText(R.id.txt_main_news_user_tag,
-					" ◆ "+titleData.getTagContent());
+					" ◆ " + titleData.getTagContent());
 		}
 
 		// 设置事件监听
@@ -399,6 +399,8 @@ public class NewsListFragment extends BaseFragment {
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_main_news_images);
 		bodyImages.imageDataSet(pictureList);
+		bodyImages
+				.loadImageOnFastSlide(newsListView.getRefreshableView(), true);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
 
