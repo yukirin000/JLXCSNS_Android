@@ -370,14 +370,16 @@ public class MainTabActivity extends BaseActivity {
 	    //聊天页面
 	    //新好友请求未读
 		int newFriendsCount = 0;
+	    //徽标 最多显示99
+	    //未读推送
+		int newsUnreadCount = 0;		
+		
 		try {
 			newFriendsCount = IMModel.unReadNewFriendsCount();
+			newsUnreadCount = NewsPushModel.findUnreadCount().size();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-	    //徽标 最多显示99
-	    //未读推送
-		int newsUnreadCount = NewsPushModel.findUnreadCount().size();
 		
 		final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
                 Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
