@@ -81,7 +81,11 @@ public class NotifyNewsFragment extends BaseFragment {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		getActivity().unregisterReceiver(messageReceiver);
+		
+		if (messageReceiver != null) {
+			getActivity().unregisterReceiver(messageReceiver);
+			messageReceiver = null;
+		}
 	}
 	
 	////////////////////////////private method/////////////////////////////

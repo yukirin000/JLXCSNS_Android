@@ -32,7 +32,6 @@ import android.view.View;
 import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.RongIM.SentMessageErrorCode;
-import io.rong.imkit.RongIMClientWrapper;
 import io.rong.imkit.model.UIConversation;
 import io.rong.imkit.widget.provider.CameraInputProvider;
 import io.rong.imkit.widget.provider.ImageInputProvider;
@@ -140,7 +139,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 //		RongIMClientWrapper.setConnectionStatusListener(this);//设置连接状态监听器。
 //		RongIMClientWrapper.setOnReceivePushMessageListener(this);//设置通知监听器
     	RongIM.getInstance().setSendMessageListener(this);//设置发出消息接收监听器.
-        RongIM.getInstance().getRongIMClient().setConnectionStatusListener(this);//设置连接状态监听器。
+//        RongIM.getInstance().getRongIMClient().setConnectionStatusListener(this);//设置连接状态监听器。
         //扩展功能自定义
         InputProvider.ExtendProvider[] provider = {
                 new ImageInputProvider(RongContext.getInstance()),//图片

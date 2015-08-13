@@ -117,7 +117,10 @@ public class MessageMainFragment extends BaseFragment {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		getActivity().unregisterReceiver(newMessageReceiver);
+		if (newMessageReceiver != null) {
+			getActivity().unregisterReceiver(newMessageReceiver);
+			newMessageReceiver = null;
+		}
 	}
 	
 	/*
