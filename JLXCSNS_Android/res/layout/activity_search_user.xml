@@ -25,7 +25,7 @@
 	       	android:imeOptions="actionSearch"
 			android:singleLine="true"
 			android:padding="5dp"
-	        android:hint="搜索名字、哈哈号"
+	        android:hint="搜索名字、HelloHa号"
 	        android:textSize="@dimen/font_size_small" />
 	</LinearLayout>
 
