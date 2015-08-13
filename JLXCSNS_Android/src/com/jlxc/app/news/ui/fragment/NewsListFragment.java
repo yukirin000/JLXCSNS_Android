@@ -400,7 +400,7 @@ public class NewsListFragment extends BaseFragment {
 		MultiImageView bodyImages = helper.getView(R.id.miv_main_news_images);
 		bodyImages.imageDataSet(pictureList);
 		bodyImages
-				.loadImageOnFastSlide(newsListView.getRefreshableView(), true);
+				.loadImageOnFastSlide(newsListView.getRefreshableView(), false);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
 

@@ -406,8 +406,7 @@ public class CampusFragment extends BaseFragment {
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
 		bodyImages.imageDataSet(pictureList);
-		bodyImages
-		.loadImageOnFastSlide(campusListView.getRefreshableView(), true);
+		bodyImages.loadImageOnFastSlide(campusListView.getRefreshableView(), false);
 		bodyImages.setJumpListener(new JumpCallBack() {
 
 			@Override

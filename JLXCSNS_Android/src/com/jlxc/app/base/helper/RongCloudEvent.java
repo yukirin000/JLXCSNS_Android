@@ -10,6 +10,7 @@ import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.login.ui.activity.LaunchActivity;
 import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.activity.ConversationActivity;
@@ -167,7 +168,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		int iconId = R.drawable.icon;
 		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-		notificationIntent.setClass(mContext.getApplicationContext(), LoginActivity.class);
+		notificationIntent.setClass(mContext.getApplicationContext(), LaunchActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Notification notification = new Notification();
@@ -265,7 +266,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 		int iconId = R.drawable.icon;
 		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-		notificationIntent.setClass(mContext.getApplicationContext(), LoginActivity.class);
+		notificationIntent.setClass(mContext.getApplicationContext(), LaunchActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Notification notification = new Notification();
