@@ -34,6 +34,7 @@ import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.ui.activity.MainTabActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.news.receiver.NewMessageReceiver;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -270,9 +271,17 @@ public class MessageMainFragment extends BaseFragment {
 	private void refreshMessage() {
 		
 	    //新好友请求未读
-		int newFriendsCount = IMModel.unReadNewFriendsCount();
+		int newFriendsCount = 0;
 	    //未读推送
-		int newsUnreadCount = NewsPushModel.findUnreadCount().size();
+		int newsUnreadCount = 0;
+		
+		try {
+			newFriendsCount = IMModel.unReadNewFriendsCount();
+			newsUnreadCount = NewsPushModel.findUnreadCount().size();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		int pushCount = newFriendsCount + newsUnreadCount;
 		
 		final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
@@ -280,8 +289,14 @@ public class MessageMainFragment extends BaseFragment {
                 Conversation.ConversationType.APP_PUBLIC_SERVICE, Conversation.ConversationType.PUBLIC_SERVICE};
 		//聊天未读
 		int IMUnreadCount = 0;
-		if (null != RongIM.getInstance().getRongIMClient()) {
-			IMUnreadCount = RongIM.getInstance().getRongIMClient().getUnreadCount(conversationTypes);
+		if (null != RongIM.getInstance()) {
+			if (null != RongIM.getInstance().getRongIMClient()) {
+				try {
+					IMUnreadCount = RongIM.getInstance().getRongIMClient().getUnreadCount(conversationTypes);					
+				} catch (Exception e) {
+					LogUtils.i("unread 异常", 1);
+				}
+			}
 		}
 	    //徽标 最多显示99
 	    if (pushCount > 99) {

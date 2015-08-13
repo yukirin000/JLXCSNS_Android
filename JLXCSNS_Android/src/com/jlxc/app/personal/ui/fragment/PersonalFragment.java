@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -87,7 +88,7 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
-@SuppressLint("NewApi") public class PersonalFragment extends BaseFragment {
+@SuppressLint("NewApi") public class PersonalFragment extends BaseFragment implements View.OnClickListener {
 
 	public static final int TAKE_PHOTO = 1;// 拍照
 	public static final int ALBUM_SELECT = 2;// 相册选取
@@ -523,7 +524,20 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 //								+ mCurrentCityName);
 //					}
 //				});
-
+		
+//		//设置点击
+//		setOnClickEvent();
+	}
+	
+	public void setOnClickEvent() {
+//		View view = getActivity().findViewById(R.id.about_us);
+//		view.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
 	}
 
 	@Override
@@ -1533,5 +1547,12 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 	public void setTmpImageName(String tmpImageName) {
 		this.tmpImageName = tmpImageName;
+	}
+
+	
+	//点击事件.........
+	@Override
+	public void onClick(View v) {
+		
 	}
 }

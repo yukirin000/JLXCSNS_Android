@@ -13,6 +13,8 @@ public class DataCleanManager {
            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {  
                cacheSize += getFolderSize(context.getExternalCacheDir());
            }  
+           //憋显示太多
+           cacheSize = (long) (cacheSize * 0.8);
            return getFormatSize(cacheSize);
        }
   

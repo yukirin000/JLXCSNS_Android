@@ -398,7 +398,7 @@ public class FileUtil {
 				int degree = readPictureDegree(tempFile.getAbsolutePath());
 				bmp = rotaingImageView(degree, bmp);
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
-				bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+				bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
 				bmp.recycle();
 				bos.flush();
 				bos.close();
@@ -469,7 +469,7 @@ public class FileUtil {
 			int degree = readPictureDegree(file.getAbsolutePath());
 			bmp = rotaingImageView(degree, bmp); 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
-			bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+			bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
 			bmp.recycle();
 			bos.flush();
 			bos.close();
@@ -872,8 +872,6 @@ public class FileUtil {
 		
 		int inSampleSize = 1;
 		if (height > (reqHeight+100) || width > (reqWidth+100)) {
-			height += 500;
-			width += 500;
 			// 计算出实际宽高和目标宽高的比率
 			final int heightRatio = Math.round((float) height / (float) reqHeight);
 			final int widthRatio = Math.round((float) width / (float) reqWidth);
@@ -881,7 +879,6 @@ public class FileUtil {
 			// 一定都会大于等于目标的宽和高。
 			inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
 			//再次缩小图片
-			inSampleSize++;
 			LogUtils.i(" "+height+" "+reqHeight+" "+width+" "+reqWidth+" ", 1);
 			LogUtils.i(" "+inSampleSize+" "+heightRatio+" "+widthRatio+" ", 1);
 		} 

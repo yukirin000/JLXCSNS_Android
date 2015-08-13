@@ -369,7 +369,12 @@ public class MainTabActivity extends BaseActivity {
 		TextView unreadTextView = (TextView) messageView.findViewById(R.id.unread_text_view);
 	    //聊天页面
 	    //新好友请求未读
-		int newFriendsCount = IMModel.unReadNewFriendsCount();
+		int newFriendsCount = 0;
+		try {
+			newFriendsCount = IMModel.unReadNewFriendsCount();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	    //徽标 最多显示99
 	    //未读推送
 		int newsUnreadCount = NewsPushModel.findUnreadCount().size();
@@ -378,8 +383,14 @@ public class MainTabActivity extends BaseActivity {
                 Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
                 Conversation.ConversationType.APP_PUBLIC_SERVICE, Conversation.ConversationType.PUBLIC_SERVICE};
 		int unreadCount = 0;
-		if (null != RongIM.getInstance().getRongIMClient()) {
-			unreadCount = RongIM.getInstance().getRongIMClient().getUnreadCount(conversationTypes);
+		if (null != RongIM.getInstance()) { 
+			if (null != RongIM.getInstance().getRongIMClient()) {
+				try {
+					unreadCount = RongIM.getInstance().getRongIMClient().getUnreadCount(conversationTypes);
+				} catch (Exception e) {
+					LogUtils.i("unread 异常", 1);
+				}
+			}
 		}
 		int total = newsUnreadCount+newFriendsCount+unreadCount;
 	    if (total > 99) {
