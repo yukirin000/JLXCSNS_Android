@@ -1059,7 +1059,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 				ImageView imageView = helper.getView(R.id.image_attrament);
 //				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR + item);
 				if (null != item && item.length() > 0) {
-					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item, imageView, headImageOptions);					
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item, imageView, headImageOptions);
 				}else {
 					imageView.setImageResource(R.drawable.default_avatar);
 				}
