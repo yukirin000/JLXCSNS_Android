@@ -28,6 +28,12 @@ public class ConversationActivity extends BaseActivityWithTopBar {
 	public void finishWithRight() {
 		// TODO Auto-generated method stub
 		super.finishWithRight();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
 		//顶部更新
 		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
 		sendBroadcast(messageIntent);

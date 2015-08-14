@@ -2,6 +2,7 @@ package com.jlxc.app.news.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,9 +12,12 @@ import com.jlxc.app.R;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.view.TouchImageView;
+import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.LogUtils;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class PublisPhotoHandelActivity extends BaseActivityWithTopBar {
 
@@ -67,9 +71,20 @@ public class PublisPhotoHandelActivity extends BaseActivityWithTopBar {
 		}
 
 		// bitmap的处理
-		BitmapUtils bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
-				PublisPhotoHandelActivity.this, true, true);
-		bitmapUtils.display(bigImageView, imageURL);
+//		BitmapUtils bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+//				PublisPhotoHandelActivity.this, true, true);
+//		bitmapUtils.display(bigImageView, imageURL);
+		
+		DisplayImageOptions headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(false)  
+        .cacheOnDisk(false)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
+		
+		ImageLoader.getInstance().displayImage(imageURL, bigImageView, headImageOptions);
+		
 	}
 
 	/**

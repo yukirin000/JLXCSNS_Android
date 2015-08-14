@@ -32,7 +32,7 @@ public class FriendListActivity extends BaseActivityWithTopBar {
 	@ViewInject(R.id.list_view)
 	private ListView friendListView;
 	private HelloHaAdapter<IMModel> friendsAdapter;
-	private BitmapUtils bitmapUtils;
+//	private BitmapUtils bitmapUtils;
 	private List<IMModel> friendList;
 	
 	@Override
@@ -44,7 +44,7 @@ public class FriendListActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		// TODO Auto-generated method stub
-		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true));
+//		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true));
 		initListView();
 		//同步好友
 		syncFriends();
@@ -68,7 +68,7 @@ public class FriendListActivity extends BaseActivityWithTopBar {
 					final IMModel item) {
 				helper.setText(R.id.name_text_view, item.getTitle());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
+//				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
 			}
 		};
 		friendListView.setAdapter(friendsAdapter);
@@ -180,12 +180,5 @@ public class FriendListActivity extends BaseActivityWithTopBar {
 				}, null));
 	}
 
-	public BitmapUtils getBitmapUtils() {
-		return bitmapUtils;
-	}
-
-	public void setBitmapUtils(BitmapUtils bitmapUtils) {
-		this.bitmapUtils = bitmapUtils;
-	}
 
 }

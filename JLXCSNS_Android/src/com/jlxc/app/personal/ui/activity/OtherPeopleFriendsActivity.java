@@ -53,7 +53,7 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 	private boolean isLast = false; 
 //	private BitmapUtils bitmapUtils;
 	//新图片缓存工具 头像
-	DisplayImageOptions headImageOptions;
+	private DisplayImageOptions headImageOptions;
 	//uid
 	private int uid;
 	//当前的页数
@@ -115,7 +115,6 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 				}else {
 					headImageView.setImageResource(R.drawable.default_avatar);
 				}
-				
 				
 				LinearLayout linearLayout = (LinearLayout) helper.getView();
 				//点击事件

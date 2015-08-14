@@ -3,6 +3,7 @@ package com.jlxc.app.personal.ui.activity;
 import java.util.List;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -29,6 +30,8 @@ import com.jlxc.app.personal.model.CommonFriendsModel;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CommonFriendsActivity extends BaseActivityWithTopBar {
 
@@ -40,7 +43,8 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 	@ViewInject(R.id.common_friends_grid_view)
 	private GridView commonGridView;
 	private int uid;
-	private BitmapUtils bitmapUtils;
+//	private BitmapUtils bitmapUtils;
+	private DisplayImageOptions headImageOptions;
 	
 	@Override
 	public int setLayoutId() {
@@ -52,7 +56,14 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		Intent intent = getIntent();
 		setUid(intent.getIntExtra(INTENT_KEY, 0));
-		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true));
+//		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true));
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(false)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
 		
 		setBarText("共同好友");
 		
@@ -67,7 +78,12 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					final CommonFriendsModel item) {
 				ImageView headimImageView = helper.getView(R.id.image_item);
-				bitmapUtils.display(headimImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+//				bitmapUtils.display(headimImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+				if (null != item.getHead_sub_image() && item.getHead_sub_image().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image(), headimImageView, headImageOptions);
+				}else {
+					headimImageView.setImageResource(R.drawable.default_avatar);
+				}
 				
 				LinearLayout linearLayout = (LinearLayout) helper.getView();
 				linearLayout.setOnClickListener(new OnClickListener() {
@@ -120,14 +136,6 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 					}
 
 				}, null));
-	}
-				
-	public BitmapUtils getBitmapUtils() {
-		return bitmapUtils;
-	}
-
-	public void setBitmapUtils(BitmapUtils bitmapUtils) {
-		this.bitmapUtils = bitmapUtils;
 	}
 
 	public int getUid() {

@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -67,6 +68,8 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class PublishNewsActivity extends BaseActivityWithTopBar {
 
@@ -108,8 +111,9 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	private String tmpImageName;
 	// 地点
 	private String locationString;
-	// bitmap
-	private BitmapUtils bitmapUtils;
+	DisplayImageOptions headImageOptions;  
+//	// bitmap
+//	private BitmapUtils bitmapUtils;
 
 	@OnClick(value = { R.id.addImageView, R.id.choice_location_layout,
 			R.id.base_ll_right_btns, R.id.publish_news_layout })
@@ -258,7 +262,8 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		// 设置tag
 		imageView.setTag(filePath);
 		// 设置照片
-		bitmapUtils.display(imageView, filePath);
+//		bitmapUtils.display(imageView, filePath);
+		ImageLoader.getInstance().displayImage(filePath, imageView, headImageOptions);
 
 		// 设置点击查看大图事件
 		imageView.setOnClickListener(new View.OnClickListener() {
@@ -579,8 +584,15 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		addRightBtn("发布");
 		locationString = "";
 		// bitmap初始化
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
-				R.drawable.abc_ab_bottom_solid_light_holo, false, false);
+//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
+//				R.drawable.abc_ab_bottom_solid_light_holo, false, false);
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(false)  
+        .cacheOnDisk(false)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
 	}
 
 	@Override

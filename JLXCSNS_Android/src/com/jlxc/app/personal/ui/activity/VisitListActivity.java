@@ -37,10 +37,12 @@ import com.jlxc.app.base.utils.ToastUtil;
 //最近来访Activity
 import com.jlxc.app.personal.model.VisitModel;
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 public class VisitListActivity extends BaseActivityWithTopBar {
 
 	public final static String INTENT_KEY = "uid";
@@ -57,7 +59,9 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 	private boolean isPullDowm = false;
 	//是否是最后一页
 	private boolean isLast = false; 
-	private BitmapUtils bitmapUtils;
+//	private BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;		
 	//uid
 	private int uid;
 	//当前的页数
@@ -71,6 +75,15 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(true)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
+		
 		// TODO Auto-generated method stub
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
@@ -81,11 +94,11 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 			setBarText("TA的访客");
 		}
 		
-		bitmapUtils = new BitmapUtils(this);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
-		bitmapUtils.configMemoryCacheEnabled(true);
-		bitmapUtils.configDiskCacheEnabled(true);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+//		bitmapUtils = new BitmapUtils(this);
+//		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
+//		bitmapUtils.configMemoryCacheEnabled(true);
+//		bitmapUtils.configDiskCacheEnabled(true);
+//		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 		initListViewSet();
 		getVisitsData();
 	}
@@ -111,7 +124,12 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 				//签名
 				helper.setText(R.id.sign_text_view, item.getSign());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+//				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+				if (null != item.getHead_sub_image() && item.getHead_sub_image().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getHead_sub_image(), headImageView, headImageOptions);					
+				}else {
+					headImageView.setImageResource(R.drawable.default_avatar);
+				}
 				
 				LinearLayout linearLayout = (LinearLayout) helper.getView();
 				final int index = helper.getPosition();
@@ -241,7 +259,7 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 				});
 		
 		// 快宿滑动时不加载图片
-		visitListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
+		visitListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),
 				false, true));
 	}
 	

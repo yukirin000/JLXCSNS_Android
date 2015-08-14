@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,6 +52,8 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 //同校的人
 public class SearchUserActivity extends BaseActivityWithTopBar {
@@ -74,7 +77,9 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 	private boolean isPullDowm = true;
 	// 是否是最后一页
 	private boolean isLast = false;
-	private BitmapUtils bitmapUtils;
+//	private BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;
 	// 当前的页数
 	private int currentPage = 1;
 	// 自己
@@ -105,11 +110,19 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(false)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
+		
 		setBarText("查找");
 		findUserModels = new ArrayList<FindUserModel>();
 		userModel = UserManager.getInstance().getUser();
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
-				R.drawable.default_avatar, true, true);
+//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
+//				R.drawable.default_avatar, true, true);
 		initListViewSet();
 
 		// 设置搜索框内容改变的监听事件
@@ -201,8 +214,13 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 
 				helper.setText(R.id.name_text_view, item.getName());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
-						+ item.getHead_sub_image());
+//				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
+//						+ item.getHead_sub_image());
+				if (null != item.getHead_sub_image() && item.getHead_sub_image().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getHead_sub_image(), headImageView, headImageOptions);					
+				}else {
+					headImageView.setImageResource(R.drawable.default_avatar);
+				}
 				// 添加好友tv
 				ImageView addImageView = helper.getView(R.id.add_image_view);
 				// 点击添加
@@ -305,10 +323,6 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 						getSearchData();
 					}
 				});
-
-		// 快宿滑动时不加载图片
-		searchListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
 	}
 
 	/**

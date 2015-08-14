@@ -27,6 +27,9 @@ public class TimeHandle {
 			time = format.parse(dateStr);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(time);
+			//旧的时间
+			Calendar oldCalendar = Calendar.getInstance();
+			oldCalendar.setTime(dt);
 
 			// 与当前时间差，毫秒ms
 			long diff = dt.getTime() - time.getTime();
@@ -35,14 +38,22 @@ public class TimeHandle {
 			long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
 			long diffHours = diff / (60 * 60 * 1000) % 24;
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-
+			
+			//当天晚上23:59:59
+			Calendar todayEnd = Calendar.getInstance();  
+	        todayEnd.set(Calendar.HOUR, 23);  
+	        todayEnd.set(Calendar.MINUTE, 59);  
+	        todayEnd.set(Calendar.SECOND, 59);  
+	        todayEnd.set(Calendar.MILLISECOND, 999); 
+	        long dayDiff = todayEnd.getTime().getTime() - time.getTime();  
+			long diffDays = dayDiff / (24 * 60 * 60 * 1000);
+			
 			int year = calendar.get(Calendar.YEAR); // 获取年;
 			int month = calendar.get(Calendar.MONTH); // 获取月;
 			int day = calendar.get(Calendar.DATE); // 获取日;
 			int hour = calendar.get(Calendar.HOUR_OF_DAY); // 获取小时;
 			int min = calendar.get(Calendar.MINUTE); // 获取分钟;
-
+			
 			String hourStr = String.valueOf(hour);
 			String minStr = String.valueOf(min);
 			if (hour < 10) {
@@ -55,7 +66,7 @@ public class TimeHandle {
 			int currentYear = calendar.get(Calendar.YEAR); // 获取当前年份
 
 			if (diffSeconds < 60 && diffMinutes <= 0 && diffHours <= 0
-					&& diffDays <= 0) {
+					&& diffDays <= 0) { 
 				decTime = "刚刚";
 			} else if (diffDays <= 0 && diffHours <= 0) {
 				decTime = diffMinutes + "分钟前";

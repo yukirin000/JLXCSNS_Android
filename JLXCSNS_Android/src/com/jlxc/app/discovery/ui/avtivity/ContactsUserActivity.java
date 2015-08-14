@@ -47,6 +47,8 @@ import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ContactsUserActivity extends BaseActivityWithTopBar {
 
@@ -71,9 +73,11 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	private List<PersonModel> dataList = new ArrayList<PersonModel>();
 	// 适配器
 	private HelloHaAdapter<PersonModel> contactsAdapter;
-	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
-
+//	// bitmap的处理
+//	private static BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	private DisplayImageOptions headImageOptions;
+	
 	@Override
 	public int setLayoutId() {
 		return R.layout.activity_add_contacts_user;
@@ -81,6 +85,16 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
+        //显示头像的配置  
+		headImageOptions = new DisplayImageOptions.Builder()  
+                .showImageOnLoading(R.drawable.default_avatar)  
+                .showImageOnFail(R.drawable.default_avatar)  
+                .cacheInMemory(false)  
+                .cacheOnDisk(true)  
+                .bitmapConfig(Bitmap.Config.RGB_565)  
+                .build();
+		
 		init();
 		getPhoneContacts();
 		getSIMContacts();
@@ -103,11 +117,11 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	private void init() {
 		setBarText("通讯录中的小伙伴 (・ω・=)");
 		// bitmap初始化
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
-				ContactsUserActivity.this, true, true);
-
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+//		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+//				ContactsUserActivity.this, true, true);
+//
+//		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
+//		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 	}
 
 	/**
@@ -125,11 +139,15 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			protected void convert(final HelloHaBaseAdapterHelper helper,
 					PersonModel item) {
 				final PersonModel currentPerson = item;
-
 				// 绑定头像图片
-				helper.setImageUrl(R.id.iv_contacts_head, bitmapUtils,
-						item.getHeadSubImage(), new NewsBitmapLoadCallBack());
-
+//				helper.setImageUrl(R.id.iv_contacts_head, bitmapUtils,
+//						item.getHeadSubImage(), new NewsBitmapLoadCallBack());
+				ImageView headImageView = helper.getView(R.id.iv_contacts_head);
+				if (null != item.getHeadSubImage() && item.getHeadSubImage().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getHeadSubImage(), headImageView, headImageOptions);					
+				}else {
+					headImageView.setImageResource(R.drawable.default_avatar);
+				}
 				// 绑定昵称
 				helper.setText(R.id.tv_contact_user_name, item.getUserName());
 				// 通讯录名称

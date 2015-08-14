@@ -4,6 +4,7 @@ package com.jlxc.app.personal.ui.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.view.CustomAlertDialog;
+import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.BitmapUtils;
@@ -29,6 +31,8 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 //我的名片页面
 public class MyCardActivity extends BaseActivityWithTopBar {
 
@@ -57,8 +61,11 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 	@ViewInject(R.id.helloha_layout)
 	private LinearLayout hellohalLayout;
 	
-	//bitmapUtils
-	BitmapUtils bitmapUtil;
+	private DisplayImageOptions headImageOptions;  
+    
+	
+//	//bitmapUtils
+//	BitmapUtils bitmapUtil;
 	
 	//用户模型
 	private UserModel userModel;
@@ -102,9 +109,17 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 			setButton.setVisibility(View.VISIBLE);
 		}
 		
-		bitmapUtil = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(false)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
+		
 		nameTextView.setText(userModel.getName());
-		bitmapUtil.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
+//		bitmapUtil.display(headImageView, JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image());
+		ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR+userModel.getHead_image(), headImageView, headImageOptions);
 		
 		getQRCode();
 	}
@@ -121,9 +136,9 @@ public class MyCardActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							String qrpath = jsonResponse
-									.getString(JLXCConst.HTTP_RESULT); 
-							bitmapUtil.display(qrcodeImageView, JLXCConst.ROOT_PATH+qrpath);
+							String qrpath = jsonResponse.getString(JLXCConst.HTTP_RESULT); 
+							ImageLoader.getInstance().displayImage(JLXCConst.ROOT_PATH+qrpath, qrcodeImageView, headImageOptions);
+//							bitmapUtil.display(qrcodeImageView, JLXCConst.ROOT_PATH+qrpath);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {

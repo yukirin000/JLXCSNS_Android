@@ -40,6 +40,8 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class RegisterInformationActivity extends BaseActivityWithTopBar {
 
@@ -351,8 +353,19 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		    				if (file.exists()) {
 		    					file.delete();
 		    				}
+		    				
+		    				DisplayImageOptions headImageOptions = new DisplayImageOptions.Builder()  
+		    		        .showImageOnLoading(R.drawable.default_avatar)  
+		    		        .showImageOnFail(R.drawable.default_avatar)  
+		    		        .cacheInMemory(false)  
+		    		        .cacheOnDisk(false)  
+		    		        .bitmapConfig(Bitmap.Config.RGB_565)  
+		    		        .build();
+		    				
+		    				ImageLoader.getInstance().displayImage(FileUtil.HEAD_PIC_PATH+tmpImageName, headImageView, headImageOptions);
 //		    				filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
-		    				BitmapManager.getInstance().getBitmapUtils(RegisterInformationActivity.this, false, false).display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
+//		    				BitmapManager.getInstance().getBitmapUtils(RegisterInformationActivity.this, false, false).display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
+		    				
 	        			}	 
 	                }
 	                break;
