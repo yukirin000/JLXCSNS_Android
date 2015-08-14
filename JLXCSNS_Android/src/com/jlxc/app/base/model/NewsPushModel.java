@@ -94,6 +94,20 @@ public class NewsPushModel {
 	}
 	
 	/**
+	 * 从数据库中分页查出通知
+	 * @param pageNumber 页数
+	 * @param pageCount 每页数据数
+	 */
+	public static List<NewsPushModel> findWithPage(int page, int size){
+		
+		int start = (page-1)*size;
+        int end   = size;
+		String sql = "SELECT * FROM jlxc_news_push where owner="+UserManager.getInstance().getUser().getUid()
+				+" ORDER BY id DESC LIMIT "+start+","+end;
+		return findBySql(sql);
+	}
+	
+	/**
 	 * 从数据库中查出所有某种类型未读的数据
 	 */
 	public static List<NewsPushModel> findUnreadCount(){

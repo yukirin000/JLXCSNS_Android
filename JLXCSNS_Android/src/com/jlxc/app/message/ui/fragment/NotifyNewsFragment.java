@@ -11,6 +11,8 @@ import android.graphics.Bitmap;
 import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -44,19 +46,21 @@ public class NotifyNewsFragment extends BaseFragment {
 
 	//列表
 	@ViewInject(R.id.notify_list_view)
-	ListView notifyListView;
+	private ListView notifyListView;
 	//adapter
-	HelloHaAdapter<NewsPushModel> newsAdapter;
-	HelloHaAdapter<IMModel> imAdapter;
+	private HelloHaAdapter<NewsPushModel> newsAdapter;
+	private HelloHaAdapter<IMModel> imAdapter;
 //	BitmapUtils bitmapUtils;
 	//新图片缓存工具 头像
-	DisplayImageOptions headImageOptions;	
+	private DisplayImageOptions headImageOptions;	
 	//头部layout
-	LinearLayout headLayout;
+	private LinearLayout headLayout;
 	//顶部新朋友头像
-	GridView newFriendGridView;
+	private GridView newFriendGridView;
 	//顶部未读新朋友
-	TextView unreadTextView;
+	private TextView unreadTextView;
+	private int page = 1;
+	private int size =30;
 	
 	@Override
 	public int setLayoutId() {
@@ -193,6 +197,31 @@ public class NotifyNewsFragment extends BaseFragment {
 				startActivityWithRight(detailIntent);
 			}
 		});
+		//底部检测
+		notifyListView.setOnScrollListener(new OnScrollListener() {
+		    @Override
+		    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//		        switch (scrollState) {
+//		            case OnScrollListener.SCROLL_STATE_IDLE:
+//		                break;
+//		            case OnScrollListener.SCROLL_STATE_FLING:
+//		                break;
+//		            case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+//		                break;
+//		            }
+		    	//滚到底部了
+		    	if (view.getLastVisiblePosition() == (view.getCount() - 1)) {
+		    		page++;
+		    		List<NewsPushModel> pushModels = NewsPushModel.findWithPage(page, size);
+		    		newsAdapter.addAll(pushModels);
+				}
+		    }
+		 
+		    @Override
+		    public void onScroll(AbsListView view, int firstVisibleItem,
+		           int visibleItemCount, int totalItemCount) {
+		    }
+		});
 		
 		//长按删除
 		notifyListView.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -235,8 +264,8 @@ public class NotifyNewsFragment extends BaseFragment {
 	
 	//刷新页面
 	private void refreshList() {
-		
-		List<NewsPushModel> pushModels = NewsPushModel.findAll();
+		page = 1;
+		List<NewsPushModel> pushModels = NewsPushModel.findWithPage(page, size);
 		newsAdapter.replaceAll(pushModels);
 		
 		//刷新上端
