@@ -298,7 +298,7 @@ public class NewsListFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						if (!lastPage & !isRequestingData) {
+						if (!isRequestingData) {
 							isRequestingData = true;
 							newsListView.setMode(Mode.PULL_FROM_END);
 							newsListView.setRefreshing(true);
@@ -570,7 +570,6 @@ public class NewsListFragment extends BaseFragment {
 		String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
 				+ "&page=" + desPage + "&frist_time=" + lastTime;
 
-		LogUtils.i("path=" + path);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -612,7 +611,7 @@ public class NewsListFragment extends BaseFragment {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(mContext, "网络有毒=_=");
+						ToastUtil.show(mContext, "网络抽筋了，请检查(→_→)");
 						newsListView.onRefreshComplete();
 						newsListView.setMode(Mode.BOTH);
 						isRequestingData = false;
@@ -953,8 +952,8 @@ public class NewsListFragment extends BaseFragment {
 					// 无改变
 				} else if (resultIntent.hasExtra(NewsConstants.PUBLISH_FINISH)) {
 					// 发布了动态
-					smoothToTop();
 					if (!isRequestingData) {
+						smoothToTop();
 						isRequestingData = true;
 						pageIndex = 1;
 						isPullDowm = true;
@@ -973,6 +972,7 @@ public class NewsListFragment extends BaseFragment {
 		if (0 == firstVisiblePosition) {
 			// 已经在顶部
 			if (!newsListView.isRefreshing()) {
+				newsListView.setMode(Mode.PULL_FROM_START);
 				newsListView.setRefreshing(true);
 			}
 		} else {

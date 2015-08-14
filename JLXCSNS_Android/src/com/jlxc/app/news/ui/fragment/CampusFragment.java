@@ -297,7 +297,7 @@ public class CampusFragment extends BaseFragment {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (!islastPage && !isRequestData) {
+				if (!isRequestData) {
 					isRequestData = true;
 					isPullDowm = false;
 					getCampusData(
@@ -349,7 +349,7 @@ public class CampusFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						if (!islastPage && !isRequestData) {
+						if ( !isRequestData) {
 							isRequestData = true;
 							campusListView.setMode(Mode.PULL_FROM_END);
 							campusListView.setRefreshing(true);
@@ -623,7 +623,7 @@ public class CampusFragment extends BaseFragment {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(mContext, "网络有毒=_=");
+						ToastUtil.show(mContext, "网络抽筋了，请检查(→_→)");
 						campusListView.onRefreshComplete();
 						campusListView.setMode(Mode.BOTH);
 						isRequestData = false;
@@ -993,6 +993,7 @@ public class CampusFragment extends BaseFragment {
 			if (0 == firstVisiblePosition) {
 				// 已经在顶部
 				if (!campusListView.isRefreshing()) {
+					campusListView.setMode(Mode.PULL_FROM_START);
 					campusListView.setRefreshing(true);
 				}
 			} else {
