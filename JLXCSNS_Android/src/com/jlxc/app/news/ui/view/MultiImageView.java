@@ -211,6 +211,7 @@ public class MultiImageView extends RelativeLayout {
 			}
 			singleImageView.setLayoutParams(new LayoutParams(imageWidth,
 					imagHeight));
+			
 			imgLoader.displayImage(pictureList.get(0).getURL(),
 					singleImageView, options);
 			// 隐藏其余的imageview

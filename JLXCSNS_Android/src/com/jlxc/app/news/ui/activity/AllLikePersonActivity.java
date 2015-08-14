@@ -3,24 +3,21 @@ package com.jlxc.app.news.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.integer;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
@@ -33,9 +30,7 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.model.LikeModel;
-import com.jlxc.app.news.ui.activity.CampusAllPersonActivity.NewsBitmapLoadCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
@@ -44,6 +39,8 @@ import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class AllLikePersonActivity extends BaseActivityWithTopBar {
 
@@ -56,8 +53,6 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 	private List<LikeModel> dataList = new ArrayList<LikeModel>();
 	// 适配器
 	private HelloHaAdapter<LikeModel> allPersonAdapter;
-	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
 	// 当前的刷新模式
 	private boolean isPullDown = false;
 	// 当前的数据页
@@ -68,6 +63,10 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 	private String lastPage = "0";
 	// 是否正在请求数据
 	private boolean isRequestingData = false;
+	// 加载图片
+	private ImageLoader imgLoader;
+	// 图片配置
+	private DisplayImageOptions options;
 
 	@Override
 	public int setLayoutId() {
@@ -89,22 +88,19 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 	 * 初始化
 	 * */
 	private void init() {
-		initBitmapUtils();
 		// 获取学校代码
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
 		newsId = bundle.getString(INTENT_KEY_NEWS_ID);
-	}
 
-	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-				AllLikePersonActivity.this, R.drawable.default_avatar, true,
-				true);
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+		//
+		// 获取实例
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(android.R.color.darker_gray)
+				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
@@ -123,10 +119,20 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 					LikeModel item) {
 
 				// 绑定头像图片
-				helper.setImageUrl(R.id.iv_all_like_person_item_head,
-						bitmapUtils, item.getHeadSubImage(),
-						new NewsBitmapLoadCallBack());
-
+				// 绑定头像图片
+				if (null != item.getHeadSubImage()
+						&& item.getHeadSubImage().length() > 0) {
+					imgLoader
+							.displayImage(
+									item.getHeadSubImage(),
+									(ImageView) helper
+											.getView(R.id.iv_all_like_person_item_head),
+									options);
+				} else {
+					((ImageView) helper
+							.getView(R.id.iv_all_like_person_item_head))
+							.setImageResource(R.drawable.default_avatar);
+				}
 				// 绑定昵称
 				helper.setText(R.id.tv_all_like_person_item_name,
 						item.getName());
@@ -182,9 +188,6 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 					}
 				});
 
-		// 快速滑动时不加载图片
-		allPersonListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
 		allPersonListView.setAdapter(allPersonAdapter);
 
 		// 单击
@@ -285,36 +288,4 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 				}, null));
 	}
 
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
-		}
-	}
 }

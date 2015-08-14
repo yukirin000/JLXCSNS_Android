@@ -849,6 +849,7 @@ public class CampusFragment extends BaseFragment {
 		// 跳转到动态详情
 		Intent intentToNewsDetail = new Intent(mContext,
 				NewsDetailActivity.class);
+		intentToNewsDetail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 		switch (keyBoardMode) {
 		// 键盘关闭
 		case NewsConstants.KEY_BOARD_CLOSE:
