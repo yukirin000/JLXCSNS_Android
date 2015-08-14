@@ -75,6 +75,8 @@ import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
@@ -97,8 +99,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private HelloHaAdapter<ItemModel> detailAdapter;
 	// 当前的动态对象
 	private NewsModel currentNews;
-	// bitmap的处理
-	private BitmapUtils bitmapUtils;
+	// 加载图片
+	private ImageLoader imgLoader;
+	// 图片配置
+	private DisplayImageOptions options;
 	// 使支持多种item
 	private MultiItemTypeSupport<ItemModel> multiItemTypeSupport = null;
 	// 点击view监听对象
@@ -219,12 +223,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		setBarText("详情");
 		dataList = new ArrayList<ItemModel>();
 		itemViewClickListener = new ItemViewClick();
-		// bitmapUtils初始化
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
-				NewsDetailActivity.this, true, true);
-
-		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+		// 图片加载初始化
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
@@ -566,9 +571,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 		};
 
-		// 快速滑动时不加载图片
-		// newsDetailListView.setOnScrollListener(new PauseOnScrollListener(
-		// bitmapUtils, false, true));
 		// 设置不可点击
 		detailAdapter.setItemsClickEnable(false);
 		newsDetailListView.setAdapter(detailAdapter);
@@ -581,8 +583,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			ItemModel item) {
 		TitleItem titleData = (TitleItem) item;
 
-		helper.setImageUrl(R.id.img_news_detail_user_head, bitmapUtils,
-				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
+		// 显示头像
+		imgLoader.displayImage(titleData.getHeadSubImage(),
+				(ImageView) helper.getView(R.id.img_news_detail_user_head),
+				options);
+
 		// 设置用户名,发布的时间，标签
 		helper.setText(R.id.txt_news_detail_user_name, titleData.getUserName());
 		helper.setText(R.id.txt_news_detail_user_tag, titleData.getUserSchool());
@@ -653,9 +658,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void setLikeListItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		likeControl = helper.getView(R.id.control_like_listview);
+
 		likeControl.dataInit(
 				JLXCUtils.stringToInt(currentNews.getLikeQuantity()),
-				bitmapUtils, currentNews.getNewsID());
+				currentNews.getNewsID());
 		likeControl.listDataBindSet(currentNews.getLikeHeadListimage());
 		likeControl.setEventListener(new EventCallBack() {
 
@@ -682,8 +688,11 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void setComentItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		CommentModel comment = ((CommentItem) item).getCommentModel();
-		helper.setImageUrl(R.id.iv_comment_head, bitmapUtils,
-				comment.getHeadSubImage(), new NewsBitmapLoadCallBack());
+		
+		//显示评论头像
+		imgLoader.displayImage(comment.getHeadSubImage(),
+				(ImageView) helper.getView(R.id.iv_comment_head),
+				options);
 		// 设置评论的时间、学校与内容
 		helper.setText(R.id.txt_news_detail_comment_time,
 				TimeHandle.getShowTimeFormat(comment.getAddDate()));
@@ -702,7 +711,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 			}
 		};
 		helper.setOnClickListener(R.id.iv_comment_head, listener);
-		helper.setOnClickListener(R.id.layout_news_detail_comment_root_view, listener);
+		helper.setOnClickListener(R.id.layout_news_detail_comment_root_view,
+				listener);
 		helper.setOnClickListener(R.id.txt_news_detail_comment_name, listener);
 	}
 
@@ -1058,39 +1068,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 */
 	private interface ListItemClickHelp {
 		void onClick(View view, int postion, int viewID);
-	}
-
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
-		}
 	}
 
 	/**

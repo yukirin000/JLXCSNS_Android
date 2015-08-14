@@ -69,6 +69,8 @@ import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class NewsListFragment extends BaseFragment {
 
@@ -87,8 +89,6 @@ public class NewsListFragment extends BaseFragment {
 	private MultiItemTypeSupport<ItemModel> multiItemTypeSupport = null;
 	// 上下文信息
 	private Context mContext;
-	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
 	// 评论部分的控件
 	private List<Map<String, Integer>> commentViewList;
 	// 当前数据的页
@@ -107,6 +107,10 @@ public class NewsListFragment extends BaseFragment {
 	private NewsOperate newsOPerate;
 	// 当前点赞对应的gridview的adpter
 	private LikeImageListView currentLikeListControl;
+	// 加载图片
+	private ImageLoader imgLoader;
+	// 图片配置
+	private DisplayImageOptions options;
 
 	@Override
 	public int setLayoutId() {
@@ -138,12 +142,13 @@ public class NewsListFragment extends BaseFragment {
 
 		itemViewClickListener = new ItemViewClick();
 		newsOPerate = new NewsOperate(mContext);
-		// bitmapUtils的设置
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
-				true, true);
-
-		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+		// 获取显示图片的实例
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
@@ -363,8 +368,17 @@ public class NewsListFragment extends BaseFragment {
 	private void setTitleItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		TitleItem titleData = (TitleItem) item;
-		helper.setImageUrl(R.id.img_mian_news_user_head, bitmapUtils,
-				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
+		// 显示头像
+		if (null != titleData.getHeadSubImage()
+				&& titleData.getHeadSubImage().length() > 0) {
+			imgLoader.displayImage(titleData.getHeadSubImage(),
+					(ImageView) helper.getView(R.id.img_mian_news_user_head),
+					options);
+		} else {
+			((ImageView) helper.getView(R.id.img_mian_news_user_head))
+					.setImageResource(R.drawable.default_avatar);
+		}
+
 		// 设置用户名，学校，标签
 		helper.setText(R.id.txt_main_news_user_name, titleData.getUserName());
 		helper.setText(R.id.txt_main_news_user_school,
@@ -399,8 +413,9 @@ public class NewsListFragment extends BaseFragment {
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_main_news_images);
 		bodyImages.imageDataSet(pictureList);
-		bodyImages
-				.loadImageOnFastSlide(newsListView.getRefreshableView(), false);
+		// 快速滑动时不加载图片
+		bodyImages.loadImageOnFastSlide(newsListView.getRefreshableView(),
+				false);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
 
@@ -484,7 +499,7 @@ public class NewsListFragment extends BaseFragment {
 		int allCount = lkData.getLikeCount();
 		String newsID = lkData.getNewsID();
 
-		likeControl.dataInit(allCount, bitmapUtils, newsID);
+		likeControl.dataInit(allCount, newsID);
 		likeControl.listDataBindSet(lkImageList);
 		likeControl.setEventListener(new EventCallBack() {
 
@@ -816,39 +831,6 @@ public class NewsListFragment extends BaseFragment {
 			newsOPerate.uploadLikeOperate(operateData.getNewsID(), false);
 		} else {
 			newsOPerate.uploadLikeOperate(operateData.getNewsID(), true);
-		}
-	}
-
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
 		}
 	}
 

@@ -71,6 +71,8 @@ import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CampusFragment extends BaseFragment {
 
@@ -91,14 +93,14 @@ public class CampusFragment extends BaseFragment {
 	private MultiItemTypeSupport<ItemModel> multiItemTypeCampus = null;
 	// 上下文信息
 	private Context mContext;
-	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
+	// 加载图片
+	private ImageLoader imgLoader;
+	// 图片配置
+	private DisplayImageOptions options;
 	// 屏幕的尺寸
 	private int screenWidth = 0;
 	// 当前的数据页
 	private int pageIndex = 1;
-	// 是否是最后一页数据
-	private boolean islastPage = false;
 	// 时间戳
 	private String latestTimesTamp = "";
 	// 是否下拉
@@ -145,8 +147,13 @@ public class CampusFragment extends BaseFragment {
 
 		itemViewClickListener = new ItemViewClick();
 		newsOPerate = new NewsOperate(mContext);
-		initBitmapUtils();
-
+		// 图片加载初始化
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
@@ -166,17 +173,6 @@ public class CampusFragment extends BaseFragment {
 				myIntentFilter);
 	}
 
-	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
-				true, true);
-
-		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
-	}
-
 	/***
 	 * 上次缓存的数据
 	 * */
@@ -189,7 +185,8 @@ public class CampusFragment extends BaseFragment {
 		if (null != JObject) {
 			int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
 			if (status == JLXCConst.STATUS_SUCCESS) {
-				JSONObject jResult = JObject.getJSONObject(JLXCConst.HTTP_RESULT);
+				JSONObject jResult = JObject
+						.getJSONObject(JLXCConst.HTTP_RESULT);
 				if (null != jResult) {
 					// 获取数据列表
 					List<JSONObject> JNewsList = (List<JSONObject>) jResult
@@ -349,7 +346,7 @@ public class CampusFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						if ( !isRequestData) {
+						if (!isRequestData) {
 							isRequestData = true;
 							campusListView.setMode(Mode.PULL_FROM_END);
 							campusListView.setRefreshing(true);
@@ -363,9 +360,7 @@ public class CampusFragment extends BaseFragment {
 						}
 					}
 				});
-		// 快速滑动时不加载图片
-		campusListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
+
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		campusListView.setAdapter(newsAdapter);
@@ -378,8 +373,9 @@ public class CampusFragment extends BaseFragment {
 			ItemModel item) {
 		TitleItem titleData = (TitleItem) item;
 
-		helper.setImageUrl(R.id.img_campus_user_head, bitmapUtils,
-				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
+		// 显示头像
+		imgLoader.displayImage(titleData.getHeadSubImage(),
+				(ImageView) helper.getView(R.id.img_campus_user_head), options);
 		// 设置用户名
 		helper.setText(R.id.txt_campus_user_name, titleData.getUserName());
 		helper.setText(R.id.txt_campus_publish_time,
@@ -406,7 +402,9 @@ public class CampusFragment extends BaseFragment {
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
 		bodyImages.imageDataSet(pictureList);
-		bodyImages.loadImageOnFastSlide(campusListView.getRefreshableView(), false);
+		//快速滑动时不加载图片
+		bodyImages.loadImageOnFastSlide(campusListView.getRefreshableView(),
+				false);
 		bodyImages.setJumpListener(new JumpCallBack() {
 
 			@Override
@@ -486,7 +484,7 @@ public class CampusFragment extends BaseFragment {
 		int allCount = lkData.getLikeCount();
 		String newsID = lkData.getNewsID();
 
-		likeControl.dataInit(allCount, bitmapUtils, newsID);
+		likeControl.dataInit(allCount, newsID);
 		likeControl.listDataBindSet(lkImageList);
 		likeControl.setEventListener(new EventCallBack() {
 
@@ -532,10 +530,11 @@ public class CampusFragment extends BaseFragment {
 				imgView.setLayoutParams(laParams);
 				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-				// 绑定图片
-				helper.setImageUrl(R.id.iv_campus_person_gridview_item,
-						bitmapUtils, item.getHeadSubImage(),
-						new NewsBitmapLoadCallBack());
+				// 显示校园所有的人的头像
+				imgLoader.displayImage(item.getHeadSubImage(),
+						(ImageView) helper
+								.getView(R.id.iv_campus_person_gridview_item),
+						options);
 			}
 		};
 		personHeadGridView = (GridView) helper.getView(R.id.gv_school_person);
@@ -599,11 +598,9 @@ public class CampusFragment extends BaseFragment {
 							campusListView.onRefreshComplete();
 
 							if (jResult.getString("is_last").equals("0")) {
-								islastPage = false;
 								pageIndex++;
 								campusListView.setMode(Mode.BOTH);
 							} else {
-								islastPage = true;
 								campusListView.setMode(Mode.PULL_FROM_START);
 							}
 							isRequestData = false;
@@ -836,39 +833,6 @@ public class CampusFragment extends BaseFragment {
 	}
 
 	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
-		}
-	}
-
-	/**
 	 * 跳转至用户的主页
 	 */
 	private void JumpToHomepage(int userID) {
@@ -984,25 +948,25 @@ public class CampusFragment extends BaseFragment {
 			}
 		}
 	};
-	
+
 	// 平滑滚动到顶
-		private void smoothToTop() {
-			int firstVisiblePosition = campusListView.getRefreshableView()
-					.getFirstVisiblePosition();
-			if (0 == firstVisiblePosition) {
-				// 已经在顶部
-				if (!campusListView.isRefreshing()) {
-					campusListView.setMode(Mode.PULL_FROM_START);
-					campusListView.setRefreshing(true);
-				}
-			} else {
-				if (firstVisiblePosition < 20) {
-					campusListView.getRefreshableView().smoothScrollToPosition(0);
-				} else {
-					campusListView.getRefreshableView().setSelection(20);
-					campusListView.getRefreshableView().smoothScrollToPosition(0);
-				}
-				campusListView.getRefreshableView().clearFocus();
+	private void smoothToTop() {
+		int firstVisiblePosition = campusListView.getRefreshableView()
+				.getFirstVisiblePosition();
+		if (0 == firstVisiblePosition) {
+			// 已经在顶部
+			if (!campusListView.isRefreshing()) {
+				campusListView.setMode(Mode.PULL_FROM_START);
+				campusListView.setRefreshing(true);
 			}
+		} else {
+			if (firstVisiblePosition < 20) {
+				campusListView.getRefreshableView().smoothScrollToPosition(0);
+			} else {
+				campusListView.getRefreshableView().setSelection(20);
+				campusListView.getRefreshableView().smoothScrollToPosition(0);
+			}
+			campusListView.getRefreshableView().clearFocus();
 		}
+	}
 }

@@ -34,7 +34,6 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -60,15 +59,15 @@ import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
-import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DiscoveryFragment extends BaseFragment {
 
@@ -79,8 +78,10 @@ public class DiscoveryFragment extends BaseFragment {
 	private UserModel userModel;
 	// 上下文信息
 	private Context mContext;
-	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
+	// 加载图片
+	private ImageLoader imgLoader;
+	// 图片配置
+	private DisplayImageOptions options;
 	// 屏幕的尺寸
 	private int screenWidth = 0;
 	// 标头
@@ -172,24 +173,19 @@ public class DiscoveryFragment extends BaseFragment {
 
 		itemViewClickListener = new ItemViewClick();
 		imageItemClickListener = new ImageGridViewItemClick();
-		initBitmapUtils();
+		// 获取显示图片的实例
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(android.R.color.darker_gray).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
 		// 提示信息初始化
 		recommendPrompt.setText("一大波童鞋即将来袭  (•ิ _ •ิ )");
-	}
-
-	/**
-	 * 初始化BitmapUtils
-	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
-				true, true);
-
-		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 	}
 
 	/**
@@ -325,9 +321,6 @@ public class DiscoveryFragment extends BaseFragment {
 						}
 					}
 				});
-		// 快速滑动时不加载图片
-		rcmdPersonListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
 		// 设置不可点击
 		personItemAdapter.setItemsClickEnable(false);
 		rcmdPersonListView.setAdapter(personItemAdapter);
@@ -357,13 +350,24 @@ public class DiscoveryFragment extends BaseFragment {
 			RecommendItemData item) {
 		RecommendInfoItem titleData = (RecommendInfoItem) item;
 
-		helper.setImageUrl(R.id.iv_recommend_head, bitmapUtils,
-				titleData.getHeadSubImage(), new NewsBitmapLoadCallBack());
+		// 显示头像
+		if (null != titleData.getHeadSubImage()
+				&& titleData.getHeadSubImage().length() > 0) {
+			imgLoader
+					.displayImage(titleData.getHeadSubImage(),
+							(ImageView) helper.getView(R.id.iv_recommend_head),
+							options);
+		} else {
+			((ImageView) helper.getView(R.id.iv_recommend_head))
+					.setImageResource(R.drawable.default_avatar);
+		}
+
 		// 设置用户信息
 		helper.setText(R.id.tv_recommend_name, titleData.getUserName());
 		if (!titleData.getRelationTag().equals("")) {
-			helper.setText(R.id.tv_recommend_tag, " ◆ "+titleData.getRelationTag());
-		}else {
+			helper.setText(R.id.tv_recommend_tag,
+					" ◆ " + titleData.getRelationTag());
+		} else {
 			helper.setText(R.id.tv_recommend_tag, "");
 		}
 		helper.setText(R.id.tv_recommend_school, titleData.getUserSchool());
@@ -403,15 +407,12 @@ public class DiscoveryFragment extends BaseFragment {
 			RecommendItemData item) {
 		RecommendPhotoItem photoListData = (RecommendPhotoItem) item;
 
-		helper.setImageUrl(R.id.iv_recommend_photo_A, bitmapUtils,
-				photoListData.getPhotoSubUrl().get(0),
-				new NewsBitmapLoadCallBack());
-		helper.setImageUrl(R.id.iv_recommend_photo_B, bitmapUtils,
-				photoListData.getPhotoSubUrl().get(1),
-				new NewsBitmapLoadCallBack());
-		helper.setImageUrl(R.id.iv_recommend_photo_C, bitmapUtils,
-				photoListData.getPhotoSubUrl().get(2),
-				new NewsBitmapLoadCallBack());
+		imgLoader.displayImage(photoListData.getPhotoSubUrl().get(0),
+				(ImageView) helper.getView(R.id.iv_recommend_photo_A), options);
+		imgLoader.displayImage(photoListData.getPhotoSubUrl().get(1),
+				(ImageView) helper.getView(R.id.iv_recommend_photo_B), options);
+		imgLoader.displayImage(photoListData.getPhotoSubUrl().get(2),
+				(ImageView) helper.getView(R.id.iv_recommend_photo_C), options);
 
 		final int postion = helper.getPosition();
 		OnClickListener listener = new OnClickListener() {
@@ -475,8 +476,8 @@ public class DiscoveryFragment extends BaseFragment {
 					laParams.width = laParams.height = photoSize
 							- horizontalSpace;
 					imgView.setLayoutParams(laParams);
-					helper.setImageUrl(R.id.iv_recommend_photos_item,
-							bitmapUtils, subAdd, new NewsBitmapLoadCallBack());
+					imgLoader.displayImage(subAdd, (ImageView) helper
+							.getView(R.id.iv_recommend_photos_item), options);
 				}
 			}
 		};
@@ -551,7 +552,7 @@ public class DiscoveryFragment extends BaseFragment {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(mContext, "网络有毒=_=");
+						ToastUtil.show(mContext, "网络抽筋了,请检查 =_=");
 						rcmdPersonListView.onRefreshComplete();
 						if (!lastPage) {
 							rcmdPersonListView.setMode(Mode.BOTH);
@@ -600,7 +601,7 @@ public class DiscoveryFragment extends BaseFragment {
 		if (null != dataList) {
 			dataList.clear();
 		}
-		
+
 		if (personItemAdapter.getCount() <= 1) {
 			recommendPrompt.setVisibility(View.VISIBLE);
 			recommendPrompt.setText("好像出了点什么问题 (；′⌒`)");
@@ -759,39 +760,6 @@ public class DiscoveryFragment extends BaseFragment {
 			startActivity(intent);
 		} else {
 			LogUtils.e("未传递图片地址");
-		}
-	}
-
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
 		}
 	}
 

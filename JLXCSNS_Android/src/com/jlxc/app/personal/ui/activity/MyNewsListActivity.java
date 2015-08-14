@@ -74,8 +74,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	private HelloHaAdapter<MyNewsListItemModel> newsAdapter = null;
 	// 使支持多种item
 	private MultiItemTypeSupport<MyNewsListItemModel> multiItemTypeSupport = null;
-	// bitmap的处理
-	// private static BitmapUtils bitmapUtils;
 	// 当前的数据页
 	private int currentPage = 1;
 	// 是否是最后一页数据
@@ -474,29 +472,6 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 					}
 
 				}, null));
-	}
-
-	/**
-	 * 删除当前评论
-	 * */
-	private void deleteCurrentNews(final String newsID) {
-		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-				MyNewsListActivity.this, "真的狠心删除吗？", "狠心", "舍不得");
-		confirmDialog.show();
-		confirmDialog
-				.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
-					@Override
-					public void doConfirm() {
-						currentNewsId = newsID;
-						newsOPerate.deleteNews(newsID);
-						confirmDialog.dismiss();
-					}
-
-					@Override
-					public void doCancel() {
-						confirmDialog.dismiss();
-					}
-				});
 	}
 
 	/**

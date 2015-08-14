@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -73,9 +74,8 @@ public class LikeImageListView extends LinearLayout {
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.default_avatar)
-				.showImageOnFail(R.drawable.default_avatar)
-				.cacheInMemory(true).cacheOnDisk(true)
-				.bitmapConfig(Bitmap.Config.RGB_565).build();
+				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class LikeImageListView extends LinearLayout {
 	/**
 	 * 初始化
 	 * */
-	public void dataInit(int allCount, BitmapUtils bmapUtils, String nId) {
+	public void dataInit(int allCount, String nId) {
 		allLikeCount = allCount;
 		newsId = nId;
 	}
@@ -209,8 +209,17 @@ public class LikeImageListView extends LinearLayout {
 				if (tpImageView.getVisibility() == View.GONE) {
 					tpImageView.setVisibility(View.VISIBLE);
 				}
-				imgLoader.displayImage(likeList.get(index).getHeadSubImage(),
-						likeImageViews.get(index), options);
+
+				// 显示头像
+				if (null != likeList.get(index).getHeadSubImage()
+						&& likeList.get(index).getHeadSubImage().length() > 0) {
+					imgLoader.displayImage(likeList.get(index)
+							.getHeadSubImage(), likeImageViews.get(index),
+							options);
+				} else {
+					likeImageViews.get(index).setImageResource(
+							R.drawable.default_avatar);
+				}
 			} else {
 				tpImageView.setVisibility(View.GONE);
 			}
@@ -244,7 +253,6 @@ public class LikeImageListView extends LinearLayout {
 		}
 		listRefresh();
 	}
-
 
 	/**
 	 * 点击事件回调接口
