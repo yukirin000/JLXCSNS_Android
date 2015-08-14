@@ -263,7 +263,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		imageView.setTag(filePath);
 		// 设置照片
 //		bitmapUtils.display(imageView, filePath);
-		ImageLoader.getInstance().displayImage(filePath, imageView, headImageOptions);
+		ImageLoader.getInstance().displayImage("file://"+filePath, imageView, headImageOptions);
 
 		// 设置点击查看大图事件
 		imageView.setOnClickListener(new View.OnClickListener() {
@@ -587,8 +587,6 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 //		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
 //				R.drawable.abc_ab_bottom_solid_light_holo, false, false);
 		headImageOptions = new DisplayImageOptions.Builder()  
-        .showImageOnLoading(R.drawable.default_avatar)  
-        .showImageOnFail(R.drawable.default_avatar)  
         .cacheInMemory(false)  
         .cacheOnDisk(false)  
         .bitmapConfig(Bitmap.Config.RGB_565)  

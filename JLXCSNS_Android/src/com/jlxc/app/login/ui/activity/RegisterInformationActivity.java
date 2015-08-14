@@ -109,9 +109,6 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	//上传个人信息
 	private void uploadInformation(){
 		
-		final UserModel userModel = UserManager.getInstance().getUser();
-		showLoading("信息上传中，请稍候...", false);
-		RequestParams params = new RequestParams();
 		//如果选择头像了
 		//bitmap获取
 //		headImageView.setDrawingCacheEnabled(true);
@@ -129,7 +126,9 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 			return;
 		}
 		
-		
+		final UserModel userModel = UserManager.getInstance().getUser();
+		RequestParams params = new RequestParams();
+		showLoading("信息上传中，请稍候...", false);
 		final File imageFile = new File(FileUtil.HEAD_PIC_PATH+tmpImageName);
 		if (imageFile.exists()) {
 			//图片
@@ -362,7 +361,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		    		        .bitmapConfig(Bitmap.Config.RGB_565)  
 		    		        .build();
 		    				
-		    				ImageLoader.getInstance().displayImage(FileUtil.HEAD_PIC_PATH+tmpImageName, headImageView, headImageOptions);
+		    				ImageLoader.getInstance().displayImage("file://"+FileUtil.HEAD_PIC_PATH+tmpImageName, headImageView, headImageOptions);
 //		    				filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
 //		    				BitmapManager.getInstance().getBitmapUtils(RegisterInformationActivity.this, false, false).display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
 		    				

@@ -76,15 +76,18 @@ public class PublisPhotoHandelActivity extends BaseActivityWithTopBar {
 //		bitmapUtils.display(bigImageView, imageURL);
 		
 		DisplayImageOptions headImageOptions = new DisplayImageOptions.Builder()  
-        .showImageOnLoading(R.drawable.default_avatar)  
-        .showImageOnFail(R.drawable.default_avatar)  
-        .cacheInMemory(false)  
+        .cacheInMemory(true)  
         .cacheOnDisk(false)  
         .bitmapConfig(Bitmap.Config.RGB_565)  
         .build();
 		
-		ImageLoader.getInstance().displayImage(imageURL, bigImageView, headImageOptions);
+		ImageLoader.getInstance().displayImage("file://"+imageURL, bigImageView, headImageOptions);
 		
+	}
+	@Override
+	public void finishWithRight() {
+		// TODO Auto-generated method stub
+		finish();
 	}
 
 	/**

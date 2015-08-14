@@ -745,7 +745,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 					if (null != tmpImageName) {
 //						bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH + tmpImageName);
-						ImageLoader.getInstance().displayImage(FileUtil.HEAD_PIC_PATH + tmpImageName, headImageView, headImageOptions);
 						
 						// 删除临时文件
 						File file = new File(FileUtil.TEMP_PATH + tmpImageName);
@@ -1372,7 +1371,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 								userModel.setHead_sub_image(subPath);
 //								bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH + tmpImageName);
 //								bitmapUtils.display(headImageView,JLXCConst.ATTACHMENT_ADDR + serverPath);
-								ImageLoader.getInstance().displayImage(FileUtil.HEAD_PIC_PATH + tmpImageName, headImageView, headImageOptions);								
+								ImageLoader.getInstance().displayImage("file://"+FileUtil.HEAD_PIC_PATH + tmpImageName, headImageView, headImageOptions);								
 								ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + serverPath, headImageView, headImageOptions);
 								
 								// 刷新信息
@@ -1389,7 +1388,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 //										FileUtil.BIG_IMAGE_PATH + tmpImageName);
 //								bitmapUtils.display(backImageView,
 //										JLXCConst.ATTACHMENT_ADDR + serverPath);
-								ImageLoader.getInstance().displayImage(FileUtil.BIG_IMAGE_PATH + tmpImageName, backImageView, backImageOptions);								
+								ImageLoader.getInstance().displayImage("file://"+FileUtil.BIG_IMAGE_PATH + tmpImageName, backImageView, backImageOptions);								
 								ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + serverPath, backImageView, backImageOptions);
 								
 							}
