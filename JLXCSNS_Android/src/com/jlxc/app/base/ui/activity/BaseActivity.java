@@ -159,6 +159,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
 	public void onPause() {
 		super.onPause();
+		hideLoading();
 		// MobclickAgent.onPause(this);
 	}
 

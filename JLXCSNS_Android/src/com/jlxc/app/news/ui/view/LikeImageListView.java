@@ -8,25 +8,19 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jlxc.app.R;
-import com.jlxc.app.base.adapter.HelloHaAdapter;
-import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.view.RoundImageView;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.news.model.LikeModel;
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
-import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class LikeImageListView extends LinearLayout {
 
@@ -52,12 +46,14 @@ public class LikeImageListView extends LinearLayout {
 	private int allLikeCount = 0;
 	// 点赞数据集
 	private List<LikeModel> likeList;
-	// bitmap
-	private BitmapUtils bitmapUtils;
 	// 动态的id
 	private String newsId;
 	// 点击事件回调接口
 	private EventCallBack callInterface;
+	// 加载图片
+	private ImageLoader imgLoader;
+	// 图片配置
+	private DisplayImageOptions options;
 
 	public LikeImageListView(Context context) {
 		super(context);
@@ -66,8 +62,20 @@ public class LikeImageListView extends LinearLayout {
 	public LikeImageListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
+		init();
 		getWidget();
 		controlSizeInit();
+	}
+
+	// 初始化
+	private void init() {
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(R.drawable.default_avatar)
+				.cacheInMemory(true).cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
@@ -168,7 +176,6 @@ public class LikeImageListView extends LinearLayout {
 	 * */
 	public void dataInit(int allCount, BitmapUtils bmapUtils, String nId) {
 		allLikeCount = allCount;
-		bitmapUtils = bmapUtils;
 		newsId = nId;
 	}
 
@@ -202,9 +209,8 @@ public class LikeImageListView extends LinearLayout {
 				if (tpImageView.getVisibility() == View.GONE) {
 					tpImageView.setVisibility(View.VISIBLE);
 				}
-				bitmapUtils.display(likeImageViews.get(index),
-						likeList.get(index).getHeadSubImage(),
-						new NewsBitmapLoadCallBack());
+				imgLoader.displayImage(likeList.get(index).getHeadSubImage(),
+						likeImageViews.get(index), options);
 			} else {
 				tpImageView.setVisibility(View.GONE);
 			}
@@ -239,38 +245,6 @@ public class LikeImageListView extends LinearLayout {
 		listRefresh();
 	}
 
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	private class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
-		}
-	}
 
 	/**
 	 * 点击事件回调接口

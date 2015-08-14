@@ -4,23 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jlxc.app.R;
-import com.jlxc.app.base.adapter.HelloHaAdapter;
-import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
-import com.jlxc.app.base.manager.BitmapManager;
-import com.jlxc.app.base.ui.activity.BigImgLookActivity;
-import com.jlxc.app.base.ui.view.NoScrollGridView;
-import com.jlxc.app.base.ui.view.NoScrollGridView.OnTouchInvalidPositionListener;
-import com.jlxc.app.base.utils.LogUtils;
-import com.jlxc.app.news.model.ImageModel;
-import com.jlxc.app.news.ui.fragment.NewsListFragment.NewsBitmapLoadCallBack;
-import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
-import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
-import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -28,14 +11,17 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+
+import com.jlxc.app.R;
+import com.jlxc.app.base.ui.activity.BigImgLookActivity;
+import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.news.model.ImageModel;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 public class MultiImageView extends RelativeLayout {
 
@@ -57,10 +43,12 @@ public class MultiImageView extends RelativeLayout {
 	private List<ImageModel> dataList = new ArrayList<ImageModel>();
 	// 点击事件回调接口
 	private JumpCallBack jumpInterface;
-	// bitmap
-	private BitmapUtils bitmapUtils;
 	// 是否是大图
 	private boolean isLargeSize = true;
+	//加载图片
+	private ImageLoader imgLoader;
+	//图片配置
+	private DisplayImageOptions options;
 
 	public MultiImageView(Context context) {
 		super(context);
@@ -69,7 +57,7 @@ public class MultiImageView extends RelativeLayout {
 	public MultiImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
-		//获取要显示的尺寸
+		// 获取要显示的尺寸
 		TypedArray type = context.obtainStyledAttributes(attrs,
 				R.styleable.MultiImageView);
 		isLargeSize = type.getBoolean(R.styleable.MultiImageView_islargesize,
@@ -87,19 +75,20 @@ public class MultiImageView extends RelativeLayout {
 		// 获取屏幕尺寸
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		screenWidth = displayMet.widthPixels;
-
-		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(mContext,
-				true, true);
-
-		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-		bitmapUtils.configDefaultLoadFailedImage(android.R.color.darker_gray);
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(android.R.color.darker_gray)
+				.showImageOnFail(android.R.color.darker_gray)
+				.cacheInMemory(true).cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
 	 * 快速滑动时是否加载图片
 	 * */
 	public void loadImageOnFastSlide(ListView listView, boolean isLoad) {
-		listView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
+		listView.setOnScrollListener(new PauseOnScrollListener(imgLoader,
 				false, isLoad));
 	}
 
@@ -123,7 +112,7 @@ public class MultiImageView extends RelativeLayout {
 				view = View.inflate(mContext,
 						R.layout.custom_multi_image_major, this);
 			}
-		}else {
+		} else {
 			if (screenWidth <= SMALL_PIX) {
 				view = View.inflate(mContext,
 						R.layout.custom_multi_image_small, this);
@@ -222,8 +211,8 @@ public class MultiImageView extends RelativeLayout {
 			}
 			singleImageView.setLayoutParams(new LayoutParams(imageWidth,
 					imagHeight));
-			bitmapUtils.display(singleImageView, pictureList.get(0).getURL(),
-					new NewsBitmapLoadCallBack());
+			imgLoader.displayImage(pictureList.get(0).getURL(),
+					singleImageView, options);
 			// 隐藏其余的imageview
 			for (int index = 0; index < imageViewsList.size(); index++) {
 				imageViewsList.get(index).setVisibility(View.GONE);
@@ -234,8 +223,8 @@ public class MultiImageView extends RelativeLayout {
 			for (int index = 0; index < imageViewsList.size(); index++) {
 				if (index < pictureList.size()) {
 					imageViewsList.get(index).setVisibility(View.VISIBLE);
-					bitmapUtils.display(imageViewsList.get(index), pictureList
-							.get(index).getURL(), new NewsBitmapLoadCallBack());
+					imgLoader.displayImage(pictureList.get(index).getURL(),
+							imageViewsList.get(index), options);
 				} else {
 					imageViewsList.get(index).setVisibility(View.GONE);
 				}
@@ -284,39 +273,6 @@ public class MultiImageView extends RelativeLayout {
 			jumpInterface.onImageClick(intent);
 		} else {
 			LogUtils.e("未传递图片地址");
-		}
-	}
-
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class NewsBitmapLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-		private final ImageView iView;
-
-		public NewsBitmapLoadCallBack() {
-			this.iView = null;
-		}
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			//
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			container.setImageBitmap(bitmap);
 		}
 	}
 

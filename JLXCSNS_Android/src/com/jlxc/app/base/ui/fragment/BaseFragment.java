@@ -2,6 +2,7 @@ package com.jlxc.app.base.ui.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,10 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jlxc.app.R;
+import com.jlxc.app.base.ui.activity.BaseActivity;
+import com.jlxc.app.base.ui.view.CustomProgressDialog;
 import com.lidroid.xutils.ViewUtils;
 
 public abstract class BaseFragment extends Fragment {
-	private ProgressDialog dialog;
+	// private ProgressDialog dialog;
+	private Dialog progressDialog;
 	private int viewId;
 	private View rootView;
 
@@ -48,7 +52,8 @@ public abstract class BaseFragment extends Fragment {
 	 */
 	public void startActivityWithRight(Intent intent) {
 		startActivity(intent);
-		getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+		getActivity().overridePendingTransition(R.anim.push_right_in,
+				R.anim.push_right_out);
 	}
 
 	/**
@@ -56,7 +61,8 @@ public abstract class BaseFragment extends Fragment {
 	 */
 	public void finishWithRight() {
 		getActivity().finish();
-		getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+		getActivity().overridePendingTransition(R.anim.push_left_in,
+				R.anim.push_left_out);
 	}
 
 	/**
@@ -66,7 +72,8 @@ public abstract class BaseFragment extends Fragment {
 	 */
 	public void startActivityWithBottom(Intent intent) {
 		startActivity(intent);
-		getActivity().overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
+		getActivity().overridePendingTransition(R.anim.push_bottom_in,
+				R.anim.push_top_out);
 	}
 
 	/**
@@ -74,7 +81,8 @@ public abstract class BaseFragment extends Fragment {
 	 */
 	public void finishWithBottom() {
 		getActivity().finish();
-		getActivity().overridePendingTransition(R.anim.push_top_in, R.anim.push_bottom_out);
+		getActivity().overridePendingTransition(R.anim.push_top_in,
+				R.anim.push_bottom_out);
 	}
 
 	/**
@@ -83,9 +91,12 @@ public abstract class BaseFragment extends Fragment {
 	 * @param fragment
 	 * @param tag
 	 */
-	protected void replaceFragment(int containerViewId, Fragment fragment, String tag) {
-		FragmentTransaction transactionLogin = getFragmentManager().beginTransaction();
-		transactionLogin.setCustomAnimations(R.anim.push_right_in, R.anim.push_right_out, R.anim.push_left_in,
+	protected void replaceFragment(int containerViewId, Fragment fragment,
+			String tag) {
+		FragmentTransaction transactionLogin = getFragmentManager()
+				.beginTransaction();
+		transactionLogin.setCustomAnimations(R.anim.push_right_in,
+				R.anim.push_right_out, R.anim.push_left_in,
 				R.anim.push_left_out);
 		transactionLogin.replace(containerViewId, fragment, tag);
 		transactionLogin.addToBackStack(null);
@@ -97,21 +108,28 @@ public abstract class BaseFragment extends Fragment {
 	}
 
 	public void showLoading(Context context, String msg, boolean cancleable) {
-		if (dialog != null && dialog.isShowing()) {
-			hideLoading();
+		// if (dialog != null && dialog.isShowing()) {
+		// hideLoading();
+		// }
+		// dialog = new ProgressDialog(context);
+		// dialog.setMessage(msg);
+		// dialog.setCancelable(cancleable);
+		// if (null != dialog && !dialog.isShowing()) {
+		// dialog.show();
+		// }
+		if (progressDialog == null) {
+			progressDialog = CustomProgressDialog.createLoadingDialog(context,
+					msg, cancleable);
 		}
-		dialog = new ProgressDialog(context);
-		dialog.setMessage(msg);
-		dialog.setCancelable(cancleable);
-		if (null != dialog && !dialog.isShowing()) {
-			dialog.show();
+		if (!progressDialog.isShowing()) {
+			progressDialog.show();
 		}
 	}
 
 	public void hideLoading() {
-		if (null != dialog && dialog.isShowing()) {
-			dialog.dismiss();
-			dialog = null;
+		if (null != progressDialog && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+			progressDialog = null;
 		}
 	}
 
@@ -123,7 +141,8 @@ public abstract class BaseFragment extends Fragment {
 	 * @param message
 	 */
 	public void showAlert(String title, String message) {
-		new AlertDialog.Builder(getActivity()).setTitle(title).setMessage(message)
+		new AlertDialog.Builder(getActivity()).setTitle(title)
+				.setMessage(message)
 				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 					@Override
@@ -141,7 +160,8 @@ public abstract class BaseFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		if (0 == viewId) {
 			new Exception(
 					"Please return the layout id in setLayoutId method,as simple as R.layout.cr_news_fragment_layout")
@@ -176,8 +196,9 @@ public abstract class BaseFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
+		hideLoading();
 	}
-	
+
 	public int[] getScreenSize() {
 		DisplayMetrics dm = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);

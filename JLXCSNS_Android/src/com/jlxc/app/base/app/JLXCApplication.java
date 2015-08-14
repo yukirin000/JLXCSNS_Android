@@ -8,6 +8,8 @@ import com.jlxc.app.base.helper.RongCloudEvent;
 import com.jlxc.app.base.manager.DBManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.utils.FileUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.ActivityManager;
@@ -50,6 +52,9 @@ public class JLXCApplication extends Application {
 		 //初始化TuTuSDK
 ////		TuSdk.enableDebugLog(true);
 ////		TuSdk.init(this.getApplicationContext(),"f1c31a2ee6e0fe88-00-t14qn1");
+        //初始化图片加载对象
+        ImageLoader.getInstance().init(
+				ImageLoaderConfiguration.createDefault(getApplicationContext()));
 	}  
 
 //	public static String getCurProcessName(Context context) {
