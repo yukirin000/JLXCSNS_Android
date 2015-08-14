@@ -5,14 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +40,8 @@ import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
+import com.jlxc.app.base.ui.view.CustomListViewDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
 import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -53,6 +61,7 @@ import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.ui.view.TextViewHandel;
 import com.jlxc.app.news.ui.view.LikeButton;
 import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
@@ -111,6 +120,8 @@ public class NewsListFragment extends BaseFragment {
 	private ImageLoader imgLoader;
 	// 图片配置
 	private DisplayImageOptions options;
+	// 是否为文字长按事件
+	private boolean isLongClick = false;
 
 	@Override
 	public int setLayoutId() {
@@ -409,7 +420,7 @@ public class NewsListFragment extends BaseFragment {
 	 * 设置新闻主体item
 	 * */
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
-		BodyItem bodyData = (BodyItem) item;
+		final BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_main_news_images);
 		bodyImages.imageDataSet(pictureList);
@@ -430,17 +441,30 @@ public class NewsListFragment extends BaseFragment {
 
 			@Override
 			public void onClick(View view) {
-				itemViewClickListener.onClick(view, postion, view.getId());
+				if (!isLongClick) {
+					itemViewClickListener.onClick(view, postion, view.getId());
+				}
 			}
 		};
+
 		// 设置 文字内容
 		if (bodyData.getNewsContent().equals("")) {
 			helper.setVisible(R.id.txt_main_news_content, false);
 		} else {
-			helper.setVisible(R.id.txt_main_news_content, true);
-			helper.setText(R.id.txt_main_news_content,
+			//
+			TextViewHandel customTvHandel = new TextViewHandel(getActivity(),
 					bodyData.getNewsContent());
+			helper.setVisible(R.id.txt_main_news_content, true);
+			TextView contentView = helper.getView(R.id.txt_main_news_content);
+			contentView.setText(bodyData.getNewsContent());
+			// customTvHandel.setTextContent(contentView);
+			// 长按复制
+			contentView.setOnLongClickListener(TextViewHandel
+					.getLongClickListener(getActivity(),
+							bodyData.getNewsContent()));
+			// 点击
 			helper.setOnClickListener(R.id.txt_main_news_content, listener);
+
 		}
 		// 设置地理位置
 		if (bodyData.getLocation().equals("")) {

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/main_deep_white"
     android:clickable="true"
+    android:longClickable="true"
     android:orientation="vertical"
     android:paddingLeft="@dimen/news_item_margins_left"
     android:paddingRight="@dimen/news_item_margins_right" >
@@ -16,10 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/news_item_margins_top"
-        android:autoLink="web"
-        android:textIsSelectable="true"
         android:background="@drawable/selector_deep_white_click"
-        android:text="www.baidu.com"
+        android:text="内容"
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />
 

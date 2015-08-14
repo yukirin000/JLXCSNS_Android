@@ -3,20 +3,27 @@ package com.jlxc.app.news.ui.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
@@ -36,6 +43,8 @@ import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
+import com.jlxc.app.base.ui.view.CustomListViewDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
 import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -55,6 +64,7 @@ import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.ui.view.TextViewHandel;
 import com.jlxc.app.news.ui.view.LikeButton;
 import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
@@ -398,11 +408,11 @@ public class CampusFragment extends BaseFragment {
 	 * 设置新闻主题item
 	 * */
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
-		BodyItem bodyData = (BodyItem) item;
+		final BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
 		bodyImages.imageDataSet(pictureList);
-		//快速滑动时不加载图片
+		// 快速滑动时不加载图片
 		bodyImages.loadImageOnFastSlide(campusListView.getRefreshableView(),
 				false);
 		bodyImages.setJumpListener(new JumpCallBack() {
@@ -429,8 +439,18 @@ public class CampusFragment extends BaseFragment {
 			helper.setVisible(R.id.txt_campus_news_content, false);
 		} else {
 			helper.setVisible(R.id.txt_campus_news_content, true);
-			helper.setText(R.id.txt_campus_news_content,
+			// 设置文字
+			TextViewHandel customTvHandel = new TextViewHandel(getActivity(),
 					bodyData.getNewsContent());
+			helper.setVisible(R.id.txt_campus_news_content, true);
+			TextView contentView = helper.getView(R.id.txt_campus_news_content);
+			//customTvHandel.setTextContent(contentView);
+			contentView.setText(bodyData.getNewsContent());
+			// // 长按复制
+			contentView.setOnLongClickListener(TextViewHandel
+					.getLongClickListener(getActivity(),
+							bodyData.getNewsContent()));
+			// 点击
 			helper.setOnClickListener(R.id.txt_campus_news_content, listener);
 		}
 		// 设置地理位置
@@ -849,7 +869,6 @@ public class CampusFragment extends BaseFragment {
 		// 跳转到动态详情
 		Intent intentToNewsDetail = new Intent(mContext,
 				NewsDetailActivity.class);
-		intentToNewsDetail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 		switch (keyBoardMode) {
 		// 键盘关闭
 		case NewsConstants.KEY_BOARD_CLOSE:

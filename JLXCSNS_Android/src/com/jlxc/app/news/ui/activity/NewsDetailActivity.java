@@ -3,11 +3,16 @@ package com.jlxc.app.news.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
@@ -15,11 +20,13 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -77,6 +84,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.jlxc.app.news.ui.view.TextViewHandel;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
@@ -617,7 +625,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 设置新闻主体item
 	 * */
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
-		BodyItem bodyData = (BodyItem) item;
+		final BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 
 		MultiImageView bodyImages = helper.getView(R.id.miv_news_detail_images);
@@ -635,9 +643,16 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		if (bodyData.getNewsContent().equals("")) {
 			helper.setVisible(R.id.txt_news_detail_content, false);
 		} else {
+			TextViewHandel customTvHandel = new TextViewHandel(
+					NewsDetailActivity.this, bodyData.getNewsContent());
 			helper.setVisible(R.id.txt_news_detail_content, true);
-			helper.setText(R.id.txt_news_detail_content,
-					bodyData.getNewsContent());
+			TextView contentView = helper.getView(R.id.txt_news_detail_content);
+			// customTvHandel.setTextContent(contentView);
+			contentView.setText(bodyData.getNewsContent());
+			// 长按复制
+			contentView.setOnLongClickListener(TextViewHandel
+					.getLongClickListener(NewsDetailActivity.this,
+							bodyData.getNewsContent()));
 		}
 		// 设置地理位置
 		if (bodyData.getLocation().equals("")) {
@@ -688,11 +703,10 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	private void setComentItemView(HelloHaBaseAdapterHelper helper,
 			ItemModel item) {
 		CommentModel comment = ((CommentItem) item).getCommentModel();
-		
-		//显示评论头像
+
+		// 显示评论头像
 		imgLoader.displayImage(comment.getHeadSubImage(),
-				(ImageView) helper.getView(R.id.iv_comment_head),
-				options);
+				(ImageView) helper.getView(R.id.iv_comment_head), options);
 		// 设置评论的时间、学校与内容
 		helper.setText(R.id.txt_news_detail_comment_time,
 				TimeHandle.getShowTimeFormat(comment.getAddDate()));
