@@ -35,6 +35,7 @@ import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -66,7 +67,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 //	AlertDialog imageDialog;
 	
 	//统计处理点击
-	@OnClick({R.id.headImageView,R.id.register_information_activity,R.id.confirmBtn,R.id.base_ll_right_btns})
+	@OnClick({R.id.headImageView,R.id.register_information_activity,R.id.confirmBtn})
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		//头像点击
@@ -78,11 +79,11 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 			//提交信息
 			uploadInformation();
 			break;
-		case R.id.base_ll_right_btns:
-			//跳过
-			Intent intent = new Intent(this, MainTabActivity.class);
-			startActivityWithRight(intent);
-			break;
+//		case R.id.base_ll_right_btns:
+//			//跳过
+//			Intent intent = new Intent(this, MainTabActivity.class);
+//			startActivityWithRight(intent);
+//			break;
 		case R.id.register_information_activity:
 			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
 	        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -117,6 +118,15 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 //        String photoName = getPhotoFileName();
 //		//图片保存到本地
 //		FileUtil.savePic(Bitmap.createBitmap(bitmap), FileUtil.HEAD_PIC_PATH, photoName, 100);
+		if (null == tmpImageName || tmpImageName.length() < 1) {
+			ToastUtil.show(this, "跪求您设置一下头像和昵称...");
+			return;
+		}
+		if (nameEditText.getText().toString().length() < 1) {
+			ToastUtil.show(this, "跪求您设置一下头像和昵称...");
+			return;
+		}
+		
 		
 		final File imageFile = new File(FileUtil.HEAD_PIC_PATH+tmpImageName);
 		if (imageFile.exists()) {

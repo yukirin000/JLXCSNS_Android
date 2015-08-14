@@ -7,6 +7,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.login.ui.activity.LaunchActivity;
 import com.jlxc.app.login.ui.activity.LoginActivity;
 import com.jlxc.app.message.model.IMModel;
 
@@ -207,7 +208,7 @@ public class PushReceiver extends BroadcastReceiver {
 		int iconId = R.drawable.icon;
 		Intent notificationIntent = new Intent(Intent.ACTION_MAIN);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-		notificationIntent.setClass(context.getApplicationContext(), LoginActivity.class);
+		notificationIntent.setClass(context.getApplicationContext(), LaunchActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Notification notification = new Notification();

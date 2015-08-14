@@ -135,7 +135,7 @@ public class ImageLoader
 
 		// 获取应用程序最大可用内存
 		int maxMemory = (int) Runtime.getRuntime().maxMemory();
-		int cacheSize = maxMemory / 8;
+		int cacheSize = maxMemory / 10;
 		mLruCache = new LruCache<String, Bitmap>(cacheSize)
 		{
 			@Override
@@ -366,7 +366,7 @@ public class ImageLoader
 			int widthRatio = Math.round((float) width / (float) reqWidth);
 			int heightRatio = Math.round((float) width / (float) reqWidth);
 			inSampleSize = Math.max(widthRatio, heightRatio);
-			inSampleSize = (int) (inSampleSize * 1.5);
+			inSampleSize = (int) (inSampleSize * 1.7);
 		}
 		return inSampleSize;
 	}
