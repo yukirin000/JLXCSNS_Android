@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.ui.view.gallery.utils.CommonAdapter;
 import com.jlxc.app.base.ui.view.gallery.utils.ViewHolder;
+import com.jlxc.app.base.utils.LogUtils;
 
 public class GalleyAdapter extends CommonAdapter<String> {
 
@@ -25,6 +27,9 @@ public class GalleyAdapter extends CommonAdapter<String> {
 	private OnItemClickClass onItemClickClass;
 	//
 	private Context mContext;
+	//当前选中的ImageView 单张模式使用
+	private ImageView currentSelectImageView;
+	
 	/**
 	 * 文件夹路径
 	 */
@@ -81,6 +86,21 @@ public class GalleyAdapter extends CommonAdapter<String> {
 					mSelectedImage.add(mDirPath + "/" + item);
 					mSelect.setImageResource(R.drawable.pictures_selected);
 					mImageView.setColorFilter(Color.parseColor("#77000000"));
+					//单张模式
+					if (MAX_SELECT_COUNT == 1) {
+						currentSelectImageView = mImageView;
+					}
+				}else if(MAX_SELECT_COUNT == 1){
+					//如果是单选的时候 点击哪个就确认哪个
+					if (mSelectedImage.size()>0) {
+						//前面那个清空
+						currentSelectImageView.setColorFilter(null);	
+						mSelectedImage.clear();
+						mSelectedImage.add(mDirPath + "/" + item);
+						mSelect.setImageResource(R.drawable.pictures_selected);
+						mImageView.setColorFilter(Color.parseColor("#77000000"));
+						currentSelectImageView = mImageView;
+					}
 				}
 				onItemClickClass.OnItemClick(mSelectedImage.size()
 						+ haveSelectCount);

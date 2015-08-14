@@ -274,7 +274,7 @@ public class MessageMainFragment extends BaseFragment {
 		int newFriendsCount = 0;
 	    //未读推送
 		int newsUnreadCount = 0;
-		
+		 
 		try {
 			newFriendsCount = IMModel.unReadNewFriendsCount();
 			newsUnreadCount = NewsPushModel.findUnreadCount().size();
