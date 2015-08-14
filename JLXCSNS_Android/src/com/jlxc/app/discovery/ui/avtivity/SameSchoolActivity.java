@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,10 +38,12 @@ import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 //同校的人
 public class SameSchoolActivity extends BaseActivityWithTopBar {
 
@@ -57,7 +60,9 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 	private boolean isPullDowm = true;
 	//是否是最后一页
 	private boolean isLast = false; 
-	private BitmapUtils bitmapUtils;
+//	private BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;
 	//当前的页数
 	private int currentPage = 1;
 	//自己
@@ -77,7 +82,16 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 		setBarText("同校的好友~");
 		sameSchoolModels = new ArrayList<SameSchoolModel>();
 		userModel = UserManager.getInstance().getUser();
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
+//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
+		
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(false)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
+		
 		initListViewSet();
 		getSameData();
 	}
@@ -98,7 +112,13 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 				helper.setText(R.id.name_text_view, item.getName());
 				helper.setText(R.id.sign_text_view, item.getSign());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+//				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+				if (null != item.getHead_sub_image() && item.getHead_sub_image().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getHead_sub_image(), headImageView, headImageOptions);					
+				}else {
+					headImageView.setImageResource(R.drawable.default_avatar);
+				}
+				
 				//男的
 				if (item.getSex() == UserModel.SexBoy) {
 					helper.setImageResource(R.id.sex_image_view, R.drawable.sex_boy);
@@ -204,7 +224,7 @@ public class SameSchoolActivity extends BaseActivityWithTopBar {
 				});
 		
 		// 快宿滑动时不加载图片
-		sameListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
+		sameListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),
 				false, true));
 	}
 	

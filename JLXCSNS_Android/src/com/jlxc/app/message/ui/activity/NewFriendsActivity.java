@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +37,8 @@ import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 //新好友
 public class NewFriendsActivity extends BaseActivityWithTopBar {
@@ -44,7 +47,9 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 	ListView newFriendListView;
 	//adapter
 	HelloHaAdapter<IMModel> newFriendAdapter;
-	BitmapUtils bitmapUtils;
+//	BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;	
 	
 	@Override
 	public int setLayoutId() {
@@ -55,8 +60,16 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(true)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
+		
 		setBarText("新的好友");
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
+//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		initListView();
 		refreshListView();
 		//发送通知
@@ -70,7 +83,13 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 			protected void convert(HelloHaBaseAdapterHelper helper, final IMModel item) {
 				//头像
 				ImageView imageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
+//				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
+				if (null != item.getAvatarPath() && item.getAvatarPath().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath(), imageView, headImageOptions);					
+				}else {
+					imageView.setImageResource(R.drawable.default_avatar);
+				}
+				
 				//姓名
 				helper.setText(R.id.name_text_view, item.getTitle());
 //				ImageView unreadImageView = helper.getView(R.id.unread_image_view);

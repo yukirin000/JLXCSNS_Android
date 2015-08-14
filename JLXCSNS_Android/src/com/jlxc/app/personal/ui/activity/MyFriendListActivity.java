@@ -45,6 +45,8 @@ import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MyFriendListActivity extends BaseActivityWithTopBar {
 
@@ -59,7 +61,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	// 适配器
 	private HelloHaAdapter<Map<String, String>> friendAdapter;
 	// bitmap的处理
-	private static BitmapUtils bitmapUtils;
+//	private static BitmapUtils bitmapUtils;
 	// 当前的刷新模式
 	private boolean isPullDown = false;
 	// 屏幕的尺寸
@@ -70,6 +72,8 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	private String userID;
 	// 是否是最后一页数据
 	private String lastPage = "0";
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;
 
 	@Override
 	public int setLayoutId() {
@@ -78,6 +82,15 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
+        //显示头像的配置  
+		headImageOptions = new DisplayImageOptions.Builder()  
+                .showImageOnLoading(R.drawable.default_avatar)  
+                .showImageOnFail(R.drawable.default_avatar)  
+                .cacheInMemory(true)  
+                .cacheOnDisk(true)  
+                .bitmapConfig(Bitmap.Config.RGB_565)  
+                .build();
 		
 		setBarText("我的好友");
 		
@@ -102,7 +115,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	 * 初始化
 	 * */
 	private void init() {
-		initBitmapUtils();
+//		initBitmapUtils();
 		// 获取当前的用户id
 		Intent intent = this.getIntent();
 		if (null != intent && intent.hasExtra(INTENT_KEY_USER_ID)) {
@@ -120,13 +133,13 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	/**
 	 * 初始化BitmapUtils
 	 * */
-	private void initBitmapUtils() {
-		bitmapUtils = new BitmapUtils(MyFriendListActivity.this);
-		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
-		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
-	}
+//	private void initBitmapUtils() {
+//		bitmapUtils = new BitmapUtils(MyFriendListActivity.this);
+//		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
+//		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
+//		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+//		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+//	}
 
 	/**
 	 * 数据绑定初始化
@@ -152,10 +165,17 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 //				bitmapUtils
 //						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
 
-				helper.setImageUrl(R.id.iv_my_friend_list_head, bitmapUtils,
-						JLXCConst.ATTACHMENT_ADDR + item.get("head_sub_image"),
-						new HeadBitmapLoadCallBack());
-
+//				helper.setImageUrl(R.id.iv_my_friend_list_head, bitmapUtils,
+//						JLXCConst.ATTACHMENT_ADDR + item.get("head_sub_image"),
+//						new HeadBitmapLoadCallBack());
+				
+				ImageView headImageView = helper.getView(R.id.iv_my_friend_list_head);
+				if (null != item.get("head_sub_image") && item.get("head_sub_image").length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.get("head_sub_image"), headImageView, headImageOptions);					
+				}else {
+					headImageView.setImageResource(R.drawable.default_avatar);
+				}
+				
 				// 绑定昵称与学校
 				helper.setText(R.id.tv_my_friend_name, item.get("name"));
 				helper.setText(R.id.tv_my_friend_school, item.get("school"));
@@ -206,9 +226,6 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 					}
 				});
 
-		// 快速滑动时不加载图片
-		friendListView.setOnScrollListener(new PauseOnScrollListener(
-				bitmapUtils, false, true));
 		friendListView.setAdapter(friendAdapter);
 
 		// 单击
