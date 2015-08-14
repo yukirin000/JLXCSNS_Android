@@ -10,7 +10,7 @@
     android:background="@color/main_white"
     android:paddingTop="10dp">
 	    <com.jlxc.app.base.ui.view.RoundImageView
-	        app:rect_adius="1dip"
+	        app:rect_adius="2dip"
 	        android:id="@+id/head_image_view"
 	        android:layout_width="45dip"
 	        android:layout_height="45dip"

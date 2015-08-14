@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -331,13 +332,17 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		
 		Collections.reverse(mImgs);
 		// 文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
-		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
-				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
-				selectedCount);
 		//设置最多
 		if (isSingle) {
+			//清空
+			GalleyAdapter.clearSelectedImageList();
+			mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
+					R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),0);
 			mAdapter.setMAX_SELECT_COUNT(1);
 		}else {
+			mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
+					R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
+					selectedCount);
 			mAdapter.setMAX_SELECT_COUNT(9);
 		}
 		mGirdView.setAdapter(mAdapter);
@@ -361,4 +366,16 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		}
 	};
 
+	
+	/**
+	 * key点击
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			finish();
+			return true;
+		} else
+			return super.onKeyDown(keyCode, event);
+	}
 }
