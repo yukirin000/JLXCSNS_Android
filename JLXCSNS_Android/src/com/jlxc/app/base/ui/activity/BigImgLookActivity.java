@@ -51,6 +51,8 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 @SuppressLint("NewApi")
 public class BigImgLookActivity extends BaseActivity {
@@ -69,8 +71,6 @@ public class BigImgLookActivity extends BaseActivity {
 	private List<String> imageSubUrlList = new ArrayList<String>();
 	// 所有的imageview
 	private List<TouchImageView> imageViewList = new ArrayList<TouchImageView>();
-	// bitmap
-	private BitmapUtils bitmapUtils;
 	// 回调对象
 	private BitmapLoadCallBack<ImageView> loadImageCallBack;
 	//
@@ -91,6 +91,10 @@ public class BigImgLookActivity extends BaseActivity {
 	private Dialog loadingDialog;
 	// 保存dialog
 	private CustomListViewDialog downDialog;
+	// 加载图片
+	private ImageLoader imgLoader;
+	// 图片配置
+	private DisplayImageOptions options;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,17 +125,19 @@ public class BigImgLookActivity extends BaseActivity {
 
 	@SuppressWarnings("unchecked")
 	private void init() {
-		
-		BitmapManager bmpManager = BitmapManager.getInstance();
-		bitmapUtils = bmpManager.getBitmapUtils(BigImgLookActivity.this, true,
-				true);
-		
-		//创建加载dialog
+		imgLoader = ImageLoader.getInstance();
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(android.R.color.black)
+				.showImageOnFail(android.R.color.darker_gray)
+				.cacheInMemory(true).cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
+
+		// 创建加载dialog
 		loadingDialog = CustomImageLoadingDialog
 				.createLoadingDialog(BigImgLookActivity.this);
 		Intent intent = this.getIntent();
 		if (intent.hasExtra(INTENT_KEY)) {
-			bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 			// 传递的是单张图片url
 			if (intent.hasExtra(INTENT_KEY)) {
 				imageUrlList.add(intent.getStringExtra(INTENT_KEY));
@@ -200,8 +206,7 @@ public class BigImgLookActivity extends BaseActivity {
 		for (int index = 0; index < imageUrlList.size(); index++) {
 			TouchImageView tcView = new TouchImageView(this);
 			tcView.setClickable(true);
-			bitmapUtils.display(tcView, imageSubUrlList.get(index),
-					new DefaultBitmapLoadCallBack<View>());
+			imgLoader.displayImage(imageSubUrlList.get(index), tcView, options);
 			imageViewList.add(tcView);
 			tcView.setOnClickListener(new OnClickListener() {
 
@@ -324,8 +329,8 @@ public class BigImgLookActivity extends BaseActivity {
 		public Object instantiateItem(final ViewGroup container,
 				final int position) {
 			if (position == currentPage) {
-				bitmapUtils.display(mList.get(position),
-						imageUrlList.get(position), loadImageCallBack);
+				imgLoader.displayImage(imageUrlList.get(position),
+						mList.get(position), options);
 			}
 			container.addView(mList.get(position));
 			return mList.get(position);
@@ -350,8 +355,9 @@ public class BigImgLookActivity extends BaseActivity {
 
 		@Override
 		public void onPageSelected(int position) {
-			bitmapUtils.display(imageViewList.get(position),
-					imageUrlList.get(position), loadImageCallBack);
+
+			imgLoader.displayImage(imageUrlList.get(position),
+					imageViewList.get(position), options);
 			tipList.get(currentPage).setBackgroundResource(
 					R.drawable.cursor_point_not_selected);
 			tipList.get(position).setBackgroundResource(
