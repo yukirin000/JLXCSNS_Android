@@ -25,9 +25,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -36,7 +34,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -55,7 +52,6 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -69,7 +65,6 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
 import com.jlxc.app.message.model.IMModel;
-import com.jlxc.app.news.ui.activity.PublishNewsActivity;
 import com.jlxc.app.personal.model.CityModel;
 import com.jlxc.app.personal.model.ProvinceModel;
 import com.jlxc.app.personal.ui.activity.MyCardActivity;
@@ -87,6 +82,8 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 @SuppressLint("NewApi") public class PersonalFragment extends BaseFragment implements View.OnClickListener {
 
@@ -169,12 +166,11 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 
 	// 用户模型
 	private UserModel userModel;
-	// bitmapUtils的引用
-	private BitmapUtils bitmapUtils;
-	// bitmapUtils的引用
-	private BitmapUtils backBitmapUtils;	
-	// 无缓存的
-	// private BitmapUtils noCacheBitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;
+	//新图片缓存工具 北京
+	DisplayImageOptions backImageOptions;	
+	
 	// 我的相片adapter
 	private HelloHaAdapter<String> myImageAdapter;
 	// 最近来访adapter
@@ -448,6 +444,23 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 	@Override
 	public void setUpViews(View rootView) {
 
+        //显示头像的配置  
+		headImageOptions = new DisplayImageOptions.Builder()  
+                .showImageOnLoading(R.drawable.default_avatar)  
+                .showImageOnFail(R.drawable.default_avatar)  
+                .cacheInMemory(true)  
+                .cacheOnDisk(true)  
+                .bitmapConfig(Bitmap.Config.RGB_565)  
+                .build();
+		//背景
+		backImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_back_image)  
+        .showImageOnFail(R.drawable.default_back_image)  
+        .cacheInMemory(true)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();		
+		
 		// 初始化adapter
 		myImageAdapter = initAdapter(R.layout.my_image_adapter);
 		visitAdapter = initAdapter(R.layout.attrament_image);
@@ -455,9 +468,13 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 				R.layout.attrament_image) {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, IMModel item) {
+				
 				ImageView imageView = helper.getView(R.id.image_attrament);
-				bitmapUtils.display(imageView,
-						JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath());
+				if (null != item.getAvatarPath() && item.getAvatarPath().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath(), imageView, headImageOptions);					
+				}else {
+					imageView.setImageResource(R.drawable.default_avatar);
+				}
 			}
 		};
 
@@ -497,13 +514,14 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 		} else {
 			signTextView.setText(userModel.getSign());
 		}
-
-		// 设置照片和背景图
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-				getActivity(), R.drawable.default_avatar, true, true);
-		// 背景 2015-07-02/191435808476.png
-		backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-				getActivity(), R.drawable.default_back_image, true, true);		
+		
+          
+		// 设置照片和背景图 取消
+//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+//				getActivity(), R.drawable.default_avatar, true, true);
+//		// 背景 2015-07-02/191435808476.png
+//		backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+//				getActivity(), R.drawable.default_back_image, true, true);		
 		
 		// 无缓存bitmap
 		// noCacheBitmapUtils =
@@ -550,10 +568,22 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 		// TODO Auto-generated method stub
 		super.onResume();
 		// 头像 2015-07-07/01436273216_sub.jpg
-		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
-				+ userModel.getHead_image());
-		backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
-				+ userModel.getBackground_image());
+//		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
+//				+ userModel.getHead_image());
+//		backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
+//				+ userModel.getBackground_image());
+		if (null != userModel.getHead_image() && userModel.getHead_image().length() > 0) {
+			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + userModel.getHead_image(), headImageView, headImageOptions);			
+		}else {
+			headImageView.setImageResource(R.drawable.default_avatar);
+		}
+		
+		if (null != userModel.getBackground_image() && userModel.getBackground_image().length() > 0) {
+			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + userModel.getBackground_image(), backImageView, backImageOptions);			
+		}else {
+			backImageView.setImageResource(R.drawable.default_back_image);
+		}
+		
 		// 姓名
 		if (null == userModel.getName() || "".equals(userModel.getName())) {
 			nameTextView.setText("暂无");
@@ -714,8 +744,9 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 				if (data != null) {
 
 					if (null != tmpImageName) {
-						bitmapUtils.display(headImageView,
-								FileUtil.HEAD_PIC_PATH + tmpImageName);
+//						bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH + tmpImageName);
+						ImageLoader.getInstance().displayImage(FileUtil.HEAD_PIC_PATH + tmpImageName, headImageView, headImageOptions);
+						
 						// 删除临时文件
 						File file = new File(FileUtil.TEMP_PATH + tmpImageName);
 						if (file.exists()) {
@@ -1027,8 +1058,12 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
 				ImageView imageView = helper.getView(R.id.image_attrament);
-				bitmapUtils
-						.display(imageView, JLXCConst.ATTACHMENT_ADDR + item);
+//				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR + item);
+				if (null != item && item.length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item, imageView, headImageOptions);					
+				}else {
+					imageView.setImageResource(R.drawable.default_avatar);
+				}
 			}
 		};
 		return adapter;
@@ -1335,10 +1370,11 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 										"subimage");
 								userModel.setHead_image(serverPath);
 								userModel.setHead_sub_image(subPath);
-								bitmapUtils.display(headImageView,
-										FileUtil.HEAD_PIC_PATH + tmpImageName);
-								bitmapUtils.display(headImageView,
-										JLXCConst.ATTACHMENT_ADDR + serverPath);
+//								bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH + tmpImageName);
+//								bitmapUtils.display(headImageView,JLXCConst.ATTACHMENT_ADDR + serverPath);
+								ImageLoader.getInstance().displayImage(FileUtil.HEAD_PIC_PATH + tmpImageName, headImageView, headImageOptions);								
+								ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + serverPath, headImageView, headImageOptions);
+								
 								// 刷新信息
 								UserInfo userInfo = new UserInfo(JLXCConst.JLXC
 										+ userModel.getUid(), userModel
@@ -1349,10 +1385,13 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 										userInfo);
 							} else {
 								userModel.setBackground_image(serverPath);
-								bitmapUtils.display(backImageView,
-										FileUtil.BIG_IMAGE_PATH + tmpImageName);
-								bitmapUtils.display(backImageView,
-										JLXCConst.ATTACHMENT_ADDR + serverPath);
+//								bitmapUtils.display(backImageView,
+//										FileUtil.BIG_IMAGE_PATH + tmpImageName);
+//								bitmapUtils.display(backImageView,
+//										JLXCConst.ATTACHMENT_ADDR + serverPath);
+								ImageLoader.getInstance().displayImage(FileUtil.BIG_IMAGE_PATH + tmpImageName, backImageView, backImageOptions);								
+								ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + serverPath, backImageView, backImageOptions);
+								
 							}
 							ToastUtil.show(getActivity(), jsonResponse
 									.getString(JLXCConst.HTTP_MESSAGE));

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +37,8 @@ import com.jlxc.app.news.receiver.NewMessageReceiver;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class NotifyNewsFragment extends BaseFragment {
 
@@ -45,7 +48,9 @@ public class NotifyNewsFragment extends BaseFragment {
 	//adapter
 	HelloHaAdapter<NewsPushModel> newsAdapter;
 	HelloHaAdapter<IMModel> imAdapter;
-	BitmapUtils bitmapUtils;
+//	BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;	
 	//头部layout
 	LinearLayout headLayout;
 	//顶部新朋友头像
@@ -66,8 +71,14 @@ public class NotifyNewsFragment extends BaseFragment {
 
 	@Override
 	public void setUpViews(View rootView) {
-		
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.default_avatar, true, true);
+		headImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnFail(R.drawable.default_avatar)  
+        .cacheInMemory(true)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();
+//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(), R.drawable.default_avatar, true, true);
 		//注册通知
 		registerNotify();
 //		//初始化list
@@ -109,7 +120,11 @@ public class NotifyNewsFragment extends BaseFragment {
 			protected void convert(HelloHaBaseAdapterHelper helper, IMModel item) {
 				//图片显示
 				ImageView imageView = helper.getView(R.id.image_attrament);
-				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
+				if (null != item.getAvatarPath() && item.getAvatarPath().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath(), imageView, headImageOptions);					
+				}else {
+					imageView.setImageResource(R.drawable.default_avatar);
+				}
 			}
 		};
 		newFriendGridView.setAdapter(imAdapter);
@@ -138,14 +153,25 @@ public class NotifyNewsFragment extends BaseFragment {
 				}
 				//头像
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+headString);					
+//				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+headString);	
+				if (null != headString && headString.length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + headString, headImageView, headImageOptions);					
+				}else {
+					headImageView.setImageResource(R.drawable.default_avatar);
+				}
+				
 				//有图片显示图片 没图片显示内容
 				ImageView newsImageView = helper.getView(R.id.news_image_view);
 				TextView newsTextView = helper.getView(R.id.news_text_view);
 				if (null != item.getNews_image() && !"".equals(item.getNews_image())) {
 					newsImageView.setVisibility(View.VISIBLE);
 					newsTextView.setVisibility(View.GONE);
-					bitmapUtils.display(newsImageView, JLXCConst.ATTACHMENT_ADDR+item.getNews_image());
+//					bitmapUtils.display(newsImageView, JLXCConst.ATTACHMENT_ADDR+item.getNews_image());
+					if (null != item.getNews_image() && item.getNews_image().length() > 0) {
+						ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getNews_image(), newsImageView, headImageOptions);					
+					}else {
+						newsImageView.setImageResource(R.drawable.default_avatar);
+					}
 				}else {
 					newsImageView.setVisibility(View.GONE);
 					newsTextView.setVisibility(View.VISIBLE);

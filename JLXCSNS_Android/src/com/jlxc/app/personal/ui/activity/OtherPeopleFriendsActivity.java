@@ -4,8 +4,6 @@ import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -31,9 +29,11 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.personal.model.OtherPeopleFriendModel;
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 
@@ -51,7 +51,9 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 	private boolean isPullDowm = false;
 	//是否是最后一页
 	private boolean isLast = false; 
-	private BitmapUtils bitmapUtils;
+//	private BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;
 	//uid
 	private int uid;
 	//当前的页数
@@ -65,16 +67,26 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		
+        //显示头像的配置  
+		headImageOptions = new DisplayImageOptions.Builder()  
+                .showImageOnLoading(R.drawable.default_avatar)  
+                .showImageOnFail(R.drawable.default_avatar)  
+                .cacheInMemory(true)  
+                .cacheOnDisk(true)  
+                .bitmapConfig(Bitmap.Config.RGB_565)  
+                .build();
+		
 		// TODO Auto-generated method stub
 		setBarText("TA的好友");
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		
-		bitmapUtils = new BitmapUtils(this);
-		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
-		bitmapUtils.configMemoryCacheEnabled(true);
-		bitmapUtils.configDiskCacheEnabled(true);
-		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+//		bitmapUtils = new BitmapUtils(this);
+//		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.ARGB_8888);
+//		bitmapUtils.configMemoryCacheEnabled(true);
+//		bitmapUtils.configDiskCacheEnabled(true);
+//		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 		initListViewSet();
 		getFriendsData();
 	}
@@ -97,7 +109,13 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 				helper.setText(R.id.name_text_view, item.getName());
 				helper.setText(R.id.school_text_view, item.getSchool());
 				ImageView headImageView = helper.getView(R.id.head_image_view);
-				bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+item.getHead_sub_image());
+				
+				if (null != item.getHead_sub_image() && item.getHead_sub_image().length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getHead_sub_image(), headImageView, headImageOptions);					
+				}else {
+					headImageView.setImageResource(R.drawable.default_avatar);
+				}
+				
 				
 				LinearLayout linearLayout = (LinearLayout) helper.getView();
 				//点击事件
@@ -174,7 +192,7 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 				});
 		
 		// 快宿滑动时不加载图片
-		friendListView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils,
+		friendListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),
 				false, true));
 	}
 	

@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -35,7 +32,6 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -46,11 +42,12 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.message.model.IMModel;
-import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class OtherPersonalActivity extends BaseActivity{
 
@@ -136,7 +133,12 @@ public class OtherPersonalActivity extends BaseActivity{
 	
 	
 	//单例bitmapUtils的引用
-	BitmapUtils bitmapUtils;
+//	BitmapUtils bitmapUtils;
+	//新图片缓存工具 头像
+	DisplayImageOptions headImageOptions;
+	//新图片缓存工具 北京
+	DisplayImageOptions backImageOptions;
+	
 	//TA的相片adapter
 	private HelloHaAdapter<String> hisImageAdapter;
 	//TA的来访adapter
@@ -213,6 +215,25 @@ public class OtherPersonalActivity extends BaseActivity{
 
 	@Override
 	protected void setUpView() {
+        //显示头像的配置  
+		headImageOptions = new DisplayImageOptions.Builder()  
+                .showImageOnLoading(R.drawable.default_avatar)  
+                .showImageForEmptyUri(R.drawable.default_avatar)
+                .showImageOnFail(R.drawable.default_avatar)  
+                .cacheInMemory(false)  
+                .cacheOnDisk(true)  
+                .bitmapConfig(Bitmap.Config.RGB_565)  
+                .build();
+		//背景
+		backImageOptions = new DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_back_image)
+        .showImageForEmptyUri(R.drawable.default_back_image)
+        .showImageOnFail(R.drawable.default_back_image)  
+        .cacheInMemory(false)  
+        .cacheOnDisk(true)  
+        .bitmapConfig(Bitmap.Config.RGB_565)  
+        .build();		
+		
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		//初始化adapter
@@ -224,9 +245,6 @@ public class OtherPersonalActivity extends BaseActivity{
 		//不能点击
 		hisImageGridView.setEnabled(false);
 		hisFriendsGridView.setEnabled(false);
-		
-		//设置照片和背景图
-		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		
 		//获取数据
 		getPersonalInformation();
@@ -244,7 +262,11 @@ public class OtherPersonalActivity extends BaseActivity{
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
 				ImageView imageView = helper.getView(R.id.image_attrament);
-				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item);
+				if (null != item && item.length() > 0) {
+					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item, imageView, headImageOptions);					
+				}else {
+					imageView.setImageResource(R.drawable.default_avatar);
+				}
 			}
 		};
 		return adapter;
@@ -329,11 +351,20 @@ public class OtherPersonalActivity extends BaseActivity{
 		}else {
 			cityTextView.setText(otherUserModel.getCity());
 		}	
-		//头像
-		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_sub_image());
-		//背景
-		BitmapUtils backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_back_image, true, true);
-		backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getBackground_image());
+		
+		if (null != otherUserModel.getHead_sub_image() && otherUserModel.getHead_sub_image().length() > 0) {
+			//头像
+			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + otherUserModel.getHead_sub_image(), headImageView, headImageOptions);			
+		}else {
+			headImageView.setImageResource(R.drawable.default_avatar);
+		}
+		
+		if (null != otherUserModel.getBackground_image() && otherUserModel.getBackground_image().length() > 0) {
+			//背景
+			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + otherUserModel.getBackground_image(), backImageView, backImageOptions);			
+		}else {
+			backImageView.setImageResource(R.drawable.default_back_image);
+		}
 		
 		//他的朋友
 		JSONArray friendArray = jsonObject.getJSONArray("friend_list");
