@@ -416,13 +416,10 @@ import android.widget.ImageView;
 				bos.flush();
 				bos.close();
 				return deleteFile(TEMP_PATH + fileName);
-			} catch (FileNotFoundException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
+			} 
 		}
 	}
 	
@@ -498,13 +495,10 @@ import android.widget.ImageView;
 			bos.flush();
 			bos.close();
 			return true;
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+		} 
 	}
 	
 	
@@ -514,7 +508,7 @@ import android.widget.ImageView;
      * @param bitmap  
      * @return Bitmap  
      */    
-    public static Bitmap rotaingImageView(int angle , Bitmap bitmap) {    
+    public static Bitmap rotaingImageView (int angle , Bitmap bitmap) throws Exception {    
         //旋转图片 动作     
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);    
