@@ -413,8 +413,8 @@ public class CampusFragment extends BaseFragment {
 		MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
 		bodyImages.imageDataSet(pictureList);
 		// 快速滑动时不加载图片
-		bodyImages.loadImageOnFastSlide(campusListView.getRefreshableView(),
-				false);
+		bodyImages.loadImageOnFastSlide(campusListView,
+				true);
 		bodyImages.setJumpListener(new JumpCallBack() {
 
 			@Override
@@ -444,8 +444,9 @@ public class CampusFragment extends BaseFragment {
 					bodyData.getNewsContent());
 			helper.setVisible(R.id.txt_campus_news_content, true);
 			TextView contentView = helper.getView(R.id.txt_campus_news_content);
-			//customTvHandel.setTextContent(contentView);
 			contentView.setText(bodyData.getNewsContent());
+			//customTvHandel.setTextContent(contentView,
+			//		bodyData.getNewsContent());
 			// // 长按复制
 			contentView.setOnLongClickListener(TextViewHandel
 					.getLongClickListener(getActivity(),

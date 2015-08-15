@@ -331,8 +331,8 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_my_newslist_images);
 		bodyImages.imageDataSet(pictureList);
-		bodyImages
-				.loadImageOnFastSlide(newsListView.getRefreshableView(), true);
+		//快速滑动时不加载
+		bodyImages.loadImageOnFastSlide(newsListView, true);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
 

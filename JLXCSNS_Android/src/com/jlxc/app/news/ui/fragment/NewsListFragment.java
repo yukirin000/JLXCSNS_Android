@@ -275,6 +275,26 @@ public class NewsListFragment extends BaseFragment {
 		});
 
 		/**
+		 * 设置底部自动刷新
+		 * */
+		newsListView
+				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+					@Override
+					public void onLastItemVisible() {
+						LogUtils.i("------------------");
+						if (!isRequestingData) {
+							isRequestingData = true;
+							newsListView.setMode(Mode.PULL_FROM_END);
+							newsListView.setRefreshing(true);
+							isPullDowm = false;
+							getNewsData(UserManager.getInstance().getUser()
+									.getUid(), pageIndex, latestTimesTamp);
+						}
+					}
+				});
+
+		/**
 		 * adapter的设置
 		 * */
 		newsAdapter = new HelloHaAdapter<ItemModel>(mContext, itemDataList,
@@ -306,24 +326,7 @@ public class NewsListFragment extends BaseFragment {
 				}
 			}
 		};
-		/**
-		 * 设置底部自动刷新
-		 * */
-		newsListView
-				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 
-					@Override
-					public void onLastItemVisible() {
-						if (!isRequestingData) {
-							isRequestingData = true;
-							newsListView.setMode(Mode.PULL_FROM_END);
-							newsListView.setRefreshing(true);
-							isPullDowm = false;
-							getNewsData(UserManager.getInstance().getUser()
-									.getUid(), pageIndex, latestTimesTamp);
-						}
-					}
-				});
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		newsListView.setAdapter(newsAdapter);
@@ -425,8 +428,8 @@ public class NewsListFragment extends BaseFragment {
 		MultiImageView bodyImages = helper.getView(R.id.miv_main_news_images);
 		bodyImages.imageDataSet(pictureList);
 		// 快速滑动时不加载图片
-		bodyImages.loadImageOnFastSlide(newsListView.getRefreshableView(),
-				false);
+		bodyImages.loadImageOnFastSlide(newsListView,
+				true);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
 

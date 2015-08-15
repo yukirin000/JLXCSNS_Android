@@ -17,11 +17,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.text.Html;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -39,7 +41,6 @@ public class TextViewHandel {
 
 	private static Context mContext;
 	private static String mContent;
-	private long mLastActionDownTime = -1;
 
 	public TextViewHandel(Context context, String str) {
 		mContext = context;
@@ -109,84 +110,30 @@ public class TextViewHandel {
 		};
 	}
 
-	public void setTextContent(TextView tv) {
-		Spannable spannable = new SpannableString(mContent);
-		Pattern b = Pattern
-				.compile("((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}\\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnprwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdeghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eosuw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agksyz]|v[aceginu]|w[fs]|(?:xn\\-\\-0zwm56d|xn\\-\\-11b5bs3a9aj6g|xn\\-\\-80akhbyknj4f|xn\\-\\-9t4b11yi5a|xn\\-\\-deba0ad|xn\\-\\-g6w251d|xn\\-\\-hgbk6aj7f53bba|xn\\-\\-hlcj6aya9esc7a|xn\\-\\-jxalpdlp|xn\\-\\-kgbechtv|xn\\-\\-zckzah)|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\\:\\d{1,5})?)(\\/(?:(?:[a-zA-Z0-9 -퟿豈-﷏ﷰ-￯\\;\\/\\?\\:\\@\\&\\=\\#\\~\\-\\.\\+\\!\\*\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?");
-		tv.setText(spannable);
-		Linkify.addLinks(tv, b, "http://");
-		tv.setLinksClickable(true);
-
-		tv.setMovementMethod(LinkMovementMethod.getInstance());
-		CharSequence text = tv.getText();
-		if (text instanceof Spannable) {
-			int end = text.length();
-			Spannable sp = (Spannable) tv.getText();
-			URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
-			SpannableStringBuilder style = new SpannableStringBuilder(text);
-			style.clearSpans();
-			for (URLSpan url : urls) {
-				NoLineClickSpan myURLSpan = new NoLineClickSpan(url.getURL());
-				style.setSpan(myURLSpan, sp.getSpanStart(url),
-						sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			}
-			tv.setText(style);
+	public void setTextContent(TextView tv, final String content) {
+		SpannableString spStr = new SpannableString(content);
+		int end = content.length();
+		URLSpan[] urls = spStr.getSpans(0, end, URLSpan.class);
+		// 循环把链接发过去
+		for (URLSpan url : urls) {
+			NoLineClickSpan myURLSpan = new NoLineClickSpan(url.getURL());
+			spStr.setSpan(myURLSpan, spStr.getSpanStart(url),
+					spStr.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 		}
+		tv.append(spStr);
+		tv.setMovementMethod(LinkMovementMethod.getInstance());
 
+		//
 		tv.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
-				CharSequence text = mContent;
+				CharSequence text = content;
 				if (text != null && text instanceof Spannable) {
-					handleLinkMovementMethod((TextView) view, (Spannable) text,
-							event);
+					return true;
 				}
 				return false;
 			}
 		});
-	}
-
-	private boolean handleLinkMovementMethod(TextView widget, Spannable buffer,
-			MotionEvent event) {
-		int action = event.getAction();
-		if (action == MotionEvent.ACTION_UP
-				|| action == MotionEvent.ACTION_DOWN) {
-			int x = (int) event.getX();
-			int y = (int) event.getY();
-
-			x -= widget.getTotalPaddingLeft();
-			y -= widget.getTotalPaddingTop();
-
-			x += widget.getScrollX();
-			y += widget.getScrollY();
-
-			Layout layout = widget.getLayout();
-			int line = layout.getLineForVertical(y);
-			int off = layout.getOffsetForHorizontal(line, x);
-
-			ClickableSpan[] link = buffer.getSpans(off, off,
-					ClickableSpan.class);
-
-			if (link.length != 0) {
-				if (action == MotionEvent.ACTION_UP) {
-					long actionUpTime = System.currentTimeMillis();
-					if (actionUpTime - mLastActionDownTime > ViewConfiguration
-							.getLongPressTimeout()) {
-						// 长按事件，取消LinkMovementMethod处理，即不处理ClickableSpan点击事件
-						return false;
-					}
-					link[0].onClick(widget);
-					Selection.removeSelection(buffer);
-				} else if (action == MotionEvent.ACTION_DOWN) {
-					Selection.setSelection(buffer,
-							buffer.getSpanStart(link[0]),
-							buffer.getSpanEnd(link[0]));
-					mLastActionDownTime = System.currentTimeMillis();
-				}
-			}
-		}
-
-		return false;
 	}
 }

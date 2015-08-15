@@ -712,8 +712,15 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				TimeHandle.getShowTimeFormat(comment.getAddDate()));
 		helper.setText(R.id.txt_news_detail_comment_name,
 				comment.getPublishName());
-		helper.setText(R.id.txt_news_detail_comment_content,
-				comment.getCommentContent());
+		// 内容控件
+		TextView contentView = helper
+				.getView(R.id.txt_news_detail_comment_content);
+		contentView.setText(comment.getCommentContent());
+		// 设置长按复制
+		helper.setOnLongClickListener(
+				R.id.layout_news_detail_comment_root_view, TextViewHandel
+						.getLongClickListener(NewsDetailActivity.this,
+								comment.getCommentContent()));
 
 		// 设置评论item的点击事件
 		final int postion = helper.getPosition();
@@ -741,8 +748,13 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setText(R.id.txt_sub_comment_by_name,
 				subCmtModel.getPublishName());
 		helper.setText(R.id.txt_by_sub_comment_name, subCmtModel.getReplyName());
-		helper.setText(R.id.txt_sub_comment_content,
-				subCmtModel.getCommentContent());
+		// 内容控件
+		TextView contentView = helper.getView(R.id.txt_sub_comment_content);
+		contentView.setText(subCmtModel.getCommentContent());
+		// 设置长按复制
+		helper.setOnLongClickListener(R.id.subcomment_root_view, TextViewHandel
+				.getLongClickListener(NewsDetailActivity.this,
+						subCmtModel.getCommentContent()));
 
 		// 设置评论item的点击事件
 		final int postion = helper.getPosition();

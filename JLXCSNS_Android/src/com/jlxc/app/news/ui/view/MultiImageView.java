@@ -15,12 +15,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.news.model.ImageModel;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 public class MultiImageView extends RelativeLayout {
@@ -45,9 +49,9 @@ public class MultiImageView extends RelativeLayout {
 	private JumpCallBack jumpInterface;
 	// 是否是大图
 	private boolean isLargeSize = true;
-	//加载图片
+	// 加载图片
 	private ImageLoader imgLoader;
-	//图片配置
+	// 图片配置
 	private DisplayImageOptions options;
 
 	public MultiImageView(Context context) {
@@ -78,8 +82,9 @@ public class MultiImageView extends RelativeLayout {
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
+				.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 				.showImageOnLoading(android.R.color.darker_gray)
-				.showImageOnFail(android.R.color.darker_gray)
+				.showImageOnFail(R.drawable.image_download_fail)
 				.cacheInMemory(true).cacheOnDisk(true)
 				.bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
@@ -87,9 +92,10 @@ public class MultiImageView extends RelativeLayout {
 	/**
 	 * 快速滑动时是否加载图片
 	 * */
-	public void loadImageOnFastSlide(ListView listView, boolean isLoad) {
-		listView.setOnScrollListener(new PauseOnScrollListener(imgLoader,
-				false, isLoad));
+	public void loadImageOnFastSlide(PullToRefreshListView listView,
+			boolean isLoad) {
+		listView.setOnScrollListener(new PauseOnScrollListener(imgLoader, true,
+				isLoad));
 	}
 
 	/**
@@ -211,7 +217,7 @@ public class MultiImageView extends RelativeLayout {
 			}
 			singleImageView.setLayoutParams(new LayoutParams(imageWidth,
 					imagHeight));
-			
+
 			imgLoader.displayImage(pictureList.get(0).getURL(),
 					singleImageView, options);
 			// 隐藏其余的imageview

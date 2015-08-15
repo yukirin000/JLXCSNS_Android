@@ -37,7 +37,6 @@
             android:id="@+id/txt_my_news_list_content"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:autoLink="web"
             android:text="内容"
             android:textColor="@color/main_deep_black"
             android:textIsSelectable="true"
