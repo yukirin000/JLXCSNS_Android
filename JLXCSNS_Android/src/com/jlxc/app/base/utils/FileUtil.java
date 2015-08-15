@@ -400,13 +400,17 @@ import android.widget.ImageView;
 				bmp = rotaingImageView(degree, bmp);
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
 				//小于150k
-				if (getBitmapSize(bmp) < 150*1024) {
-					bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
-					LogUtils.i("90 "+getBitmapSize(bmp), 1);
-				}else {
+				if (getBitmapSize(bmp) < 1024*1024) {
+					bmp.compress(Bitmap.CompressFormat.JPEG, 95, bos);
+//					LogUtils.i("90 "+getBitmapSize(bmp), 1);
+				}else if (getBitmapSize(bmp) < 2048*1024) {
+					bmp.compress(Bitmap.CompressFormat.JPEG, 75, bos);
+//					LogUtils.i("70 "+getBitmapSize(bmp), 1);
+				} else {
 					bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
-					LogUtils.i("50 "+getBitmapSize(bmp), 1);
+//					LogUtils.i("50 "+getBitmapSize(bmp), 1);
 				}
+
 				bmp.recycle();
 				bos.flush();
 				bos.close();
@@ -478,13 +482,16 @@ import android.widget.ImageView;
 			bmp = rotaingImageView(degree, bmp); 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
 			//小于150k
-			if (getBitmapSize(bmp) < 150*1024) {
-				bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
-				LogUtils.i("90 "+getBitmapSize(bmp), 1);
-			}else {
+			if (getBitmapSize(bmp) < 1024*1024) {
+				bmp.compress(Bitmap.CompressFormat.JPEG, 95, bos);
+//				LogUtils.i("90 "+getBitmapSize(bmp), 1);
+			}else if (getBitmapSize(bmp) < 2560*1024) {
+				bmp.compress(Bitmap.CompressFormat.JPEG, 75, bos);
+//				LogUtils.i("70 "+getBitmapSize(bmp), 1);
+			} else {
 				bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
-				LogUtils.i("50 "+getBitmapSize(bmp), 1);
-			} 
+//				LogUtils.i("50 "+getBitmapSize(bmp), 1);
+			}
 
 			bmp.recycle();
 			bos.flush();
