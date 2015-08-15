@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -66,6 +67,9 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	// 动态listview
 	@ViewInject(R.id.listview_my_news_list)
 	private PullToRefreshListView newsListView;
+	// 动态listview
+	@ViewInject(R.id.tv_my_news_prompt)
+	private TextView prompTextView;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item类型数据
@@ -331,7 +335,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		MultiImageView bodyImages = helper.getView(R.id.miv_my_newslist_images);
 		bodyImages.imageDataSet(pictureList);
-		//快速滑动时不加载
+		// 快速滑动时不加载
 		bodyImages.loadImageOnFastSlide(newsListView, true);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
@@ -544,7 +548,15 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			newsList.addAll(newDatas);
 			newsAdapter.addAll(NewsToItemData.newsToItem(newDatas));
 		}
-		dataList.clear();
+		if (isPullDowm) {
+			dataList.clear();
+		}
+		if (newsAdapter.getCount() <= 0) {
+			prompTextView.setVisibility(View.VISIBLE);
+		}else {
+			prompTextView.setVisibility(View.GONE);
+		}
+
 	}
 
 	/**
