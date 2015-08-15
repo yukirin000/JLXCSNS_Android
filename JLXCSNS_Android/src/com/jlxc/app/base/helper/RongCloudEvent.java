@@ -12,6 +12,7 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.login.ui.activity.LaunchActivity;
 import com.jlxc.app.login.ui.activity.LoginActivity;
+import com.jlxc.app.message.helper.PhotoCollectionsProvider;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.activity.ConversationActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
@@ -143,7 +144,7 @@ public final class RongCloudEvent implements RongIMClient.OnReceiveMessageListen
 //        RongIM.getInstance().getRongIMClient().setConnectionStatusListener(this);//设置连接状态监听器。
         //扩展功能自定义
         InputProvider.ExtendProvider[] provider = {
-                new ImageInputProvider(RongContext.getInstance()),//图片
+        		new PhotoCollectionsProvider(RongContext.getInstance()),//图片
                 new CameraInputProvider(RongContext.getInstance()),//相机
         };
         RongIM.resetInputExtensionProvider(Conversation.ConversationType.PRIVATE, provider);

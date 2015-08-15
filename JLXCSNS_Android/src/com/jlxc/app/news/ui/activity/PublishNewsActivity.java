@@ -707,6 +707,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 				long interval = System.currentTimeMillis() / 1000;
 				// 循环处理图片
 				for (String fileRealPath : resultList) {
+					LogUtils.i(fileRealPath, 1);
 					// 用户id+时间戳
 					String fileName = UserManager.getInstance().getUser()
 							.getUid()

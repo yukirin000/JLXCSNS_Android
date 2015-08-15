@@ -16,6 +16,7 @@ import java.net.URL;
 import com.amap.api.mapcore2d.da;
 import com.jlxc.app.base.app.JLXCApplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
@@ -40,7 +42,7 @@ import android.widget.ImageView;
  * @author Administrator
  * 
  */
-public class FileUtil {
+@SuppressLint("NewApi") public class FileUtil {
 
 	public static boolean flag;
 	public static final String ROOT_PATH = getExternalStorageDirectory();
@@ -391,14 +393,20 @@ public class FileUtil {
 //				options.inSampleSize = 4;
 				options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 				options.inJustDecodeBounds = false;
-				Log.i("PersonalFragment", tempFile.getAbsolutePath());
 //				Bitmap bmp = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
 				byte[] data = GetLocalOrNetBitmap(tempFile.getAbsolutePath());
 				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
 				int degree = readPictureDegree(tempFile.getAbsolutePath());
 				bmp = rotaingImageView(degree, bmp);
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
-				bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
+				//小于150k
+				if (getBitmapSize(bmp) < 150*1024) {
+					bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+					LogUtils.i("90 "+getBitmapSize(bmp), 1);
+				}else {
+					bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
+					LogUtils.i("50 "+getBitmapSize(bmp), 1);
+				}
 				bmp.recycle();
 				bos.flush();
 				bos.close();
@@ -469,7 +477,15 @@ public class FileUtil {
 			int degree = readPictureDegree(file.getAbsolutePath());
 			bmp = rotaingImageView(degree, bmp); 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(BIG_IMAGE_PATH + fileName));
-			bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
+			//小于150k
+			if (getBitmapSize(bmp) < 150*1024) {
+				bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+				LogUtils.i("90 "+getBitmapSize(bmp), 1);
+			}else {
+				bmp.compress(Bitmap.CompressFormat.JPEG, 55, bos);
+				LogUtils.i("50 "+getBitmapSize(bmp), 1);
+			} 
+
 			bmp.recycle();
 			bos.flush();
 			bos.close();
@@ -984,5 +1000,15 @@ public class FileUtil {
 		BitmapDrawable bd = new BitmapDrawable(bitmap);
 		Drawable d = (Drawable) bd;
 		return d;
+	}
+	
+	public static int getBitmapSize(Bitmap bitmap){
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){    //API 19
+	        return bitmap.getAllocationByteCount();
+	    }
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1){//API 12
+	        return bitmap.getByteCount();
+	    }
+	    return bitmap.getRowBytes() * bitmap.getHeight();                //earlier version
 	}
 }

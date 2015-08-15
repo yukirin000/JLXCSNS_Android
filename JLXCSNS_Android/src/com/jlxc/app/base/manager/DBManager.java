@@ -67,7 +67,9 @@ public class DBManager {
 		try {
 			SQLiteDatabase db = helper.getWritableDatabase();
 			db.execSQL(sql);
-			db.close();	
+			//不关闭了 由于特殊的多线程环境 excute有时和query同时进行 导致db关闭崩溃
+			//因为DB操作频率以及数据量 都不是很大 所以不关闭不会太影响效率
+//			db.close();	
 			return 1;
 		} catch (Exception e) {
 		}

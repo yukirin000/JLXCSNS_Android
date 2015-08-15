@@ -50,7 +50,7 @@ public class TimeHandle {
 			
 			int year = calendar.get(Calendar.YEAR); // 获取年;
 			int month = calendar.get(Calendar.MONTH); // 获取月;
-			int day = calendar.get(Calendar.DATE); // 获取日;
+			int day = calendar.get(Calendar.DATE)+1; // 获取日;
 			int hour = calendar.get(Calendar.HOUR_OF_DAY); // 获取小时;
 			int min = calendar.get(Calendar.MINUTE); // 获取分钟;
 			
