@@ -70,6 +70,9 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	// 动态listview
 	@ViewInject(R.id.tv_my_news_prompt)
 	private TextView prompTextView;
+	//时光轴
+	@ViewInject(R.id.iv_time_line_backgroung)
+	private View timeLine;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item类型数据
@@ -553,8 +556,10 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		}
 		if (newsAdapter.getCount() <= 0) {
 			prompTextView.setVisibility(View.VISIBLE);
+			timeLine.setVisibility(View.GONE);
 		}else {
 			prompTextView.setVisibility(View.GONE);
+			timeLine.setVisibility(View.VISIBLE);
 		}
 
 	}
