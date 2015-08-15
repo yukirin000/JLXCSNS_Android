@@ -175,7 +175,7 @@ public class OtherPersonalActivity extends BaseActivity{
 		case R.id.his_image_layout:
 			//图片点击
 			Intent myImageIntent = new Intent(this, MyNewsListActivity.class);
-			myImageIntent.putExtra(MyNewsListActivity.INTNET_KEY_UID, uid);
+			myImageIntent.putExtra(MyNewsListActivity.INTNET_KEY_UID, uid+"");
 			startActivityWithRight(myImageIntent);
 			break;
 		case R.id.his_friend_layout:
@@ -200,7 +200,7 @@ public class OtherPersonalActivity extends BaseActivity{
 			break;
 		case R.id.add_friend_button:
 			//添加好友
-			addFriend();
+			addFriendConfirm();
 			break;
 		default:
 			break;
@@ -461,32 +461,32 @@ public class OtherPersonalActivity extends BaseActivity{
 	}
 	
 	//添加好友
-	private void addFriend() {
-		
-//		new AlertDialog.Builder(this).setTitle("确定要添加好友吗？").setNegativeButton("取消", null)
-//						.setPositiveButton("确定", new OnClickListener() {
-//							@Override
-//							public void onClick(DialogInterface dialog, int which) {
-//								addFriendConfirm();
-//							}
-//						}).show();
-		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-				this, "确定要添加好友吗？", "确定", "取消");
-		confirmDialog.show();
-		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
-					@Override
-					public void doConfirm() {
-						addFriendConfirm();
-						confirmDialog.dismiss();
-					}
-
-					@Override
-					public void doCancel() {
-						confirmDialog.dismiss();
-					}
-				});			
-		
-	}
+//	private void addFriend() {
+//		
+////		new AlertDialog.Builder(this).setTitle("确定要添加好友吗？").setNegativeButton("取消", null)
+////						.setPositiveButton("确定", new OnClickListener() {
+////							@Override
+////							public void onClick(DialogInterface dialog, int which) {
+////								addFriendConfirm();
+////							}
+////						}).show();
+//		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+//				this, "确定要添加好友吗？", "确定", "取消");
+//		confirmDialog.show();
+//		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+//					@Override
+//					public void doConfirm() {
+//						addFriendConfirm();
+//						confirmDialog.dismiss();
+//					}
+//
+//					@Override
+//					public void doCancel() {
+//						confirmDialog.dismiss();
+//					}
+//				});			
+//		
+//	}
 	
 	private void addFriendConfirm(){
 		// 参数设置
