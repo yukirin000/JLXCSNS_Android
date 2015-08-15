@@ -1,5 +1,6 @@
 package com.jlxc.app.message.ui.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -25,8 +26,11 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.model.NewsPushModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.view.CustomAlertDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog;
+import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.TimeHandle;
@@ -157,26 +161,45 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 //					}
 //				}).setNegativeButton("取消", null).show();
 				
-				final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-						NewFriendsActivity.this, "确定要删除吗", "确定", "取消");
-				confirmDialog.show();
-				confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
-							@Override
-							public void doConfirm() {
-								IMModel imModel = newFriendAdapter.getItem(position);
-								imModel.setIsNew(0);
-								imModel.update();
-//								imModel.remove();
-								refreshListView(); 
-								confirmDialog.dismiss();
-							}
-
-							@Override
-							public void doCancel() {
-								confirmDialog.dismiss();
-							}
-						});					
+//				final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+//						NewFriendsActivity.this, "确定要删除吗", "确定", "取消");
+//				confirmDialog.show();
+//				confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+//							@Override
+//							public void doConfirm() {
+//								IMModel imModel = newFriendAdapter.getItem(position);
+//								imModel.setIsNew(0);
+//								imModel.update();
+////								imModel.remove();
+//								refreshListView(); 
+//								confirmDialog.dismiss();
+//							}
+//
+//							@Override
+//							public void doCancel() {
+//								confirmDialog.dismiss();
+//							}
+//						});					
 				
+				
+				List<String> menuList = new ArrayList<String>();
+				menuList.add("删除内容");
+				final CustomListViewDialog confirmDialog = new CustomListViewDialog(
+						NewFriendsActivity.this, menuList);
+				confirmDialog.setClickCallBack(new ClickCallBack() {
+
+					@Override
+					public void Onclick(View view, int which) {
+						IMModel imModel = newFriendAdapter.getItem(position);
+						imModel.setIsNew(0);
+						imModel.update();
+						refreshListView(); 
+						confirmDialog.dismiss();
+					}
+				});
+				if (null != confirmDialog && !confirmDialog.isShowing()) {
+					confirmDialog.show();
+				}
 				return true;
 			}
 		});

@@ -7,7 +7,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/main_white"
+            android:background="@drawable/selector_deep_white_click"
             android:layout_marginBottom="5dp"
 			android:paddingLeft="10dip"
 			android:paddingTop="10dip"
@@ -26,7 +26,7 @@
                 android:layout_marginLeft="10dip"
                 android:textSize="@dimen/font_size_medium"
                 android:textColor="@color/main_deep_black"
-                android:text="新的请求" />
+                android:text="新的好友" />
 
             <RelativeLayout 
                 android:layout_marginLeft="10dip"
@@ -37,7 +37,8 @@
 	             	android:layout_toLeftOf="@+id/unread_text_view"
 	                android:id="@+id/new_friends_grid_view"
 	                android:layout_width="match_parent"
-	                android:layout_height="match_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_centerVertical="true"
 	                android:layout_marginLeft="5dip"
 	                android:numColumns="3" />
 

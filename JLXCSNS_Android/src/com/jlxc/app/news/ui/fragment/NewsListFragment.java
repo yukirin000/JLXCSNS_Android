@@ -282,7 +282,6 @@ public class NewsListFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						LogUtils.i("------------------");
 						if (!isRequestingData) {
 							isRequestingData = true;
 							newsListView.setMode(Mode.PULL_FROM_END);

@@ -3,6 +3,8 @@
 
     <item android:drawable="@color/main_deep_white" android:state_focused="true"/>
     <item android:drawable="@color/main_clear_gary" android:state_pressed="true"/>
+    <item android:drawable="@color/main_clear_gary" android:state_selected="true"/>
+    <item android:drawable="@color/main_deep_white" android:state_selected="false"/>
     <item android:drawable="@color/main_deep_white"/>
 
 </selector>
