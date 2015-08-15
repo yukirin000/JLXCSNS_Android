@@ -1,5 +1,8 @@
 package com.jlxc.app.base.ui.view.gallery.utils;
 
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
@@ -135,7 +138,7 @@ public class ImageLoader
 
 		// 获取应用程序最大可用内存
 		int maxMemory = (int) Runtime.getRuntime().maxMemory();
-		int cacheSize = maxMemory / 10;
+		int cacheSize = maxMemory / 9;
 		mLruCache = new LruCache<String, Bitmap>(cacheSize)
 		{
 			@Override
@@ -392,7 +395,7 @@ public class ImageLoader
 		// 使用获取到的inSampleSize值再次解析图片
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
-
+		
 		return bitmap;
 	}
 
