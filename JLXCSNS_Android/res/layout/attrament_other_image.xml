@@ -8,7 +8,7 @@
     android:orientation="horizontal" >
 
     <com.jlxc.app.base.ui.view.RoundImageView
-        app:rect_adius="2dip"
+        app:rect_adius="3dip"
         android:id="@+id/image_attrament"
         android:layout_width="50dp"
         android:layout_height="50dp"
