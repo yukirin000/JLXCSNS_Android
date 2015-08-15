@@ -403,7 +403,7 @@ import android.widget.ImageView;
 				if (getBitmapSize(bmp) < 1024*1024) {
 					bmp.compress(Bitmap.CompressFormat.JPEG, 95, bos);
 //					LogUtils.i("90 "+getBitmapSize(bmp), 1);
-				}else if (getBitmapSize(bmp) < 2048*1024) {
+				}else if (getBitmapSize(bmp) < 2560*1024) {
 					bmp.compress(Bitmap.CompressFormat.JPEG, 75, bos);
 //					LogUtils.i("70 "+getBitmapSize(bmp), 1);
 				} else {
