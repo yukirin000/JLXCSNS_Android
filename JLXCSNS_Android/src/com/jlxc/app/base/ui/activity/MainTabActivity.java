@@ -185,7 +185,7 @@ public class MainTabActivity extends BaseActivity {
 				@Override
 				public void onFailure(IMqttToken arg0, Throwable arg1) {
 					Looper.prepare();
-					Toast.makeText(MainTabActivity.this, "yunba fail", Toast.LENGTH_SHORT).show();
+//					Toast.makeText(MainTabActivity.this, "yunba fail", Toast.LENGTH_SHORT).show();
 					Looper.loop();
 				}
 			});

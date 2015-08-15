@@ -186,9 +186,10 @@
 					    android:layout_height="wrap_content" >
 
 					 <com.jlxc.app.base.ui.view.TouchInterceptGridView
+					     android:layout_centerVertical="true"
 					     android:id="@+id/visit_grid_view"
 					     android:layout_width="wrap_content"
-					     android:layout_height="match_parent"
+					     android:layout_height="wrap_content"
 					     android:layout_toLeftOf="@+id/visit_count_text_view"
 					     android:layout_marginBottom="2dip"
 					     android:layout_marginLeft="5dip"
@@ -251,9 +252,10 @@
 					    android:layout_height="wrap_content" >
 
 					 <com.jlxc.app.base.ui.view.TouchInterceptGridView
+					     android:layout_centerVertical="true"
 					     android:id="@+id/friend_grid_view"
 					     android:layout_width="wrap_content"
-					     android:layout_height="match_parent"
+					     android:layout_height="wrap_content"
 					     android:layout_toLeftOf="@+id/friend_count_text_view"
 					     android:layout_marginBottom="2dip"
 					     android:layout_marginLeft="5dip"

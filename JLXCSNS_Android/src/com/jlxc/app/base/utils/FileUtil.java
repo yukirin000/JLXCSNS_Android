@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Date;
 
 import com.amap.api.mapcore2d.da;
 import com.jlxc.app.base.app.JLXCApplication;
@@ -1010,12 +1011,17 @@ import android.widget.ImageView;
 	}
 	
 	public static int getBitmapSize(Bitmap bitmap){
+		long s = new Date().getTime();
+//		LogUtils.i("1"+(s-new Date().getTime()), 1);
 	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){    //API 19
-	        return bitmap.getAllocationByteCount();
+	        return bitmap.getAllocationByteCount();	        
 	    }
+//	    LogUtils.i("2"+(s-new Date().getTime()), 1);
 	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1){//API 12
 	        return bitmap.getByteCount();
 	    }
+//	    LogUtils.i("3"+(s-new Date().getTime()), 1);
 	    return bitmap.getRowBytes() * bitmap.getHeight();                //earlier version
+	    
 	}
 }

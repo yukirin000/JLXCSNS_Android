@@ -41,10 +41,11 @@ public class TimeHandle {
 			
 			//当天晚上23:59:59
 			Calendar todayEnd = Calendar.getInstance();  
-	        todayEnd.set(Calendar.HOUR, 23);  
+	        todayEnd.set(Calendar.HOUR_OF_DAY, 23);  
 	        todayEnd.set(Calendar.MINUTE, 59);  
 	        todayEnd.set(Calendar.SECOND, 59);  
-	        todayEnd.set(Calendar.MILLISECOND, 999); 
+	        todayEnd.set(Calendar.MILLISECOND, 999);
+	        
 	        long dayDiff = todayEnd.getTime().getTime() - time.getTime();  
 			long diffDays = dayDiff / (24 * 60 * 60 * 1000);
 			

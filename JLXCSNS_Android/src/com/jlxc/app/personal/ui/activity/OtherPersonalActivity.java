@@ -169,25 +169,25 @@ public class OtherPersonalActivity extends BaseActivity{
 		case R.id.his_visit_layout:
 			//来访
 			Intent visitIntent = new Intent(this, VisitListActivity.class);
-			visitIntent.putExtra(VisitListActivity.INTENT_KEY, otherUserModel.getUid());
+			visitIntent.putExtra(VisitListActivity.INTENT_KEY, uid);
 			startActivityWithRight(visitIntent);
 			break;
 		case R.id.his_image_layout:
 			//图片点击
 			Intent myImageIntent = new Intent(this, MyNewsListActivity.class);
-			myImageIntent.putExtra(MyNewsListActivity.INTNET_KEY_UID, otherUserModel.getUid()+"");
+			myImageIntent.putExtra(MyNewsListActivity.INTNET_KEY_UID, uid);
 			startActivityWithRight(myImageIntent);
 			break;
 		case R.id.his_friend_layout:
 			//他的好友
 			Intent otherFriendIntent = new Intent(this, OtherPeopleFriendsActivity.class);
-			otherFriendIntent.putExtra(OtherPeopleFriendsActivity.INTENT_KEY, otherUserModel.getUid());
+			otherFriendIntent.putExtra(OtherPeopleFriendsActivity.INTENT_KEY, uid);
 			startActivityWithRight(otherFriendIntent);
 			break;
 		case R.id.common_friend_layout:
 			//共同好友
 			Intent commonIntent = new Intent(this, CommonFriendsActivity.class);
-			commonIntent.putExtra(CommonFriendsActivity.INTENT_KEY, otherUserModel.getUid());
+			commonIntent.putExtra(CommonFriendsActivity.INTENT_KEY, uid);
 			startActivityWithRight(commonIntent);
 			break;
 		case R.id.return_image_view:
