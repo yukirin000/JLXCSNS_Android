@@ -1014,6 +1014,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 			public void onClick(View v) {
 				sexTextView.setText("男孩纸");
 				sexImageView.setImageResource(R.drawable.sex_boy);
+				uploadInformation("sex", "" + 0);
 				dialog.dismiss();
 			}
 		});
@@ -1024,6 +1025,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 			public void onClick(View v) {
 				sexTextView.setText("女孩纸");
 				sexImageView.setImageResource(R.drawable.sex_girl);
+				uploadInformation("sex", "" + 1);
 				dialog.dismiss();
 			}
 		});
