@@ -84,7 +84,7 @@ public class MultiImageView extends RelativeLayout {
 		options = new DisplayImageOptions.Builder()
 				.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 				.showImageOnLoading(android.R.color.darker_gray)
-				.showImageOnFail(R.drawable.image_download_fail)
+				.showImageOnFail(R.drawable.image_load_fail)
 				.cacheInMemory(true).cacheOnDisk(true)
 				.bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
@@ -218,19 +218,20 @@ public class MultiImageView extends RelativeLayout {
 			singleImageView.setLayoutParams(new LayoutParams(imageWidth,
 					imagHeight));
 
-			imgLoader.displayImage(pictureList.get(0).getURL(),
+			imgLoader.displayImage(pictureList.get(0).getSubURL(),
 					singleImageView, options);
 			// 隐藏其余的imageview
 			for (int index = 0; index < imageViewsList.size(); index++) {
 				imageViewsList.get(index).setVisibility(View.GONE);
 			}
 		} else {
+			//多张图片
 			rootView.setVisibility(View.VISIBLE);
 			singleImageView.setVisibility(View.GONE);
 			for (int index = 0; index < imageViewsList.size(); index++) {
 				if (index < pictureList.size()) {
 					imageViewsList.get(index).setVisibility(View.VISIBLE);
-					imgLoader.displayImage(pictureList.get(index).getURL(),
+					imgLoader.displayImage(pictureList.get(index).getSubURL(),
 							imageViewsList.get(index), options);
 				} else {
 					imageViewsList.get(index).setVisibility(View.GONE);

@@ -53,6 +53,8 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 @SuppressLint("NewApi")
 public class BigImgLookActivity extends BaseActivity {
@@ -72,8 +74,6 @@ public class BigImgLookActivity extends BaseActivity {
 	// 所有的imageview
 	private List<TouchImageView> imageViewList = new ArrayList<TouchImageView>();
 	// 回调对象
-	private BitmapLoadCallBack<ImageView> loadImageCallBack;
-	//
 	@ViewInject(R.id.viewpager_big_image)
 	private ViewPager viewPager;
 	// 提示性点点数组
@@ -129,7 +129,7 @@ public class BigImgLookActivity extends BaseActivity {
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(android.R.color.black)
-				.showImageOnFail(R.drawable.image_download_fail)
+				.showImageOnFail(R.drawable.image_load_fail)
 				.cacheInMemory(true).cacheOnDisk(true)
 				.bitmapConfig(Bitmap.Config.RGB_565).build();
 
@@ -172,7 +172,6 @@ public class BigImgLookActivity extends BaseActivity {
 			LogUtils.e("未传递图片地址,图片数为：" + imageUrlList.size());
 		}
 
-		loadImageCallBack = new BigImgLoadCallBack();
 	}
 
 	/**
@@ -206,8 +205,8 @@ public class BigImgLookActivity extends BaseActivity {
 		for (int index = 0; index < imageUrlList.size(); index++) {
 			TouchImageView tcView = new TouchImageView(this);
 			tcView.setClickable(true);
-			imgLoader.displayImage(imageSubUrlList.get(index), tcView, options);
 			imageViewList.add(tcView);
+			imgLoader.displayImage(imageSubUrlList.get(index), tcView, options);
 			tcView.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -329,8 +328,8 @@ public class BigImgLookActivity extends BaseActivity {
 		public Object instantiateItem(final ViewGroup container,
 				final int position) {
 			if (position == currentPage) {
-				imgLoader.displayImage(imageUrlList.get(position),
-						mList.get(position), options);
+				imgLoader.loadImage(imageUrlList.get(currentPage), options,
+						loadingListener);
 			}
 			container.addView(mList.get(position));
 			return mList.get(position);
@@ -355,43 +354,13 @@ public class BigImgLookActivity extends BaseActivity {
 
 		@Override
 		public void onPageSelected(int position) {
-
-			imgLoader.displayImage(imageUrlList.get(position),
-					imageViewList.get(position), options);
 			tipList.get(currentPage).setBackgroundResource(
 					R.drawable.cursor_point_not_selected);
 			tipList.get(position).setBackgroundResource(
 					R.drawable.cursor_point_selected);
 			currentPage = position;
-		}
-	}
-
-	/**
-	 * 加载图片时的回调函数
-	 * */
-	public class BigImgLoadCallBack extends
-			DefaultBitmapLoadCallBack<ImageView> {
-
-		// 开始加载
-		@Override
-		public void onLoadStarted(ImageView container, String uri,
-				BitmapDisplayConfig config) {
-			loadingDialog.show();
-			super.onLoadStarted(container, uri, config);
-		}
-
-		// 加载过程中
-		@Override
-		public void onLoading(ImageView container, String uri,
-				BitmapDisplayConfig config, long total, long current) {
-		}
-
-		// 加载完成时
-		@Override
-		public void onLoadCompleted(ImageView container, String uri,
-				Bitmap bitmap, BitmapDisplayConfig config, BitmapLoadFrom from) {
-			loadingDialog.cancel();
-			container.setImageBitmap(bitmap);
+			imgLoader.loadImage(imageUrlList.get(currentPage), options,
+					loadingListener);
 		}
 	}
 
@@ -407,4 +376,33 @@ public class BigImgLookActivity extends BaseActivity {
 			return super.onKeyDown(keyCode, event);
 		}
 	}
+
+	// 加载图片的回调
+	private ImageLoadingListener loadingListener = new ImageLoadingListener() {
+
+		@Override
+		public void onLoadingStarted(String imageUri, View view) {
+			loadingDialog.show();
+		}
+
+		@Override
+		public void onLoadingFailed(String imageUri, View view,
+				FailReason failReason) {
+			loadingDialog.dismiss();
+			imageViewList.get(currentPage).setImageResource(
+					R.drawable.image_download_fail);
+		}
+
+		@Override
+		public void onLoadingComplete(String imageUri, View view,
+				Bitmap loadedImage) {
+			loadingDialog.dismiss();
+			imageViewList.get(currentPage).setImageBitmap(loadedImage);
+		}
+
+		@Override
+		public void onLoadingCancelled(String imageUri, View view) {
+
+		}
+	};
 }
