@@ -307,7 +307,7 @@ public class ImageLoader
 																	// maxWidth
 																	// parameter
 		if (width <= 0)
-			width = displayMetrics.widthPixels;
+			width = displayMetrics.widthPixels/3;
 		int height = params.height == LayoutParams.WRAP_CONTENT ? 0 : imageView
 				.getHeight(); // Get actual image height
 		if (height <= 0)
@@ -362,14 +362,14 @@ public class ImageLoader
 		int width = options.outWidth;
 		int height = options.outHeight;
 		int inSampleSize = 1;
-
+		LogUtils.i(width + " "+ height+":"+reqHeight+" "+reqWidth, 1);
 		if (width > reqWidth || height > reqHeight)
 		{
 			// 计算出实际宽度和目标宽度的比率
 			int widthRatio = Math.round((float) width / (float) reqWidth);
-			int heightRatio = Math.round((float) width / (float) reqWidth);
+			int heightRatio = Math.round((float) height / (float) reqHeight);
 			inSampleSize = Math.max(widthRatio, heightRatio);
-			inSampleSize = (int) (inSampleSize * 1.8);
+			inSampleSize = (int) (inSampleSize * 1.2);
 		}
 		return inSampleSize;
 	}

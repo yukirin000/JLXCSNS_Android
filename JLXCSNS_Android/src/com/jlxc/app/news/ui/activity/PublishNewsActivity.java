@@ -70,6 +70,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class PublishNewsActivity extends BaseActivityWithTopBar {
 
@@ -589,6 +590,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		headImageOptions = new DisplayImageOptions.Builder()  
         .cacheInMemory(false)  
         .cacheOnDisk(false)  
+        .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
         .bitmapConfig(Bitmap.Config.RGB_565)  
         .build();
 	}
