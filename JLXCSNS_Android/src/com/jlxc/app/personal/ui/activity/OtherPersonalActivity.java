@@ -331,10 +331,10 @@ public class OtherPersonalActivity extends BaseActivity{
 		}
 		//性别
 		if (otherUserModel.getSex() == 0) {
-			sexTextView.setText("男孩纸");
+			sexTextView.setText("帅锅");
 			sexImageView.setImageResource(R.drawable.sex_boy);
 		}else {
-			sexTextView.setText("女孩纸");
+			sexTextView.setText("妹子");
 			sexImageView.setImageResource(R.drawable.sex_girl);
 		}
 		//学校
