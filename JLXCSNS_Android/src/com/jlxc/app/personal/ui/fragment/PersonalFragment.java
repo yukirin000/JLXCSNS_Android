@@ -827,7 +827,11 @@ public class PersonalFragment extends BaseFragment implements
 		} else if (resultCode == SIGN_RESOULT) {
 			// 签名返回
 			String signString = data.getStringExtra("sign");
-			signTextView.setText(signString);
+			if (null == signString || "".equals(signString)) {
+				signTextView.setText("暂无");
+			} else {
+				signTextView.setText(signString);
+			}
 			uploadInformation("sign", signString);
 		} else {
 			File file = new File(FileUtil.TEMP_PATH + tmpImageName);
@@ -879,7 +883,8 @@ public class PersonalFragment extends BaseFragment implements
 		final EditText et_search = (EditText) textViewLayout
 				.findViewById(R.id.name_edit_text);
 		et_search.setText(userModel.getName());
-
+		et_search.setSelection(et_search.getText().length());
+		
 		final Dialog dialog = nameAlertDialog.show();
 		TextView cancelTextView = (TextView) textViewLayout
 				.findViewById(R.id.tv_custom_alert_dialog_cancel);
@@ -1038,7 +1043,7 @@ public class PersonalFragment extends BaseFragment implements
 		// datePickerDialog.show();
 	}
 
-	// 姓名点击
+	// 性别点击
 	private void sexClick() {
 
 		// dialog
