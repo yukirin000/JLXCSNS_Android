@@ -153,10 +153,13 @@ public class OtherPersonalActivity extends BaseActivity{
 	private void clickEvent(View view){
 		switch (view.getId()) {
 		case R.id.head_image_view:
-			//头像
-			Intent headIntent = new Intent(this, BigImgLookActivity.class);
-			headIntent.putExtra(BigImgLookActivity.INTENT_KEY, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_image());
-			startActivity(headIntent);
+			if (null != otherUserModel) {
+				//头像
+				Intent headIntent = new Intent(this, BigImgLookActivity.class);
+				headIntent.putExtra(BigImgLookActivity.INTENT_KEY, JLXCConst.ATTACHMENT_ADDR+otherUserModel.getHead_image());
+				startActivity(headIntent);
+			}
+
 			break;
 		case R.id.setting_Button:
 			//设置点击
