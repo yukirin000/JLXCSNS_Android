@@ -40,7 +40,7 @@ public class PushReceiver extends BroadcastReceiver {
 				showMsg.append("[Message] ").append(YunBaManager.MQTT_TOPIC)
 						.append(" = ").append(topic).append(" ,")
 							.append(YunBaManager.MQTT_MSG).append(" = ").append(msg);	
-				LogUtils.i(showMsg.toString(),1);
+//				LogUtils.i(showMsg.toString(),1);
 				
 				//json解析
 				JSONObject obj = JSON.parseObject(msg);
@@ -48,7 +48,7 @@ public class PushReceiver extends BroadcastReceiver {
 					return;
 				}
 				int type = obj.getIntValue("type");
-				LogUtils.i(type+"",1);
+//				LogUtils.i(type+"",1);
 				
 				switch (type) {
 				case NewsPushModel.PushAddFriend:
