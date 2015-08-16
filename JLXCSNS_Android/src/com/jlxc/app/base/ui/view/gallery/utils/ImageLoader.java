@@ -362,7 +362,6 @@ public class ImageLoader
 		int width = options.outWidth;
 		int height = options.outHeight;
 		int inSampleSize = 1;
-		LogUtils.i(width + " "+ height+":"+reqHeight+" "+reqWidth, 1);
 		if (width > reqWidth || height > reqHeight)
 		{
 			// 计算出实际宽度和目标宽度的比率
