@@ -159,29 +159,110 @@
                     android:layout_height="1dip"
                     android:layout_marginLeft="10dip"
 					android:background="@color/main_light_gary" />
-                <!-- 最近来访 -->
+                
                 <LinearLayout
-                    android:id="@+id/visit_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="70dip"
+                    android:layout_height="90dip"
                     android:gravity="center_vertical"
                     android:orientation="horizontal" >
-
-                  <ImageView
-                      android:layout_width="20dp"
-                      android:layout_height="20dp"
-                      android:layout_marginLeft="10dip"
-                      android:src="@drawable/my_visit_icon" />
-                    
+                <!-- 最近来访 -->
+				<RelativeLayout
+				    	android:id="@+id/visit_layout"
+					    android:layout_width="match_parent"
+					    android:layout_weight="1"
+					    android:layout_height="match_parent" >
+						
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_size_small"
-                        android:layout_marginLeft="5dip"
-                        android:textColor="@color/main_brown"
-                        android:text="最近来访" />
+					     android:id="@+id/visit_count_text_view"
+					     android:layout_width="wrap_content"
+					     android:layout_height="wrap_content"
+					     android:layout_centerHorizontal="true"
+                         android:textSize="@dimen/font_size_sper_large"
+                         android:textColor="@color/main_char_gary"
+                         android:layout_above="@+id/visit_bottom_view"
+                         android:layout_marginBottom="10dip"
+					     android:layout_centerVertical="true"
+					     android:layout_marginLeft="5dip" />
                     
-  					<RelativeLayout
+					<LinearLayout
+					    android:id="@+id/visit_bottom_view"
+	                    android:layout_width="wrap_content"
+	                    android:layout_centerHorizontal="true"
+	                    android:layout_alignParentBottom="true"
+	                    android:layout_marginBottom="10dip"
+	                    android:layout_height="wrap_content"
+	                    android:gravity="center_vertical"
+	                    android:orientation="horizontal" >
+						<ImageView
+	                      android:layout_width="20dp"
+	                      android:layout_height="20dp"
+	                      android:layout_marginLeft="10dip"
+	                      android:src="@drawable/my_visit_icon" />						    
+						<TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:textSize="@dimen/font_size_small"
+	                        android:layout_marginLeft="15dip"
+	                        android:textColor="@color/main_brown"
+	                        android:text="最近来访" />
+					</LinearLayout>						
+				</RelativeLayout>
+				
+                <View
+                    android:layout_marginTop="4dip"
+                    android:layout_marginBottom="4dip"
+                    android:layout_width="1dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/main_light_gary" />				
+				
+				<!-- 我的好友 -->
+				<RelativeLayout
+				    	android:id="@+id/friend_layout"
+					    android:layout_width="match_parent"
+					    android:layout_weight="1"
+					    android:layout_height="match_parent" >
+					
+					<TextView
+					     android:id="@+id/friend_count_text_view"
+					     android:layout_width="wrap_content"
+					     android:layout_height="wrap_content"
+					     android:layout_centerHorizontal="true"
+                         android:textSize="@dimen/font_size_sper_large"
+                         android:textColor="@color/main_char_gary"
+                         android:layout_above="@+id/friend_bottom_view"
+                         android:layout_marginBottom="10dip"
+					     android:layout_centerVertical="true"
+					     android:layout_marginLeft="5dip" />
+                    
+					<LinearLayout
+					    android:id="@+id/friend_bottom_view"
+	                    android:layout_width="wrap_content"
+	                    android:layout_centerHorizontal="true"
+	                    android:layout_alignParentBottom="true"
+	                    android:layout_marginBottom="10dip"
+	                    android:layout_height="wrap_content"
+	                    android:gravity="center_vertical"
+	                    android:orientation="horizontal" >
+						<ImageView
+	                      android:layout_width="20dp"
+	                      android:layout_height="20dp"
+	                      android:layout_marginLeft="10dip"
+	                      android:src="@drawable/my_friends_icon" />						    
+	                    <TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginLeft="15dip"
+	                        android:textSize="@dimen/font_size_small"
+	                        android:textColor="@color/main_brown"
+	                        android:text="我的好友" />
+						
+					</LinearLayout>							
+				    
+				    
+				</RelativeLayout>
+                  
+                    
+  				<!-- 	<RelativeLayout
 					    android:layout_width="match_parent"
 					    android:layout_height="wrap_content" >
 
@@ -217,16 +298,16 @@
 					     android:layout_marginRight="10dp"
 					     android:src="@drawable/right_arrow" />
 
-					</RelativeLayout>
+					</RelativeLayout> -->
                     
                 </LinearLayout>
-                <View
+<!--                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dip"
                     android:layout_marginLeft="10dip"
-                         android:background="@color/main_light_gary" />
+                         android:background="@color/main_light_gary" /> -->
                 <!-- 我的好友 -->
-                <LinearLayout
+              <!--   <LinearLayout
                     android:id="@+id/friend_layout"
                     android:layout_width="match_parent"
                     android:layout_height="70dip"
@@ -285,7 +366,7 @@
 
 					</RelativeLayout>
 
-                </LinearLayout>
+                </LinearLayout> -->
 
                 <LinearLayout
                     android:layout_width="match_parent"

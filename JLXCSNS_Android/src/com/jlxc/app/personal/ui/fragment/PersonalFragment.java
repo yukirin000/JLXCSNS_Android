@@ -131,14 +131,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 	@ViewInject(R.id.my_image_count_text_view)
 	private TextView myImageCountTextView;
 	// 最近来访grid
-	@ViewInject(R.id.visit_grid_view)
-	private GridView visitGridView;
+//	@ViewInject(R.id.visit_grid_view)
+//	private GridView visitGridView;
 	// 最近来访数量
 	@ViewInject(R.id.visit_count_text_view)
 	private TextView visitCountTextView;
 	// 我的好友grid
-	@ViewInject(R.id.friend_grid_view)
-	private GridView friendsGridView;
+//	@ViewInject(R.id.friend_grid_view)
+//	private GridView friendsGridView;
 	// 我的好友数量
 	@ViewInject(R.id.friend_count_text_view)
 	private TextView friendsCountTextView;
@@ -173,10 +173,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 	
 	// 我的相片adapter
 	private HelloHaAdapter<String> myImageAdapter;
-	// 最近来访adapter
-	private HelloHaAdapter<String> visitAdapter;
-	// 好友adapter
-	private HelloHaAdapter<IMModel> friendsAdapter;
+//	// 最近来访adapter
+//	private HelloHaAdapter<String> visitAdapter;
+//	// 好友adapter
+//	private HelloHaAdapter<IMModel> friendsAdapter;
 
 	@OnClick(value = { R.id.name_layout, R.id.sign_layout, R.id.birth_layout,
 			R.id.sex_layout, R.id.school_layout, R.id.city_layout,
@@ -463,20 +463,20 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		
 		// 初始化adapter
 		myImageAdapter = initAdapter(R.layout.my_image_adapter);
-		visitAdapter = initAdapter(R.layout.attrament_image);
-		friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(),
-				R.layout.attrament_image) {
-			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper, IMModel item) {
-				
-				ImageView imageView = helper.getView(R.id.image_attrament);
-				if (null != item.getAvatarPath() && item.getAvatarPath().length() > 0) {
-					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath(), imageView, headImageOptions);					
-				}else {
-					imageView.setImageResource(R.drawable.default_avatar);
-				}
-			}
-		};
+//		visitAdapter = initAdapter(R.layout.attrament_image);
+//		friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(),
+//				R.layout.attrament_image) {
+//			@Override
+//			protected void convert(HelloHaBaseAdapterHelper helper, IMModel item) {
+//				
+//				ImageView imageView = helper.getView(R.id.image_attrament);
+//				if (null != item.getAvatarPath() && item.getAvatarPath().length() > 0) {
+//					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath(), imageView, headImageOptions);					
+//				}else {
+//					imageView.setImageResource(R.drawable.default_avatar);
+//				}
+//			}
+//		};
 
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		int screenWidth = displayMet.widthPixels;
@@ -499,12 +499,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 		// 设置adapter
 		myImageGridView.setAdapter(myImageAdapter);
-		visitGridView.setAdapter(visitAdapter);
-		friendsGridView.setAdapter(friendsAdapter);
+//		visitGridView.setAdapter(visitAdapter);
+//		friendsGridView.setAdapter(friendsAdapter);
 		// 不能点击
 		myImageGridView.setEnabled(false);
-		visitGridView.setEnabled(false);
-		friendsGridView.setEnabled(false);
+//		visitGridView.setEnabled(false);
+//		friendsGridView.setEnabled(false);
 
 		userModel = UserManager.getInstance().getUser();
 
@@ -1136,18 +1136,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 数据处理
-							JSONArray array = jResult
-									.getJSONArray(JLXCConst.HTTP_LIST);
-							List<String> headImageList = new ArrayList<String>();
-							if (null != array && array.size() < 1) {
-								visitAdapter.clear();
-							}
-							for (int i = 0; i < array.size(); i++) {
-								JSONObject object = (JSONObject) array.get(i);
-								headImageList.add(object
-										.getString("head_sub_image"));
-							}
-							visitAdapter.replaceAll(headImageList);
+//							JSONArray array = jResult
+//									.getJSONArray(JLXCConst.HTTP_LIST);
+//							List<String> headImageList = new ArrayList<String>();
+//							if (null != array && array.size() < 1) {
+//								visitAdapter.clear();
+//							}
+//							for (int i = 0; i < array.size(); i++) {
+//								JSONObject object = (JSONObject) array.get(i);
+//								headImageList.add(object
+//										.getString("head_sub_image"));
+//							}
+//							visitAdapter.replaceAll(headImageList);
 							// 人数
 							int visitCount = jResult.getIntValue("visit_count");
 							if (visitCount > 0) {
@@ -1160,7 +1160,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 						if (status == JLXCConst.STATUS_FAIL) {
 							// ToastUtil.show(getActivity(),
 							// jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-							visitAdapter.clear();
+//							visitAdapter.clear();
 							visitCountTextView.setText("");
 						}
 					}
@@ -1192,21 +1192,20 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 数据处理
-							JSONArray array = jResult
-									.getJSONArray(JLXCConst.HTTP_LIST);
-							List<IMModel> headImageList = new ArrayList<IMModel>();
-							friendsAdapter.clear();
-							for (int i = 0; i < array.size(); i++) {
-								JSONObject object = (JSONObject) array.get(i);
-								IMModel imModel = new IMModel();
-								imModel.setAvatarPath(object
-										.getString("head_sub_image"));
-								headImageList.add(imModel);
-							}
-							friendsAdapter.replaceAll(headImageList);
+//							JSONArray array = jResult
+//									.getJSONArray(JLXCConst.HTTP_LIST);
+//							List<IMModel> headImageList = new ArrayList<IMModel>();
+//							friendsAdapter.clear();
+//							for (int i = 0; i < array.size(); i++) {
+//								JSONObject object = (JSONObject) array.get(i);
+//								IMModel imModel = new IMModel();
+//								imModel.setAvatarPath(object
+//										.getString("head_sub_image"));
+//								headImageList.add(imModel);
+//							}
+//							friendsAdapter.replaceAll(headImageList);
 							// 人数
-							int friendCount = jResult
-									.getIntValue("friend_count");
+							int friendCount = jResult.getIntValue("friend_count");
 							if (friendCount > 0) {
 								friendsCountTextView.setText(friendCount + "人");
 							} else {
@@ -1216,7 +1215,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							friendsAdapter.clear();
+//							friendsAdapter.clear();
 							friendsCountTextView.setText("");
 						}
 					}
@@ -1565,21 +1564,21 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		this.myImageAdapter = myImageAdapter;
 	}
 
-	public HelloHaAdapter<String> getVisitAdapter() {
-		return visitAdapter;
-	}
-
-	public void setVisitAdapter(HelloHaAdapter<String> visitAdapter) {
-		this.visitAdapter = visitAdapter;
-	}
-
-	public HelloHaAdapter<IMModel> getFriendsAdapter() {
-		return friendsAdapter;
-	}
-
-	public void setFriendsAdapter(HelloHaAdapter<IMModel> friendsAdapter) {
-		this.friendsAdapter = friendsAdapter;
-	}
+//	public HelloHaAdapter<String> getVisitAdapter() {
+//		return visitAdapter;
+//	}
+//
+//	public void setVisitAdapter(HelloHaAdapter<String> visitAdapter) {
+//		this.visitAdapter = visitAdapter;
+//	}
+//
+//	public HelloHaAdapter<IMModel> getFriendsAdapter() {
+//		return friendsAdapter;
+//	}
+//
+//	public void setFriendsAdapter(HelloHaAdapter<IMModel> friendsAdapter) {
+//		this.friendsAdapter = friendsAdapter;
+//	}
 
 	public String getTmpImageName() {
 		return tmpImageName;

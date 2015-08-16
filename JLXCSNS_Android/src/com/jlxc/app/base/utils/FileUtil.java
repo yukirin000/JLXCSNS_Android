@@ -1005,7 +1005,7 @@ import android.widget.ImageView;
 	}
 	
 	public static int getBitmapSize(Bitmap bitmap){
-		long s = new Date().getTime();
+//		long s = new Date().getTime();
 //		LogUtils.i("1"+(s-new Date().getTime()), 1);
 	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){    //API 19
 	        return bitmap.getAllocationByteCount();	        

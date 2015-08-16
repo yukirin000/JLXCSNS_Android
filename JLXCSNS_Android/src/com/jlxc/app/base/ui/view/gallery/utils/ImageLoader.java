@@ -363,13 +363,13 @@ public class ImageLoader
 		int height = options.outHeight;
 		int inSampleSize = 1;
 
-		if (width > reqWidth && height > reqHeight)
+		if (width > reqWidth || height > reqHeight)
 		{
 			// 计算出实际宽度和目标宽度的比率
 			int widthRatio = Math.round((float) width / (float) reqWidth);
 			int heightRatio = Math.round((float) width / (float) reqWidth);
 			inSampleSize = Math.max(widthRatio, heightRatio);
-			inSampleSize = (int) (inSampleSize * 1.7);
+			inSampleSize = (int) (inSampleSize * 1.8);
 		}
 		return inSampleSize;
 	}
