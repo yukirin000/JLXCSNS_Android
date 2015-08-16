@@ -317,6 +317,19 @@ public class CampusFragment extends BaseFragment {
 		});
 
 		/**
+		 * 设置底部自动刷新
+		 * */
+		campusListView
+				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+					@Override
+					public void onLastItemVisible() {
+						campusListView.setMode(Mode.PULL_FROM_END);
+						campusListView.setRefreshing(true);
+					}
+				});
+
+		/**
 		 * adapter的设置
 		 * */
 		newsAdapter = new HelloHaAdapter<ItemModel>(mContext, itemDataList,
@@ -348,28 +361,6 @@ public class CampusFragment extends BaseFragment {
 				}
 			}
 		};
-		/**
-		 * 设置底部自动刷新
-		 * */
-		campusListView
-				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
-
-					@Override
-					public void onLastItemVisible() {
-						if (!isRequestData) {
-							isRequestData = true;
-							campusListView.setMode(Mode.PULL_FROM_END);
-							campusListView.setRefreshing(true);
-							isPullDowm = false;
-							getCampusData(
-									String.valueOf(UserManager.getInstance()
-											.getUser().getUid()),
-									String.valueOf(pageIndex), UserManager
-											.getInstance().getUser()
-											.getSchool_code(), latestTimesTamp);
-						}
-					}
-				});
 
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
@@ -413,8 +404,7 @@ public class CampusFragment extends BaseFragment {
 		MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
 		bodyImages.imageDataSet(pictureList);
 		// 快速滑动时不加载图片
-		bodyImages.loadImageOnFastSlide(campusListView,
-				true);
+		bodyImages.loadImageOnFastSlide(campusListView, true);
 		bodyImages.setJumpListener(new JumpCallBack() {
 
 			@Override
@@ -445,8 +435,8 @@ public class CampusFragment extends BaseFragment {
 			helper.setVisible(R.id.txt_campus_news_content, true);
 			TextView contentView = helper.getView(R.id.txt_campus_news_content);
 			contentView.setText(bodyData.getNewsContent());
-			//customTvHandel.setTextContent(contentView,
-			//		bodyData.getNewsContent());
+			// customTvHandel.setTextContent(contentView,
+			// bodyData.getNewsContent());
 			// // 长按复制
 			contentView.setOnLongClickListener(TextViewHandel
 					.getLongClickListener(getActivity(),
@@ -954,7 +944,6 @@ public class CampusFragment extends BaseFragment {
 				} else if (resultIntent.hasExtra(NewsConstants.PUBLISH_FINISH)) {
 					if (!isRequestData) {
 						// 发布了动态
-						smoothToTop();
 						pageIndex = 1;
 						isRequestData = true;
 						isPullDowm = true;
@@ -965,6 +954,10 @@ public class CampusFragment extends BaseFragment {
 										.getInstance().getUser()
 										.getSchool_code(), "");
 					}
+				} else if (resultIntent
+						.hasExtra(NewsConstants.NEWS_LISTVIEW_REFRESH)) {
+					// 点击table栏进行刷新
+					smoothToTop();
 				}
 			}
 		}

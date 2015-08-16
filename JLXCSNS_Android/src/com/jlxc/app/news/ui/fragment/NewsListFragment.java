@@ -282,13 +282,9 @@ public class NewsListFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						if (!isRequestingData) {
-							isRequestingData = true;
+						if (!lastPage) {
 							newsListView.setMode(Mode.PULL_FROM_END);
 							newsListView.setRefreshing(true);
-							isPullDowm = false;
-							getNewsData(UserManager.getInstance().getUser()
-									.getUid(), pageIndex, latestTimesTamp);
 						}
 					}
 				});
@@ -427,8 +423,7 @@ public class NewsListFragment extends BaseFragment {
 		MultiImageView bodyImages = helper.getView(R.id.miv_main_news_images);
 		bodyImages.imageDataSet(pictureList);
 		// 快速滑动时不加载图片
-		bodyImages.loadImageOnFastSlide(newsListView,
-				true);
+		bodyImages.loadImageOnFastSlide(newsListView, true);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
 
@@ -959,15 +954,18 @@ public class NewsListFragment extends BaseFragment {
 						.hasExtra(NewsConstants.OPERATE_NO_ACTION)) {
 					// 无改变
 				} else if (resultIntent.hasExtra(NewsConstants.PUBLISH_FINISH)) {
-					// 发布了动态
+					// 发布了动态,进行刷新
 					if (!isRequestingData) {
-						smoothToTop();
 						isRequestingData = true;
 						pageIndex = 1;
 						isPullDowm = true;
 						getNewsData(UserManager.getInstance().getUser()
 								.getUid(), pageIndex, "");
 					}
+				} else if (resultIntent
+						.hasExtra(NewsConstants.NEWS_LISTVIEW_REFRESH)) {
+					// 点击table栏进行刷新
+					smoothToTop();
 				}
 			}
 		}

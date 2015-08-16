@@ -129,6 +129,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		});
 
 		filterBtn = this.addRightBtn("筛选");
+		filterBtn.setEnabled(false);
 		filterBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -204,6 +205,10 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		personAdapter.replaceAll(personList);
 		if (null != JPersonList) {
 			JPersonList.clear();
+		}
+		// 没人时，设置筛选不可用
+		if (personAdapter.getCount() > 0) {
+			filterBtn.setEnabled(true);
 		}
 	}
 

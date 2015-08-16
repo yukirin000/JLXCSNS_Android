@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center|left"
     android:orientation="horizontal"
+    android:background="@drawable/selector_deep_white_click"
     android:padding="10dp" >
 
     <com.jlxc.app.base.ui.view.RoundImageView

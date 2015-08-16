@@ -65,7 +65,7 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
         .bitmapConfig(Bitmap.Config.RGB_565)  
         .build();
 		
-		setBarText("共同好友");
+		setBarText("共同的朋友们 <(▰˘◡˘▰)>");
 		
 		initGridView();
 		getData();

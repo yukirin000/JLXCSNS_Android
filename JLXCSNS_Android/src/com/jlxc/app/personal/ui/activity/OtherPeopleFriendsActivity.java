@@ -78,7 +78,7 @@ public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
                 .build();
 		
 		// TODO Auto-generated method stub
-		setBarText("TA的好友");
+		setBarText("TA的朋友们 (｡・`ω´･)");
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		

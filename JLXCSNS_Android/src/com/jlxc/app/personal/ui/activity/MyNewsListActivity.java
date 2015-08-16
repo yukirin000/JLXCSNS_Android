@@ -70,7 +70,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	// 动态listview
 	@ViewInject(R.id.tv_my_news_prompt)
 	private TextView prompTextView;
-	//时光轴
+	// 时光轴
 	@ViewInject(R.id.iv_time_line_backgroung)
 	private View timeLine;
 	// 原始数据源
@@ -201,6 +201,21 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		});
 
 		/**
+		 * 设置底部自动刷新
+		 * */
+		newsListView
+				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+					@Override
+					public void onLastItemVisible() {
+						if (!islastPage) {
+							newsListView.setMode(Mode.PULL_FROM_END);
+							newsListView.setRefreshing(true);
+						}
+					}
+				});
+
+		/**
 		 * adapter的设置
 		 * */
 		newsAdapter = new HelloHaAdapter<MyNewsListItemModel>(
@@ -226,24 +241,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 				}
 			}
 		};
-		/**
-		 * 设置底部自动刷新
-		 * */
-		newsListView
-				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 
-					@Override
-					public void onLastItemVisible() {
-						if (!islastPage && !isRequestData) {
-							isRequestData = true;
-							newsListView.setMode(Mode.PULL_FROM_END);
-							newsListView.setRefreshing(true);
-							isPullDowm = false;
-							getMyNewsData(currentUid,
-									String.valueOf(currentPage));
-						}
-					}
-				});
 		// 设置不可点击
 		newsAdapter.setItemsClickEnable(false);
 		newsListView.setAdapter(newsAdapter);
@@ -253,7 +251,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-		setBarText("生活与日常 （＾∀＾）");
+		setBarText("生活小点滴  (●'◡'●)ﾉ♥");
 		itemViewClickListener = new ItemViewClick();
 		newsOperateSet();
 
@@ -557,7 +555,7 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 		if (newsAdapter.getCount() <= 0) {
 			prompTextView.setVisibility(View.VISIBLE);
 			timeLine.setVisibility(View.GONE);
-		}else {
+		} else {
 			prompTextView.setVisibility(View.GONE);
 			timeLine.setVisibility(View.VISIBLE);
 		}

@@ -31,6 +31,8 @@ public class NewsConstants {
 	public final static String OPERATE_NO_ACTION = "no_action";
 	// 发布动态操作完成
 	public final static String PUBLISH_FINISH = "pulish_finished";
+	// 刷新动态页面
+	public final static String NEWS_LISTVIEW_REFRESH = "news_list_refresh";
 	// 评论框输入类型为评论
 	public final static int Input_Type_Comment = 0;
 	// 评论框输入类型为子评论

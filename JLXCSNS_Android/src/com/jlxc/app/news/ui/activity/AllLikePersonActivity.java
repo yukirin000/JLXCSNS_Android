@@ -168,7 +168,6 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 						}
 					}
 				});
-
 		/**
 		 * 设置底部自动刷新
 		 * */
@@ -177,13 +176,9 @@ public class AllLikePersonActivity extends BaseActivityWithTopBar {
 
 					@Override
 					public void onLastItemVisible() {
-						if (!lastPage.equals("1") && !isRequestingData) {
-							isRequestingData = true;
+						if (!lastPage.equals("1")) {
 							allPersonListView.setMode(Mode.PULL_FROM_END);
 							allPersonListView.setRefreshing(true);
-							isPullDown = false;
-							getCampusAllPerson(newsId,
-									String.valueOf(currentPage));
 						}
 					}
 				});

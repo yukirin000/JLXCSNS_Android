@@ -232,6 +232,21 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		});
 
 		/**
+		 * 设置底部自动刷新
+		 * */
+		schoolListView
+				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+					@Override
+					public void onLastItemVisible() {
+						if (!isLastPage) {
+							// 底部自动加载
+							schoolListView.setMode(Mode.PULL_FROM_END);
+							schoolListView.setRefreshing(true);
+						}
+					}
+				});
+		/**
 		 * 设置点击item到事件
 		 * */
 		schoolListView.setOnItemClickListener(new OnItemClickListener() {
@@ -250,26 +265,6 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 			}
 		});
 
-		/**
-		 * 设置底部自动刷新
-		 * */
-		schoolListView
-				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
-
-					@Override
-					public void onLastItemVisible() {
-						if (!isLastPage && !isRequestingData) {
-							// 底部自动加载
-							isRequestingData = true;
-							schoolListView.setMode(Mode.PULL_FROM_END);
-							schoolListView.setRefreshing(true);
-							isPullDowm = false;
-							getSchoolList(String.valueOf(pageIndex),
-									districtCode, schoolName);
-							isRequestingData = false;
-						}
-					}
-				});
 	}
 
 	/**
@@ -290,7 +285,7 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 		if (null != dataList) {
 			dataList.clear();
 		}
-		
+
 		if (schoolAdapter.getCount() == 0) {
 			promptTextView.setVisibility(View.VISIBLE);
 			promptTextView.setText("然而并没有任何学校  ヽ(.◕ฺˇд ˇ◕ฺ;)ﾉ");

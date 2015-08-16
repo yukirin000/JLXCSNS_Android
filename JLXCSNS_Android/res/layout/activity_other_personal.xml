@@ -208,7 +208,7 @@
 	                        android:layout_marginLeft="5dip"
 	                        android:textSize="@dimen/font_size_small"
 	                        android:textColor="@color/main_brown"
-	                        android:text="TA的动态" />
+	                        android:text="TA记录的小点滴 (●′ω`●)" />
 	                    
 						<RelativeLayout
 						    android:layout_width="match_parent"
@@ -268,7 +268,7 @@
                         android:layout_marginLeft="5dip"
                         android:textSize="@dimen/font_size_small"
                         android:textColor="@color/main_brown"
-                        android:text="TA的好友" />
+                        android:text="TA的朋友们" />
 
                     <RelativeLayout
 					    android:layout_width="match_parent"
@@ -332,7 +332,7 @@
 		                      android:textSize="@dimen/font_size_small"
 		                      android:textColor="@color/main_char_gary"
 		                      android:layout_marginLeft="15dip"
-		                      android:text="共同好友" />
+		                      android:text="共同的好友" />
 		                  
 							<RelativeLayout
 							    android:layout_width="match_parent"
@@ -378,7 +378,7 @@
 		                      android:textSize="@dimen/font_size_small"
 		                      android:textColor="@color/main_char_gary"
 		                      android:layout_marginLeft="15dip"
-		                      android:text="TA的访客" />
+		                      android:text="谁看过TA" />
 		                  
 							<RelativeLayout
 							    android:layout_width="match_parent"

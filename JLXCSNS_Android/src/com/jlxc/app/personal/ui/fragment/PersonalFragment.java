@@ -36,7 +36,9 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -85,7 +87,9 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-@SuppressLint("NewApi") public class PersonalFragment extends BaseFragment implements View.OnClickListener {
+@SuppressLint("NewApi")
+public class PersonalFragment extends BaseFragment implements
+		View.OnClickListener {
 
 	public static final int TAKE_PHOTO = 1;// 拍照
 	public static final int ALBUM_SELECT = 2;// 相册选取
@@ -131,14 +135,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 	@ViewInject(R.id.my_image_count_text_view)
 	private TextView myImageCountTextView;
 	// 最近来访grid
-//	@ViewInject(R.id.visit_grid_view)
-//	private GridView visitGridView;
+	// @ViewInject(R.id.visit_grid_view)
+	// private GridView visitGridView;
 	// 最近来访数量
 	@ViewInject(R.id.visit_count_text_view)
 	private TextView visitCountTextView;
 	// 我的好友grid
-//	@ViewInject(R.id.friend_grid_view)
-//	private GridView friendsGridView;
+	// @ViewInject(R.id.friend_grid_view)
+	// private GridView friendsGridView;
 	// 我的好友数量
 	@ViewInject(R.id.friend_count_text_view)
 	private TextView friendsCountTextView;
@@ -166,17 +170,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 	// 用户模型
 	private UserModel userModel;
-	//新图片缓存工具 头像
+	// 新图片缓存工具 头像
 	DisplayImageOptions headImageOptions;
-	//新图片缓存工具 北京
-	DisplayImageOptions backImageOptions;	
-	
+	// 新图片缓存工具 北京
+	DisplayImageOptions backImageOptions;
+
 	// 我的相片adapter
 	private HelloHaAdapter<String> myImageAdapter;
-//	// 最近来访adapter
-//	private HelloHaAdapter<String> visitAdapter;
-//	// 好友adapter
-//	private HelloHaAdapter<IMModel> friendsAdapter;
+
+	// // 最近来访adapter
+	// private HelloHaAdapter<String> visitAdapter;
+	// // 好友adapter
+	// private HelloHaAdapter<IMModel> friendsAdapter;
 
 	@OnClick(value = { R.id.name_layout, R.id.sign_layout, R.id.birth_layout,
 			R.id.sex_layout, R.id.school_layout, R.id.city_layout,
@@ -219,57 +224,68 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 			mViewProvince = (WheelView) linearLayout
 					.findViewById(R.id.id_province);
 			mViewCity = (WheelView) linearLayout.findViewById(R.id.id_city);
-			
+
 			cityBuilder.setView(linearLayout);
 			setUpListener();
 			setUpData();
-			
+
 			final Dialog dialog = cityBuilder.show();
-			
-			TextView cancelTextView = (TextView) linearLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
+
+			TextView cancelTextView = (TextView) linearLayout
+					.findViewById(R.id.tv_custom_alert_dialog_cancel);
 			cancelTextView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					dialog.dismiss();
 				}
 			});
-			
-			TextView confirmTextView = (TextView) linearLayout.findViewById(R.id.tv_custom_alert_dialog_confirm);
+
+			TextView confirmTextView = (TextView) linearLayout
+					.findViewById(R.id.tv_custom_alert_dialog_confirm);
 			confirmTextView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					cityTextView.setText(mCurrentProviceName + mCurrentCityName);
-					uploadInformation("city", mCurrentProviceName + "," + mCurrentCityName);
+					cityTextView
+							.setText(mCurrentProviceName + mCurrentCityName);
+					uploadInformation("city", mCurrentProviceName + ","
+							+ mCurrentCityName);
 					dialog.dismiss();
 				}
-			});			
-			
+			});
+
 			break;
 		// 头像点击
 		case R.id.head_image_view:
 			// dialog
 			// 设置为头像
-			imageType = HEAD_IMAGE;			
+			imageType = HEAD_IMAGE;
 			final CustomSelectPhotoDialog selectDialog = new CustomSelectPhotoDialog(
 					this.getActivity());
 			selectDialog.show();
-			selectDialog.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
+			selectDialog
+					.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
 
 						@Override
 						public void onSelectGallery() {
 							// 相册
 							tmpImageName = JLXCUtils.getPhotoFileName() + "";
-//							Intent intentAlbum = new Intent(
-//									Intent.ACTION_GET_CONTENT);
-//							intentAlbum.setType(IMAGE_UNSPECIFIED);
-//							startActivityForResult(intentAlbum, ALBUM_SELECT);
-							
+							// Intent intentAlbum = new Intent(
+							// Intent.ACTION_GET_CONTENT);
+							// intentAlbum.setType(IMAGE_UNSPECIFIED);
+							// startActivityForResult(intentAlbum,
+							// ALBUM_SELECT);
+
 							// 相册
-							Intent intentAlbum = new Intent(getActivity(),GalleyActivity.class);
-							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
-							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE, true);
+							Intent intentAlbum = new Intent(getActivity(),
+									GalleyActivity.class);
+							intentAlbum
+									.putExtra(
+											GalleyActivity.INTENT_KEY_SELECTED_COUNT,
+											0);
+							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE,
+									true);
 							startActivityForResult(intentAlbum, ALBUM_SELECT);
-							
+
 							selectDialog.dismiss();
 						}
 
@@ -288,94 +304,101 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 						}
 
 					});
-/////////////////////////
-//			Builder headAlertDialog = new AlertDialog.Builder(getActivity())
-//					.setNegativeButton("取消", null).setTitle("修改头像");
-//			String[] headStrings = new String[] { "拍照", "相册" };
-//			headAlertDialog.setItems(headStrings, new OnClickListener() {
-//				@Override
-//				public void onClick(DialogInterface dialog, int which) {
-//
-//					// 设置为头像
-//					imageType = HEAD_IMAGE;
-//					if (which == 0) {
-//						// 相机
-//						Intent intentCamera = new Intent(
-//								MediaStore.ACTION_IMAGE_CAPTURE);
-//						tmpImageName = JLXCUtils.getPhotoFileName() + "";
-//						File tmpFile = new File(FileUtil.TEMP_PATH
-//								+ tmpImageName);
-//						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
-//								Uri.fromFile(tmpFile));
-//						startActivityForResult(intentCamera, TAKE_PHOTO);
-//					} else {
-//						// 相册
-//						tmpImageName = JLXCUtils.getPhotoFileName() + "";
-//						Intent intentAlbum = new Intent(
-//								Intent.ACTION_GET_CONTENT);
-//						intentAlbum.setType(IMAGE_UNSPECIFIED);
-//						startActivityForResult(intentAlbum, ALBUM_SELECT);
-//
-//					}
-//				}
-//			});
-//			headAlertDialog.show();
+			// ///////////////////////
+			// Builder headAlertDialog = new AlertDialog.Builder(getActivity())
+			// .setNegativeButton("取消", null).setTitle("修改头像");
+			// String[] headStrings = new String[] { "拍照", "相册" };
+			// headAlertDialog.setItems(headStrings, new OnClickListener() {
+			// @Override
+			// public void onClick(DialogInterface dialog, int which) {
+			//
+			// // 设置为头像
+			// imageType = HEAD_IMAGE;
+			// if (which == 0) {
+			// // 相机
+			// Intent intentCamera = new Intent(
+			// MediaStore.ACTION_IMAGE_CAPTURE);
+			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
+			// File tmpFile = new File(FileUtil.TEMP_PATH
+			// + tmpImageName);
+			// intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
+			// Uri.fromFile(tmpFile));
+			// startActivityForResult(intentCamera, TAKE_PHOTO);
+			// } else {
+			// // 相册
+			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
+			// Intent intentAlbum = new Intent(
+			// Intent.ACTION_GET_CONTENT);
+			// intentAlbum.setType(IMAGE_UNSPECIFIED);
+			// startActivityForResult(intentAlbum, ALBUM_SELECT);
+			//
+			// }
+			// }
+			// });
+			// headAlertDialog.show();
 			break;
 		// 背景点击
 		case R.id.back_click_layout:
 			// 拍照
 			// dialog
-//			Builder backAlertDialog = new AlertDialog.Builder(getActivity())
-//					.setNegativeButton("取消", null).setTitle("修改背景");
-//			String[] backStrings = new String[] { "拍照", "相册" };
-//			backAlertDialog.setItems(backStrings, new OnClickListener() {
-//				@Override
-//				public void onClick(DialogInterface dialog, int which) {
-//
-//					// 设置为头像
-//					imageType = BACK_IMAGE;
-//					if (which == 0) {
-//						// 相机
-//						Intent intentCamera = new Intent(
-//								MediaStore.ACTION_IMAGE_CAPTURE);
-//						tmpImageName = JLXCUtils.getPhotoFileName() + "";
-//						File tmpFile = new File(FileUtil.TEMP_PATH
-//								+ tmpImageName);
-//						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
-//								Uri.fromFile(tmpFile));
-//						startActivityForResult(intentCamera, TAKE_PHOTO);
-//					} else {
-//						// 相册
-//						tmpImageName = JLXCUtils.getPhotoFileName() + "";
-//						Intent intentAlbum = new Intent(
-//								Intent.ACTION_GET_CONTENT);
-//						intentAlbum.setType(IMAGE_UNSPECIFIED);
-//						startActivityForResult(intentAlbum, ALBUM_SELECT);
-//					}
-//				}
-//			});
-//			backAlertDialog.show();
+			// Builder backAlertDialog = new AlertDialog.Builder(getActivity())
+			// .setNegativeButton("取消", null).setTitle("修改背景");
+			// String[] backStrings = new String[] { "拍照", "相册" };
+			// backAlertDialog.setItems(backStrings, new OnClickListener() {
+			// @Override
+			// public void onClick(DialogInterface dialog, int which) {
+			//
+			// // 设置为头像
+			// imageType = BACK_IMAGE;
+			// if (which == 0) {
+			// // 相机
+			// Intent intentCamera = new Intent(
+			// MediaStore.ACTION_IMAGE_CAPTURE);
+			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
+			// File tmpFile = new File(FileUtil.TEMP_PATH
+			// + tmpImageName);
+			// intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
+			// Uri.fromFile(tmpFile));
+			// startActivityForResult(intentCamera, TAKE_PHOTO);
+			// } else {
+			// // 相册
+			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
+			// Intent intentAlbum = new Intent(
+			// Intent.ACTION_GET_CONTENT);
+			// intentAlbum.setType(IMAGE_UNSPECIFIED);
+			// startActivityForResult(intentAlbum, ALBUM_SELECT);
+			// }
+			// }
+			// });
+			// backAlertDialog.show();
 			// 设置为背景
 			imageType = BACK_IMAGE;
 			final CustomSelectPhotoDialog selectBackDialog = new CustomSelectPhotoDialog(
 					this.getActivity());
 			selectBackDialog.show();
-			selectBackDialog.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
+			selectBackDialog
+					.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
 
 						@Override
 						public void onSelectGallery() {
 							// 相册
 							tmpImageName = JLXCUtils.getPhotoFileName() + "";
-//							Intent intentAlbum = new Intent(
-//									Intent.ACTION_GET_CONTENT);
-//							intentAlbum.setType(IMAGE_UNSPECIFIED);
-//							startActivityForResult(intentAlbum, ALBUM_SELECT);
+							// Intent intentAlbum = new Intent(
+							// Intent.ACTION_GET_CONTENT);
+							// intentAlbum.setType(IMAGE_UNSPECIFIED);
+							// startActivityForResult(intentAlbum,
+							// ALBUM_SELECT);
 							// 相册
-							Intent intentAlbum = new Intent(getActivity(),GalleyActivity.class);
-							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
-							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE, true);
+							Intent intentAlbum = new Intent(getActivity(),
+									GalleyActivity.class);
+							intentAlbum
+									.putExtra(
+											GalleyActivity.INTENT_KEY_SELECTED_COUNT,
+											0);
+							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE,
+									true);
 							startActivityForResult(intentAlbum, ALBUM_SELECT);
-							
+
 							selectBackDialog.dismiss();
 						}
 
@@ -393,8 +416,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 							selectBackDialog.dismiss();
 						}
 
-					});			
-			
+					});
+
 			break;
 		case R.id.my_image_layout:
 			// 图片点击
@@ -434,7 +457,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		}
 	}
 
-	//////////////////////////////////life cycle/////////////////////////////////
+	// ////////////////////////////////life
+	// cycle/////////////////////////////////
 	@Override
 	public int setLayoutId() {
 		// TODO Auto-generated method stub
@@ -444,39 +468,37 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 	@Override
 	public void setUpViews(View rootView) {
 
-        //显示头像的配置  
-		headImageOptions = new DisplayImageOptions.Builder()  
-                .showImageOnLoading(R.drawable.default_avatar)  
-                .showImageOnFail(R.drawable.default_avatar)  
-                .cacheInMemory(true)  
-                .cacheOnDisk(true)  
-                .bitmapConfig(Bitmap.Config.RGB_565)  
-                .build();
-		//背景
-		backImageOptions = new DisplayImageOptions.Builder()  
-        .showImageOnLoading(R.drawable.default_back_image)  
-        .showImageOnFail(R.drawable.default_back_image)  
-        .cacheInMemory(true)  
-        .cacheOnDisk(true)  
-        .bitmapConfig(Bitmap.Config.RGB_565)  
-        .build();		
-		
+		// 显示头像的配置
+		headImageOptions = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+		// 背景
+		backImageOptions = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_back_image)
+				.showImageOnFail(R.drawable.default_back_image)
+				.cacheInMemory(true).cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
+
 		// 初始化adapter
 		myImageAdapter = initAdapter(R.layout.my_image_adapter);
-//		visitAdapter = initAdapter(R.layout.attrament_image);
-//		friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(),
-//				R.layout.attrament_image) {
-//			@Override
-//			protected void convert(HelloHaBaseAdapterHelper helper, IMModel item) {
-//				
-//				ImageView imageView = helper.getView(R.id.image_attrament);
-//				if (null != item.getAvatarPath() && item.getAvatarPath().length() > 0) {
-//					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath(), imageView, headImageOptions);					
-//				}else {
-//					imageView.setImageResource(R.drawable.default_avatar);
-//				}
-//			}
-//		};
+		// visitAdapter = initAdapter(R.layout.attrament_image);
+		// friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(),
+		// R.layout.attrament_image) {
+		// @Override
+		// protected void convert(HelloHaBaseAdapterHelper helper, IMModel item)
+		// {
+		//
+		// ImageView imageView = helper.getView(R.id.image_attrament);
+		// if (null != item.getAvatarPath() && item.getAvatarPath().length() >
+		// 0) {
+		// ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR +
+		// item.getAvatarPath(), imageView, headImageOptions);
+		// }else {
+		// imageView.setImageResource(R.drawable.default_avatar);
+		// }
+		// }
+		// };
 
 		DisplayMetrics displayMet = getResources().getDisplayMetrics();
 		int screenWidth = displayMet.widthPixels;
@@ -499,12 +521,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 		// 设置adapter
 		myImageGridView.setAdapter(myImageAdapter);
-//		visitGridView.setAdapter(visitAdapter);
-//		friendsGridView.setAdapter(friendsAdapter);
+		// visitGridView.setAdapter(visitAdapter);
+		// friendsGridView.setAdapter(friendsAdapter);
 		// 不能点击
 		myImageGridView.setEnabled(false);
-//		visitGridView.setEnabled(false);
-//		friendsGridView.setEnabled(false);
+		// visitGridView.setEnabled(false);
+		// friendsGridView.setEnabled(false);
 
 		userModel = UserManager.getInstance().getUser();
 
@@ -514,48 +536,48 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		} else {
 			signTextView.setText(userModel.getSign());
 		}
-		
-          
+
 		// 设置照片和背景图 取消
-//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-//				getActivity(), R.drawable.default_avatar, true, true);
-//		// 背景 2015-07-02/191435808476.png
-//		backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-//				getActivity(), R.drawable.default_back_image, true, true);		
-		
+		// bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+		// getActivity(), R.drawable.default_avatar, true, true);
+		// // 背景 2015-07-02/191435808476.png
+		// backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
+		// getActivity(), R.drawable.default_back_image, true, true);
+
 		// 无缓存bitmap
 		// noCacheBitmapUtils =
 		// BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(),
 		// R.drawable.ic_launcher, false, false);
 		// 解析省份城市xml
 		initProvinceDatas();
-		
-		cityBuilder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
-//		cityBuilder.setPositiveButton("确定",
-//				new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialog, int which) {
-//						cityTextView.setText(mCurrentProviceName
-//								+ mCurrentCityName);
-//
-//						uploadInformation("city", mCurrentProviceName + ","
-//								+ mCurrentCityName);
-//					}
-//				});
-		
-//		//设置点击
-//		setOnClickEvent();
+
+		cityBuilder = new AlertDialog.Builder(getActivity(),
+				AlertDialog.THEME_HOLO_LIGHT);
+		// cityBuilder.setPositiveButton("确定",
+		// new DialogInterface.OnClickListener() {
+		// @Override
+		// public void onClick(DialogInterface dialog, int which) {
+		// cityTextView.setText(mCurrentProviceName
+		// + mCurrentCityName);
+		//
+		// uploadInformation("city", mCurrentProviceName + ","
+		// + mCurrentCityName);
+		// }
+		// });
+
+		// //设置点击
+		// setOnClickEvent();
 	}
-	
+
 	public void setOnClickEvent() {
-//		View view = getActivity().findViewById(R.id.about_us);
-//		view.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		});
+		// View view = getActivity().findViewById(R.id.about_us);
+		// view.setOnClickListener(new View.OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		// });
 	}
 
 	@Override
@@ -568,22 +590,30 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		// TODO Auto-generated method stub
 		super.onResume();
 		// 头像 2015-07-07/01436273216_sub.jpg
-//		bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
-//				+ userModel.getHead_image());
-//		backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
-//				+ userModel.getBackground_image());
-		if (null != userModel.getHead_image() && userModel.getHead_image().length() > 0) {
-			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + userModel.getHead_image(), headImageView, headImageOptions);			
-		}else {
+		// bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
+		// + userModel.getHead_image());
+		// backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
+		// + userModel.getBackground_image());
+		if (null != userModel.getHead_image()
+				&& userModel.getHead_image().length() > 0) {
+			ImageLoader.getInstance().displayImage(
+					JLXCConst.ATTACHMENT_ADDR + userModel.getHead_image(),
+					headImageView, headImageOptions);
+		} else {
 			headImageView.setImageResource(R.drawable.default_avatar);
 		}
-		
-		if (null != userModel.getBackground_image() && userModel.getBackground_image().length() > 0) {
-			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + userModel.getBackground_image(), backImageView, backImageOptions);			
-		}else {
+
+		if (null != userModel.getBackground_image()
+				&& userModel.getBackground_image().length() > 0) {
+			ImageLoader.getInstance()
+					.displayImage(
+							JLXCConst.ATTACHMENT_ADDR
+									+ userModel.getBackground_image(),
+							backImageView, backImageOptions);
+		} else {
 			backImageView.setImageResource(R.drawable.default_back_image);
 		}
-		
+
 		// 姓名
 		if (null == userModel.getName() || "".equals(userModel.getName())) {
 			nameTextView.setText("暂无");
@@ -607,10 +637,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		}
 		// 性别
 		if (userModel.getSex() == 0) {
-			sexTextView.setText("男孩纸");
+			sexTextView.setText("帅锅");
 			sexImageView.setImageResource(R.drawable.sex_boy);
 		} else {
-			sexTextView.setText("女孩纸");
+			sexTextView.setText("妹子");
 			sexImageView.setImageResource(R.drawable.sex_girl);
 		}
 		// 学校字符串
@@ -691,7 +721,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 					int[] screenSize = getScreenSize();
 					if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0],
 							screenSize[1])) {
-//						filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+						// filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
 						uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
 					}
 				}
@@ -702,37 +732,43 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 				if (data != null) {
 					// 头像 获取剪切
 					if (imageType == HEAD_IMAGE) {
-						List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
+						List<String> resultList = (List<String>) data
+								.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
 						// 循环处理图片
 						for (String fileRealPath : resultList) {
-							//只取一张
+							// 只取一张
 							File tmpFile = new File(fileRealPath);
 							startPhotoZoom(Uri.fromFile(tmpFile));
 							break;
 						}
-						
-//						startPhotoZoom(data.getData());	
-						
+
+						// startPhotoZoom(data.getData());
+
 					} else {
-//						String path = getRealPathFromURI(data.getData());
-//						// 图片压缩
-//						int[] screenSize1 = getScreenSize();
-//						if (FileUtil.tempToLocalPath(path, tmpImageName,
-//								screenSize1[0], screenSize1[1])) {
-//							// bitmapUtils.display(backImageView,
-//							// FileUtil.BIG_IMAGE_PATH + tmpImageName);
-////							filterImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
-//							uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
-//						}
-						
-						List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
+						// String path = getRealPathFromURI(data.getData());
+						// // 图片压缩
+						// int[] screenSize1 = getScreenSize();
+						// if (FileUtil.tempToLocalPath(path, tmpImageName,
+						// screenSize1[0], screenSize1[1])) {
+						// // bitmapUtils.display(backImageView,
+						// // FileUtil.BIG_IMAGE_PATH + tmpImageName);
+						// // filterImage(FileUtil.BIG_IMAGE_PATH +
+						// tmpImageName);
+						// uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+						// }
+
+						List<String> resultList = (List<String>) data
+								.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
 						int[] screenSize1 = getScreenSize();
 						// 循环处理图片
 						for (String fileRealPath : resultList) {
 							// 用户id+时间戳
-							if (fileRealPath != null&& FileUtil.tempToLocalPath(fileRealPath, tmpImageName,
-											screenSize1[0], screenSize1[1])) {
-								uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
+							if (fileRealPath != null
+									&& FileUtil.tempToLocalPath(fileRealPath,
+											tmpImageName, screenSize1[0],
+											screenSize1[1])) {
+								uploadImage(FileUtil.BIG_IMAGE_PATH
+										+ tmpImageName);
 								break;
 							}
 						}
@@ -744,14 +780,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 				if (data != null) {
 
 					if (null != tmpImageName) {
-//						bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH + tmpImageName);
-						
+						// bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH
+						// + tmpImageName);
+
 						// 删除临时文件
 						File file = new File(FileUtil.TEMP_PATH + tmpImageName);
 						if (file.exists()) {
 							file.delete();
 						}
-//						filterImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
+						// filterImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
 						uploadImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
 					}
 
@@ -842,17 +879,19 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		final EditText et_search = (EditText) textViewLayout
 				.findViewById(R.id.name_edit_text);
 		et_search.setText(userModel.getName());
-		
+
 		final Dialog dialog = nameAlertDialog.show();
-		TextView cancelTextView = (TextView) textViewLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
+		TextView cancelTextView = (TextView) textViewLayout
+				.findViewById(R.id.tv_custom_alert_dialog_cancel);
 		cancelTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dialog.dismiss();
 			}
 		});
-		
-		TextView confirmTextView = (TextView) textViewLayout.findViewById(R.id.tv_custom_alert_dialog_confirm);
+
+		TextView confirmTextView = (TextView) textViewLayout
+				.findViewById(R.id.tv_custom_alert_dialog_confirm);
 		confirmTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -869,186 +908,199 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 				nameTextView.setText(name);
 				dialog.dismiss();
 			}
-		});			
-		
-//		// 设置确定
-//		nameAlertDialog.setPositiveButton("确定", new OnClickListener() {
-//			@Override
-//			public void onClick(DialogInterface dialog, int which) {
-//				String name = et_search.getText().toString();
-//				if (name.length() < 1) {
-//					ToastUtil.show(getActivity(), "昵称不能为空");
-//					return;
-//				}
-//				if (name.length() > 8) {
-//					ToastUtil.show(getActivity(), "昵称不能超过八个字");
-//					return;
-//				}
-//				uploadInformation("name", et_search.getText().toString());
-//				nameTextView.setText(name);
-//			}
-//		});
-//
-//		nameAlertDialog.show();
+		});
+
+		// // 设置确定
+		// nameAlertDialog.setPositiveButton("确定", new OnClickListener() {
+		// @Override
+		// public void onClick(DialogInterface dialog, int which) {
+		// String name = et_search.getText().toString();
+		// if (name.length() < 1) {
+		// ToastUtil.show(getActivity(), "昵称不能为空");
+		// return;
+		// }
+		// if (name.length() > 8) {
+		// ToastUtil.show(getActivity(), "昵称不能超过八个字");
+		// return;
+		// }
+		// uploadInformation("name", et_search.getText().toString());
+		// nameTextView.setText(name);
+		// }
+		// });
+		//
+		// nameAlertDialog.show();
 	}
 
 	@SuppressLint({ "NewApi", "InflateParams" })
 	private void birthClick() {
-		
-		LinearLayout dateTimeLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.birth_picker_view, null);
-		final DatePicker datePicker = (DatePicker) dateTimeLayout.findViewById(R.id.datepicker);
+
+		LinearLayout dateTimeLayout = (LinearLayout) getActivity()
+				.getLayoutInflater().inflate(R.layout.birth_picker_view, null);
+		final DatePicker datePicker = (DatePicker) dateTimeLayout
+				.findViewById(R.id.datepicker);
 		Calendar calendar = Calendar.getInstance();
-		if (userModel.getBirthday().length()>0) {
+		if (userModel.getBirthday().length() > 0) {
 			String[] date = userModel.getBirthday().split("-");
 			if (date.length == 3) {
-				calendar.set(JLXCUtils.stringToInt(date[0]), JLXCUtils.stringToInt(date[1])-1, JLXCUtils.stringToInt(date[2]));	
+				calendar.set(JLXCUtils.stringToInt(date[0]),
+						JLXCUtils.stringToInt(date[1]) - 1,
+						JLXCUtils.stringToInt(date[2]));
 			}
 		}
-		
-		datePicker.init(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH), new OnDateChangedListener() {
-					
+
+		datePicker.init(calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DAY_OF_MONTH),
+				new OnDateChangedListener() {
+
 					@Override
-					public void onDateChanged(DatePicker view, int year, int monthOfYear,
-							int dayOfMonth) {
-						Log.i("haha", year+" "+" "+monthOfYear+" "+dayOfMonth);
+					public void onDateChanged(DatePicker view, int year,
+							int monthOfYear, int dayOfMonth) {
+						Log.i("haha", year + " " + " " + monthOfYear + " "
+								+ dayOfMonth);
 					}
 				});
-		
+
 		Builder builder = new AlertDialog.Builder(getActivity())
-		.setView(dateTimeLayout);
-//		.setPositiveButton("设置", new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//				String date = datePicker.getYear() + "-"
-//						+ datePicker.getMonth() + "-"
-//						+ datePicker.getDayOfMonth();
-//				birthTextView.setText(date);
-//				uploadInformation("birthday", date);
-//			}
-//		})
-//		.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//			}
-//		});				
-		
+				.setView(dateTimeLayout);
+		// .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+		// public void onClick(DialogInterface dialog, int whichButton) {
+		// String date = datePicker.getYear() + "-"
+		// + datePicker.getMonth() + "-"
+		// + datePicker.getDayOfMonth();
+		// birthTextView.setText(date);
+		// uploadInformation("birthday", date);
+		// }
+		// })
+		// .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+		// public void onClick(DialogInterface dialog, int whichButton) {
+		// }
+		// });
+
 		final Dialog dialog = builder.show();
-		TextView cancelTextView = (TextView) dateTimeLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
+		TextView cancelTextView = (TextView) dateTimeLayout
+				.findViewById(R.id.tv_custom_alert_dialog_cancel);
 		cancelTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dialog.dismiss();
 			}
 		});
-		
-		TextView confirmTextView = (TextView) dateTimeLayout.findViewById(R.id.tv_custom_alert_dialog_confirm);
+
+		TextView confirmTextView = (TextView) dateTimeLayout
+				.findViewById(R.id.tv_custom_alert_dialog_confirm);
 		confirmTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String date = datePicker.getYear() + "-"
-						+ (datePicker.getMonth()+1) + "-"
+						+ (datePicker.getMonth() + 1) + "-"
 						+ datePicker.getDayOfMonth();
 				LogUtils.i(date, 1);
 				birthTextView.setText(date);
 				uploadInformation("birthday", date);
 				dialog.dismiss();
 			}
-		});	
-		
-		
-		
-//		DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-//				new OnDateSetListener() {
-//					@Override
-//					public void onDateSet(DatePicker view, int year,
-//							int monthOfYear, int dayOfMonth) {
-//
-//					}
-//				}, 2000, 0, 0);
-//		// 取消按钮
-//		datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
-//				new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialog, int which) {
-//						LogUtils.i("cancel~~cancel~~", 1);
-//					}
-//				});
-//		// 确定按钮
-//		final DatePicker picker = datePickerDialog.getDatePicker();
-//		datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
-//				new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialog, int which) {
-//
-//						LogUtils.i("ok~~ok~~", 1);
-//						String date = picker.getYear() + "-"
-//								+ picker.getMonth() + "-"
-//								+ picker.getDayOfMonth();
-//						LogUtils.i(date, 1);
-//						birthTextView.setText(date);
-//						uploadInformation("birthday", date);
-//					}
-//				});
-//		datePickerDialog.show();
+		});
+
+		// DatePickerDialog datePickerDialog = new
+		// DatePickerDialog(getActivity(),
+		// new OnDateSetListener() {
+		// @Override
+		// public void onDateSet(DatePicker view, int year,
+		// int monthOfYear, int dayOfMonth) {
+		//
+		// }
+		// }, 2000, 0, 0);
+		// // 取消按钮
+		// datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
+		// new DialogInterface.OnClickListener() {
+		// @Override
+		// public void onClick(DialogInterface dialog, int which) {
+		// LogUtils.i("cancel~~cancel~~", 1);
+		// }
+		// });
+		// // 确定按钮
+		// final DatePicker picker = datePickerDialog.getDatePicker();
+		// datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+		// new DialogInterface.OnClickListener() {
+		// @Override
+		// public void onClick(DialogInterface dialog, int which) {
+		//
+		// LogUtils.i("ok~~ok~~", 1);
+		// String date = picker.getYear() + "-"
+		// + picker.getMonth() + "-"
+		// + picker.getDayOfMonth();
+		// LogUtils.i(date, 1);
+		// birthTextView.setText(date);
+		// uploadInformation("birthday", date);
+		// }
+		// });
+		// datePickerDialog.show();
 	}
 
 	// 姓名点击
 	private void sexClick() {
 
 		// dialog
-		Builder sexAlertDialog = new AlertDialog.Builder(getActivity());
-		LinearLayout sexViewLayout = (LinearLayout) View.inflate(
-				getActivity(), R.layout.dialog_sex_view, null);
-		sexAlertDialog.setView(sexViewLayout);
-		
-		final Dialog dialog = sexAlertDialog.show();
-		TextView cancelTextView = (TextView) sexViewLayout.findViewById(R.id.tv_custom_alert_dialog_cancel);
-		cancelTextView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-		//性别男
-		TextView boyTextView = (TextView) sexViewLayout.findViewById(R.id.boy_text_view);
+		LinearLayout sexViewLayout = (LinearLayout) View.inflate(getActivity(),
+				R.layout.dialog_sex_view, null);
+		final Dialog sexAlertDialog = new AlertDialog.Builder(getActivity())
+				.create();
+		sexAlertDialog.show();
+		sexAlertDialog.setContentView(sexViewLayout);
+		sexAlertDialog.setCanceledOnTouchOutside(true);
+		// 设置大小
+		DisplayMetrics metric = new DisplayMetrics();
+		getActivity().getWindowManager().getDefaultDisplay().getMetrics(metric);
+		int width = metric.widthPixels; // 屏幕宽度（像素）
+		WindowManager.LayoutParams params = sexAlertDialog.getWindow()
+				.getAttributes();
+		params.width = (int) (width * 0.8);
+		sexAlertDialog.getWindow().setAttributes(params);
+
+		// 性别男
+		TextView boyTextView = (TextView) sexViewLayout
+				.findViewById(R.id.boy_text_view);
 		boyTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				sexTextView.setText("男孩纸");
+				sexTextView.setText("帅锅");
 				sexImageView.setImageResource(R.drawable.sex_boy);
 				uploadInformation("sex", "" + 0);
-				dialog.dismiss();
+				sexAlertDialog.dismiss();
 			}
 		});
-		//性别女
-		TextView girlTextView = (TextView) sexViewLayout.findViewById(R.id.girl_text_view);
+		// 性别女
+		TextView girlTextView = (TextView) sexViewLayout
+				.findViewById(R.id.girl_text_view);
 		girlTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				sexTextView.setText("女孩纸");
+				sexTextView.setText("妹子");
 				sexImageView.setImageResource(R.drawable.sex_girl);
 				uploadInformation("sex", "" + 1);
-				dialog.dismiss();
+				sexAlertDialog.dismiss();
 			}
 		});
-		
-		
-//		// dialog
-//		Builder nameAlertDialog = new AlertDialog.Builder(getActivity())
-//				.setNegativeButton("取消", null).setTitle("选择性别");
-//		String[] sexStrings = new String[] { "男孩纸", "女孩纸" };
-//		nameAlertDialog.setItems(sexStrings, new OnClickListener() {
-//			@Override
-//			public void onClick(DialogInterface dialog, int which) {
-//				if (which == 0) {
-//					sexTextView.setText("男孩纸");
-//					sexImageView.setImageResource(R.drawable.sex_boy);
-//				} else {
-//					sexTextView.setText("女孩纸");
-//					sexImageView.setImageResource(R.drawable.sex_girl);
-//				}
-//				uploadInformation("sex", "" + which);
-//			}
-//		});
-//		nameAlertDialog.show();
+
+		// // dialog
+		// Builder nameAlertDialog = new AlertDialog.Builder(getActivity())
+		// .setNegativeButton("取消", null).setTitle("选择性别");
+		// String[] sexStrings = new String[] { "男孩纸", "女孩纸" };
+		// nameAlertDialog.setItems(sexStrings, new OnClickListener() {
+		// @Override
+		// public void onClick(DialogInterface dialog, int which) {
+		// if (which == 0) {
+		// sexTextView.setText("男孩纸");
+		// sexImageView.setImageResource(R.drawable.sex_boy);
+		// } else {
+		// sexTextView.setText("女孩纸");
+		// sexImageView.setImageResource(R.drawable.sex_girl);
+		// }
+		// uploadInformation("sex", "" + which);
+		// }
+		// });
+		// nameAlertDialog.show();
 	}
 
 	// 初始化adapter
@@ -1059,10 +1111,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
 				ImageView imageView = helper.getView(R.id.image_attrament);
-//				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR + item);
+				// bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR +
+				// item);
 				if (null != item && item.length() > 0) {
-					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item, imageView, headImageOptions);
-				}else {
+					ImageLoader.getInstance().displayImage(
+							JLXCConst.ATTACHMENT_ADDR + item, imageView,
+							headImageOptions);
+				} else {
 					imageView.setImageResource(R.drawable.default_avatar);
 				}
 			}
@@ -1136,22 +1191,23 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 数据处理
-//							JSONArray array = jResult
-//									.getJSONArray(JLXCConst.HTTP_LIST);
-//							List<String> headImageList = new ArrayList<String>();
-//							if (null != array && array.size() < 1) {
-//								visitAdapter.clear();
-//							}
-//							for (int i = 0; i < array.size(); i++) {
-//								JSONObject object = (JSONObject) array.get(i);
-//								headImageList.add(object
-//										.getString("head_sub_image"));
-//							}
-//							visitAdapter.replaceAll(headImageList);
+							// JSONArray array = jResult
+							// .getJSONArray(JLXCConst.HTTP_LIST);
+							// List<String> headImageList = new
+							// ArrayList<String>();
+							// if (null != array && array.size() < 1) {
+							// visitAdapter.clear();
+							// }
+							// for (int i = 0; i < array.size(); i++) {
+							// JSONObject object = (JSONObject) array.get(i);
+							// headImageList.add(object
+							// .getString("head_sub_image"));
+							// }
+							// visitAdapter.replaceAll(headImageList);
 							// 人数
 							int visitCount = jResult.getIntValue("visit_count");
 							if (visitCount > 0) {
-								visitCountTextView.setText(visitCount + "人");
+								visitCountTextView.setText(visitCount + "");
 							} else {
 								visitCountTextView.setText("");
 							}
@@ -1160,7 +1216,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 						if (status == JLXCConst.STATUS_FAIL) {
 							// ToastUtil.show(getActivity(),
 							// jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-//							visitAdapter.clear();
+							// visitAdapter.clear();
 							visitCountTextView.setText("");
 						}
 					}
@@ -1192,22 +1248,24 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
 							// 数据处理
-//							JSONArray array = jResult
-//									.getJSONArray(JLXCConst.HTTP_LIST);
-//							List<IMModel> headImageList = new ArrayList<IMModel>();
-//							friendsAdapter.clear();
-//							for (int i = 0; i < array.size(); i++) {
-//								JSONObject object = (JSONObject) array.get(i);
-//								IMModel imModel = new IMModel();
-//								imModel.setAvatarPath(object
-//										.getString("head_sub_image"));
-//								headImageList.add(imModel);
-//							}
-//							friendsAdapter.replaceAll(headImageList);
+							// JSONArray array = jResult
+							// .getJSONArray(JLXCConst.HTTP_LIST);
+							// List<IMModel> headImageList = new
+							// ArrayList<IMModel>();
+							// friendsAdapter.clear();
+							// for (int i = 0; i < array.size(); i++) {
+							// JSONObject object = (JSONObject) array.get(i);
+							// IMModel imModel = new IMModel();
+							// imModel.setAvatarPath(object
+							// .getString("head_sub_image"));
+							// headImageList.add(imModel);
+							// }
+							// friendsAdapter.replaceAll(headImageList);
 							// 人数
-							int friendCount = jResult.getIntValue("friend_count");
+							int friendCount = jResult
+									.getIntValue("friend_count");
 							if (friendCount > 0) {
-								friendsCountTextView.setText(friendCount + "人");
+								friendsCountTextView.setText(friendCount + "");
 							} else {
 								friendsCountTextView.setText("");
 							}
@@ -1215,7 +1273,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-//							friendsAdapter.clear();
+							// friendsAdapter.clear();
 							friendsCountTextView.setText("");
 						}
 					}
@@ -1288,48 +1346,48 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 	}
 
 	// 图片滤镜
-//	private void filterImage(final String path) {
-//		File filterFile = new File(path);
-//		// 组件委托
-//		TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
-//			@Override
-//			public void onComponentFinished(TuSdkResult result, Error error,
-//					TuFragment lastFragment) {
-//				File oriFile = result.imageFile;
-//				File newFile = new File(path);
-//				boolean filterOK = oriFile.renameTo(newFile);
-//				if (filterOK) {
-//					uploadImage(path);
-//				} else {
-//					ToastUtil.show(getActivity(), "图片处理失败T_T");
-//				}
-//			}
-//		};
-//
-//		TuEditComponent component = TuSdk.editCommponent(getActivity(),
-//				delegate);
-//		component.componentOption().editEntryOption().setEnableCuter(false);
-//		component.componentOption().editEntryOption().setEnableSticker(false);
-//		component.componentOption().editEntryOption().setSaveToAlbum(false);
-//		component.componentOption().editEntryOption().setAutoRemoveTemp(false);
-//		component.componentOption().editEntryOption().setSaveToTemp(true);
-//		component.componentOption().editEntryOption().setOutputCompress(80);
-//
-//		TuSdkResult result = new TuSdkResult();
-//		result.imageFile = filterFile;
-//
-//		// 设置图片
-//		component.setImage(result.image)
-//		// 设置系统照片
-//				.setImageSqlInfo(result.imageSqlInfo)
-//				// 设置临时文件
-//				.setTempFilePath(result.imageFile)
-//				// 在组件执行完成后自动关闭组件
-//				.setAutoDismissWhenCompleted(true)
-//				// 开启组件
-//				.showComponent();
-//
-//	}
+	// private void filterImage(final String path) {
+	// File filterFile = new File(path);
+	// // 组件委托
+	// TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
+	// @Override
+	// public void onComponentFinished(TuSdkResult result, Error error,
+	// TuFragment lastFragment) {
+	// File oriFile = result.imageFile;
+	// File newFile = new File(path);
+	// boolean filterOK = oriFile.renameTo(newFile);
+	// if (filterOK) {
+	// uploadImage(path);
+	// } else {
+	// ToastUtil.show(getActivity(), "图片处理失败T_T");
+	// }
+	// }
+	// };
+	//
+	// TuEditComponent component = TuSdk.editCommponent(getActivity(),
+	// delegate);
+	// component.componentOption().editEntryOption().setEnableCuter(false);
+	// component.componentOption().editEntryOption().setEnableSticker(false);
+	// component.componentOption().editEntryOption().setSaveToAlbum(false);
+	// component.componentOption().editEntryOption().setAutoRemoveTemp(false);
+	// component.componentOption().editEntryOption().setSaveToTemp(true);
+	// component.componentOption().editEntryOption().setOutputCompress(80);
+	//
+	// TuSdkResult result = new TuSdkResult();
+	// result.imageFile = filterFile;
+	//
+	// // 设置图片
+	// component.setImage(result.image)
+	// // 设置系统照片
+	// .setImageSqlInfo(result.imageSqlInfo)
+	// // 设置临时文件
+	// .setTempFilePath(result.imageFile)
+	// // 在组件执行完成后自动关闭组件
+	// .setAutoDismissWhenCompleted(true)
+	// // 开启组件
+	// .showComponent();
+	//
+	// }
 
 	// 上传头像
 	private void uploadImage(final String path) {
@@ -1370,11 +1428,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 										"subimage");
 								userModel.setHead_image(serverPath);
 								userModel.setHead_sub_image(subPath);
-//								bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH + tmpImageName);
-//								bitmapUtils.display(headImageView,JLXCConst.ATTACHMENT_ADDR + serverPath);
-								ImageLoader.getInstance().displayImage("file://"+FileUtil.HEAD_PIC_PATH + tmpImageName, headImageView, headImageOptions);								
-								ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + serverPath, headImageView, headImageOptions);
-								
+								// bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH
+								// + tmpImageName);
+								// bitmapUtils.display(headImageView,JLXCConst.ATTACHMENT_ADDR
+								// + serverPath);
+								ImageLoader.getInstance().displayImage(
+										"file://" + FileUtil.HEAD_PIC_PATH
+												+ tmpImageName, headImageView,
+										headImageOptions);
+								ImageLoader.getInstance().displayImage(
+										JLXCConst.ATTACHMENT_ADDR + serverPath,
+										headImageView, headImageOptions);
+
 								// 刷新信息
 								UserInfo userInfo = new UserInfo(JLXCConst.JLXC
 										+ userModel.getUid(), userModel
@@ -1385,13 +1450,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 										userInfo);
 							} else {
 								userModel.setBackground_image(serverPath);
-//								bitmapUtils.display(backImageView,
-//										FileUtil.BIG_IMAGE_PATH + tmpImageName);
-//								bitmapUtils.display(backImageView,
-//										JLXCConst.ATTACHMENT_ADDR + serverPath);
-								ImageLoader.getInstance().displayImage("file://"+FileUtil.BIG_IMAGE_PATH + tmpImageName, backImageView, backImageOptions);								
-								ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + serverPath, backImageView, backImageOptions);
-								
+								// bitmapUtils.display(backImageView,
+								// FileUtil.BIG_IMAGE_PATH + tmpImageName);
+								// bitmapUtils.display(backImageView,
+								// JLXCConst.ATTACHMENT_ADDR + serverPath);
+								ImageLoader.getInstance().displayImage(
+										"file://" + FileUtil.BIG_IMAGE_PATH
+												+ tmpImageName, backImageView,
+										backImageOptions);
+								ImageLoader.getInstance().displayImage(
+										JLXCConst.ATTACHMENT_ADDR + serverPath,
+										backImageView, backImageOptions);
+
 							}
 							ToastUtil.show(getActivity(), jsonResponse
 									.getString(JLXCConst.HTTP_MESSAGE));
@@ -1564,21 +1634,21 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		this.myImageAdapter = myImageAdapter;
 	}
 
-//	public HelloHaAdapter<String> getVisitAdapter() {
-//		return visitAdapter;
-//	}
-//
-//	public void setVisitAdapter(HelloHaAdapter<String> visitAdapter) {
-//		this.visitAdapter = visitAdapter;
-//	}
-//
-//	public HelloHaAdapter<IMModel> getFriendsAdapter() {
-//		return friendsAdapter;
-//	}
-//
-//	public void setFriendsAdapter(HelloHaAdapter<IMModel> friendsAdapter) {
-//		this.friendsAdapter = friendsAdapter;
-//	}
+	// public HelloHaAdapter<String> getVisitAdapter() {
+	// return visitAdapter;
+	// }
+	//
+	// public void setVisitAdapter(HelloHaAdapter<String> visitAdapter) {
+	// this.visitAdapter = visitAdapter;
+	// }
+	//
+	// public HelloHaAdapter<IMModel> getFriendsAdapter() {
+	// return friendsAdapter;
+	// }
+	//
+	// public void setFriendsAdapter(HelloHaAdapter<IMModel> friendsAdapter) {
+	// this.friendsAdapter = friendsAdapter;
+	// }
 
 	public String getTmpImageName() {
 		return tmpImageName;
@@ -1588,10 +1658,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		this.tmpImageName = tmpImageName;
 	}
 
-	
-	//点击事件.........
+	// 点击事件.........
 	@Override
 	public void onClick(View v) {
-		
+
 	}
 }

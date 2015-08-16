@@ -276,6 +276,21 @@ public class DiscoveryFragment extends BaseFragment {
 				});
 
 		/**
+		 * 设置底部自动刷新
+		 * */
+		rcmdPersonListView
+				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+					@Override
+					public void onLastItemVisible() {
+						if (!lastPage) {
+							rcmdPersonListView.setMode(Mode.PULL_FROM_END);
+							rcmdPersonListView.setRefreshing(true);
+						}
+					}
+				});
+
+		/**
 		 * adapter的设置
 		 * */
 		personItemAdapter = new HelloHaAdapter<RecommendItemData>(mContext,
@@ -301,26 +316,7 @@ public class DiscoveryFragment extends BaseFragment {
 				}
 			}
 		};
-		/**
-		 * 设置底部自动刷新
-		 * */
-		rcmdPersonListView
-				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 
-					@Override
-					public void onLastItemVisible() {
-						if (!lastPage && !isRequestingUpData) {
-							isRequestingUpData = true;
-							rcmdPersonListView.setMode(Mode.PULL_FROM_END);
-							rcmdPersonListView.setRefreshing(true);
-							isPullDowm = false;
-							getRecommentData(
-									String.valueOf(userModel.getUid()),
-									String.valueOf(currentPage));
-							isRequestingUpData = false;
-						}
-					}
-				});
 		// 设置不可点击
 		personItemAdapter.setItemsClickEnable(false);
 		rcmdPersonListView.setAdapter(personItemAdapter);

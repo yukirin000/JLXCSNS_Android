@@ -92,7 +92,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
                 .bitmapConfig(Bitmap.Config.RGB_565)  
                 .build();
 		
-		setBarText("我的好友");
+		setBarText("我的小伙伴  (●´ω｀●)φ");
 		
 		init();
 		listviewSet();

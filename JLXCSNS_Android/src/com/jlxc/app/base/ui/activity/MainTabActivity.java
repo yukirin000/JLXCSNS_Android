@@ -95,7 +95,7 @@ public class MainTabActivity extends BaseActivity {
 						
 						if (mTabHost.getCurrentTab() == 0) {
 							Intent mIntent = new Intent(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
-							mIntent.putExtra(NewsConstants.PUBLISH_FINISH, "");
+							mIntent.putExtra(NewsConstants.NEWS_LISTVIEW_REFRESH, "");
 							//发送广播
 							LocalBroadcastManager.getInstance(MainTabActivity.this).sendBroadcast(mIntent);
 							//徽标更新

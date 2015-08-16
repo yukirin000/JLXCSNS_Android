@@ -89,9 +89,9 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		//如果是自己
 		if (uid == UserManager.getInstance().getUser().getUid()) {
-			setBarText("我的访客");
+			setBarText("谁来看过我 (●´ω｀●)φ");
 		}else {
-			setBarText("TA的访客");
+			setBarText("谁来看过TA (●´ω｀●)φ");
 		}
 		
 //		bitmapUtils = new BitmapUtils(this);
