@@ -358,17 +358,23 @@ public class NewsListFragment extends BaseFragment {
 	private void setLastData(int userID) {
 		String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
 				+ "&page=" + 1 + "&frist_time=";
-		JSONObject JObject = HttpCacheUtils.getHttpCache(path);
-		if (null != JObject) {
-			JSONObject jResult = JObject.getJSONObject(JLXCConst.HTTP_RESULT);
-			if (null != jResult) {
-				List<JSONObject> JSONList = (List<JSONObject>) jResult
-						.get(JLXCConst.HTTP_LIST);
-				if (null != JSONList) {
-					JsonToNewsModel(JSONList);
+		try {
+			JSONObject JObject = HttpCacheUtils.getHttpCache(path);
+			if (null != JObject) {
+				JSONObject jResult = JObject
+						.getJSONObject(JLXCConst.HTTP_RESULT);
+				if (null != jResult) {
+					List<JSONObject> JSONList = (List<JSONObject>) jResult
+							.get(JLXCConst.HTTP_LIST);
+					if (null != JSONList) {
+						JsonToNewsModel(JSONList);
+					}
 				}
 			}
+		} catch (Exception e) {
+			LogUtils.e("解析本地缓存错误.");
 		}
+
 	}
 
 	/**
@@ -977,10 +983,8 @@ public class NewsListFragment extends BaseFragment {
 				.getFirstVisiblePosition();
 		if (0 == firstVisiblePosition) {
 			// 已经在顶部
-			if (!newsListView.isRefreshing()) {
-				newsListView.setMode(Mode.PULL_FROM_START);
-				newsListView.setRefreshing(true);
-			}
+			newsListView.setMode(Mode.PULL_FROM_START);
+			newsListView.setRefreshing();
 		} else {
 			if (firstVisiblePosition < 20) {
 				newsListView.getRefreshableView().smoothScrollToPosition(0);

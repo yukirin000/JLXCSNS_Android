@@ -123,6 +123,8 @@ public class CampusFragment extends BaseFragment {
 	private NewsOperate newsOPerate;
 	// 当前点赞对应的gridview的adpter
 	private LikeImageListView currentLikeListControl;
+	// 是否是最后一条数据
+	private boolean isLast = false;
 
 	@Override
 	public int setLayoutId() {
@@ -190,25 +192,28 @@ public class CampusFragment extends BaseFragment {
 	private void setLastData(int userID, String schoolCode) {
 		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
 				+ "&page=" + 1 + "&school_code=" + schoolCode + "&frist_time=";
+		try {
+			JSONObject JObject = HttpCacheUtils.getHttpCache(path);
+			if (null != JObject) {
+				int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
+				if (status == JLXCConst.STATUS_SUCCESS) {
+					JSONObject jResult = JObject
+							.getJSONObject(JLXCConst.HTTP_RESULT);
+					if (null != jResult) {
+						// 获取数据列表
+						List<JSONObject> JNewsList = (List<JSONObject>) jResult
+								.get(JLXCConst.HTTP_LIST);
+						List<JSONObject> JPersonList = (List<JSONObject>) jResult
+								.get("info");
 
-		JSONObject JObject = HttpCacheUtils.getHttpCache(path);
-		if (null != JObject) {
-			int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
-			if (status == JLXCConst.STATUS_SUCCESS) {
-				JSONObject jResult = JObject
-						.getJSONObject(JLXCConst.HTTP_RESULT);
-				if (null != jResult) {
-					// 获取数据列表
-					List<JSONObject> JNewsList = (List<JSONObject>) jResult
-							.get(JLXCConst.HTTP_LIST);
-					List<JSONObject> JPersonList = (List<JSONObject>) jResult
-							.get("info");
-
-					if (null != JNewsList && null != JPersonList) {
-						JsonToItemData(JNewsList, JPersonList);
+						if (null != JNewsList && null != JPersonList) {
+							JsonToItemData(JNewsList, JPersonList);
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			LogUtils.e("记载缓存出错");
 		}
 	}
 
@@ -304,7 +309,7 @@ public class CampusFragment extends BaseFragment {
 			@Override
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				if (!isRequestData) {
+				if (!isLast && !isRequestData) {
 					isRequestData = true;
 					isPullDowm = false;
 					getCampusData(
@@ -324,8 +329,10 @@ public class CampusFragment extends BaseFragment {
 
 					@Override
 					public void onLastItemVisible() {
-						campusListView.setMode(Mode.PULL_FROM_END);
-						campusListView.setRefreshing(true);
+						if (!isLast) {
+							campusListView.setMode(Mode.PULL_FROM_END);
+							campusListView.setRefreshing(true);
+						}
 					}
 				});
 
@@ -585,6 +592,7 @@ public class CampusFragment extends BaseFragment {
 				+ "&page=" + desPage + "&school_code=" + schoolCode
 				+ "&frist_time=" + lastTime;
 
+		LogUtils.i("校园请求数据：" + path);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -611,8 +619,10 @@ public class CampusFragment extends BaseFragment {
 							if (jResult.getString("is_last").equals("0")) {
 								pageIndex++;
 								campusListView.setMode(Mode.BOTH);
+								isLast = false;
 							} else {
 								campusListView.setMode(Mode.PULL_FROM_START);
+								isLast = true;
 							}
 							isRequestData = false;
 						}
