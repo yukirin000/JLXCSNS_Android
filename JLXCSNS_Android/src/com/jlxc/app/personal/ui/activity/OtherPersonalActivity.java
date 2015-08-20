@@ -519,7 +519,7 @@ public class OtherPersonalActivity extends BaseActivity{
 //								imModel.setIsNew(0);
 //								imModel.setIsRead(1);
 								imModel.setCurrentState(IMModel.GroupHasAdd);
-								imModel.setAddDate(TimeHandle.getCurrentDataStr());
+//								imModel.setAddDate(TimeHandle.getCurrentDataStr());
 								imModel.update();
 							}else {
 								imModel = new IMModel();
@@ -531,7 +531,7 @@ public class OtherPersonalActivity extends BaseActivity{
 								imModel.setIsRead(1);
 								imModel.setCurrentState(IMModel.GroupHasAdd);
 								imModel.setOwner(UserManager.getInstance().getUser().getUid());
-								imModel.setAddDate(TimeHandle.getCurrentDataStr());
+//								imModel.setAddDate(TimeHandle.getCurrentDataStr());
 								imModel.save();
 							}
 							

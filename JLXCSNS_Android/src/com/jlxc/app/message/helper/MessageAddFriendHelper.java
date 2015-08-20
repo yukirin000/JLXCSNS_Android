@@ -18,7 +18,7 @@ public class MessageAddFriendHelper {
 //			newModel.setIsNew(0);
 //			newModel.setIsRead(1);
 			newModel.setCurrentState(IMModel.GroupHasAdd);
-			newModel.setAddDate(TimeHandle.getCurrentDataStr());
+//			newModel.setAddDate(TimeHandle.getCurrentDataStr());
 			newModel.update();
 		}else {
 			newModel = new IMModel();
@@ -26,7 +26,7 @@ public class MessageAddFriendHelper {
 			newModel.setTargetId(imModel.getTargetId());
 			newModel.setTitle(imModel.getTitle());
 			newModel.setAvatarPath(imModel.getAvatarPath());
-			newModel.setAddDate(TimeHandle.getCurrentDataStr());
+//			newModel.setAddDate(TimeHandle.getCurrentDataStr());
 			newModel.setIsNew(0);
 			newModel.setIsRead(1);
 			newModel.setCurrentState(IMModel.GroupHasAdd);
