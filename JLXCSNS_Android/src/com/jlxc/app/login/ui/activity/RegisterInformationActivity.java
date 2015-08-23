@@ -126,6 +126,11 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 			return;
 		}
 		
+		if (nameEditText.getText().toString().length() > 10) {
+			ToastUtil.show(this, "昵称不能超过10个字...");
+			return;
+		}
+		
 		final UserModel userModel = UserManager.getInstance().getUser();
 		RequestParams params = new RequestParams();
 		showLoading("信息上传中，请稍候...", false);
@@ -429,7 +434,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 //		radioGroup.getCheckedRadioButtonId();
 		radioGroup.check(R.id.radioMale);
 //		addRightBtn("跳过");
-		setBarText("登录");
+		setBarText("填写个人信息~");
 		RelativeLayout rlBar = (RelativeLayout) findViewById(R.id.layout_base_title);
 		rlBar.setBackgroundResource(R.color.main_clear);
 		

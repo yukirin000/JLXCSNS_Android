@@ -905,8 +905,8 @@ public class PersonalFragment extends BaseFragment implements
 					ToastUtil.show(getActivity(), "昵称不能为空");
 					return;
 				}
-				if (name.length() > 8) {
-					ToastUtil.show(getActivity(), "昵称不能超过八个字");
+				if (name.length() > 10) {
+					ToastUtil.show(getActivity(), "昵称不能超过10个字");
 					return;
 				}
 				uploadInformation("name", et_search.getText().toString());
