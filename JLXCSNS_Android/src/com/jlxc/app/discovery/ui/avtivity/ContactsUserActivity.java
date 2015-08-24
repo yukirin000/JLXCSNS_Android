@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -73,11 +76,11 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	private List<PersonModel> dataList = new ArrayList<PersonModel>();
 	// 适配器
 	private HelloHaAdapter<PersonModel> contactsAdapter;
-//	// bitmap的处理
-//	private static BitmapUtils bitmapUtils;
-	//新图片缓存工具 头像
+	// // bitmap的处理
+	// private static BitmapUtils bitmapUtils;
+	// 新图片缓存工具 头像
 	private DisplayImageOptions headImageOptions;
-	
+
 	@Override
 	public int setLayoutId() {
 		return R.layout.activity_add_contacts_user;
@@ -85,19 +88,20 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
-		
-        //显示头像的配置  
-		headImageOptions = new DisplayImageOptions.Builder()  
-                .showImageOnLoading(R.drawable.default_avatar)  
-                .showImageOnFail(R.drawable.default_avatar)  
-                .cacheInMemory(false)  
-                .cacheOnDisk(true)  
-                .bitmapConfig(Bitmap.Config.RGB_565)  
-                .build();
-		
+
+		// 显示头像的配置
+		headImageOptions = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(R.drawable.default_avatar)
+				.cacheInMemory(false).cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
+
 		init();
 		getPhoneContacts();
-		getSIMContacts();
+		if (isCanUseSim()) {
+			//判断SIM卡是否可用
+			getSIMContacts();
+		}
 		listviewSet();
 
 		if (mContactsNumber.size() > 0) {
@@ -117,11 +121,11 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 	private void init() {
 		setBarText("通讯录中的小伙伴 (・ω・=)");
 		// bitmap初始化
-//		bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
-//				ContactsUserActivity.this, true, true);
-//
-//		bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
-//		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
+		// bitmapUtils = BitmapManager.getInstance().getBitmapUtils(
+		// ContactsUserActivity.this, true, true);
+		//
+		// bitmapUtils.configDefaultLoadingImage(android.R.color.darker_gray);
+		// bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
 	}
 
 	/**
@@ -140,12 +144,15 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 					PersonModel item) {
 				final PersonModel currentPerson = item;
 				// 绑定头像图片
-//				helper.setImageUrl(R.id.iv_contacts_head, bitmapUtils,
-//						item.getHeadSubImage(), new NewsBitmapLoadCallBack());
+				// helper.setImageUrl(R.id.iv_contacts_head, bitmapUtils,
+				// item.getHeadSubImage(), new NewsBitmapLoadCallBack());
 				ImageView headImageView = helper.getView(R.id.iv_contacts_head);
-				if (null != item.getHeadSubImage() && item.getHeadSubImage().length() > 0) {
-					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getHeadSubImage(), headImageView, headImageOptions);					
-				}else {
+				if (null != item.getHeadSubImage()
+						&& item.getHeadSubImage().length() > 0) {
+					ImageLoader.getInstance().displayImage(
+							JLXCConst.ATTACHMENT_ADDR + item.getHeadSubImage(),
+							headImageView, headImageOptions);
+				} else {
 					headImageView.setImageResource(R.drawable.default_avatar);
 				}
 				// 绑定昵称
@@ -309,6 +316,33 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 			}
 			phoneCursor.close();
 		}
+	}
+
+	/**
+	 * sdcard是否可读写
+	 * */
+	private boolean IsCanUseSdCard() {
+		try {
+			return Environment.getExternalStorageState().equals(
+					Environment.MEDIA_MOUNTED);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * sim卡是否可读
+	 **/
+	private boolean isCanUseSim() {
+		try {
+			TelephonyManager mgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+			return TelephonyManager.SIM_STATE_READY == mgr.getSimState();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**

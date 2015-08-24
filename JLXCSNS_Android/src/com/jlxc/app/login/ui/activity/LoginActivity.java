@@ -19,6 +19,7 @@ import com.jlxc.app.base.manager.ActivityManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -47,8 +48,13 @@ public class LoginActivity extends BaseActivity {
 			loginOrRegister();
 			break;
 		case R.id.login_activity:
-			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
-	        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+			try {
+				InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
+		        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+			} catch (Exception e) {
+				LogUtils.e("登录或注册页面出错。");
+			}
+			
 	        break;
 		default:
 			break;

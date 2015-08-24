@@ -1,15 +1,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/login_activity"
-    android:gravity="center_horizontal">
-    
-	<ImageView
-	    android:src="@drawable/login_back_image"
-	    android:scaleType="centerCrop" 
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"/>
-<!--     <TextView
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_horizontal" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/login_back_image" />
+    <!--
+         <TextView
         android:id="@+id/base_tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,44 +23,43 @@
         android:layout_marginTop="15dip"
         android:text="登录"
         android:textColor="@color/main_brown"
-        android:textSize="@dimen/action_bar_title_size" />   -->	
-    
-       <EditText
-           android:id="@+id/usernameEt"
-           android:layout_width="280dip"
-           android:layout_height="wrap_content"
-           android:layout_centerHorizontal="true"
-           android:layout_marginTop="150dip"
-           android:drawablePadding="10dp"
-           android:maxLength="11"
-           android:padding="5dip"
-           android:background="@color/main_clear"
-           android:hint="请输入手机号码"
-           android:textColorHint="@color/login_edit_hint_color"
-           android:textColor="@color/main_deep_black"         
-           android:singleLine="true"
-           android:inputType="number"
-           android:textSize="@dimen/font_size_medium" />
-       <ImageView
-           android:layout_alignLeft="@+id/usernameEt"
-           android:layout_below="@+id/usernameEt" 
-           android:background="@drawable/login_edit_text_view"
-           android:layout_width="280dip"
-           android:layout_height="1dip"/>
+        android:textSize="@dimen/action_bar_title_size" />
+    -->
 
-       <Button
-           android:layout_centerHorizontal="true"
-           android:id="@+id/loginRegisterBtn"
-           android:layout_below="@id/usernameEt"
-           android:textSize="@dimen/font_size_small"
-           android:textColor="@color/main_brown"
-           android:layout_width="280dip"
-           android:background="@drawable/login_button"
-           android:layout_height="45dip"
-           android:layout_marginTop="30dip"
-           android:text="登录/注册" />
-       
+    <EditText
+        android:id="@+id/usernameEt"
+        android:layout_width="280dip"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dip"
+        android:background="@color/main_clear"
+        android:drawablePadding="10dp"
+        android:hint="请输入手机号码"
+        android:inputType="number"
+        android:maxLength="11"
+        android:padding="5dip"
+        android:singleLine="true"
+        android:textColor="@color/main_deep_black"
+        android:textColorHint="@color/login_edit_hint_color"
+        android:textSize="@dimen/font_size_medium" />
+
+    <ImageView
+        android:layout_width="280dip"
+        android:layout_height="1dip"
+        android:layout_alignLeft="@+id/usernameEt"
+        android:layout_below="@+id/usernameEt"
+        android:background="@drawable/login_edit_text_view" />
+
+    <Button
+        android:id="@+id/loginRegisterBtn"
+        android:layout_width="280dip"
+        android:layout_height="45dip"
+        android:layout_below="@id/usernameEt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dip"
+        android:background="@drawable/login_button"
+        android:text="登录/注册"
+        android:textColor="@color/main_brown"
+        android:textSize="@dimen/font_size_small" />
+
 </RelativeLayout>
-
-
-    
