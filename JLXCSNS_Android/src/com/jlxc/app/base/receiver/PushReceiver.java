@@ -96,7 +96,6 @@ public class PushReceiver extends BroadcastReceiver {
 				imModel.setAvatarPath(pushObject.getString("avatar"));
 				imModel.setAddDate(pushObject.getString("time"));
 				imModel.setIsNew(1);
-				imModel.setCurrentState(IMModel.GroupNotAdd);
 				imModel.setIsRead(0);
 				imModel.update();
 				showNotification(context, title, title, content);
@@ -180,17 +179,20 @@ public class PushReceiver extends BroadcastReceiver {
 		pushModel.setIs_read(0);
 		pushModel.setPush_time(pushObject.getString("push_time"));
 		pushModel.setOwner(UserManager.getInstance().getUser().getUid());
-		pushModel.save();
 		
-		//发送通知
-		Intent newsPushIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
-		context.sendBroadcast(newsPushIntent);
-		//徽标更新
-		Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
-		context.sendBroadcast(tabIntent);
-		//顶部更新
-		Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
-		context.sendBroadcast(messageIntent);
+		if (!pushModel.isExist()) {
+			pushModel.save();
+			//发送通知
+			Intent newsPushIntent = new Intent(JLXCConst.BROADCAST_NEW_MESSAGE_PUSH);
+			context.sendBroadcast(newsPushIntent);
+			//徽标更新
+			Intent tabIntent = new Intent(JLXCConst.BROADCAST_TAB_BADGE);
+			context.sendBroadcast(tabIntent);
+			//顶部更新
+			Intent messageIntent = new Intent(JLXCConst.BROADCAST_MESSAGE_REFRESH);
+			context.sendBroadcast(messageIntent);	
+		}
+		
 	}
 	
 	

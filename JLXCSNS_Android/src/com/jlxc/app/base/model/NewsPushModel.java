@@ -7,6 +7,7 @@ import android.database.Cursor;
 
 import com.jlxc.app.base.manager.DBManager;
 import com.jlxc.app.base.manager.UserManager;
+import com.jlxc.app.base.utils.LogUtils;
 
 //该模型对应数据表 jlxc_news_push 该表中不存储类型为'添加好友'的推送类型
 public class NewsPushModel {
@@ -63,6 +64,17 @@ public class NewsPushModel {
 	public void remove(){
 		String sql = "DELETE FROM jlxc_news_push WHERE id="+getPid();
 		DBManager.getInstance().excute(sql);
+	}
+	/**
+	 * 存在
+	 */
+	public boolean isExist(){
+		
+		String sql = "SELECT * FROM jlxc_news_push WHERE news_id='"+getNews_id()+"' and uid='"+getUid()+"'"+" and push_time='"+getPush_time()+"'";
+	    if (NewsPushModel.findBySql(sql).size() > 0) {
+	        return true;
+	    }
+	    return false;
 	}
 	
 	/**

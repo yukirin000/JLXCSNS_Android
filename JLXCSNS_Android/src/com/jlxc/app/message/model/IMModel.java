@@ -97,7 +97,7 @@ public class IMModel {
 	}
 	//从数据库中查出新的朋友群组 最近的三条没有被添加的人
 	public static List<IMModel> findThreeNewFriends() {
-		String sql = "SELECT * FROM jlxc_group WHERE type=1 AND currentState=0 and isNew=1 and isRead=0" +
+		String sql = "SELECT * FROM jlxc_group WHERE type=1 and isNew=1 and isRead=0" +
 			     " AND owner='"+UserManager.getInstance().getUser().getUid()+"' ORDER BY addDate DESC LIMIT 3";
 		return findBySql(sql);
 	}
@@ -110,7 +110,7 @@ public class IMModel {
 	//从数据库中查出全部未读的新朋友数量
 	public static int unReadNewFriendsCount() {
 		
-		String sql = "SELECT * FROM jlxc_group WHERE type=1 and isNew=1 and currentState=0 and isRead=0" +
+		String sql = "SELECT * FROM jlxc_group WHERE type=1 and isNew=1 and isRead=0" +
 			     " AND owner='"+UserManager.getInstance().getUser().getUid()+"'";
 		return findBySql(sql).size();
 	}
