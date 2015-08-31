@@ -151,7 +151,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(android.R.color.darker_gray)
+				.showImageOnLoading(R.drawable.default_avatar)
 				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
 				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 	}

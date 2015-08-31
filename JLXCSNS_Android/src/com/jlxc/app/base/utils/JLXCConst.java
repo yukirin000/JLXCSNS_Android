@@ -2,11 +2,11 @@ package com.jlxc.app.base.utils;
 
 public interface JLXCConst {
 
-	// 正式环境 112.74.202.59 192.168.1.106
+	// 正式环境 112.74.202.59 192.168.1.108 www.90newtec.com
 	// 测试环境
-	public static final String DOMIN = "http://112.74.202.59/jlxc_php/index.php/Home/MobileApi";
-	public static final String ATTACHMENT_ADDR = "http://112.74.202.59/jlxc_php/Uploads/";
-	public static final String ROOT_PATH = "http://112.74.202.59/jlxc_php/";
+	public static final String DOMIN = "http://www.90newtec.com/jlxc_php/index.php/Home/MobileApi";
+	public static final String ATTACHMENT_ADDR = "http://www.90newtec.com/jlxc_php/Uploads/";
+	public static final String ROOT_PATH = "http://www.90newtec.com/jlxc_php/";
 
 	public static final int STATUS_SUCCESS = 1;// 接口返回成功
 	public static final int STATUS_FAIL = 0;// 接口返回失败
@@ -61,6 +61,8 @@ public interface JLXCConst {
 	public static final String NEWS_LIST = DOMIN + "/newsList";
 	// 校园广场新闻列表
 	public static final String SCHOOL_NEWS_LIST = DOMIN + "/schoolNewsList";
+	// 校园广场新闻主页
+	public static final String SCHOOL_HOME_DATA = DOMIN + "/schoolHomeData";	
 	// 状态点赞列表
 	public static final String GET_NEWS_LIKE_LIST = DOMIN + "/getNewsLikeList";
 	// 发送评论

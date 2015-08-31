@@ -31,6 +31,7 @@
 
     <!-- 辅灰色 -->
     <color name="main_gary">#cccccc</color>
+    <color name="main_blue">#23a6a2</color>
     <!-- 辅深灰色 -->
     <color name="main_deep_gary">#999999</color>
     <!-- 辅浅灰色 -->

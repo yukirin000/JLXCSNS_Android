@@ -39,7 +39,7 @@ public class LaunchActivity extends BaseActivity {
 		// 隐藏状态栏
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
+		//这个名字起的有问题 因为产品已经上线了 等下一次更换启动图的时候修改
 		boolean launchConfig = ConfigUtils.getBooleanConfig("launchTest");
 		
 		if (!launchConfig) {

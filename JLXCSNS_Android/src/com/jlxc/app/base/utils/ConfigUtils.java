@@ -9,6 +9,9 @@ import android.content.SharedPreferences.Editor;
 //配置存储
 public class ConfigUtils {
 	
+	//最后一次校园主页新闻刷新
+	public static String LAST_REFRESH__SCHOOL_HOME_NEWS_DATE = "lastSchoolHomeNewsRefreshDate";
+	
 	//存储配置
 	public static void saveConfig(String key,String value){
 		try {

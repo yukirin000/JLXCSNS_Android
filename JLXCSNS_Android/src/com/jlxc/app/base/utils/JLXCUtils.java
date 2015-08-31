@@ -132,6 +132,10 @@ public class JLXCUtils {
     //字符串转换数字
     public static int stringToInt(String string) {
     	
+    	if (null == string || string.length() < 1) {
+			return 0;
+		}
+    	
     	int intValue = 0;
     	for (int i = 0; i < string.length(); i++) {
 			char c = string.charAt(i);
