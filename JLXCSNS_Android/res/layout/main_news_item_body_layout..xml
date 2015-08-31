@@ -22,7 +22,7 @@
         android:textColor="@color/main_deep_black"
         android:textSize="@dimen/font_size_medium" />
 
-    <com.jlxc.app.news.ui.view.MultiImageView
+    <com.jlxc.app.news.ui.view.MultiImageMetroView
         android:id="@+id/miv_main_news_images"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

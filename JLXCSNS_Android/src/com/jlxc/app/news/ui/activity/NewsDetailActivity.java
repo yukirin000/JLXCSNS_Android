@@ -68,8 +68,9 @@ import com.jlxc.app.news.model.SubCommentModel;
 import com.jlxc.app.news.ui.view.LikeButton;
 import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
+import com.jlxc.app.news.ui.view.MultiImageMetroView;
+import com.jlxc.app.news.ui.view.MultiImageMetroView.JumpCallBack;
 import com.jlxc.app.news.ui.view.MultiImageView;
-import com.jlxc.app.news.ui.view.MultiImageView.JumpCallBack;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
@@ -628,7 +629,8 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		final BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 
-		MultiImageView bodyImages = helper.getView(R.id.miv_news_detail_images);
+		//MultiImageView bodyImages = helper.getView(R.id.miv_news_detail_images);
+		MultiImageMetroView bodyImages = helper.getView(R.id.miv_news_detail_images);
 		bodyImages.imageDataSet(pictureList);
 
 		bodyImages.setJumpListener(new JumpCallBack() {
