@@ -246,7 +246,8 @@ public class CampusHomeFragment extends BaseFragment {
 				
 			}
 		};
-		helper.setOnClickListener(R.id.tv_campus_person_title, listener);
+		//所有校友
+		helper.setOnClickListener(R.id.layout_campus_all_person, listener);
 		
 		//未读新消息
 		helper.setOnClickListener(R.id.unread_news_layout, listener);
@@ -317,8 +318,8 @@ public class CampusHomeFragment extends BaseFragment {
 		@Override
 		public void onClick(View view, int postion, int viewID) {
 			switch (viewID) {
-			case R.id.tv_campus_person_title:
-				// 跳转到所有好友列表页面
+			case R.id.layout_campus_all_person:
+				// 跳转到所有校友列表页面
 				Intent personIntent = new Intent(mContext,
 						CampusAllPersonActivity.class);
 				personIntent.putExtra("School_Code", UserManager.getInstance()

@@ -168,18 +168,19 @@ public class MultiImageMetroView extends RelativeLayout {
 		rootView.setVisibility(View.GONE);
 
 		switch (pictureList.size()) {
-
+		// 只有一张图片
 		case 1:
 			leftLayout.setVisibility(View.VISIBLE);
 			tempimageViewsList.add(imageViewsList.get(0));
 			break;
+		// 2张图片
 		case 2:
-			rightLayout.setVisibility(View.VISIBLE);
+			leftLayout.setVisibility(View.VISIBLE);
 			middleLayout.setVisibility(View.VISIBLE);
+			tempimageViewsList.add(imageViewsList.get(0));
 			tempimageViewsList.add(imageViewsList.get(1));
-			tempimageViewsList.add(imageViewsList.get(2));
 			break;
-
+		// 3张图片
 		case 3:
 			rightLayout.setVisibility(View.VISIBLE);
 			middleLayout.setVisibility(View.VISIBLE);
@@ -187,15 +188,16 @@ public class MultiImageMetroView extends RelativeLayout {
 			tempimageViewsList.add(imageViewsList.get(2));
 			tempimageViewsList.add(imageViewsList.get(5));
 			break;
+		// 4张图片
 		case 4:
-			rightLayout.setVisibility(View.VISIBLE);
+			leftLayout.setVisibility(View.VISIBLE);
 			middleLayout.setVisibility(View.VISIBLE);
+			tempimageViewsList.add(imageViewsList.get(0));
 			tempimageViewsList.add(imageViewsList.get(1));
-			tempimageViewsList.add(imageViewsList.get(2));
+			tempimageViewsList.add(imageViewsList.get(3));
 			tempimageViewsList.add(imageViewsList.get(4));
-			tempimageViewsList.add(imageViewsList.get(5));
 			break;
-
+		// 5张图片
 		case 5:
 			leftLayout.setVisibility(View.VISIBLE);
 			rightLayout.setVisibility(View.VISIBLE);
@@ -206,6 +208,7 @@ public class MultiImageMetroView extends RelativeLayout {
 			tempimageViewsList.add(imageViewsList.get(4));
 			tempimageViewsList.add(imageViewsList.get(5));
 			break;
+		// 6张图片
 		case 6:
 			leftLayout.setVisibility(View.VISIBLE);
 			rightLayout.setVisibility(View.VISIBLE);
@@ -217,7 +220,7 @@ public class MultiImageMetroView extends RelativeLayout {
 			tempimageViewsList.add(imageViewsList.get(4));
 			tempimageViewsList.add(imageViewsList.get(5));
 			break;
-
+		// 7张图片
 		case 7:
 			leftLayout.setVisibility(View.VISIBLE);
 			rightLayout.setVisibility(View.VISIBLE);
@@ -231,6 +234,7 @@ public class MultiImageMetroView extends RelativeLayout {
 			tempimageViewsList.add(imageViewsList.get(6));
 			tempimageViewsList.add(imageViewsList.get(8));
 			break;
+		// 8张图片
 		case 8:
 			leftLayout.setVisibility(View.VISIBLE);
 			rightLayout.setVisibility(View.VISIBLE);
@@ -245,13 +249,14 @@ public class MultiImageMetroView extends RelativeLayout {
 			tempimageViewsList.add(imageViewsList.get(7));
 			tempimageViewsList.add(imageViewsList.get(8));
 			break;
+		// 9张图片
 		case 9:
 			leftLayout.setVisibility(View.VISIBLE);
 			rightLayout.setVisibility(View.VISIBLE);
 			bottomLayout.setVisibility(View.VISIBLE);
 			middleLayout.setVisibility(View.VISIBLE);
 			tempimageViewsList = imageViewsList;
-			
+
 			break;
 
 		default:
@@ -268,6 +273,15 @@ public class MultiImageMetroView extends RelativeLayout {
 				// 只有一张图片时显示大图
 				imgLoader.displayImage(pictureList.get(index).getURL(),
 						tempimageViewsList.get(index), options);
+			} else if (tempimageViewsList.size() == 2) {
+				// 有两张图片时，第一张显示大图
+				if (index == 0) {
+					imgLoader.displayImage(pictureList.get(index).getURL(),
+							tempimageViewsList.get(index), options);
+				} else {
+					imgLoader.displayImage(pictureList.get(index).getSubURL(),
+							tempimageViewsList.get(index), options);
+				}
 			} else {
 				// 显示缩略图
 				imgLoader.displayImage(pictureList.get(index).getSubURL(),
