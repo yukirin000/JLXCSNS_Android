@@ -61,6 +61,7 @@ import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.ui.activity.PublishNewsActivity;
 import com.jlxc.app.news.ui.view.MultiImageMetroView;
 import com.jlxc.app.news.ui.view.MultiImageMetroView.JumpCallBack;
 import com.jlxc.app.news.ui.view.TextViewHandel;
@@ -89,6 +90,9 @@ public class NewsListFragment extends BaseFragment {
 	// 动态listview
 	@ViewInject(R.id.news_listview)
 	private PullToRefreshListView newsListView;
+	// 发布按钮
+	@ViewInject(R.id.img_main_publish_btn)
+	private ImageView publishBtn;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
@@ -144,6 +148,18 @@ public class NewsListFragment extends BaseFragment {
 		setLastData(UserManager.getInstance().getUser().getUid());
 		// 从服务器加载数据
 		getNewsData(UserManager.getInstance().getUser().getUid(), pageIndex, "");
+		
+		//点击发布按钮
+		publishBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Intent intentUsrMain = new Intent(mContext,
+						PublishNewsActivity.class);
+				startActivityWithRight(intentUsrMain);
+			}
+		});
 	}
 
 	/**
