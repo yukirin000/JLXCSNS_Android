@@ -66,7 +66,8 @@
             android:layout_marginRight="@dimen/title_interior_size_mediu"
             android:padding="@dimen/title_interior_size_small"
             android:scaleType="fitCenter"
-            android:src="@drawable/selector_notification_click" />
+            android:src="@drawable/selector_notification_click" 
+            android:visibility="gone"/>
     </FrameLayout>
 
     <android.support.v4.view.ViewPager
