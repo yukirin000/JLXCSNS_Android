@@ -15,8 +15,11 @@ public class DataToRecommendItem {
 	public static List<RecommendItemData> dataToItems(
 			List<PersonModel> personList) {
 		LinkedList<RecommendItemData> itemList = new LinkedList<RecommendItemData>();
-		for (PersonModel personMd : personList) {
-			itemList.add(createRecommendInfo(personMd));
+		for (int i=0; i < personList.size(); i++) {
+			
+			PersonModel personMd = personList.get(i);
+			
+			itemList.add(createRecommendInfo(personMd, i));
 			//最少要显示三张照片
 			if (personMd.getImageList().size() >= 3) {
 				itemList.add(createPhotoItem(personMd));
@@ -35,7 +38,7 @@ public class DataToRecommendItem {
 	}
 
 	// 提取基本信息
-	private static RecommendItemData createRecommendInfo(PersonModel person) {
+	private static RecommendItemData createRecommendInfo(PersonModel person, int location) {
 		RecommendInfoItem item = new RecommendInfoItem();
 		try {
 			item.setItemType(RecommendItemData.RECOMMEND_INFO);
@@ -45,8 +48,9 @@ public class DataToRecommendItem {
 			item.setUserSchool(person.getUserSchool());
 			item.setHeadImage(person.getHeadImage());
 			item.setHeadSubImage(person.getHeadSubImage());
-			item.setAdd("0");
+			item.setAdd(person.getIsFriend());
 			item.setRelationTag(person.getType());
+			item.setOriginIndex(location);
 		} catch (Exception e) {
 			LogUtils.e("create person info error.");
 		}

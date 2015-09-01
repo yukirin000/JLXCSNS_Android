@@ -792,6 +792,9 @@ public class DiscoveryFragment extends BaseFragment {
 									.get(index);
 							recommendItemData.setAdd("1");
 							personItemAdapter.replaceAll(itemDataList);
+							//已经加为好友
+							PersonModel personModel = personList.get(recommendItemData.getOriginIndex());
+							personModel.setIsFriend("1");
 						}
 					}
 

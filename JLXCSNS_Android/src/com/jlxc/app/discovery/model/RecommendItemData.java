@@ -61,6 +61,8 @@ public class RecommendItemData {
 		private String userID;
 		// 是否添加了
 		private boolean isAdd;
+		//当前原始对象索引
+		private int originIndex;
 
 		public String getHeadSubImage() {
 			return headSubImage;
@@ -121,6 +123,15 @@ public class RecommendItemData {
 				this.isAdd = false;
 			}
 		}
+
+		public int getOriginIndex() {
+			return originIndex;
+		}
+
+		public void setOriginIndex(int originIndex) {
+			this.originIndex = originIndex;
+		}
+		
 
 	}
 
