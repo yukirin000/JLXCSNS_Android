@@ -65,12 +65,13 @@ import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
+import com.jlxc.app.news.ui.view.MultiImageMetroView;
+import com.jlxc.app.news.ui.view.MultiImageMetroView.JumpCallBack;
 import com.jlxc.app.news.ui.view.TextViewHandel;
 import com.jlxc.app.news.ui.view.LikeButton;
 import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
 import com.jlxc.app.news.ui.view.MultiImageView;
-import com.jlxc.app.news.ui.view.MultiImageView.JumpCallBack;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
@@ -396,7 +397,8 @@ public class CampusNewsListFragment extends BaseFragment {
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
 		final BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
-		MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
+		//MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
+		MultiImageMetroView  bodyImages = helper.getView(R.id.miv_campus_body_images);
 		bodyImages.imageDataSet(pictureList);
 		// 快速滑动时不加载图片
 		bodyImages.loadImageOnFastSlide(campusListView, true);

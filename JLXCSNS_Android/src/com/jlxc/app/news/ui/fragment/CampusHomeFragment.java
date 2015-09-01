@@ -202,7 +202,7 @@ public class CampusHomeFragment extends BaseFragment {
 		schoolNameTextView = helper.getView(R.id.tv_campus_head_name);
 		//学校位置
 		schoolLocationTextView = helper.getView(R.id.school_location_textview);
-		//学校位置	
+		//学校人数
 		studentCountTextView = helper.getView(R.id.student_count_text_view);
 		//未读
 		unreadNewsTextView = helper.getView(R.id.unread_news_count_text_view);
@@ -259,7 +259,7 @@ public class CampusHomeFragment extends BaseFragment {
 		//学校位置
 		if (homeJsonObject.containsKey("school")) {
 			JSONObject schoolObject = homeJsonObject.getJSONObject("school");
-			String locationString = schoolObject.getString("city_name")+"●"+schoolObject.getString("district_name");
+			String locationString = schoolObject.getString("city_name")+" ▪ "+schoolObject.getString("district_name");
 			schoolLocationTextView.setText(locationString);
 		}
 		if (homeJsonObject.containsKey("student_count")) {
