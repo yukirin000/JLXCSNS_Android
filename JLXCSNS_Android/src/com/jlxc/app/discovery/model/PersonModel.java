@@ -30,7 +30,7 @@ public class PersonModel {
 	private String phoneNumber;
 	// 性别
 	private String sex;
-
+	
 	@SuppressWarnings("unchecked")
 	public void setContentWithJson(JSONObject object) {
 
@@ -189,4 +189,6 @@ public class PersonModel {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
+
+	
 }

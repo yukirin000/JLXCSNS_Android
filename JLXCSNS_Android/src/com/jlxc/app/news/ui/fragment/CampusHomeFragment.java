@@ -246,8 +246,7 @@ public class CampusHomeFragment extends BaseFragment {
 				
 			}
 		};
-		//所有校友
-		helper.setOnClickListener(R.id.layout_campus_all_person, listener);
+		helper.setOnClickListener(R.id.campus_person_layout, listener);
 		
 		//未读新消息
 		helper.setOnClickListener(R.id.unread_news_layout, listener);
@@ -318,8 +317,8 @@ public class CampusHomeFragment extends BaseFragment {
 		@Override
 		public void onClick(View view, int postion, int viewID) {
 			switch (viewID) {
-			case R.id.layout_campus_all_person:
-				// 跳转到所有校友列表页面
+			case R.id.campus_person_layout:
+				// 跳转到所有好友列表页面
 				Intent personIntent = new Intent(mContext,
 						CampusAllPersonActivity.class);
 				personIntent.putExtra("School_Code", UserManager.getInstance()
@@ -363,7 +362,6 @@ public class CampusHomeFragment extends BaseFragment {
 		String path = JLXCConst.SCHOOL_HOME_DATA + "?" + "user_id=" + UserManager.getInstance().getUser().getUid() +
 				"&school_code=" + UserManager.getInstance().getUser().getSchool_code()
 				+ "&last_time="+lastRefeshTime;
-		LogUtils.i(path, 1);		
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 

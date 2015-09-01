@@ -47,14 +47,13 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/layout_campus_all_person"
+        android:id="@+id/campus_person_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/campus_person_title"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="10dip"
-        android:clickable="true"
         android:paddingTop="10dip" >
 
         <ImageView
@@ -80,7 +79,6 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:layout_marginRight="25dip"
-            android:clickable="false"
             android:text="1000人"
             android:textColor="@color/main_light_black"
             android:textSize="@dimen/font_size_tiny" />
