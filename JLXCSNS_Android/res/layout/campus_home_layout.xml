@@ -145,7 +145,7 @@
                 android:layout_marginLeft="50dp"
                 android:layout_toLeftOf="@+id/unread_news_count_text_view"
                 android:gravity="center_vertical"
-                android:text="校内新鲜事"
+                android:text="校园新鲜事"
                 android:textColor="@color/main_deep_black"
                 android:textSize="@dimen/font_size_medium" />
 
