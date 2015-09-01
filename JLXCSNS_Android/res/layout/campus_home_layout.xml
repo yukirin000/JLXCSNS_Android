@@ -46,6 +46,7 @@
     </FrameLayout>
     
     <LinearLayout
+        android:id="@+id/campus_person_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dip"
