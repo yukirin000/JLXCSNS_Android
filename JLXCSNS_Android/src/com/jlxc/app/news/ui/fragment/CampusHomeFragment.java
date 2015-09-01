@@ -43,6 +43,7 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
+import com.jlxc.app.news.ui.activity.CampusNewsListActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -222,11 +223,12 @@ public class CampusHomeFragment extends BaseFragment {
 				imgView.setLayoutParams(laParams);
 				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-				// 显示校园所有的人的头像
-				imgLoader.displayImage(item.getHeadSubImage(),
-						(ImageView) helper
-								.getView(R.id.iv_campus_person_gridview_item),
-						options);
+				if (null != item.getHeadSubImage() && item.getHeadSubImage().length() > 0) {
+					// 显示校园所有的人的头像
+					imgLoader.displayImage(item.getHeadSubImage(),(ImageView) helper.getView(R.id.iv_campus_person_gridview_item),options);
+				}else {
+					helper.setImageResource(R.id.iv_campus_person_gridview_item, R.drawable.default_avatar);
+				}
 			}
 		};
 		personHeadGridView = (GridView) helper.getView(R.id.gv_school_person);
@@ -268,6 +270,9 @@ public class CampusHomeFragment extends BaseFragment {
 			//新闻未读tv			
 			int unreadCount = JLXCUtils.stringToInt(homeJsonObject.getString("unread_news_count"));
 			if (unreadCount > 0) {
+				if (unreadCount > 99) {
+					unreadCount = 99;
+				}
 				unreadNewsTextView.setVisibility(View.VISIBLE);
 				unreadNewsTextView.setText(unreadCount+"");	
 			}else {
@@ -321,8 +326,11 @@ public class CampusHomeFragment extends BaseFragment {
 				startActivityWithRight(personIntent);
 				break;
 			case R.id.unread_news_layout:
-				// 未读新消息布局
-				
+				//未读新消息隐藏
+				unreadNewsTextView.setVisibility(View.GONE);
+				Intent intent = new Intent(getActivity(), CampusNewsListActivity.class);
+//				intent.putExtra(CampusNewsListActivity.SCHOOL_CODE, UserManager.getInstance().getUser().getSchool_code());
+				startActivityWithRight(intent);
 				break;				
 			default:
 				break;
@@ -350,11 +358,11 @@ public class CampusHomeFragment extends BaseFragment {
 			lastRefeshTime = "";
 			ConfigUtils.saveConfig(ConfigUtils.LAST_REFRESH__SCHOOL_HOME_NEWS_DATE, System.currentTimeMillis()/1000+"");
 		}
+		//1441074913
 		String path = JLXCConst.SCHOOL_HOME_DATA + "?" + "user_id=" + UserManager.getInstance().getUser().getUid() +
 				"&school_code=" + UserManager.getInstance().getUser().getSchool_code()
 				+ "&last_time="+lastRefeshTime;
-		
-		LogUtils.i("校园请求数据：" + path);
+		LogUtils.i(path, 1);		
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
