@@ -47,9 +47,9 @@ public class MainPageFragment extends BaseFragment {
 	// 偏移图片
 	@ViewInject(R.id.img_cursor)
 	private ImageView imageCursor;
-	// 发布按钮
-	@ViewInject(R.id.img_publish_news)
-	private ImageView imagePublish;
+	// 通知按钮
+	@ViewInject(R.id.img_notify_btn)
+	private ImageView notifyBtn;
 	// 当前页卡编号
 	private int currIndex;
 	// 横线图片宽度
@@ -71,13 +71,14 @@ public class MainPageFragment extends BaseFragment {
 		mContext = this.getActivity().getApplicationContext();
 		InitImage();
 		InitViewPager();
-		imagePublish.setOnClickListener(new OnClickListener() {
+		notifyBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Intent intentUsrMain = new Intent(mContext,
-						PublishNewsActivity.class);
-				startActivityWithRight(intentUsrMain);
+				
+//				Intent intentUsrMain = new Intent(mContext,
+//						PublishNewsActivity.class);
+//				startActivityWithRight(intentUsrMain);
 			}
 		});
 	}
