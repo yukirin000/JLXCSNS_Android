@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="60dp"
+                android:layout_marginLeft="50dp"
                 android:layout_toLeftOf="@+id/unread_news_count_text_view"
                 android:gravity="center_vertical"
                 android:text="校内新鲜事"
