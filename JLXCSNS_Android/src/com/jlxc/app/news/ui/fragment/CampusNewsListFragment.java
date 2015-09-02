@@ -602,6 +602,15 @@ public class CampusNewsListFragment extends BaseFragment {
 			}
 			itemDataList = DataToItem.campusDataToItems(newsList, new ArrayList<CampusPersonModel>());
 			newsAdapter.replaceAll(itemDataList);
+			
+			//如果有内容 取第一条消息的时间 作为本地对比时间
+			if (this.newsList.size() > 0) {
+				NewsModel news = this.newsList.get(0);
+				//未读新消息布局
+				//重置未读消息最后一次时间
+				ConfigUtils.saveConfig(ConfigUtils.LAST_REFRESH__SCHOOL_HOME_NEWS_DATE, news.getTimesTamp());
+			}
+			
 		} else {
 			// 加载更多动态信息
 			this.newsList.addAll(newsList);
@@ -609,13 +618,7 @@ public class CampusNewsListFragment extends BaseFragment {
 					new ArrayList<CampusPersonModel>()));
 			newsAdapter.replaceAll(itemDataList);
 		}
-		//如果有内容 取第一条消息的时间 作为本地对比时间
-		if (itemDataList.size() > 0) {
-			NewsModel news = newsList.get(0);
-			//未读新消息布局
-			//重置未读消息最后一次时间
-			ConfigUtils.saveConfig(ConfigUtils.LAST_REFRESH__SCHOOL_HOME_NEWS_DATE, news.getTimesTamp());
-		}
+
 		if (null != JNewsList) {
 			JNewsList.clear();
 		}
