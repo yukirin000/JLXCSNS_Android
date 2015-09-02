@@ -3,7 +3,8 @@
     android:id="@+id/layout_multi_pic_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingTop="@dimen/news_item_margins_top" >
 
     <ImageView
         android:id="@+id/iv_custom_picture_A"

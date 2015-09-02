@@ -408,10 +408,19 @@ public class MyNewsListActivity extends BaseActivityWithTopBar {
 			}
 		};
 
+		//
 		helper.setOnClickListener(R.id.btn_my_news_list_reply, listener);
 		helper.setOnClickListener(R.id.btn_my_news_list_like, listener);
 		helper.setOnClickListener(R.id.layout_my_news_list_operate_rootview,
 				listener);
+		/********隐藏操作按钮，改为显示数量********/
+		likeBtn.setVisibility(View.GONE);
+		commentBtn.setVisibility(View.GONE);
+		
+		TextView likeCount = helper.getView(R.id.tv_like_count);
+		TextView commentCount = helper.getView(R.id.tv_comment_count);
+		likeCount.setText(opData.getLikeCount()+"点赞");
+		commentCount.setText(opData.getReplyCount()+"评论");
 	}
 
 	/**
