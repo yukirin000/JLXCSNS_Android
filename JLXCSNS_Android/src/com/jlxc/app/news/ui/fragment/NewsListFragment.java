@@ -91,8 +91,8 @@ public class NewsListFragment extends BaseFragment {
 	@ViewInject(R.id.news_listview)
 	private PullToRefreshListView newsListView;
 	// 发布按钮
-	@ViewInject(R.id.img_main_publish_btn)
-	private ImageView publishBtn;
+	//@ViewInject(R.id.img_main_publish_btn)
+	//private ImageView publishBtn;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
@@ -149,17 +149,17 @@ public class NewsListFragment extends BaseFragment {
 		// 从服务器加载数据
 		getNewsData(UserManager.getInstance().getUser().getUid(), pageIndex, "");
 		
-		//点击发布按钮
-		publishBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				Intent intentUsrMain = new Intent(mContext,
-						PublishNewsActivity.class);
-				startActivityWithRight(intentUsrMain);
-			}
-		});
+//		//点击发布按钮
+//		publishBtn.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View arg0) {
+//				// TODO Auto-generated method stub
+//				Intent intentUsrMain = new Intent(mContext,
+//						PublishNewsActivity.class);
+//				startActivityWithRight(intentUsrMain);
+//			}
+//		});
 	}
 
 	/**

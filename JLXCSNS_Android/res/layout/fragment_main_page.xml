@@ -66,15 +66,29 @@
             android:layout_marginRight="@dimen/title_interior_size_mediu"
             android:padding="@dimen/title_interior_size_small"
             android:scaleType="fitCenter"
-            android:src="@drawable/selector_notification_click" 
-            android:visibility="gone"/>
+            android:src="@drawable/selector_notification_click"
+            android:visibility="gone" />
     </FrameLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager_main"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:flipInterval="30"
-        android:persistentDrawingCache="animation" />
+        android:layout_height="match_parent" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:flipInterval="30"
+            android:persistentDrawingCache="animation" />
+
+        <ImageView
+            android:id="@+id/img_main_publish_btn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/selector_publish_btn_click" />
+    </FrameLayout>
 
 </LinearLayout>

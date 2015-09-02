@@ -48,8 +48,8 @@ public class MainPageFragment extends BaseFragment {
 	@ViewInject(R.id.img_cursor)
 	private ImageView imageCursor;
 	// 通知按钮
-	@ViewInject(R.id.img_notify_btn)
-	private ImageView notifyBtn;
+	@ViewInject(R.id.img_main_publish_btn)
+	private ImageView publishBtn;
 	// 当前页卡编号
 	private int currIndex;
 	// 横线图片宽度
@@ -71,14 +71,14 @@ public class MainPageFragment extends BaseFragment {
 		mContext = this.getActivity().getApplicationContext();
 		InitImage();
 		InitViewPager();
-		notifyBtn.setOnClickListener(new OnClickListener() {
+		publishBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				
-//				Intent intentUsrMain = new Intent(mContext,
-//						PublishNewsActivity.class);
-//				startActivityWithRight(intentUsrMain);
+
+				Intent intentUsrMain = new Intent(mContext,
+						PublishNewsActivity.class);
+				startActivityWithRight(intentUsrMain);
 			}
 		});
 	}
