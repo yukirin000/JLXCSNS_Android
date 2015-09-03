@@ -8,6 +8,7 @@ import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -265,6 +266,7 @@ public class MultiImageMetroView extends RelativeLayout {
 
 		// 绑定图片
 		for (int index = 0; index < tempimageViewsList.size(); index++) {
+			tempimageViewsList.get(index).setColorFilter(Color.parseColor("#05000000"));
 			if (rootView.getVisibility() == View.GONE) {
 				rootView.setVisibility(View.VISIBLE);
 			}

@@ -22,7 +22,7 @@ import com.jlxc.app.news.model.SubCommentModel;
  * 将新闻的数据进行转换
  * */
 public class DataToItem {
-	// 将数据转换为动态item形式的数据
+	// 将数据转换为动态主页item形式的数据
 	public static List<ItemModel> newsDataToItems(List<NewsModel> orgDataList) {
 		LinkedList<ItemModel> itemList = new LinkedList<ItemModel>();
 		for (NewsModel newsMd : orgDataList) {

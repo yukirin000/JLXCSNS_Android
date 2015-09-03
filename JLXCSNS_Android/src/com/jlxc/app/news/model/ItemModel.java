@@ -8,7 +8,7 @@ import android.R.integer;
 import com.jlxc.app.base.utils.LogUtils;
 
 /**
- * 将每条动态拆分成五个部分
+ * 将每条动态拆分成不同的部分
  * */
 public class ItemModel {
 
@@ -18,24 +18,27 @@ public class ItemModel {
 	public static final int CAMPUS_ITEM_TYPE_COUNT = 5;
 	// 动态详情item的种类数
 	public static final int NEWS_DETAIL_ITEM_TYPE_COUNT = 5;
-	// 表示动态各item
+	// 圈子item的种类数
+	public static final int GROUP_NEWS_ITEM_TYPE_COUNT = 3;
+	// 表示动态各item类型
 	public static final int NEWS_TITLE = 0;
 	public static final int NEWS_BODY = 1;
 	public static final int NEWS_LIKELIST = 2;
 	public static final int NEWS_COMMENT = 3;
 	public static final int NEWS_OPERATE = 4;
-	// 表示校园各item
+	// 表示校园各item类型
 	public static final int CAMPUS_TITLE = 0;
 	public static final int CAMPUS_BODY = 1;
 	public static final int CAMPUS_OPERATE = 2;
 	public static final int CAMPUS_LIKELIST = 3;
 	public static final int CAMPUS_HEAD = 4;
-	// 表示动态详情各item
+	// 表示动态详情各item类型
 	public static final int NEWS_DETAIL_TITLE = 0;
 	public static final int NEWS_DETAIL_BODY = 1;
 	public static final int NEWS_DETAIL_LIKELIST = 2;
 	public static final int NEWS_DETAIL_COMMENT = 3;
 	public static final int NEWS_DETAIL_SUB_COMMENT = 4;
+	
 	// 动态的id
 	private String newsID = "";
 	// 当前的item类型
@@ -94,7 +97,7 @@ public class ItemModel {
 		// 发布的时间
 		private String sendTime;
 		// 标签来源
-		private String tagContent="";
+		private String tagContent = "";
 
 		public String getHeadSubImage() {
 			return headSubImage;
