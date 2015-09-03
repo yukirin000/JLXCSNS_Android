@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:app1="http://schemas.android.com/apk/res/com.jlxc.app"
-    android:id="@+id/layout_news_title_rootview"
+    android:id="@+id/layout_group_news_title_rootview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/main_deep_white"
@@ -43,7 +43,6 @@
                 android:text="名字"
                 android:textColor="@color/main_deep_black"
                 android:textSize="@dimen/font_size_medium" />
-           
         </LinearLayout>
 
         <TextView

@@ -27,7 +27,7 @@ public class NewsToItemData {
 	}
 
 	// 提取新闻中的头部信息
-	private static GroupItemModel createTitle(NewsModel news, int Type) {
+	public static GroupItemModel createTitle(NewsModel news, int Type) {
 		GroupNewsTitleItem item = new GroupNewsTitleItem();
 		try {
 			item.setItemType(Type);
@@ -45,7 +45,7 @@ public class NewsToItemData {
 	}
 
 	// 提取新闻中的主体信息
-	private static GroupItemModel createBody(NewsModel news, int Type) {
+	public static GroupItemModel createBody(NewsModel news, int Type) {
 		GroupNewsBodyItem item = new GroupNewsBodyItem();
 		try {
 			item.setItemType(Type);
@@ -61,7 +61,7 @@ public class NewsToItemData {
 	}
 
 	// 提取新闻中的操作信息
-	private static GroupItemModel createOperate(NewsModel news, int Type) {
+	public static GroupItemModel createOperate(NewsModel news, int Type) {
 		GroupNewsOperateItem item = new GroupNewsOperateItem();
 		try {
 			item.setItemType(Type);

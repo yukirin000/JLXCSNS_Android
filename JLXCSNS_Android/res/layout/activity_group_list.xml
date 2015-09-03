@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" 
+    android:orientation="vertical">
 
-    <!-- 主页动态的listview -->
+    <include layout="@layout/layout_title_bar" />
+
+    <!-- 圈子的listview -->
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/listview_group_news"
+        android:id="@+id/listview_my_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:cacheColorHint="#00000000"
@@ -20,5 +23,4 @@
         android:smoothScrollbar="true" >
     </com.handmark.pulltorefresh.library.PullToRefreshListView>
 
-
-</FrameLayout>
+</LinearLayout>

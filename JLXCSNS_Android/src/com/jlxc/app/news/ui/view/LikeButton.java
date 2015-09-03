@@ -42,6 +42,11 @@ public class LikeButton extends FrameLayout {
 			textView.setText("点赞 ");
 			imageView.setImageResource(R.drawable.btn_like_normal);
 		}
+		// 变换位置
+		FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) textView
+				.getLayoutParams();
+		params.rightMargin = 5;
+		textView.setLayoutParams(params);
 	}
 
 	/** 设置点赞的状态 */
@@ -52,21 +57,31 @@ public class LikeButton extends FrameLayout {
 			imageView.setImageResource(R.drawable.btn_like_normal);
 		}
 
+		// 设置数字的位置
 		FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) textView
 				.getLayoutParams();
-		params.rightMargin = 30;
+		if (count >= 1000) {
+			params.rightMargin = 18;
+		} else if (count >= 100) {
+			params.rightMargin = 20;
+		} else if (count >= 10) {
+			params.rightMargin = 25;
+		} else {
+			params.rightMargin = 30;
+		}
 		textView.setLayoutParams(params);
 
+		// 设置数量显示
 		if (count >= 10000) {
 			count = count / 10000;
-			textView.setText("" + count + "W+");
+			textView.setText("" + count + "w+");
 			return;
 		} else if (count >= 1000) {
 			count = count / 1000;
-			textView.setText("" + count + "K+");
+			textView.setText("" + count + "k+");
 			return;
 		} else {
-			textView.setText("" + count + "");
+			textView.setText("" + count);
 		}
 	}
 }

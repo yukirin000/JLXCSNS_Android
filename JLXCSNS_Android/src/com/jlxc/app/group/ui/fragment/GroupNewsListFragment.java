@@ -27,7 +27,6 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
-import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
@@ -39,7 +38,6 @@ import com.jlxc.app.group.model.GroupItemModel.GroupNewsOperateItem;
 import com.jlxc.app.group.model.GroupItemModel.GroupNewsTitleItem;
 import com.jlxc.app.group.utils.NewsToItemData;
 import com.jlxc.app.news.model.ImageModel;
-import com.jlxc.app.news.model.ItemModel;
 import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
@@ -99,7 +97,7 @@ public class GroupNewsListFragment extends BaseFragment {
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.fragment_group_news_layout;
+		return R.layout.activity_group_news_layout;
 	}
 
 	@Override
