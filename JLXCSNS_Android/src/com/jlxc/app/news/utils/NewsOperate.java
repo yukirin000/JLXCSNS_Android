@@ -23,7 +23,7 @@ import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 
-public class NewsOperate {
+public class NewsOperate<T> {
 	// 操作类型
 	public final static int OP_Type_Delete_News = 0;
 	public final static int OP_Type_Add_Comment = 1;
@@ -46,7 +46,7 @@ public class NewsOperate {
 	// 上次点赞操作的listview
 	private LikeImageListView likeListView;
 	// 点赞操作对应的动态adapter
-	private HelloHaAdapter<ItemModel> newsAdapter;
+	private HelloHaAdapter<T> newsAdapter;
 	// 记录动态点赞的操作位置
 	private int lastPostion = 0;
 	// 是否正在传输数据
@@ -391,7 +391,7 @@ public class NewsOperate {
 	/**
 	 * 更新点赞头像的数据
 	 * */
-	public void addDataToLikeList(HelloHaAdapter<ItemModel> adapter, int postion) {
+	public void addDataToLikeList(HelloHaAdapter<T> adapter, int postion) {
 		lastPostion = postion;
 		newsAdapter = adapter;
 		lastOperateType = OP_Type_News_Like;
@@ -419,7 +419,7 @@ public class NewsOperate {
 	/**
 	 * 移除自己的点赞头像
 	 * */
-	public void removeDataFromLikeList(HelloHaAdapter<ItemModel> adapter,
+	public void removeDataFromLikeList(HelloHaAdapter<T> adapter,
 			int postion) {
 		lastPostion = postion;
 		newsAdapter = adapter;

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -23,6 +24,7 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -35,10 +37,16 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class GroupListActivity extends BaseActivityWithTopBar {
 
 	// 圈子的相关信息
+	private final static String GROUP_TYPE = "group_type";
 	private final static String GROUP_NAME = "group_name";
 	private final static String GROUP_MEMBER = "group_member";
 	private final static String GROUP_COVER_IMG = "group_cover_image";
 	private final static String GROUP_UNREAD_COUNT = "group_unread_msg";
+	// 圈子类别
+	private final static String GROUP_TYPE_SCHOOL = "school";
+	private final static String GROUP_TYPE_ATTENTION = "attention";
+	private final static String GROUP_TYPE_CREATE = "create";
+
 	// 动态listview
 	@ViewInject(R.id.listview_my_group)
 	private PullToRefreshListView groupListView;
@@ -60,6 +68,9 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
+		// 设置标头
+		setBarText("我的圈子");
+		// 初始化
 		initialize();
 		newsListViewSet();
 	}
@@ -77,14 +88,30 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 				.showImageOnLoading(R.drawable.default_avatar)
 				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
 				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+		initData();
+	}
 
+	//
+	private void initData() {
 		// 初始化校内圈子
 		HashMap<String, String> schoolGroup = new HashMap<String, String>();
+		schoolGroup.put(GROUP_TYPE, GROUP_TYPE_SCHOOL);
 		schoolGroup.put(GROUP_NAME, "知乎学园");
 		schoolGroup.put(GROUP_MEMBER, "128");
 		schoolGroup.put(GROUP_COVER_IMG, "知乎学园");
 		schoolGroup.put(GROUP_UNREAD_COUNT, "20");
 		groupList.add(schoolGroup);
+
+		// 假数据
+		HashMap<String, String> fakeGroup = new HashMap<String, String>();
+		fakeGroup.put(GROUP_TYPE, GROUP_TYPE_ATTENTION);
+		fakeGroup.put(GROUP_NAME, "tfboys粉丝大集合");
+		fakeGroup.put(GROUP_MEMBER, "128");
+		fakeGroup
+				.put(GROUP_COVER_IMG,
+						"http://img4.duitang.com/uploads/item/201407/15/20140715095327_GBB4d.jpeg");
+		fakeGroup.put(GROUP_UNREAD_COUNT, "20");
+		groupList.add(fakeGroup);
 	}
 
 	/**
@@ -121,11 +148,27 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					HashMap<String, String> item) {
-				helper.setImageResource(R.id.img_group_icon,
-						R.drawable.my_group_icon);
-				helper.setText(R.id.txt_group_name, "校内圈子");
-				helper.setText(R.id.txt_group_count, "122人关注");
-				helper.setText(R.id.txt_group_unread_news_count, "22");
+				LogUtils.i("type=" + item.get(GROUP_TYPE));
+				if (item.get(GROUP_TYPE).equals(GROUP_TYPE_SCHOOL)) {
+					// 校内圈子
+					helper.setImageResource(R.id.img_group_icon,
+							R.drawable.my_group_icon);
+					helper.setText(R.id.txt_group_name, item.get(GROUP_NAME));
+					helper.setText(R.id.txt_group_member_count,
+							item.get(GROUP_MEMBER) + "个小伙伴");
+					helper.setText(R.id.txt_group_unread_news_count,
+							item.get(GROUP_UNREAD_COUNT));
+				} else {
+					// 关注的圈子
+					imgLoader.displayImage(item.get(GROUP_COVER_IMG),
+							(ImageView) helper.getView(R.id.img_group_icon),
+							options);
+					helper.setText(R.id.txt_group_name, item.get(GROUP_NAME));
+					helper.setText(R.id.txt_group_member_count,
+							item.get(GROUP_MEMBER) + "人关注");
+					helper.setText(R.id.txt_group_unread_news_count,
+							item.get(GROUP_UNREAD_COUNT));
+				}
 
 				// 设置事件监听
 				final int postion = helper.getPosition();
@@ -205,10 +248,33 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 		public void onClick(View view, int postion, int viewID) {
 			switch (viewID) {
 			case R.id.layout_group_Listitem_rootview:
-				//跳转至圈子内容部分
-				Intent intentToGroupNews = new Intent(GroupListActivity.this,
-						GroupNewsActivity.class);
-				startActivityWithRight(intentToGroupNews);
+				if (groupAdapter.getItem(postion).get(GROUP_TYPE)
+						.equals(GROUP_TYPE_SCHOOL)) {
+					// 跳转至校内容部分
+					Intent intentToGroupNews = new Intent();
+					intentToGroupNews.setClass(GroupListActivity.this,
+							GroupNewsActivity.class);
+					// 传递是否是圈子还是校园
+					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY,
+							true);
+					// 传递名称
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_GROUP_NAME,
+							groupAdapter.getItem(postion).get(GROUP_NAME));
+					startActivityWithRight(intentToGroupNews);
+				} else {
+					// 跳转至圈子内容部分
+					Intent intentToGroupNews = new Intent();
+					intentToGroupNews.setClass(GroupListActivity.this,
+							GroupNewsActivity.class);
+					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY,
+							false);
+					// 传递名称
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_GROUP_NAME,
+							groupAdapter.getItem(postion).get(GROUP_NAME));
+					startActivityWithRight(intentToGroupNews);
+				}
 				break;
 
 			default:

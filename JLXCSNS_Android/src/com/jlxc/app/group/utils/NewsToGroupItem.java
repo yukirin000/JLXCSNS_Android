@@ -12,7 +12,7 @@ import com.jlxc.app.news.model.NewsModel;
 /**
  * 将数据转换成items类型的数据
  * */
-public class NewsToItemData {
+public class NewsToGroupItem {
 
 	// 将数据转换为动态item形式的数据
 	public static List<GroupItemModel> newsToItem(

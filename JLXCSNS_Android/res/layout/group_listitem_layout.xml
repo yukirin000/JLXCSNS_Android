@@ -22,6 +22,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="5dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/my_group_icon" />
 
         <RelativeLayout
@@ -40,7 +41,7 @@
                 android:textSize="@dimen/font_size_medium" />
 
             <TextView
-                android:id="@+id/txt_group_count"
+                android:id="@+id/txt_group_member_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
