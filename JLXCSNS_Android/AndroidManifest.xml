@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jlxc.app"
-    android:versionCode="56"
-    android:versionName="1.01" xmlns:tools="http://schemas.android.com/tools">
+    android:versionCode="57"
+    android:versionName="1.02" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -109,7 +109,11 @@
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.OtherPeopleFriendsActivity" >
         </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.OtherAttentOrFansActivity" >
+        </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.MyFriendListActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.MyFansListActivity" >
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.FriendListActivity" >
         </activity>

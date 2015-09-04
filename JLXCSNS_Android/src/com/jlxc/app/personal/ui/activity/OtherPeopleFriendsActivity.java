@@ -34,7 +34,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-
+//废弃 暂时不用了 使用OtherAttentOrFansActivity代替
 public class OtherPeopleFriendsActivity extends BaseActivityWithTopBar {
 
 	public final static String INTENT_KEY = "uid";

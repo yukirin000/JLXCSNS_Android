@@ -6,6 +6,7 @@ import io.rong.imlib.model.Conversation.ConversationType;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
@@ -34,7 +35,9 @@ import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
+import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.model.FriendModel;
 import com.lidroid.xutils.exception.HttpException;
@@ -42,9 +45,16 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-//和MyFriendsActivity 共用一套layout
-public class MyFriendListActivity extends BaseActivityWithTopBar {
 
+public class OtherAttentOrFansActivity extends BaseActivityWithTopBar {
+
+	//意图用KEY
+	public static String INTENT_STATE_KEY = "attentOrFans";
+	public static String INTENT_USER_KEY = "targetUser";
+	//默认是关注
+	private boolean attentOrFans = true;
+	//目标用户id
+	private int userId;
 	// 每页加载好友数
 	private final int pageCount = 20;
 	// 点赞的人的listview
@@ -54,8 +64,6 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	private List<FriendModel> dataList = new ArrayList<FriendModel>();
 	// 适配器
 	private HelloHaAdapter<FriendModel> friendAdapter;
-	// bitmap的处理
-//	private static BitmapUtils bitmapUtils;
 	// 当前的刷新模式
 	private boolean isPullDown = false;
 	// 屏幕的尺寸
@@ -69,11 +77,43 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.activity_my_friend_list;
+		return R.layout.activity_other_attent_fans_list;
 	}
 
 	@Override
 	protected void setUpView() {
+		
+		init();
+		listviewSet();
+
+		isPullDown = true;
+		//获取数据
+		getAttenOrFans(String.valueOf(currentPage), String.valueOf(pageCount));
+	}
+	
+	/**
+	 * 初始化
+	 * */
+	private void init() {
+		//处理意图
+		Intent intent = getIntent();
+		if (null != intent) {
+			//关注或者粉丝
+			setAttentOrFans(intent.getBooleanExtra(INTENT_STATE_KEY, true));
+			//目标用户
+			setUserId(intent.getIntExtra(INTENT_USER_KEY, 0));
+		}
+		
+		if (isAttentOrFans()) {
+			setBarText("TA关注的人  (●´ω｀●)φ");
+		}else {
+			setBarText("关注TA的人  (●´ω｀●)φ");
+		}
+		
+		// 获取屏幕尺寸
+		DisplayMetrics displayMet = getResources().getDisplayMetrics();
+		screenWidth = displayMet.widthPixels;
+		screenHeight = displayMet.heightPixels;
 		
         //显示头像的配置  
 		headImageOptions = new DisplayImageOptions.Builder()  
@@ -83,75 +123,22 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
                 .cacheOnDisk(true)  
                 .bitmapConfig(Bitmap.Config.RGB_565)  
                 .build();
-		
-		setBarText("我的关注的人  (●´ω｀●)φ");
-		
-		init();
-		listviewSet();
-
-		isPullDown = true;
-
-		// 同步好友到本地
-		syncFriends();
 	}
-	
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		//每次进入页面都更新
-		getFriends(String.valueOf(currentPage), String.valueOf(pageCount));
-	}
-
-	/**
-	 * 初始化
-	 * */
-	private void init() {
-
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
-	}
-
-	/**
-	 * 初始化BitmapUtils
-	 * */
-//	private void initBitmapUtils() {
-//		bitmapUtils = new BitmapUtils(MyFriendListActivity.this);
-//		bitmapUtils.configDefaultBitmapMaxSize(screenWidth, screenHeight);
-//		bitmapUtils.configDefaultLoadingImage(R.drawable.default_avatar);
-//		bitmapUtils.configDefaultLoadFailedImage(R.drawable.default_avatar);
-//		bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
-//	}
 
 	/**
 	 * 数据绑定初始化
 	 * */
-	private void listviewSet() {
+	@SuppressLint("ResourceAsColor") private void listviewSet() {
 		// 设置刷新模式
 		friendListView.setMode(Mode.BOTH);
 
 		friendAdapter = new HelloHaAdapter<FriendModel>(
-				MyFriendListActivity.this, R.layout.my_friend_list_item_layout,
+				OtherAttentOrFansActivity.this, R.layout.other_attent_fans_list_item_layout,
 				dataList) {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					FriendModel item) {
-//				ImageView imgView = helper.getView(R.id.iv_my_friend_list_head);
-//				// 设置头像尺寸
-//				LayoutParams laParams = (LayoutParams) imgView
-//						.getLayoutParams();
-//				laParams.width = laParams.height = (screenWidth) / 7;
-//				imgView.setLayoutParams(laParams);
-//				imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//				bitmapUtils
-//						.configDefaultBitmapMaxSize(screenWidth, screenWidth);
-
-//				helper.setImageUrl(R.id.iv_my_friend_list_head, bitmapUtils,
-//						JLXCConst.ATTACHMENT_ADDR + item.get("head_sub_image"),
-//						new HeadBitmapLoadCallBack());
 				
 				ImageView headImageView = helper.getView(R.id.iv_my_friend_list_head);
 				if (null != item.getHead_sub_image() && item.getHead_sub_image().length() > 0) {
@@ -164,9 +151,11 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 				helper.setText(R.id.tv_my_friend_name, item.getName());
 				helper.setText(R.id.tv_my_friend_school, item.getSchool());
 				if (item.isOrHasAttent()) {
-					helper.setText(R.id.attent_state_btn, "互相关注");					
-				}else {
 					helper.setText(R.id.attent_state_btn, "已关注");
+					helper.setBackgroundRes(R.id.attent_state_btn, R.color.main_gary);
+				}else {
+					helper.setText(R.id.attent_state_btn, "关注");
+					helper.setBackgroundRes(R.id.attent_state_btn, R.color.main_orange);
 				}
 				
 				final int index = helper.getPosition();
@@ -174,7 +163,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 				helper.setOnClickListener(R.id.attent_state_btn, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						deleteFriendsAlert(index);
+						addOrDeleteFriendsAlert(index);
 					}
 				});
 			}
@@ -191,7 +180,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 				// 下拉
 				currentPage = 1;
 				isPullDown = true;
-				getFriends(String.valueOf(currentPage),
+				getAttenOrFans(String.valueOf(currentPage),
 						String.valueOf(pageCount));
 			}
 
@@ -218,7 +207,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 							isPullDown = false;
 							friendListView.setMode(Mode.PULL_FROM_END);
 							friendListView.setRefreshing(true);
-							getFriends(String.valueOf(currentPage),
+							getAttenOrFans(String.valueOf(currentPage),
 									String.valueOf(pageCount));
 						}
 					}
@@ -233,7 +222,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// 跳转至个人主页
-				Intent intentUsrMain = new Intent(MyFriendListActivity.this,
+				Intent intentUsrMain = new Intent(OtherAttentOrFansActivity.this,
 						OtherPersonalActivity.class);
 				intentUsrMain.putExtra(
 						OtherPersonalActivity.INTENT_KEY,
@@ -242,30 +231,79 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			}
 		});
 	}
-	
+
 	//删除关注提示
-	public void deleteFriendsAlert(final int index) {
+	public void addOrDeleteFriendsAlert(final int index) {
 		
 		FriendModel friend = dataList.get(index);
-		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-				this, "确定要取消关注"+friend.getName()+"吗", "确定", "取消");
-		confirmDialog.show();
-		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+		//取消关注或者关注
+		if (friend.isOrHasAttent()) {
+			final CustomAlertDialog confirmDialog = new CustomAlertDialog(
+					this, "确定要取消关注"+friend.getName()+"吗", "确定", "取消");
+			confirmDialog.show();
+			confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
+						@Override
+						public void doConfirm() {
+							deleteFriendConfirm(index);
+							confirmDialog.dismiss();
+						}
+
+						@Override
+						public void doCancel() {
+							confirmDialog.dismiss();
+						}
+					});	
+		}else {
+			addFriendConfirm(index);
+		}
+
+	}
+	
+	//关注别人
+	private void addFriendConfirm(int index){
+		
+		final FriendModel friend = dataList.get(index);
+		// 参数设置
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
+		params.addBodyParameter("friend_id", friend.getUid()+"");
+		
+		showLoading("添加中^_^", false);
+		HttpManager.post(JLXCConst.Add_FRIEND, params,
+				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
+
 					@Override
-					public void doConfirm() {
-						deleteFriendConfirm(index);
-						confirmDialog.dismiss();
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						hideLoading();
+						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						ToastUtil.show(OtherAttentOrFansActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							//本地数据持久化
+							IMModel imModel = new IMModel();
+							imModel.setTargetId(JLXCConst.JLXC + friend.getUid());
+							imModel.setAvatarPath(friend.getHead_image());
+							imModel.setTitle(friend.getName());
+							MessageAddFriendHelper.addFriend(imModel);
+							friend.setOrHasAttent(true);
+							friendAdapter.replaceAll(dataList);
+						}
 					}
 
 					@Override
-					public void doCancel() {
-						confirmDialog.dismiss();
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						super.onFailure(arg0, arg1, flag);
+						hideLoading();
+						ToastUtil.show(OtherAttentOrFansActivity.this,
+								"网络异常");
 					}
-				});	
+				}, null));		
+		
 	}
 	
 	private void deleteFriendConfirm(int index){
-		final int location = index;
 		final FriendModel friend = dataList.get(index);
 		// 参数设置
 		RequestParams params = new RequestParams();
@@ -281,12 +319,12 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 						super.onSuccess(jsonResponse, flag);
 						hideLoading();
 						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
-						ToastUtil.show(MyFriendListActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+						ToastUtil.show(OtherAttentOrFansActivity.this,jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 						
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							RongIMClient.getInstance().removeConversation(ConversationType.PRIVATE, JLXCConst.JLXC+friend.getUid(), null);
+							friend.setOrHasAttent(false);
 							//UI变化
-							dataList.remove(location);
 							friendAdapter.replaceAll(dataList);
 						}
 					}
@@ -302,13 +340,20 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 	}
 
 	/**
-	 * 获取朋友信息
+	 * 获取关注我的信息
 	 * */
-	public void getFriends(String page, String size) {
-		String path = JLXCConst.GET_ATTENT_LIST + "?" + "user_id="
-				+ UserManager.getInstance().getUser().getUid() + "&page="
-				+ page + "&size=" + size;
-
+	public void getAttenOrFans(String page, String size) {
+		String path = "";
+		if (isAttentOrFans()) {
+			path = JLXCConst.GET_OTHER_ATTENT_LIST + "?" + "self_user_id="
+					+ UserManager.getInstance().getUser().getUid()+"&target_user_id=" + getUserId() + "&page="
+					+ page + "&size=" + size;	
+		}else {
+			path = JLXCConst.GET_OTHER_FANS_LIST + "?" + "self_user_id="
+					+ UserManager.getInstance().getUser().getUid()+"&target_user_id=" + getUserId() + "&page="
+					+ page + "&size=" + size;	
+		}
+		
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -340,7 +385,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 								friendListView.setMode(Mode.BOTH);
 							}
 							friendListView.onRefreshComplete();
-							ToastUtil.show(MyFriendListActivity.this,
+							ToastUtil.show(OtherAttentOrFansActivity.this,
 									jsonResponse
 											.getString(JLXCConst.HTTP_MESSAGE));
 						}
@@ -354,15 +399,17 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 							friendListView.setMode(Mode.BOTH);
 						}
 						friendListView.onRefreshComplete();
-						ToastUtil.show(MyFriendListActivity.this, "网络好像有点问题");
+						ToastUtil.show(OtherAttentOrFansActivity.this, "网络好像有点问题");
 					}
 
 				}, null));
 	}
+	
 	//数据模型转换
 	private void jsonToPersonData(JSONArray jPersonList) {
 		List<FriendModel> list = new ArrayList<FriendModel>();
 		for (int index = 0; index < jPersonList.size(); index++) {
+			
 			JSONObject jsonObject = jPersonList.getJSONObject(index);
 			FriendModel friend = new FriendModel();
 			friend.setUid(JLXCUtils.stringToInt(jsonObject.getString("uid")));
@@ -389,106 +436,23 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 			jPersonList.clear();
 		}
 	}
-	
-	
-	// 同步全部好友到本地
-	public void syncFriends() {
-		// 判断是否需要同步
-		String path = JLXCConst.NEED_SYNC_FRIENDS + "?" + "user_id="
-				+ UserManager.getInstance().getUser().getUid()
-				+ "&friends_count=" + IMModel.findHasAddAll().size();
-		HttpManager.get(path, new JsonRequestCallBack<String>(
-				new LoadDataHandler<String>() {
 
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							JSONObject jResult = jsonResponse
-									.getJSONObject(JLXCConst.HTTP_RESULT);
-							// 是否需要更新
-							int needUpdate = jResult.getIntValue("needUpdate");
-							if (needUpdate > 0) {
-								// 需要更新好友列表
-								isPullDown = true;
-								getAllFriends();
-							}
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-					}
-
-				}, null));
+	/////////////////////////setter getter//////////////////////////////
+	public boolean isAttentOrFans() {
+		return attentOrFans;
 	}
 
-	// 更新全部
-	public void getAllFriends() {
-
-		// 同步
-		String path = JLXCConst.GET_ALL_FRIENDS_LIST + "?" + "user_id="
-				+ UserManager.getInstance().getUser().getUid();
-		HttpManager.get(path, new JsonRequestCallBack<String>(
-				new LoadDataHandler<String>() {
-
-					@Override
-					public void onSuccess(JSONObject jsonResponse, String flag) {
-						super.onSuccess(jsonResponse, flag);
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
-						if (status == JLXCConst.STATUS_SUCCESS) {
-							JSONObject jResult = jsonResponse
-									.getJSONObject(JLXCConst.HTTP_RESULT);
-							JSONArray jsonArray = jResult
-									.getJSONArray(JLXCConst.HTTP_LIST);
-							// 建立模型数组
-							for (int i = 0; i < jsonArray.size(); i++) {
-								JSONObject jsonObject = jsonArray
-										.getJSONObject(i);
-
-								String jlxcUid = JLXCConst.JLXC
-										+ jsonObject.getIntValue("uid");
-								IMModel model = IMModel.findByGroupId(jlxcUid);
-								if (null != model) {
-									model.setTitle(jsonObject.getString("name"));
-									model.setAvatarPath(jsonObject
-											.getString("head_image"));
-									model.setRemark(jsonObject
-											.getString("friend_remark"));
-									model.setCurrentState(IMModel.GroupHasAdd);
-									model.update();
-								} else {
-									model = new IMModel();
-									model.setType(IMModel.ConversationType_PRIVATE);
-									model.setTargetId(jlxcUid);
-									model.setTitle(jsonObject.getString("name"));
-									model.setAvatarPath(jsonObject
-											.getString("head_image"));
-									model.setRemark(jsonObject
-											.getString("friend_remark"));
-									model.setOwner(UserManager.getInstance()
-											.getUser().getUid());
-									model.setIsNew(0);
-									model.setIsRead(1);
-									model.setCurrentState(IMModel.GroupHasAdd);
-									model.save();
-								}
-
-							}
-						}
-					}
-
-					@Override
-					public void onFailure(HttpException arg0, String arg1,
-							String flag) {
-						super.onFailure(arg0, arg1, flag);
-					}
-
-				}, null));
+	public void setAttentOrFans(boolean attentOrFans) {
+		this.attentOrFans = attentOrFans;
 	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	
+	
 }

@@ -176,7 +176,7 @@
 		                        android:layout_marginLeft="5dip"
 		                        android:textSize="@dimen/font_size_huge"
 		                        android:textColor="@color/main_white"
-		                        android:text="加好友" />	   
+		                        android:text="关注TA" />	   
                             
                         </LinearLayout>                        
                     </RelativeLayout>
@@ -216,13 +216,19 @@
 						    
                             <TextView
                                 android:id="@+id/my_image_count_text_view"
+                                android:textSize="@dimen/font_size_small"
+	                        	android:textColor="@color/main_char_gary"
+						     	android:layout_centerVertical="true"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dip" />
+                                android:layout_toLeftOf="@+id/my_image_arrow"
+                                android:layout_marginRight="5dip" />
 
 						    <ImageView
+						        android:id="@+id/my_image_arrow"
 						        android:layout_width="15dp"
 						        android:layout_height="15dp"
+						        android:layout_centerVertical="true"
 						        android:layout_alignParentRight="true"
 						        android:layout_marginRight="10dp"
 						        android:scaleType="fitCenter"
@@ -244,13 +250,9 @@
                     </com.jlxc.app.base.ui.view.TouchInterceptGridView>
 
                 </LinearLayout>
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginLeft="20dip"
-					android:background="@color/main_light_gary" />
+
                 <!-- TA的好友 -->
-                <LinearLayout
+                <!-- <LinearLayout
                     android:id="@+id/his_friend_layout"
                     android:layout_width="match_parent"
                     android:layout_height="70dip"
@@ -307,18 +309,109 @@
 
 					</RelativeLayout>                    
 
-                </LinearLayout>
+                </LinearLayout> -->
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="10dip"
 					android:background="@color/main_light_white" />
-                <!-- 共同好友和访客 -->
+                <!-- 共同好友和他的好友和关注 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="vertical" >
-
+		              
+					<LinearLayout
+					     android:id="@+id/his_friend_layout"
+		                 android:layout_width="match_parent"
+		                 android:layout_height="45dip"
+		                 android:gravity="center_vertical"
+		                 android:orientation="horizontal" >
+		
+		                  <TextView
+		                      android:layout_width="wrap_content"
+		                      android:layout_height="wrap_content"
+		                      android:textSize="@dimen/font_size_small"
+		                      android:textColor="@color/main_char_gary"
+		                      android:layout_marginLeft="15dip"
+		                      android:text="关注" />
+		                  
+							<RelativeLayout
+							    android:layout_width="match_parent"
+							    android:layout_height="wrap_content" >
+									    
+								 <TextView
+								     android:id="@+id/his_friend_count_text_view"
+								     android:layout_width="wrap_content"
+								     android:layout_height="wrap_content"
+								     android:layout_toLeftOf="@+id/his_friend_arrow"
+								     android:textSize="@dimen/font_size_small"
+				                     android:textColor="@color/main_char_gary"
+								     android:layout_centerVertical="true"
+								     android:layout_marginLeft="5dip" />				    
+							    
+							    <ImageView
+							        android:id="@+id/his_friend_arrow"
+							        android:layout_centerVertical="true"
+							        android:layout_width="15dp"
+							        android:layout_height="15dp"
+							        android:scaleType="fitCenter"
+							        android:layout_alignParentRight="true"
+							        android:layout_marginRight="10dp"
+							        android:src="@drawable/right_arrow" />
+							</RelativeLayout>
+		              </LinearLayout>
+		              <View
+		                  android:layout_width="fill_parent"
+		                  android:layout_height="1dip"
+		                  android:layout_marginLeft="20dip"
+		                  android:background="@color/main_light_gary" />
+		              
+					<LinearLayout
+					     android:id="@+id/his_fans_layout"
+		                 android:layout_width="match_parent"
+		                 android:layout_height="45dip"
+		                 android:gravity="center_vertical"
+		                 android:orientation="horizontal" >
+		
+		                  <TextView
+		                      android:layout_width="wrap_content"
+		                      android:layout_height="wrap_content"
+		                      android:textSize="@dimen/font_size_small"
+		                      android:textColor="@color/main_char_gary"
+		                      android:layout_marginLeft="15dip"
+		                      android:text="粉丝" />
+		                  
+							<RelativeLayout
+							    android:layout_width="match_parent"
+							    android:layout_height="wrap_content" >
+									    
+								 <TextView
+								     android:id="@+id/his_fans_count_text_view"
+								     android:layout_width="wrap_content"
+								     android:layout_height="wrap_content"
+								     android:layout_toLeftOf="@+id/his_fans_arrow"
+								     android:textSize="@dimen/font_size_small"
+				                     android:textColor="@color/main_char_gary"
+								     android:layout_centerVertical="true"
+								     android:layout_marginLeft="5dip" />				    
+							    
+							    <ImageView
+							        android:id="@+id/his_fans_arrow"
+							        android:layout_centerVertical="true"
+							        android:layout_width="15dp"
+							        android:layout_height="15dp"
+							        android:scaleType="fitCenter"
+							        android:layout_alignParentRight="true"
+							        android:layout_marginRight="10dp"
+							        android:src="@drawable/right_arrow" />
+							</RelativeLayout>
+		              </LinearLayout>
+		               <View
+		                  android:layout_width="fill_parent"
+		                  android:layout_height="1dip"
+		                  android:layout_marginLeft="20dip"
+		                  android:background="@color/main_light_gary" />
 					<LinearLayout
 					     android:id="@+id/common_friend_layout"
 		                 android:layout_width="match_parent"
@@ -332,7 +425,7 @@
 		                      android:textSize="@dimen/font_size_small"
 		                      android:textColor="@color/main_char_gary"
 		                      android:layout_marginLeft="15dip"
-		                      android:text="共同的好友" />
+		                      android:text="共同关注" />
 		                  
 							<RelativeLayout
 							    android:layout_width="match_parent"
@@ -359,52 +452,7 @@
 							        android:src="@drawable/right_arrow" />
 							</RelativeLayout>
 		              </LinearLayout>
-		              <View
-		                  android:layout_width="fill_parent"
-		                  android:layout_height="1dip"
-		                  android:layout_marginLeft="20dip"
-		                  android:background="@color/main_light_gary" />
-		              
-					<LinearLayout
-					     android:id="@+id/his_visit_layout"
-		                 android:layout_width="match_parent"
-		                 android:layout_height="45dip"
-		                 android:gravity="center_vertical"
-		                 android:orientation="horizontal" >
-		
-		                  <TextView
-		                      android:layout_width="wrap_content"
-		                      android:layout_height="wrap_content"
-		                      android:textSize="@dimen/font_size_small"
-		                      android:textColor="@color/main_char_gary"
-		                      android:layout_marginLeft="15dip"
-		                      android:text="谁看过TA" />
-		                  
-							<RelativeLayout
-							    android:layout_width="match_parent"
-							    android:layout_height="wrap_content" >
-									    
-								 <TextView
-								     android:id="@+id/his_visit_count_text_view"
-								     android:layout_width="wrap_content"
-								     android:layout_height="wrap_content"
-								     android:layout_toLeftOf="@+id/his_visit_arrow"
-								     android:textSize="@dimen/font_size_small"
-				                     android:textColor="@color/main_char_gary"
-								     android:layout_centerVertical="true"
-								     android:layout_marginLeft="5dip" />				    
-							    
-							    <ImageView
-							        android:id="@+id/his_visit_arrow"
-							        android:layout_centerVertical="true"
-							        android:layout_width="15dp"
-							        android:layout_height="15dp"
-							        android:scaleType="fitCenter"
-							        android:layout_alignParentRight="true"
-							        android:layout_marginRight="10dp"
-							        android:src="@drawable/right_arrow" />
-							</RelativeLayout>
-		              </LinearLayout>
+					
                 </LinearLayout>
 
                 <LinearLayout
