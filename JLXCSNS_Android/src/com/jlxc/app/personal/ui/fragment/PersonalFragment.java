@@ -14,12 +14,6 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-//import org.lasque.tusdk.core.TuSdk;
-//import org.lasque.tusdk.core.TuSdkResult;
-//import org.lasque.tusdk.impl.activity.TuFragment;
-//import org.lasque.tusdk.impl.components.TuEditComponent;
-//import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,7 +21,6 @@ import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,16 +29,15 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
+import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.DatePicker.OnDateChangedListener;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -66,26 +58,29 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
-import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.model.CityModel;
 import com.jlxc.app.personal.model.ProvinceModel;
 import com.jlxc.app.personal.ui.activity.MyCardActivity;
+import com.jlxc.app.personal.ui.activity.MyFansListActivity;
 import com.jlxc.app.personal.ui.activity.MyFriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSettingActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSignActivity;
-import com.jlxc.app.personal.ui.activity.VisitListActivity;
 import com.jlxc.app.personal.ui.view.cityView.OnWheelChangedListener;
 import com.jlxc.app.personal.ui.view.cityView.WheelView;
 import com.jlxc.app.personal.ui.view.cityView.adapters.ArrayWheelAdapter;
 import com.jlxc.app.personal.utils.XmlParserHandler;
-import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+//import org.lasque.tusdk.core.TuSdk;
+//import org.lasque.tusdk.core.TuSdkResult;
+//import org.lasque.tusdk.impl.activity.TuFragment;
+//import org.lasque.tusdk.impl.components.TuEditComponent;
+//import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
 
 @SuppressLint("NewApi")
 public class PersonalFragment extends BaseFragment implements
@@ -429,11 +424,14 @@ public class PersonalFragment extends BaseFragment implements
 			break;
 		case R.id.visit_layout:
 			// 最近来访点击
-			Intent visitIntent = new Intent(getActivity(),
-					VisitListActivity.class);
-			visitIntent.putExtra(VisitListActivity.INTENT_KEY,
-					userModel.getUid());
-			startActivityWithRight(visitIntent);
+//			Intent visitIntent = new Intent(getActivity(),
+//					VisitListActivity.class);
+//			visitIntent.putExtra(VisitListActivity.INTENT_KEY,
+//					userModel.getUid());
+//			startActivityWithRight(visitIntent);
+			Intent fansIntent = new Intent(getActivity(),
+			MyFansListActivity.class);
+			startActivityWithRight(fansIntent);			
 			break;
 		case R.id.friend_layout:
 			// 我的好友列表
@@ -675,7 +673,8 @@ public class PersonalFragment extends BaseFragment implements
 
 		// 获取当前最近的三张状态图片
 		getNewsImages();
-		getVisitImages();
+//		getVisitImages();
+		getFansCount();
 		getFriendsImages();
 		// //好友
 		// List<IMModel> listModels = IMModel.findHasAddAll();
@@ -1133,7 +1132,7 @@ public class PersonalFragment extends BaseFragment implements
 	// 获取当前最近的三张状态图片
 	private void getNewsImages() {
 
-		String path = JLXCConst.GET_NEWS_IMAGES + "?" + "uid="
+		String path = JLXCConst.GET_NEWS_COVER_LIST + "?" + "uid="
 				+ UserManager.getInstance().getUser().getUid();
 
 		HttpManager.get(path, new JsonRequestCallBack<String>(
@@ -1159,12 +1158,18 @@ public class PersonalFragment extends BaseFragment implements
 								imageList.add(object.getString("sub_url"));
 							}
 							myImageAdapter.replaceAll(imageList);
+							
+							int imageCount = jResult.getIntValue("image_count");
+							if (imageCount > 0) {
+								myImageCountTextView.setText(imageCount + "条");
+							} else {
+								myImageCountTextView.setText("0条");
+							}
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							// ToastUtil.show(getActivity(),
-							// jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
 							myImageAdapter.clear();
+							myImageCountTextView.setText("0条");
 						}
 					}
 
@@ -1172,17 +1177,73 @@ public class PersonalFragment extends BaseFragment implements
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(getActivity(), "网络有毒=_=");
 					}
 
 				}, null));
 
 	}
 
-	// 获取当前最近的三张最近来访人的头像
-	private void getVisitImages() {
+//	// 获取当前最近的三张最近来访人的头像
+//	private void getVisitImages() {
+//
+//		String path = JLXCConst.GET_VISIT_IMAGES + "?" + "uid="
+//				+ UserManager.getInstance().getUser().getUid();
+//		HttpManager.get(path, new JsonRequestCallBack<String>(
+//				new LoadDataHandler<String>() {
+//
+//					@Override
+//					public void onSuccess(JSONObject jsonResponse, String flag) {
+//						super.onSuccess(jsonResponse, flag);
+//						int status = jsonResponse
+//								.getInteger(JLXCConst.HTTP_STATUS);
+//						if (status == JLXCConst.STATUS_SUCCESS) {
+//							JSONObject jResult = jsonResponse
+//									.getJSONObject(JLXCConst.HTTP_RESULT);
+//							// 数据处理
+//							// JSONArray array = jResult
+//							// .getJSONArray(JLXCConst.HTTP_LIST);
+//							// List<String> headImageList = new
+//							// ArrayList<String>();
+//							// if (null != array && array.size() < 1) {
+//							// visitAdapter.clear();
+//							// }
+//							// for (int i = 0; i < array.size(); i++) {
+//							// JSONObject object = (JSONObject) array.get(i);
+//							// headImageList.add(object
+//							// .getString("head_sub_image"));
+//							// }
+//							// visitAdapter.replaceAll(headImageList);
+//							// 人数
+//							int visitCount = jResult.getIntValue("visit_count");
+//							if (visitCount > 0) {
+//								visitCountTextView.setText(visitCount + "");
+//							} else {
+//								visitCountTextView.setText("");
+//							}
+//						}
+//
+//						if (status == JLXCConst.STATUS_FAIL) {
+//							// ToastUtil.show(getActivity(),
+//							// jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+//							// visitAdapter.clear();
+//							visitCountTextView.setText("");
+//						}
+//					}
+//
+//					@Override
+//					public void onFailure(HttpException arg0, String arg1,
+//							String flag) {
+//						super.onFailure(arg0, arg1, flag);
+//						ToastUtil.show(getActivity(), "网络有毒=_=");
+//					}
+//
+//				}, null));
+//	}
 
-		String path = JLXCConst.GET_VISIT_IMAGES + "?" + "uid="
+	// 获取最近关注的三个人的头像
+	private void getFansCount() {
+
+		String path = JLXCConst.GET_FANS_COUNT + "?" + "user_id="
 				+ UserManager.getInstance().getUser().getUid();
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
@@ -1195,34 +1256,16 @@ public class PersonalFragment extends BaseFragment implements
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
-							// 数据处理
-							// JSONArray array = jResult
-							// .getJSONArray(JLXCConst.HTTP_LIST);
-							// List<String> headImageList = new
-							// ArrayList<String>();
-							// if (null != array && array.size() < 1) {
-							// visitAdapter.clear();
-							// }
-							// for (int i = 0; i < array.size(); i++) {
-							// JSONObject object = (JSONObject) array.get(i);
-							// headImageList.add(object
-							// .getString("head_sub_image"));
-							// }
-							// visitAdapter.replaceAll(headImageList);
-							// 人数
-							int visitCount = jResult.getIntValue("visit_count");
-							if (visitCount > 0) {
-								visitCountTextView.setText(visitCount + "");
+							int fansCount = jResult.getIntValue("fans_count");
+							if (fansCount > 0) {
+								visitCountTextView.setText(fansCount + "");
 							} else {
-								visitCountTextView.setText("");
+								visitCountTextView.setText("0");
 							}
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							// ToastUtil.show(getActivity(),
-							// jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-							// visitAdapter.clear();
-							visitCountTextView.setText("");
+							visitCountTextView.setText("0");
 						}
 					}
 
@@ -1230,12 +1273,12 @@ public class PersonalFragment extends BaseFragment implements
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(getActivity(), "网络有毒=_=");
 					}
 
 				}, null));
 	}
 
+	
 	// 获取最近关注的三个人的头像
 	private void getFriendsImages() {
 
@@ -1252,34 +1295,20 @@ public class PersonalFragment extends BaseFragment implements
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							JSONObject jResult = jsonResponse
 									.getJSONObject(JLXCConst.HTTP_RESULT);
-							// 数据处理
-							// JSONArray array = jResult
-							// .getJSONArray(JLXCConst.HTTP_LIST);
-							// List<IMModel> headImageList = new
-							// ArrayList<IMModel>();
-							// friendsAdapter.clear();
-							// for (int i = 0; i < array.size(); i++) {
-							// JSONObject object = (JSONObject) array.get(i);
-							// IMModel imModel = new IMModel();
-							// imModel.setAvatarPath(object
-							// .getString("head_sub_image"));
-							// headImageList.add(imModel);
-							// }
-							// friendsAdapter.replaceAll(headImageList);
 							// 人数
 							int friendCount = jResult
 									.getIntValue("friend_count");
 							if (friendCount > 0) {
 								friendsCountTextView.setText(friendCount + "");
 							} else {
-								friendsCountTextView.setText("");
+								friendsCountTextView.setText("0");
 							}
 
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							// friendsAdapter.clear();
-							friendsCountTextView.setText("");
+							friendsCountTextView.setText("0");
 						}
 					}
 
@@ -1287,7 +1316,6 @@ public class PersonalFragment extends BaseFragment implements
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(getActivity(), "网络有毒=_=");
 					}
 
 				}, null));
@@ -1344,55 +1372,7 @@ public class PersonalFragment extends BaseFragment implements
 						ToastUtil.show(getActivity(), "网络异常");
 					}
 				}, null));
-
-		// Class clazz = userModel.getClass(); 不使用反射 可原始处理
-		// Method m = clazz.getDeclaredMethod("setMsg", String.class);
-		// m.invoke(userModel, "重新设置msg信息！");
 	}
-
-	// 图片滤镜
-	// private void filterImage(final String path) {
-	// File filterFile = new File(path);
-	// // 组件委托
-	// TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
-	// @Override
-	// public void onComponentFinished(TuSdkResult result, Error error,
-	// TuFragment lastFragment) {
-	// File oriFile = result.imageFile;
-	// File newFile = new File(path);
-	// boolean filterOK = oriFile.renameTo(newFile);
-	// if (filterOK) {
-	// uploadImage(path);
-	// } else {
-	// ToastUtil.show(getActivity(), "图片处理失败T_T");
-	// }
-	// }
-	// };
-	//
-	// TuEditComponent component = TuSdk.editCommponent(getActivity(),
-	// delegate);
-	// component.componentOption().editEntryOption().setEnableCuter(false);
-	// component.componentOption().editEntryOption().setEnableSticker(false);
-	// component.componentOption().editEntryOption().setSaveToAlbum(false);
-	// component.componentOption().editEntryOption().setAutoRemoveTemp(false);
-	// component.componentOption().editEntryOption().setSaveToTemp(true);
-	// component.componentOption().editEntryOption().setOutputCompress(80);
-	//
-	// TuSdkResult result = new TuSdkResult();
-	// result.imageFile = filterFile;
-	//
-	// // 设置图片
-	// component.setImage(result.image)
-	// // 设置系统照片
-	// .setImageSqlInfo(result.imageSqlInfo)
-	// // 设置临时文件
-	// .setTempFilePath(result.imageFile)
-	// // 在组件执行完成后自动关闭组件
-	// .setAutoDismissWhenCompleted(true)
-	// // 开启组件
-	// .showComponent();
-	//
-	// }
 
 	// 上传头像
 	private void uploadImage(final String path) {
@@ -1433,10 +1413,6 @@ public class PersonalFragment extends BaseFragment implements
 										"subimage");
 								userModel.setHead_image(serverPath);
 								userModel.setHead_sub_image(subPath);
-								// bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH
-								// + tmpImageName);
-								// bitmapUtils.display(headImageView,JLXCConst.ATTACHMENT_ADDR
-								// + serverPath);
 								ImageLoader.getInstance().displayImage(
 										"file://" + FileUtil.HEAD_PIC_PATH
 												+ tmpImageName, headImageView,
@@ -1455,10 +1431,6 @@ public class PersonalFragment extends BaseFragment implements
 										userInfo);
 							} else {
 								userModel.setBackground_image(serverPath);
-								// bitmapUtils.display(backImageView,
-								// FileUtil.BIG_IMAGE_PATH + tmpImageName);
-								// bitmapUtils.display(backImageView,
-								// JLXCConst.ATTACHMENT_ADDR + serverPath);
 								ImageLoader.getInstance().displayImage(
 										"file://" + FileUtil.BIG_IMAGE_PATH
 												+ tmpImageName, backImageView,
@@ -1495,28 +1467,25 @@ public class PersonalFragment extends BaseFragment implements
 					}
 				}, null));
 
-		// Class clazz = userModel.getClass(); 不使用反射 可原始处理
-		// Method m = clazz.getDeclaredMethod("setMsg", String.class);
-		// m.invoke(userModel, "重新设置msg信息！");
 
 	}
 
-	private String getRealPathFromURI(Uri contentURI) {
-		String result;
-		Cursor cursor = getActivity().getContentResolver().query(contentURI,
-				null, null, null, null);
-		if (cursor == null) { // Source is Dropbox or other similar local file
-								// path
-			result = contentURI.getPath();
-		} else {
-			cursor.moveToFirst();
-			int idx = cursor
-					.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-			result = cursor.getString(idx);
-			cursor.close();
-		}
-		return result;
-	}
+//	private String getRealPathFromURI(Uri contentURI) {
+//		String result;
+//		Cursor cursor = getActivity().getContentResolver().query(contentURI,
+//				null, null, null, null);
+//		if (cursor == null) { // Source is Dropbox or other similar local file
+//								// path
+//			result = contentURI.getPath();
+//		} else {
+//			cursor.moveToFirst();
+//			int idx = cursor
+//					.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+//			result = cursor.getString(idx);
+//			cursor.close();
+//		}
+//		return result;
+//	}
 
 	/**
 	 * XML解析
@@ -1639,21 +1608,6 @@ public class PersonalFragment extends BaseFragment implements
 		this.myImageAdapter = myImageAdapter;
 	}
 
-	// public HelloHaAdapter<String> getVisitAdapter() {
-	// return visitAdapter;
-	// }
-	//
-	// public void setVisitAdapter(HelloHaAdapter<String> visitAdapter) {
-	// this.visitAdapter = visitAdapter;
-	// }
-	//
-	// public HelloHaAdapter<IMModel> getFriendsAdapter() {
-	// return friendsAdapter;
-	// }
-	//
-	// public void setFriendsAdapter(HelloHaAdapter<IMModel> friendsAdapter) {
-	// this.friendsAdapter = friendsAdapter;
-	// }
 
 	public String getTmpImageName() {
 		return tmpImageName;

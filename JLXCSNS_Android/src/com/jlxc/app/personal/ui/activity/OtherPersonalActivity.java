@@ -41,6 +41,7 @@ import com.jlxc.app.base.ui.view.CustomAlertDialog;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -73,13 +74,12 @@ public class OtherPersonalActivity extends BaseActivity{
 	//TA的相片grid
 	@ViewInject(R.id.his_image_grid_view)
 	private GridView hisImageGridView;
-	//TA的好友grid
-	@ViewInject(R.id.his_friend_grid_view)
-	private GridView hisFriendsGridView;
-	//TA的好友数量
-	@ViewInject(R.id.his_friend_count_text_view)
-	private TextView hisFriendsCountTextView;
-	
+	// 我的相片数量
+	@ViewInject(R.id.my_image_count_text_view)
+	private TextView myImageCountTextView;	
+//	//TA的好友grid
+//	@ViewInject(R.id.his_friend_grid_view)
+//	private GridView hisFriendsGridView;
 	//姓名
 	@ViewInject(R.id.name_text_view)
 	private TextView nameTextView;
@@ -124,12 +124,18 @@ public class OtherPersonalActivity extends BaseActivity{
 	//共同好友数量
 	@ViewInject(R.id.common_friend_count_text_view)
 	private TextView commonFriendCountTextView;
-	//访客
-	@ViewInject(R.id.his_visit_layout)
-	private LinearLayout visitLayout;	
-	//访客数量
-	@ViewInject(R.id.his_visit_count_text_view)
-	private TextView visitFriendCountTextView;		
+	//TA的好友数量
+	@ViewInject(R.id.his_friend_count_text_view)
+	private TextView hisFriendsCountTextView;
+	//TA的粉丝数量
+	@ViewInject(R.id.his_fans_count_text_view)
+	private TextView hisFansCountTextView;	
+//	//访客
+//	@ViewInject(R.id.his_visit_layout)
+//	private LinearLayout visitLayout;	
+//	//访客数量
+//	@ViewInject(R.id.his_visit_count_text_view)
+//	private TextView visitFriendCountTextView;		
 	
 	
 	//单例bitmapUtils的引用
@@ -142,13 +148,13 @@ public class OtherPersonalActivity extends BaseActivity{
 	//TA的相片adapter
 	private HelloHaAdapter<String> hisImageAdapter;
 	//TA的来访adapter
-	private HelloHaAdapter<String> hisFriendAdapter;
+//	private HelloHaAdapter<String> hisFriendAdapter;
 	//查看的用户id
 	private int uid;
 	//查看的用户模型
 	private UserModel otherUserModel;
 	
-	@OnClick({R.id.head_image_view, R.id.his_visit_layout, R.id.common_friend_layout, R.id.his_friend_layout, 
+	@OnClick({R.id.head_image_view, R.id.common_friend_layout, R.id.his_friend_layout, R.id.his_fans_layout,
 			R.id.return_image_view,R.id.send_message_btn, R.id.add_friend_button, R.id.setting_Button,R.id.his_image_layout})
 	private void clickEvent(View view){
 		switch (view.getId()) {
@@ -169,12 +175,12 @@ public class OtherPersonalActivity extends BaseActivity{
 //			startActivityWithRight(settingIntent);
 			deleteFriend();
 			break;
-		case R.id.his_visit_layout:
-			//来访
-			Intent visitIntent = new Intent(this, VisitListActivity.class);
-			visitIntent.putExtra(VisitListActivity.INTENT_KEY, uid);
-			startActivityWithRight(visitIntent);
-			break;
+//		case R.id.his_visit_layout:
+//			//来访
+//			Intent visitIntent = new Intent(this, VisitListActivity.class);
+//			visitIntent.putExtra(VisitListActivity.INTENT_KEY, uid);
+//			startActivityWithRight(visitIntent);
+//			break;
 		case R.id.his_image_layout:
 			//图片点击
 			Intent myImageIntent = new Intent(this, MyNewsListActivity.class);
@@ -182,10 +188,19 @@ public class OtherPersonalActivity extends BaseActivity{
 			startActivityWithRight(myImageIntent);
 			break;
 		case R.id.his_friend_layout:
-			//他的好友
-			Intent otherFriendIntent = new Intent(this, OtherPeopleFriendsActivity.class);
-			otherFriendIntent.putExtra(OtherPeopleFriendsActivity.INTENT_KEY, uid);
-			startActivityWithRight(otherFriendIntent);
+			//他的关注
+			Intent otherAttentIntent = new Intent(this, OtherAttentOrFansActivity.class);
+			otherAttentIntent.putExtra(OtherAttentOrFansActivity.INTENT_USER_KEY, uid);
+			otherAttentIntent.putExtra(OtherAttentOrFansActivity.INTENT_STATE_KEY, true);
+			startActivityWithRight(otherAttentIntent);
+			break;
+		case R.id.his_fans_layout:
+			//他的粉丝
+			//他的关注
+			Intent otherFansIntent = new Intent(this, OtherAttentOrFansActivity.class);
+			otherFansIntent.putExtra(OtherAttentOrFansActivity.INTENT_USER_KEY, uid);
+			otherFansIntent.putExtra(OtherAttentOrFansActivity.INTENT_STATE_KEY, false);
+			startActivityWithRight(otherFansIntent);			
 			break;
 		case R.id.common_friend_layout:
 			//共同好友
@@ -241,13 +256,13 @@ public class OtherPersonalActivity extends BaseActivity{
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		//初始化adapter
 		hisImageAdapter = initAdapter(R.layout.my_image_adapter);
-		hisFriendAdapter = initAdapter(R.layout.attrament_other_image);
+//		hisFriendAdapter = initAdapter(R.layout.attrament_other_image);
 		//设置adapter
 		hisImageGridView.setAdapter(hisImageAdapter);
-		hisFriendsGridView.setAdapter(hisFriendAdapter);
+//		hisFriendsGridView.setAdapter(hisFriendAdapter);
 		//不能点击
 		hisImageGridView.setEnabled(false);
-		hisFriendsGridView.setEnabled(false);
+//		hisFriendsGridView.setEnabled(false);
 		
 		//获取数据
 		getPersonalInformation();
@@ -278,7 +293,7 @@ public class OtherPersonalActivity extends BaseActivity{
 	//获取用户信息	
 	private void getPersonalInformation(){
 		
-		String path = JLXCConst.PERSONAL_INFORMATION+"?"+"uid="+uid+"&current_id="+UserManager.getInstance().getUser().getUid();
+		String path = JLXCConst.PERSONAL_INFO+"?"+"uid="+uid+"&current_id="+UserManager.getInstance().getUser().getUid();
 		HttpManager.get(path,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
@@ -370,13 +385,13 @@ public class OtherPersonalActivity extends BaseActivity{
 		}
 		
 		//他的朋友
-		JSONArray friendArray = jsonObject.getJSONArray("friend_list");
-		List<String> friendImageList = new ArrayList<String>();
-		for (int i = 0; i < friendArray.size(); i++) {
-			JSONObject object = (JSONObject) friendArray.get(i);
-			friendImageList.add(object.getString("head_sub_image"));
-		}
-		hisFriendAdapter.replaceAll(friendImageList);
+//		JSONArray friendArray = jsonObject.getJSONArray("friend_list");
+//		List<String> friendImageList = new ArrayList<String>();
+//		for (int i = 0; i < friendArray.size(); i++) {
+//			JSONObject object = (JSONObject) friendArray.get(i);
+//			friendImageList.add(object.getString("head_sub_image"));
+//		}
+//		hisFriendAdapter.replaceAll(friendImageList);
 		
 		//他的动态
 		JSONArray imagesArray = jsonObject.getJSONArray("image_list");
@@ -388,22 +403,34 @@ public class OtherPersonalActivity extends BaseActivity{
 		hisImageAdapter.replaceAll(imagesList);
 		
 		//访客数量
-		if (jsonObject.getIntValue("visit_count")>0) {
-			visitFriendCountTextView.setText(jsonObject.getIntValue("visit_count")+"人");	
-		}else {
-			visitFriendCountTextView.setText("");
+//		if (jsonObject.getIntValue("visit_count")>0) {
+//			visitFriendCountTextView.setText(jsonObject.getIntValue("visit_count")+"人");	
+//		}else {
+//			visitFriendCountTextView.setText("");
+//		}
+		//图片数量
+		if (jsonObject.getIntValue("image_count") > 0) {
+			myImageCountTextView.setText(jsonObject.getIntValue("image_count") + "条");
+		} else {
+			myImageCountTextView.setText("0条");
 		}
 		//好友数量
 		if (jsonObject.getIntValue("friend_count")>0) {
 			hisFriendsCountTextView.setText(jsonObject.getIntValue("friend_count")+"人");	
 		}else {
-			hisFriendsCountTextView.setText("");
+			hisFriendsCountTextView.setText("0"+"人");
 		}
+		//粉丝数量
+		if (jsonObject.getIntValue("fans_count")>0) {
+			hisFansCountTextView.setText(jsonObject.getIntValue("fans_count")+"人");	
+		}else {
+			hisFansCountTextView.setText("0"+"人");
+		}		
 		//共同好友数量
 		if (jsonObject.getIntValue("common_friend_count")>0) {
 			commonFriendCountTextView.setText(jsonObject.getIntValue("common_friend_count")+"人");	
 		}else {
-			commonFriendCountTextView.setText("");
+			commonFriendCountTextView.setText("0"+"人");
 		}
 		
 		//融云刷新信息
@@ -511,29 +538,35 @@ public class OtherPersonalActivity extends BaseActivity{
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							settingButton.setVisibility(View.VISIBLE);
 							//本地数据持久化
-							IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
-							//如果存在更新
-							if (null != imModel) {
-								imModel.setTitle(otherUserModel.getName());
-								imModel.setAvatarPath(otherUserModel.getHead_image());
+							IMModel imModel = new IMModel();
+							imModel.setTargetId(JLXCConst.JLXC + otherUserModel.getUid());
+							imModel.setAvatarPath(otherUserModel.getHead_image());
+							imModel.setTitle(otherUserModel.getName());
+							MessageAddFriendHelper.addFriend(imModel);
+//							//本地数据持久化
+//							IMModel imModel = IMModel.findByGroupId(JLXCConst.JLXC + otherUserModel.getUid());
+//							//如果存在更新
+//							if (null != imModel) {
+//								imModel.setTitle(otherUserModel.getName());
+//								imModel.setAvatarPath(otherUserModel.getHead_image());
+////								imModel.setIsNew(0);
+////								imModel.setIsRead(1);
+//								imModel.setCurrentState(IMModel.GroupHasAdd);
+////								imModel.setAddDate(TimeHandle.getCurrentDataStr());
+//								imModel.update();
+//							}else {
+//								imModel = new IMModel();
+//								imModel.setType(IMModel.ConversationType_PRIVATE);
+//								imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
+//								imModel.setTitle(otherUserModel.getName());
+//								imModel.setAvatarPath(otherUserModel.getHead_image());
 //								imModel.setIsNew(0);
 //								imModel.setIsRead(1);
-								imModel.setCurrentState(IMModel.GroupHasAdd);
-//								imModel.setAddDate(TimeHandle.getCurrentDataStr());
-								imModel.update();
-							}else {
-								imModel = new IMModel();
-								imModel.setType(IMModel.ConversationType_PRIVATE);
-								imModel.setTargetId(JLXCConst.JLXC+otherUserModel.getUid());
-								imModel.setTitle(otherUserModel.getName());
-								imModel.setAvatarPath(otherUserModel.getHead_image());
-								imModel.setIsNew(0);
-								imModel.setIsRead(1);
-								imModel.setCurrentState(IMModel.GroupHasAdd);
-								imModel.setOwner(UserManager.getInstance().getUser().getUid());
-//								imModel.setAddDate(TimeHandle.getCurrentDataStr());
-								imModel.save();
-							}
+//								imModel.setCurrentState(IMModel.GroupHasAdd);
+//								imModel.setOwner(UserManager.getInstance().getUser().getUid());
+////								imModel.setAddDate(TimeHandle.getCurrentDataStr());
+//								imModel.save();
+//							}
 							
 							//成功隐藏 
 							addFriendLayout.setVisibility(View.GONE);

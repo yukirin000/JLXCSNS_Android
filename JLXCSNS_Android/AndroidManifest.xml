@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jlxc.app"
-    android:versionCode="56"
-    android:versionName="1.01" >
+    android:versionCode="57"
+    android:versionName="1.02" >
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -64,7 +64,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>
         -->
         <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity" >
         </activity>
@@ -111,7 +111,11 @@
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.OtherPeopleFriendsActivity" >
         </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.OtherAttentOrFansActivity" >
+        </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.MyFriendListActivity" >
+        </activity>
+        <activity android:name="com.jlxc.app.personal.ui.activity.MyFansListActivity" >
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.FriendListActivity" >
         </activity>

@@ -52,7 +52,7 @@ public interface JLXCConst {
 	public static final String FIND_PWD = DOMIN + "/findPwd";
 	// 用户登录
 	public static final String LOGIN_USER = DOMIN + "/loginUser";
-	// 注册时填写个人信息
+	// 注册时填写个人信息 
 	public static final String SAVE_PERSONAL_INFO = DOMIN + "/savePersonalInfo";
 	// //////////////////////////////////////////////首页'说说'部分////////////////////////////////////////////////
 	// 发布状态
@@ -100,19 +100,26 @@ public interface JLXCConst {
 	// 修改个人信息中的图片 如背景图 头像
 	public static final String CHANGE_INFORMATION_IMAGE = DOMIN
 			+ "/changeInformationImage";
-	// 个人信息中 获取最新动态的三张图片
+	// 个人信息中 获取最新动态的三张图片 旧版
 	public static final String GET_NEWS_IMAGES = DOMIN + "/getNewsImages";
-	// 个人信息中 获取来访三张头像
+	// 个人信息中 获取最新动态的十张图片
+	public static final String GET_NEWS_COVER_LIST = DOMIN + "/getNewsCoverList";	
+	// 个人信息中 获取来访三张头像 弃用
 	public static final String GET_VISIT_IMAGES = DOMIN + "/getVisitImages";
+	// 个人信息中 获取粉丝数量
+	public static final String GET_FANS_COUNT = DOMIN + "/getFansCount";	
 	// 个人信息中 获取好友三张头像
 	public static final String GET_FRIENDS_IMAGE = DOMIN + "/getFriendsImage";
 	// 个人信息中 用户发布过的状态列表
 	public static final String USER_NEWS_LIST = DOMIN + "/userNewsList";
 	// 个人信息 删除状态
 	public static final String DELETE_NEWS = DOMIN + "/deleteNews";
-	// 个人信息 查看别人的信息
+	// 个人信息 查看别人的信息 旧版
 	public static final String PERSONAL_INFORMATION = DOMIN
 			+ "/personalInformation";
+	// 个人信息 查看别人的信息
+	public static final String PERSONAL_INFO = DOMIN
+			+ "/personalInfo";	
 	// 最近来访列表
 	public static final String GET_VISIT_LIST = DOMIN + "/getVisitList";
 	// 删除来访
@@ -148,6 +155,18 @@ public interface JLXCConst {
 	// 获取好友列表
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getFriendsList
 	public static final String GET_FRIENDS_LIST = DOMIN + "/getFriendsList";
+	// 获取关注列表
+	// http://localhost/jlxc_php/index.php/Home/MobileApi/getAttentList
+	public static final String GET_ATTENT_LIST = DOMIN + "/getAttentList";	
+	// 获取粉丝列表
+	// http://localhost/jlxc_php/index.php/Home/MobileApi/getFansList
+	public static final String GET_FANS_LIST = DOMIN + "/getFansList";
+	// 获取其他人的关注列表
+	// http://localhost/jlxc_php/index.php/Home/MobileApi/getAttentList
+	public static final String GET_OTHER_ATTENT_LIST = DOMIN + "/getOtherAttentList";	
+	// 获取其他人的粉丝列表
+	// http://localhost/jlxc_php/index.php/Home/MobileApi/getFansList
+	public static final String GET_OTHER_FANS_LIST = DOMIN + "/getOtherFansList";	
 	// 获取全部好友列表
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getAllFriendsList
 	public static final String GET_ALL_FRIENDS_LIST = DOMIN

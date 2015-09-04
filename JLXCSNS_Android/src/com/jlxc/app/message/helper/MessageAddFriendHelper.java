@@ -4,7 +4,7 @@ import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.message.model.IMModel;
 
-//发现部分的 添加好友帮助类 好友管理本地持久化废弃
+//发现部分的 添加好友帮助类
 public class MessageAddFriendHelper {
 
 	//添加好友
