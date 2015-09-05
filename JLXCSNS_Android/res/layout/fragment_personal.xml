@@ -148,7 +148,7 @@
                         </RelativeLayout>
                     </LinearLayout>
 
-                    <com.jlxc.app.base.ui.view.TouchInterceptGridView
+<!--                     <com.jlxc.app.base.ui.view.TouchInterceptGridView
                         android:id="@+id/my_image_grid_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -157,7 +157,12 @@
                         android:layout_marginRight="10dip"
                         android:horizontalSpacing="0dip"
                         android:numColumns="3" >
-                    </com.jlxc.app.base.ui.view.TouchInterceptGridView>
+                    </com.jlxc.app.base.ui.view.TouchInterceptGridView> -->
+                    <com.jlxc.app.personal.ui.view.PersonalPictureScrollView 
+                        android:id="@+id/my_image_scroll_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
                 </LinearLayout>
 
                 <View

@@ -43,6 +43,7 @@ import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
+import com.jlxc.app.personal.ui.view.PersonalPictureScrollView;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -71,15 +72,12 @@ public class OtherPersonalActivity extends BaseActivity{
 	//设置按钮
 	@ViewInject(R.id.setting_Button)
 	private ImageButton settingButton;
-	//TA的相片grid
-	@ViewInject(R.id.his_image_grid_view)
-	private GridView hisImageGridView;
-	// 我的相片数量
-	@ViewInject(R.id.my_image_count_text_view)
-	private TextView myImageCountTextView;	
-//	//TA的好友grid
-//	@ViewInject(R.id.his_friend_grid_view)
-//	private GridView hisFriendsGridView;
+	// TA的相片数量
+	@ViewInject(R.id.his_image_count_text_view)
+	private TextView hisImageCountTextView;
+	//TA的相片scroll
+	@ViewInject(R.id.his_image_scroll_view)
+	private PersonalPictureScrollView hisImageScrollView;	
 	//姓名
 	@ViewInject(R.id.name_text_view)
 	private TextView nameTextView;
@@ -130,23 +128,13 @@ public class OtherPersonalActivity extends BaseActivity{
 	//TA的粉丝数量
 	@ViewInject(R.id.his_fans_count_text_view)
 	private TextView hisFansCountTextView;	
-//	//访客
-//	@ViewInject(R.id.his_visit_layout)
-//	private LinearLayout visitLayout;	
-//	//访客数量
-//	@ViewInject(R.id.his_visit_count_text_view)
-//	private TextView visitFriendCountTextView;		
-	
-	
-	//单例bitmapUtils的引用
-//	BitmapUtils bitmapUtils;
 	//新图片缓存工具 头像
 	DisplayImageOptions headImageOptions;
-	//新图片缓存工具 北京
+	//新图片缓存工具 背景
 	DisplayImageOptions backImageOptions;
 	
 	//TA的相片adapter
-	private HelloHaAdapter<String> hisImageAdapter;
+//	private HelloHaAdapter<String> hisImageAdapter;
 	//TA的来访adapter
 //	private HelloHaAdapter<String> hisFriendAdapter;
 	//查看的用户id
@@ -175,12 +163,6 @@ public class OtherPersonalActivity extends BaseActivity{
 //			startActivityWithRight(settingIntent);
 			deleteFriend();
 			break;
-//		case R.id.his_visit_layout:
-//			//来访
-//			Intent visitIntent = new Intent(this, VisitListActivity.class);
-//			visitIntent.putExtra(VisitListActivity.INTENT_KEY, uid);
-//			startActivityWithRight(visitIntent);
-//			break;
 		case R.id.his_image_layout:
 			//图片点击
 			Intent myImageIntent = new Intent(this, MyNewsListActivity.class);
@@ -255,13 +237,13 @@ public class OtherPersonalActivity extends BaseActivity{
 		Intent intent = getIntent();
 		uid = intent.getIntExtra(INTENT_KEY, 0);
 		//初始化adapter
-		hisImageAdapter = initAdapter(R.layout.my_image_adapter);
+//		hisImageAdapter = initAdapter(R.layout.my_image_adapter);
 //		hisFriendAdapter = initAdapter(R.layout.attrament_other_image);
 		//设置adapter
-		hisImageGridView.setAdapter(hisImageAdapter);
+//		hisImageGridView.setAdapter(hisImageAdapter);
 //		hisFriendsGridView.setAdapter(hisFriendAdapter);
 		//不能点击
-		hisImageGridView.setEnabled(false);
+//		hisImageGridView.setEnabled(false);
 //		hisFriendsGridView.setEnabled(false);
 		
 		//获取数据
@@ -400,7 +382,8 @@ public class OtherPersonalActivity extends BaseActivity{
 			JSONObject object = (JSONObject) imagesArray.get(i);
 			imagesList.add(object.getString("sub_url"));
 		}
-		hisImageAdapter.replaceAll(imagesList);
+		hisImageScrollView.setNewsImageList(imagesList);
+//		hisImageAdapter.replaceAll(imagesList);
 		
 		//访客数量
 //		if (jsonObject.getIntValue("visit_count")>0) {
@@ -410,9 +393,9 @@ public class OtherPersonalActivity extends BaseActivity{
 //		}
 		//图片数量
 		if (jsonObject.getIntValue("image_count") > 0) {
-			myImageCountTextView.setText(jsonObject.getIntValue("image_count") + "条");
+			hisImageCountTextView.setText(jsonObject.getIntValue("image_count") + "条");
 		} else {
-			myImageCountTextView.setText("0条");
+			hisImageCountTextView.setText("0条");
 		}
 		//好友数量
 		if (jsonObject.getIntValue("friend_count")>0) {

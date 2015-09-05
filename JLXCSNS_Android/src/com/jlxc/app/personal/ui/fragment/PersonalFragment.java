@@ -66,6 +66,7 @@ import com.jlxc.app.personal.ui.activity.MyFriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSettingActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSignActivity;
+import com.jlxc.app.personal.ui.view.PersonalPictureScrollView;
 import com.jlxc.app.personal.ui.view.cityView.OnWheelChangedListener;
 import com.jlxc.app.personal.ui.view.cityView.WheelView;
 import com.jlxc.app.personal.ui.view.cityView.adapters.ArrayWheelAdapter;
@@ -76,11 +77,6 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-//import org.lasque.tusdk.core.TuSdk;
-//import org.lasque.tusdk.core.TuSdkResult;
-//import org.lasque.tusdk.impl.activity.TuFragment;
-//import org.lasque.tusdk.impl.components.TuEditComponent;
-//import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
 
 @SuppressLint("NewApi")
 public class PersonalFragment extends BaseFragment implements
@@ -123,9 +119,12 @@ public class PersonalFragment extends BaseFragment implements
 	// 顶部学校
 	@ViewInject(R.id.top_school_text_view)
 	private TextView topSchoolTextView;
-	// 我的相片grid
-	@ViewInject(R.id.my_image_grid_view)
-	private GridView myImageGridView;
+//	// 我的相片grid
+//	@ViewInject(R.id.my_image_grid_view)
+//	private GridView myImageGridView;
+	// 我的相片scroll
+	@ViewInject(R.id.my_image_scroll_view)
+	private PersonalPictureScrollView myImageScrollView;	
 	// 我的相片数量
 	@ViewInject(R.id.my_image_count_text_view)
 	private TextView myImageCountTextView;
@@ -170,9 +169,8 @@ public class PersonalFragment extends BaseFragment implements
 	// 新图片缓存工具 北京
 	DisplayImageOptions backImageOptions;
 
-	// 我的相片adapter
-	private HelloHaAdapter<String> myImageAdapter;
-
+	//	// 我的相片adapter
+	//	private HelloHaAdapter<String> myImageAdapter;
 	// // 最近来访adapter
 	// private HelloHaAdapter<String> visitAdapter;
 	// // 好友adapter
@@ -479,7 +477,7 @@ public class PersonalFragment extends BaseFragment implements
 				.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 		// 初始化adapter
-		myImageAdapter = initAdapter(R.layout.my_image_adapter);
+//		myImageAdapter = initAdapter(R.layout.my_image_adapter);
 		// visitAdapter = initAdapter(R.layout.attrament_image);
 		// friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(),
 		// R.layout.attrament_image) {
@@ -498,31 +496,30 @@ public class PersonalFragment extends BaseFragment implements
 		// }
 		// };
 
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		int screenWidth = displayMet.widthPixels;
-
-		LinearLayout.LayoutParams layoutParams = (android.widget.LinearLayout.LayoutParams) myImageGridView
-				.getLayoutParams();
-		float ratio = layoutParams.leftMargin / 10.0f;
-		// itemWidth
-		int columnWidth = (int) (ratio * 100);
-		// 宽度
-		int width = screenWidth - 2 * layoutParams.leftMargin;
-		// int height = layoutParams.height;
-		LogUtils.i(ratio + " " + layoutParams.leftMargin + " "
-				+ (columnWidth * 3 + 50) + " " + width, 1);
-		if ((columnWidth * 3 + 50) < width) {
-			layoutParams.width = columnWidth * 3 + 50;
-		} else {
-			myImageGridView.setHorizontalSpacing(10);
-		}
+//		DisplayMetrics displayMet = getResources().getDisplayMetrics();
+//		int screenWidth = displayMet.widthPixels;
+//		LinearLayout.LayoutParams layoutParams = (android.widget.LinearLayout.LayoutParams) myImageGridView
+//				.getLayoutParams();
+//		float ratio = layoutParams.leftMargin / 10.0f;
+//		// itemWidth
+//		int columnWidth = (int) (ratio * 100);
+//		// 宽度
+//		int width = screenWidth - 2 * layoutParams.leftMargin;
+//		// int height = layoutParams.height;
+//		LogUtils.i(ratio + " " + layoutParams.leftMargin + " "
+//				+ (columnWidth * 3 + 50) + " " + width, 1);
+//		if ((columnWidth * 3 + 50) < width) {
+//			layoutParams.width = columnWidth * 3 + 50;
+//		} else {
+//			myImageGridView.setHorizontalSpacing(10);
+//		}
 
 		// 设置adapter
-		myImageGridView.setAdapter(myImageAdapter);
+//		myImageGridView.setAdapter(myImageAdapter);
 		// visitGridView.setAdapter(visitAdapter);
 		// friendsGridView.setAdapter(friendsAdapter);
 		// 不能点击
-		myImageGridView.setEnabled(false);
+//		myImageGridView.setEnabled(false);
 		// visitGridView.setEnabled(false);
 		// friendsGridView.setEnabled(false);
 
@@ -565,17 +562,6 @@ public class PersonalFragment extends BaseFragment implements
 
 		// //设置点击
 		// setOnClickEvent();
-	}
-
-	public void setOnClickEvent() {
-		// View view = getActivity().findViewById(R.id.about_us);
-		// view.setOnClickListener(new View.OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
 	}
 
 	@Override
@@ -967,19 +953,6 @@ public class PersonalFragment extends BaseFragment implements
 
 		Builder builder = new AlertDialog.Builder(getActivity())
 				.setView(dateTimeLayout);
-		// .setPositiveButton("设置", new DialogInterface.OnClickListener() {
-		// public void onClick(DialogInterface dialog, int whichButton) {
-		// String date = datePicker.getYear() + "-"
-		// + datePicker.getMonth() + "-"
-		// + datePicker.getDayOfMonth();
-		// birthTextView.setText(date);
-		// uploadInformation("birthday", date);
-		// }
-		// })
-		// .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-		// public void onClick(DialogInterface dialog, int whichButton) {
-		// }
-		// });
 
 		final Dialog dialog = builder.show();
 		TextView cancelTextView = (TextView) dateTimeLayout
@@ -1006,40 +979,6 @@ public class PersonalFragment extends BaseFragment implements
 			}
 		});
 
-		// DatePickerDialog datePickerDialog = new
-		// DatePickerDialog(getActivity(),
-		// new OnDateSetListener() {
-		// @Override
-		// public void onDateSet(DatePicker view, int year,
-		// int monthOfYear, int dayOfMonth) {
-		//
-		// }
-		// }, 2000, 0, 0);
-		// // 取消按钮
-		// datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
-		// new DialogInterface.OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// LogUtils.i("cancel~~cancel~~", 1);
-		// }
-		// });
-		// // 确定按钮
-		// final DatePicker picker = datePickerDialog.getDatePicker();
-		// datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
-		// new DialogInterface.OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		//
-		// LogUtils.i("ok~~ok~~", 1);
-		// String date = picker.getYear() + "-"
-		// + picker.getMonth() + "-"
-		// + picker.getDayOfMonth();
-		// LogUtils.i(date, 1);
-		// birthTextView.setText(date);
-		// uploadInformation("birthday", date);
-		// }
-		// });
-		// datePickerDialog.show();
 	}
 
 	// 性别点击
@@ -1087,49 +1026,31 @@ public class PersonalFragment extends BaseFragment implements
 			}
 		});
 
-		// // dialog
-		// Builder nameAlertDialog = new AlertDialog.Builder(getActivity())
-		// .setNegativeButton("取消", null).setTitle("选择性别");
-		// String[] sexStrings = new String[] { "男孩纸", "女孩纸" };
-		// nameAlertDialog.setItems(sexStrings, new OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// if (which == 0) {
-		// sexTextView.setText("男孩纸");
-		// sexImageView.setImageResource(R.drawable.sex_boy);
-		// } else {
-		// sexTextView.setText("女孩纸");
-		// sexImageView.setImageResource(R.drawable.sex_girl);
-		// }
-		// uploadInformation("sex", "" + which);
-		// }
-		// });
-		// nameAlertDialog.show();
 	}
 
 	// 初始化adapter
-	private HelloHaAdapter<String> initAdapter(int id) {
+//	private HelloHaAdapter<String> initAdapter(int id) {
+//
+//		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(
+//				getActivity(), id) {
+//			@Override
+//			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
+//				ImageView imageView = helper.getView(R.id.image_attrament);
+//				// bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR +
+//				// item);
+//				if (null != item && item.length() > 0) {
+//					ImageLoader.getInstance().displayImage(
+//							JLXCConst.ATTACHMENT_ADDR + item, imageView,
+//							headImageOptions);
+//				} else {
+//					imageView.setImageResource(R.drawable.default_avatar);
+//				}
+//			}
+//		};
+//		return adapter;
+//	}
 
-		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(
-				getActivity(), id) {
-			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
-				ImageView imageView = helper.getView(R.id.image_attrament);
-				// bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR +
-				// item);
-				if (null != item && item.length() > 0) {
-					ImageLoader.getInstance().displayImage(
-							JLXCConst.ATTACHMENT_ADDR + item, imageView,
-							headImageOptions);
-				} else {
-					imageView.setImageResource(R.drawable.default_avatar);
-				}
-			}
-		};
-		return adapter;
-	}
-
-	// 获取当前最近的三张状态图片
+	// 获取当前最近的十张状态图片
 	private void getNewsImages() {
 
 		String path = JLXCConst.GET_NEWS_COVER_LIST + "?" + "uid="
@@ -1149,15 +1070,13 @@ public class PersonalFragment extends BaseFragment implements
 							// 数据处理
 							JSONArray array = jResult
 									.getJSONArray(JLXCConst.HTTP_LIST);
-							if (null != array && array.size() < 1) {
-								myImageAdapter.clear();
-							}
 							List<String> imageList = new ArrayList<String>();
 							for (int i = 0; i < array.size(); i++) {
 								JSONObject object = (JSONObject) array.get(i);
 								imageList.add(object.getString("sub_url"));
 							}
-							myImageAdapter.replaceAll(imageList);
+							//设置图片
+							myImageScrollView.setNewsImageList(imageList);
 							
 							int imageCount = jResult.getIntValue("image_count");
 							if (imageCount > 0) {
@@ -1168,7 +1087,7 @@ public class PersonalFragment extends BaseFragment implements
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							myImageAdapter.clear();
+//							myImageAdapter.clear();
 							myImageCountTextView.setText("0条");
 						}
 					}
@@ -1583,7 +1502,6 @@ public class PersonalFragment extends BaseFragment implements
 	public void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
-		// outState.putSerializable("user", userModel);
 		outState.putSerializable("imageType", imageType);
 		outState.putSerializable("tmpImageName", tmpImageName);
 	}
@@ -1600,14 +1518,6 @@ public class PersonalFragment extends BaseFragment implements
 	}
 
 	// //////////////////////getter setter/////////////////////
-	public HelloHaAdapter<String> getMyImageAdapter() {
-		return myImageAdapter;
-	}
-
-	public void setMyImageAdapter(HelloHaAdapter<String> myImageAdapter) {
-		this.myImageAdapter = myImageAdapter;
-	}
-
 
 	public String getTmpImageName() {
 		return tmpImageName;
