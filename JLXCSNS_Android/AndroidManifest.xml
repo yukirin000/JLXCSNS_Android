@@ -168,7 +168,7 @@
         </activity>
         <activity android:name="com.jlxc.app.group.ui.activity.GroupManageActivity" >
         </activity>
-        <activity android:name="com.jlxc.app.group.ui.activity.CampusInfoActivity" >
+        <activity android:name="com.jlxc.app.group.ui.activity.CampusHomeActivity" >
         </activity>
 
         <!-- 会话 Activity -->

@@ -82,7 +82,7 @@
             android:persistentDrawingCache="animation" />
 
         <ImageView
-            android:id="@+id/img_main_publish_btn"
+            android:id="@+id/img_publish_btn"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_gravity="right|bottom"

@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -96,8 +98,11 @@ public class MainNewsListFragment extends BaseFragment {
 	@ViewInject(R.id.news_listview)
 	private PullToRefreshListView newsListView;
 	// 发布按钮
-	// @ViewInject(R.id.img_main_publish_btn)
-	// private ImageView publishBtn;
+	 @ViewInject(R.id.img_main_publish_btn)
+	 private ImageView publishBtn;
+	// 标头部分
+	@ViewInject(R.id.layout_main_page_title_bar)
+	private Fragment titleFragment;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
@@ -155,16 +160,16 @@ public class MainNewsListFragment extends BaseFragment {
 		getNewsData(UserManager.getInstance().getUser().getUid(), pageIndex, "");
 
 		// //点击发布按钮
-		// publishBtn.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View arg0) {
-		// // TODO Auto-generated method stub
-		// Intent intentUsrMain = new Intent(mContext,
-		// PublishNewsActivity.class);
-		// startActivityWithRight(intentUsrMain);
-		// }
-		// });
+		publishBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Intent intentUsrMain = new Intent(mContext,
+						PublishNewsActivity.class);
+				startActivityWithRight(intentUsrMain);
+			}
+		});
 	}
 
 	/**
@@ -325,6 +330,20 @@ public class MainNewsListFragment extends BaseFragment {
 				Intent intentToGroupNews = new Intent(mContext,
 						GroupListActivity.class);
 				startActivityWithRight(intentToGroupNews);
+			}
+		});
+
+		// 滑动刷新
+		newsListView.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+
+			}
+
+			@Override
+			public void onScroll(AbsListView absListView, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
 			}
 		});
 

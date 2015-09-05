@@ -39,6 +39,8 @@ import com.jlxc.app.group.model.GroupItemModel;
 import com.jlxc.app.group.model.GroupItemModel.GroupNewsBodyItem;
 import com.jlxc.app.group.model.GroupItemModel.GroupNewsOperateItem;
 import com.jlxc.app.group.model.GroupItemModel.GroupNewsTitleItem;
+import com.jlxc.app.group.ui.activity.CampusHomeActivity;
+import com.jlxc.app.group.ui.activity.GroupNewsActivity;
 import com.jlxc.app.group.utils.NewsToGroupItem;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.NewsConstants;
@@ -319,6 +321,7 @@ public class GroupNewsFragment extends BaseFragment {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
+		helper.setOnClickListener(R.id.txt_group_news_user_school, listener);
 		helper.setOnClickListener(R.id.img_group_news_user_head, listener);
 		helper.setOnClickListener(R.id.txt_group_news_user_name, listener);
 		helper.setOnClickListener(R.id.layout_group_news_title_rootview,
@@ -528,12 +531,20 @@ public class GroupNewsFragment extends BaseFragment {
 			case R.id.layout_group_news_title_rootview:
 			case R.id.img_group_news_user_head:
 			case R.id.txt_group_news_user_name:
+			case R.id.txt_group_news_user_school:
 				GroupNewsTitleItem titleData = (GroupNewsTitleItem) newsAdapter
 						.getItem(postion);
 				if (R.id.layout_group_news_title_rootview == viewID) {
 					// 跳转到动态详情
 					jumpToNewsDetail(titleData, NewsConstants.KEY_BOARD_CLOSE,
 							null);
+				}else if (R.id.txt_group_news_user_school == viewID) {
+					// 跳转至校园主页
+					Intent intentCampusInfo = new Intent(
+							mContext, CampusHomeActivity.class);
+					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_KEY,
+							false);
+					startActivityWithRight(intentCampusInfo);
 				} else {
 					// 跳转至用户主页
 					jumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));

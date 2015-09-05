@@ -255,8 +255,11 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 					intentToGroupNews.setClass(GroupListActivity.this,
 							GroupNewsActivity.class);
 					// 传递是否是圈子还是校园
-					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY,
-							true);
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_GROUP_TYPE, true);
+					// 传递是查看着的身份
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_VISITOR_TYPE, true);
 					// 传递名称
 					intentToGroupNews.putExtra(
 							GroupNewsActivity.INTENT_KEY_GROUP_NAME,
@@ -267,8 +270,8 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 					Intent intentToGroupNews = new Intent();
 					intentToGroupNews.setClass(GroupListActivity.this,
 							GroupNewsActivity.class);
-					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY,
-							false);
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_GROUP_TYPE, false);
 					// 传递名称
 					intentToGroupNews.putExtra(
 							GroupNewsActivity.INTENT_KEY_GROUP_NAME,
