@@ -171,7 +171,14 @@ public interface JLXCConst {
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getAllFriendsList
 	public static final String GET_ALL_FRIENDS_LIST = DOMIN
 			+ "/getAllFriendsList";
-	// ////////////////////////////////////////发现模块//////////////////////////////////////////
+	////////////////////////////////////////发现模块//////////////////////////////////////////
+	// http://localhost/jlxc_php/index.php/Home/MobileApi/getTopicCatagory
+	// 获取圈子类型
+	public static final String GET_TOPIC_CATAGORY = DOMIN + "/getTopicCatagory";
+	// http://localhost/jlxc_php/index.php/Home/MobileApi/postNewTopic
+	// 创建一个圈子
+	public static final String POST_NEW_TOPIC = DOMIN + "/postNewTopic";	
+	////////////////////////////////////////发现模块//////////////////////////////////////////
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getContactUser
 	// 获取联系人用户
 	public static final String GET_CONTACT_USER = DOMIN + "/getContactUser";

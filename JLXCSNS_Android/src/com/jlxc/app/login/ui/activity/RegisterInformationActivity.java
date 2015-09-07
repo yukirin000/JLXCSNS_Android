@@ -55,6 +55,8 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 	
 	//图片名字
 	private String tmpImageName;
+	//当前图片名字
+	private String currentImageName;
 	
 	//头像
 	@ViewInject(R.id.headImageView)
@@ -117,7 +119,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 //        String photoName = getPhotoFileName();
 //		//图片保存到本地
 //		FileUtil.savePic(Bitmap.createBitmap(bitmap), FileUtil.HEAD_PIC_PATH, photoName, 100);
-		if (null == tmpImageName || tmpImageName.length() < 1) {
+		if (null == currentImageName || currentImageName.length() < 1) {
 			ToastUtil.show(this, "跪求您设置一下头像和昵称...");
 			return;
 		}
@@ -134,7 +136,7 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		final UserModel userModel = UserManager.getInstance().getUser();
 		RequestParams params = new RequestParams();
 		showLoading("信息上传中，请稍候...", false);
-		final File imageFile = new File(FileUtil.HEAD_PIC_PATH+tmpImageName);
+		final File imageFile = new File(FileUtil.HEAD_PIC_PATH+currentImageName);
 		if (imageFile.exists()) {
 			//图片
 			params.addBodyParameter("image", imageFile);			
@@ -365,7 +367,8 @@ public class RegisterInformationActivity extends BaseActivityWithTopBar {
 		    		        .cacheOnDisk(false)  
 		    		        .bitmapConfig(Bitmap.Config.RGB_565)  
 		    		        .build();
-		    				
+		    				//当前的图片名字
+		    				currentImageName = tmpImageName;
 		    				ImageLoader.getInstance().displayImage("file://"+FileUtil.HEAD_PIC_PATH+tmpImageName, headImageView, headImageOptions);
 //		    				filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
 //		    				BitmapManager.getInstance().getBitmapUtils(RegisterInformationActivity.this, false, false).display(headImageView, FileUtil.HEAD_PIC_PATH+tmpImageName);
