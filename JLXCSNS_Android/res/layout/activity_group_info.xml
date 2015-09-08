@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content" >
 
                 <ImageView
-                    android:id="@+id/imageView1"
+                    android:id="@+id/group_image_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
@@ -44,7 +44,7 @@
                         android:layout_weight="1" >
 
                         <TextView
-                            android:id="@+id/txt_group_info_name"
+                            android:id="@+id/group_name_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="tfboys粉丝大集合"
@@ -52,10 +52,10 @@
                             android:textSize="@dimen/font_size_huge" />
 
                         <TextView
-                            android:id="@+id/txt_group_info_count"
+                            android:id="@+id/group_news_count_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txt_group_info_name"
+                            android:layout_below="@id/group_name_text_view"
                             android:paddingTop="5dp"
                             android:text="共产生了125条内容"
                             android:textColor="@color/main_deep_white"
@@ -63,14 +63,14 @@
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/active_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="火爆"
                         android:textColor="@color/main_deep_white" />
 
                     <ImageView
-                        android:id="@+id/imageView2"
+                        android:id="@+id/active_image_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_launcher" />
@@ -94,13 +94,13 @@
                     android:text="创建者" />
 
                 <TextView
-                    android:id="@+id/txt_create_name"
+                    android:id="@+id/create_name_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="吉米优优" />
 
                 <ImageView
-                    android:id="@+id/img_create_head"
+                    android:id="@+id/create_head_image_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_launcher" />
@@ -147,7 +147,7 @@
                     android:src="@drawable/ic_launcher" />
 
                 <TextView
-                    android:id="@+id/txt_number_count"
+                    android:id="@+id/member_count_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="56人" />
@@ -169,7 +169,7 @@
                     android:text="说明" />
 
                 <TextView
-                    android:id="@+id/txt_group_description"
+                    android:id="@+id/group_description_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
