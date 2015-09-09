@@ -35,10 +35,10 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.model.GroupItemModel;
-import com.jlxc.app.group.model.GroupItemModel.GroupNewsBodyItem;
-import com.jlxc.app.group.model.GroupItemModel.GroupNewsOperateItem;
-import com.jlxc.app.group.model.GroupItemModel.GroupNewsTitleItem;
+import com.jlxc.app.group.model.GroupNewsItemModel;
+import com.jlxc.app.group.model.GroupNewsItemModel.GroupNewsBodyItem;
+import com.jlxc.app.group.model.GroupNewsItemModel.GroupNewsOperateItem;
+import com.jlxc.app.group.model.GroupNewsItemModel.GroupNewsTitleItem;
 import com.jlxc.app.group.ui.activity.CampusHomeActivity;
 import com.jlxc.app.group.ui.activity.GroupNewsActivity;
 import com.jlxc.app.group.utils.NewsToGroupItem;
@@ -69,11 +69,11 @@ public class GroupNewsFragment extends BaseFragment {
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
-	private List<GroupItemModel> itemDataList = null;
+	private List<GroupNewsItemModel> itemDataList = null;
 	// 动态列表适配器
-	private HelloHaAdapter<GroupItemModel> newsAdapter = null;
+	private HelloHaAdapter<GroupNewsItemModel> newsAdapter = null;
 	// 使支持多种item
-	private MultiItemTypeSupport<GroupItemModel> multiItemTypeSupport = null;
+	private MultiItemTypeSupport<GroupNewsItemModel> multiItemTypeSupport = null;
 	// 当前数据的页
 	private int pageIndex = 1;
 	// 是否是最后一页数据
@@ -87,7 +87,7 @@ public class GroupNewsFragment extends BaseFragment {
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
 	// 对动态的操作
-	private NewsOperate<GroupItemModel> newsOPerate;
+	private NewsOperate<GroupNewsItemModel> newsOPerate;
 	// 加载图片
 	private ImageLoader imgLoader;
 	// 图片配置
@@ -124,7 +124,7 @@ public class GroupNewsFragment extends BaseFragment {
 		mContext = this.getActivity().getApplicationContext();
 
 		itemViewClickListener = new ItemViewClick();
-		newsOPerate = new NewsOperate<GroupItemModel>(mContext);
+		newsOPerate = new NewsOperate<GroupNewsItemModel>(mContext);
 		// 获取显示图片的实例
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
@@ -162,19 +162,19 @@ public class GroupNewsFragment extends BaseFragment {
 	 * listView 支持多种item的设置
 	 * */
 	private void multiItemTypeSet() {
-		multiItemTypeSupport = new MultiItemTypeSupport<GroupItemModel>() {
+		multiItemTypeSupport = new MultiItemTypeSupport<GroupNewsItemModel>() {
 
 			@Override
-			public int getLayoutId(int position, GroupItemModel itemData) {
+			public int getLayoutId(int position, GroupNewsItemModel itemData) {
 				int layoutId = 0;
 				switch (itemData.getItemType()) {
-				case GroupItemModel.GROUP_TITLE:
+				case GroupNewsItemModel.GROUP_TITLE:
 					layoutId = R.layout.group_news_item_title_layout;
 					break;
-				case GroupItemModel.GROUP_BODY:
+				case GroupNewsItemModel.GROUP_BODY:
 					layoutId = R.layout.group_news_item_body_layout;
 					break;
-				case GroupItemModel.GROUP_OPERATE:
+				case GroupNewsItemModel.GROUP_OPERATE:
 					layoutId = R.layout.group_news_item_operate_layout;
 					break;
 				default:
@@ -185,21 +185,21 @@ public class GroupNewsFragment extends BaseFragment {
 
 			@Override
 			public int getViewTypeCount() {
-				return GroupItemModel.NEWS_ITEM_TYPE_COUNT;
+				return GroupNewsItemModel.NEWS_ITEM_TYPE_COUNT;
 			}
 
 			@Override
-			public int getItemViewType(int postion, GroupItemModel itemData) {
+			public int getItemViewType(int postion, GroupNewsItemModel itemData) {
 				int itemtype = 0;
 				switch (itemData.getItemType()) {
-				case GroupItemModel.GROUP_TITLE:
-					itemtype = GroupItemModel.GROUP_TITLE;
+				case GroupNewsItemModel.GROUP_TITLE:
+					itemtype = GroupNewsItemModel.GROUP_TITLE;
 					break;
-				case GroupItemModel.GROUP_BODY:
-					itemtype = GroupItemModel.GROUP_BODY;
+				case GroupNewsItemModel.GROUP_BODY:
+					itemtype = GroupNewsItemModel.GROUP_BODY;
 					break;
-				case GroupItemModel.GROUP_OPERATE:
-					itemtype = GroupItemModel.GROUP_OPERATE;
+				case GroupNewsItemModel.GROUP_OPERATE:
+					itemtype = GroupNewsItemModel.GROUP_OPERATE;
 					break;
 				default:
 					break;
@@ -262,12 +262,12 @@ public class GroupNewsFragment extends BaseFragment {
 		/**
 		 * adapter的设置
 		 * */
-		newsAdapter = new HelloHaAdapter<GroupItemModel>(mContext,
+		newsAdapter = new HelloHaAdapter<GroupNewsItemModel>(mContext,
 				itemDataList, multiItemTypeSupport) {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
-					GroupItemModel item) {
+					GroupNewsItemModel item) {
 
 				switch (helper.layoutId) {
 				case R.layout.group_news_item_title_layout:
@@ -295,7 +295,7 @@ public class GroupNewsFragment extends BaseFragment {
 	 * titleItem的数据绑定与设置
 	 * */
 	private void setTitleItemView(HelloHaBaseAdapterHelper helper,
-			GroupItemModel item) {
+			GroupNewsItemModel item) {
 		GroupNewsTitleItem titleData = (GroupNewsTitleItem) item;
 		// 显示头像
 		if (null != titleData.getUserSubHeadImage()
@@ -332,7 +332,7 @@ public class GroupNewsFragment extends BaseFragment {
 	 * 设置新闻主体item
 	 * */
 	private void setBodyItemView(HelloHaBaseAdapterHelper helper,
-			GroupItemModel item) {
+			GroupNewsItemModel item) {
 		final GroupNewsBodyItem bodyData = (GroupNewsBodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 		// MultiImageView bodyImages =
@@ -396,7 +396,7 @@ public class GroupNewsFragment extends BaseFragment {
 	 * 设置操作部分item
 	 * */
 	private void setOperateItemView(HelloHaBaseAdapterHelper helper,
-			GroupItemModel item) {
+			GroupNewsItemModel item) {
 		GroupNewsOperateItem opData = (GroupNewsOperateItem) item;
 		// 点赞按钮
 		LikeButton likeBtn = helper.getView(R.id.btn_group_like);
@@ -669,7 +669,7 @@ public class GroupNewsFragment extends BaseFragment {
 	/***
 	 * 跳转至动态相详情
 	 */
-	private void jumpToNewsDetail(GroupItemModel itemModel, int keyBoardMode,
+	private void jumpToNewsDetail(GroupNewsItemModel itemModel, int keyBoardMode,
 			String commentId) {
 		// 跳转到动态详情
 		Intent intentToNewsDetail = new Intent(mContext,

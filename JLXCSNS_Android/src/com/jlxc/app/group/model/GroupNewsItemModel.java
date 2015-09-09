@@ -7,7 +7,7 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.news.model.ImageModel;
 
-public class GroupItemModel {
+public class GroupNewsItemModel {
 
 	// 动态item的种类数
 	public static final int NEWS_ITEM_TYPE_COUNT = 3;
@@ -53,7 +53,7 @@ public class GroupItemModel {
 	/**
 	 * 动态的头部
 	 * */
-	public static class GroupNewsTitleItem extends GroupItemModel {
+	public static class GroupNewsTitleItem extends GroupNewsItemModel {
 
 		// 动态发布者的名字
 		private String userName;
@@ -111,7 +111,7 @@ public class GroupItemModel {
 	/**
 	 * 动态的主体
 	 * */
-	public static class GroupNewsBodyItem extends GroupItemModel {
+	public static class GroupNewsBodyItem extends GroupNewsItemModel {
 
 		// 动态的文字内容
 		private String newsContent;
@@ -149,7 +149,7 @@ public class GroupItemModel {
 	/**
 	 * 动态的操作部分
 	 * */
-	public static class GroupNewsOperateItem extends GroupItemModel {
+	public static class GroupNewsOperateItem extends GroupNewsItemModel {
 
 		// 评论数
 		private int replyCount;
