@@ -23,6 +23,7 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.ui.fragment.DiscoveryFragment;
 import com.jlxc.app.group.ui.fragment.GroupNewsFragment;
+import com.jlxc.app.group.ui.fragment.DiscoveryGroupFragment;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
 import com.jlxc.app.news.model.NewsConstants;
@@ -66,7 +67,7 @@ public class MainTabActivity extends BaseActivity {
 
 //	private Class<?> fragmentArray[] = { MainPageFragment.class, MessageMainFragment.class,DiscoveryFragment.class,
 //			PersonalFragment.class };
-	private Class<?> fragmentArray[] = { MainNewsListFragment.class, MessageMainFragment.class,GroupNewsFragment.class,
+	private Class<?> fragmentArray[] = { MainNewsListFragment.class, MessageMainFragment.class,DiscoveryGroupFragment.class,
 			PersonalFragment.class };
 
 	private int mImageViewArray[] = { R.drawable.tab_home_btn,R.drawable.tab_message_btn,R.drawable.tab_friend_btn,

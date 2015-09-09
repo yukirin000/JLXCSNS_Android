@@ -146,7 +146,7 @@ public class DiscoveryFragment extends BaseFragment {
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.fragment_discovey_layout;
+		return R.layout.fragment_add_friend_layout;
 	}
 
 	@Override
@@ -199,13 +199,13 @@ public class DiscoveryFragment extends BaseFragment {
 				int layoutId = 0;
 				switch (itemData.getItemType()) {
 				case RecommendItemData.RECOMMEND_TITLE:
-					layoutId = R.layout.discovery_item_head;
+					layoutId = R.layout.discovery_new_friend_listview_head;
 					break;
 				case RecommendItemData.RECOMMEND_INFO:
-					layoutId = R.layout.discovery_item_person_info;
+					layoutId = R.layout.discovery_new_friend_item_person_info;
 					break;
 				case RecommendItemData.RECOMMEND_PHOTOS:
-					layoutId = R.layout.discovery_item_photolist;
+					layoutId = R.layout.discovery_new_friend_item_photolist;
 					break;
 				default:
 					break;
@@ -301,13 +301,13 @@ public class DiscoveryFragment extends BaseFragment {
 					RecommendItemData item) {
 
 				switch (helper.layoutId) {
-				case R.layout.discovery_item_head:
+				case R.layout.discovery_new_friend_listview_head:
 					setTitleItemView(helper, item);
 					break;
-				case R.layout.discovery_item_person_info:
+				case R.layout.discovery_new_friend_item_person_info:
 					setInfoItemView(helper, item);
 					break;
-				case R.layout.discovery_item_photolist:
+				case R.layout.discovery_new_friend_item_photolist:
 					setPhotoItemView(helper, item);
 					break;
 
@@ -445,7 +445,7 @@ public class DiscoveryFragment extends BaseFragment {
 		final int photoSize = screenWidth / 3;
 		final int horizontalSpace = 5;
 		HelloHaAdapter<Map<String, String>> newsGVAdapter = new HelloHaAdapter<Map<String, String>>(
-				mContext, R.layout.discovery_photos_gridview_item,
+				mContext, R.layout.discovery_new_friend_photos_gridview_item,
 				photoInfoList) {
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
