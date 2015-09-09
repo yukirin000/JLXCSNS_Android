@@ -171,13 +171,23 @@ public interface JLXCConst {
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getAllFriendsList
 	public static final String GET_ALL_FRIENDS_LIST = DOMIN
 			+ "/getAllFriendsList";
-	////////////////////////////////////////发现模块//////////////////////////////////////////
+	////////////////////////////////////////发现模块 圈子//////////////////////////////////////////
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getTopicCatagory
 	// 获取圈子类型
 	public static final String GET_TOPIC_CATAGORY = DOMIN + "/getTopicCatagory";
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/postNewTopic
 	// 创建一个圈子
-	public static final String POST_NEW_TOPIC = DOMIN + "/postNewTopic";	
+	public static final String POST_NEW_TOPIC = DOMIN + "/postNewTopic";
+	// http://localhost/jlxc_php/index.php/Home/MobileApi/getTopicDetail
+	// 获取圈子详情
+	public static final String GET_TOPIC_DETAIL = DOMIN + "/getTopicDetail";
+	// 加入一个圈子详情
+	public static final String JOIN_TOPIC = DOMIN + "/joinTopic";
+	// 退出一个圈子详情
+	public static final String QUIT_TOPIC = DOMIN + "/quitTopic";	
+	// 获取我的圈子列表
+	//http://localhost/jlxc_php/index.php/Home/MobileApi/getMyTopicList
+	public static final String GET_MY_TOPIC_LIST = DOMIN + "/getMyTopicList";		
 	////////////////////////////////////////发现模块//////////////////////////////////////////
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getContactUser
 	// 获取联系人用户

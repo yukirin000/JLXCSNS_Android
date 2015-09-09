@@ -21,7 +21,7 @@
             android:id="@+id/img_group_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:padding="5dp"
+            android:layout_marginLeft="5dip"
             android:scaleType="centerCrop"
             android:src="@drawable/my_group_icon" />
 

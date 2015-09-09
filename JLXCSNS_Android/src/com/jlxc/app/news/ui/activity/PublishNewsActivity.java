@@ -6,28 +6,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//import org.lasque.tusdk.core.TuSdk;
-//import org.lasque.tusdk.core.TuSdkResult;
-//import org.lasque.tusdk.impl.activity.TuFragment;
-//import org.lasque.tusdk.impl.components.TuEditComponent;
-//import org.lasque.tusdk.impl.components.base.TuSdkComponent.TuSdkComponentDelegate;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.inputmethod.InputMethodManager;
@@ -42,28 +29,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
-import com.jlxc.app.base.ui.activity.BigImgLookActivity;
-import com.jlxc.app.base.ui.view.CustomListViewDialog;
-import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
 import com.jlxc.app.base.ui.view.CustomSelectPhotoDialog;
 import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity;
-import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyAdapter;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.news.model.CommentModel;
-import com.jlxc.app.news.model.ItemModel;
-import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsConstants;
-import com.jlxc.app.news.model.ItemModel.CommentItem;
-import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -74,6 +51,9 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class PublishNewsActivity extends BaseActivityWithTopBar {
 
+	public static final String INTENT_TOPIC_ID = "topicId";// 话题id
+	public static final String INTENT_TOPIC_NAME = "topicName";// 话题名
+	
 	public static final int TAKE_PHOTO = 1;// 拍照
 	public static final int ALBUM_SELECT = 2;// 相册选取
 	public static final int PHOTO_ZOOM = 3; // 缩放
@@ -112,9 +92,10 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	private String tmpImageName;
 	// 地点
 	private String locationString;
-	DisplayImageOptions headImageOptions;  
-//	// bitmap
-//	private BitmapUtils bitmapUtils;
+	//图片加载配置
+	DisplayImageOptions headImageOptions; 
+	//圈子id
+	private int topicId;
 
 	@OnClick(value = { R.id.addImageView, R.id.choice_location_layout,
 			R.id.base_ll_right_btns, R.id.publish_news_layout })
@@ -485,13 +466,16 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		RequestParams params = new RequestParams();
 		// 用户id
 		params.addBodyParameter("uid", userModel.getUid() + "");
-		// params.addBodyParameter("uid", "1");
 		// 内容
 		params.addBodyParameter("content_text", contentEditText.getText()
 				.toString());
 		// location
 		params.addBodyParameter("location", locationString);
-
+		// 哪个圈子里的
+		if (topicId > 0) {
+			params.addBodyParameter("topic_id", topicId+"");	
+		}
+		
 		// 图片
 		for (int i = 0; i < addImageLayout.getChildCount(); i++) {
 			View view = addImageLayout.getChildAt(i);
@@ -585,14 +569,19 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		addRightBtn("发布");
 		locationString = "";
 		// bitmap初始化
-//		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this,
-//				R.drawable.abc_ab_bottom_solid_light_holo, false, false);
 		headImageOptions = new DisplayImageOptions.Builder()  
         .cacheInMemory(false)  
         .cacheOnDisk(false)  
         .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
         .bitmapConfig(Bitmap.Config.RGB_565)  
         .build();
+		
+		//如果又topicID 则设置上
+		Intent intent = getIntent();
+		if (intent.hasExtra(INTENT_TOPIC_ID)) {
+			topicId = intent.getIntExtra(INTENT_TOPIC_ID, 0);
+		}
+		
 	}
 
 	@Override

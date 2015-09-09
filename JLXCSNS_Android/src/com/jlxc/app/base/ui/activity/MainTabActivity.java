@@ -22,6 +22,7 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.ui.fragment.DiscoveryFragment;
+import com.jlxc.app.group.ui.fragment.GroupNewsFragment;
 import com.jlxc.app.group.ui.fragment.DiscoveryGroupFragment;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.message.ui.fragment.MessageMainFragment;
@@ -312,12 +313,12 @@ public class MainTabActivity extends BaseActivity {
 	//友盟集成
 	public void onResume() {
 		super.onResume();
-		MobclickAgent.onResume(this);
+//		MobclickAgent.onResume(this);
 	}
 	
 	public void onPause() {
 		super.onPause();
-		MobclickAgent.onPause(this);
+//		MobclickAgent.onPause(this);
 	}
 	
 	@Override

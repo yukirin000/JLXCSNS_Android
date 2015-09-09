@@ -23,8 +23,8 @@
 
                 <ImageView
                     android:id="@+id/group_image_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dip"
                     android:scaleType="centerCrop"
                     android:src="@drawable/campus_background" />
 
@@ -101,8 +101,8 @@
 
                 <ImageView
                     android:id="@+id/create_head_image_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
                     android:src="@drawable/ic_launcher" />
             </LinearLayout>
 
@@ -124,26 +124,30 @@
 
                 <ImageView
                     android:id="@+id/img_number_A"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_launcher" />
 
                 <ImageView
                     android:id="@+id/img_number_B"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_launcher" />
 
                 <ImageView
                     android:id="@+id/img_number_C"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_launcher" />
 
                 <ImageView
                     android:id="@+id/img_number_D"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_launcher" />
 
                 <TextView
@@ -177,6 +181,7 @@
             </LinearLayout>
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/btn_group_operate"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"

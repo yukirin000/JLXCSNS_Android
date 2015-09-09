@@ -42,7 +42,7 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.ui.activity.GroupListActivity;
+import com.jlxc.app.group.ui.activity.MyGroupListActivity;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.ItemModel;
@@ -147,8 +147,7 @@ public class MainNewsListFragment extends BaseFragment {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Intent intentUsrMain = new Intent(mContext,
-						PublishNewsActivity.class);
+				Intent intentUsrMain = new Intent(mContext, PublishNewsActivity.class);
 				startActivityWithRight(intentUsrMain);
 			}
 		});
@@ -310,7 +309,7 @@ public class MainNewsListFragment extends BaseFragment {
 			public void onClick(View arg0) {
 				// 跳转至圈子内容部分
 				Intent intentToGroupNews = new Intent(mContext,
-						GroupListActivity.class);
+						MyGroupListActivity.class);
 				startActivityWithRight(intentToGroupNews);
 			}
 		});
