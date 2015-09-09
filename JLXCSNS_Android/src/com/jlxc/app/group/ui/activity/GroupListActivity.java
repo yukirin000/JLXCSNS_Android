@@ -1,24 +1,15 @@
-package com.jlxc.app.group.ui.fragment;
+package com.jlxc.app.group.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v4.view.PagerAdapter;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.PopupWindow.OnDismissListener;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -28,30 +19,21 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
-import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
-import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.UserModel;
-import com.jlxc.app.base.ui.fragment.BaseFragment;
+import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.discovery.model.PersonModel;
-import com.jlxc.app.discovery.model.RecommendItemData;
-import com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity;
-import com.jlxc.app.discovery.ui.avtivity.SearchUserActivity;
-import com.jlxc.app.group.ui.activity.GroupListActivity;
-import com.jlxc.app.group.view.GroupMenuPopWindow;
-import com.jlxc.app.group.view.LoopPagerAdapterWrapper;
-import com.jlxc.app.group.view.LoopViewPager;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class DiscoveryGroupFragment extends BaseFragment {
+/**
+ * 圈子list
+ * */
+public class GroupListActivity extends BaseActivity {
 
 	// 圈子的相关信息
 	private final static String GROUP_NAME = "group_name";
@@ -59,8 +41,6 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	private final static String GROUP_COVER_IMG = "group_cover_image";
 	private final static String GROUP_UNREAD_COUNT = "group_unread_msg";
 
-	// 上下文信息
-	private Context mContext;
 	// 加载图片
 	private ImageLoader imgLoader;
 	// 图片配置
@@ -68,88 +48,41 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	// 标头
 	@ViewInject(R.id.tv_discovey_group_title)
 	private TextView titleTextView;
-	// 创建新的圈子
-	@ViewInject(R.id.btn_create_new_group)
-	private ImageButton createNewGroup;
-	// 圈子分类
-	@ViewInject(R.id.image_group_menu)
-	private ImageView groupMenu;
-	// 菜单窗口
-	private GroupMenuPopWindow menuPopWindow;
-	// 圈子信息数据
+	// 推荐的圈子
+	@ViewInject(R.id.listview_discovey_group)
+	private PullToRefreshListView discoveryGroupListView;
+	// 用户关注的圈子信息数据
 	private List<HashMap<String, String>> groupList = new ArrayList<HashMap<String, String>>();
-	//
-	@ViewInject(R.id.loop_view_page_group)
-	private LoopViewPager groupViewPage;
-
-	//
+	// 适配器
+	private HelloHaAdapter<HashMap<String, String>> diacoveryGroupAdapter = null;
+	// 点击view监听对象
+	private ItemViewClick itemViewClickListener;
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.fragment_diacovery_group_layout;
+		return R.layout.group_list_layout;
 	}
 
 	@Override
-	public void loadLayout(View rootView) {
+	protected void loadLayout(View v) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public void setUpViews(View rootView) {
-
+	protected void setUpView() {
 		init();
+		listHeadSet();
+		newsListViewSet();
 		// 首次更新数据
 		// getRecommentData("参数", "参数");
-		groupViewPage.setAdapter(new MyPagerAdapter());
-	}
-
-	/**
-	 * 点击事件监听
-	 * */
-	@OnClick(value = { R.id.btn_create_new_group, R.id.image_group_menu })
-	private void clickEvent(View view) {
-		switch (view.getId()) {
-		// 话题菜单
-		case R.id.image_group_menu:
-			menuPopWindow.showPopupWindow(groupMenu);
-
-			// 设置背景颜色变暗
-			WindowManager.LayoutParams lp = getActivity().getWindow()
-					.getAttributes();
-			lp.alpha = .3f;
-			getActivity().getWindow().setAttributes(lp);
-			break;
-
-		// 创建页面
-		case R.id.btn_create_new_group:
-			break;
-
-		}
-	}
-
-	/**
-	 * 频道菜单的初始化
-	 * */
-	private void initPopupWindow() {
-		menuPopWindow = new GroupMenuPopWindow(mContext);
-		menuPopWindow.setOnDismissListener(new OnDismissListener() {
-
-			@Override
-			public void onDismiss() {
-				// 设置背景颜色变暗
-				WindowManager.LayoutParams lp = getActivity().getWindow()
-						.getAttributes();
-				lp.alpha = 1.0f;
-				getActivity().getWindow().setAttributes(lp);
-			}
-		});
 	}
 
 	/**
 	 * 初始化
 	 * */
 	private void init() {
-		mContext = this.getActivity().getApplicationContext();
-
+		itemViewClickListener = new ItemViewClick();
 		// 获取显示图片的实例
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
@@ -158,7 +91,6 @@ public class DiscoveryGroupFragment extends BaseFragment {
 				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
 				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 
-		initPopupWindow();
 		// 提示信息初始化
 		// recommendPrompt.setText("一大波童鞋即将来袭  (•ิ _ •ิ )");
 
@@ -173,6 +105,76 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			fakeGroup.put(GROUP_UNREAD_COUNT, "20");
 			groupList.add(fakeGroup);
 		}
+	}
+
+	/**
+	 * listvew head的初始化
+	 * */
+	private void listHeadSet() {
+		// 添加顶部布局与初始化事件
+		View header = View.inflate(GroupListActivity.this,
+				R.layout.discovery_group_head, null);
+		discoveryGroupListView.getRefreshableView().addHeaderView(header);
+	}
+
+	/**
+	 * listView 的设置
+	 * */
+	private void newsListViewSet() {
+		// 设置刷新模式
+		discoveryGroupListView.setMode(Mode.PULL_FROM_START);
+		// 刷新监听
+		discoveryGroupListView
+				.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+
+					@Override
+					public void onPullDownToRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+						// 下拉
+					}
+
+					@Override
+					public void onPullUpToRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+						// 上拉
+					}
+				});
+
+		/**
+		 * adapter的设置
+		 * */
+		diacoveryGroupAdapter = new HelloHaAdapter<HashMap<String, String>>(
+				GroupListActivity.this, R.layout.discovery_group_item,
+				groupList) {
+
+			@Override
+			protected void convert(HelloHaBaseAdapterHelper helper,
+					HashMap<String, String> item) {
+				// 数据绑定
+				imgLoader.displayImage(item.get(GROUP_COVER_IMG),
+						(ImageView) helper.getView(R.id.img_group_cover),
+						options);
+				helper.setText(R.id.text_group_name, item.get(GROUP_NAME));
+				helper.setText(R.id.text_group_member_count,
+						item.get(GROUP_MEMBER) + "人关注");
+				// 设置事件监听
+				final int postion = helper.getPosition();
+				OnClickListener listener = new OnClickListener() {
+
+					@Override
+					public void onClick(View view) {
+						itemViewClickListener.onClick(view, postion,
+								view.getId());
+					}
+				};
+				helper.setOnClickListener(R.id.layout_group_item_rootview,
+						listener);
+			}
+		};
+
+		// 设置不可点击
+		diacoveryGroupAdapter.setItemsClickEnable(false);
+		discoveryGroupListView.setAdapter(diacoveryGroupAdapter);
 	}
 
 	/**
@@ -198,11 +200,13 @@ public class DiscoveryGroupFragment extends BaseFragment {
 							List<JSONObject> JPersonList = (List<JSONObject>) jResult
 									.get("list");
 							JsonToItemData(JPersonList);
+							discoveryGroupListView.onRefreshComplete();
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(mContext, jsonResponse
+							ToastUtil.show(GroupListActivity.this, jsonResponse
 									.getString(JLXCConst.HTTP_MESSAGE));
+							discoveryGroupListView.onRefreshComplete();
 						}
 					}
 
@@ -210,7 +214,8 @@ public class DiscoveryGroupFragment extends BaseFragment {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(mContext, "网络抽筋了,请检查 =_=");
+						ToastUtil.show(GroupListActivity.this, "网络抽筋了,请检查 =_=");
+						discoveryGroupListView.onRefreshComplete();
 					}
 
 				}, null));
@@ -223,30 +228,31 @@ public class DiscoveryGroupFragment extends BaseFragment {
 
 	}
 
-	class MyPagerAdapter extends PagerAdapter {
+	/**
+	 * item上的view点击事件
+	 * */
+	public class ItemViewClick implements ListItemClickHelp {
 
 		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
-			View header = View.inflate(mContext, R.layout.group_page_layout,
-					null);
-		
-			container.addView(header);
-			return header;
-		}
+		public void onClick(View view, int position, int viewID) {
+			switch (viewID) {
+			case R.id.layout_group_item_rootview:
+				// 跳转到圈子内容页面
+				break;
 
-		@Override
-		public void destroyItem(ViewGroup container, int position, Object object) {
-			container.removeView((View) object);
-		}
-
-		@Override
-		public int getCount() {
-			return 3;
-		}
-
-		@Override
-		public boolean isViewFromObject(View arg0, Object arg1) {
-			return arg0 == arg1;
+			default:
+				break;
+			}
 		}
 	}
+
+	/**
+	 * listview点击事件接口,用于区分不同view的点击事件
+	 * 
+	 * @author Alan
+	 */
+	private interface ListItemClickHelp {
+		void onClick(View view, int postion, int viewID);
+	}
+
 }

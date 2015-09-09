@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_top_bar_category" />
 
-
         <TextView
             android:id="@+id/tv_discovey_group_title"
             android:layout_width="0dp"
@@ -38,50 +37,10 @@
             android:src="@drawable/add_friend_content_image" />
     </LinearLayout>
 
-    <!-- 搜索部分 -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" >
-
-        <TextView
-            android:id="@+id/tv_search_group"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/btn_search_background"
-            android:gravity="left|center_vertical"
-            android:paddingLeft="@dimen/item_interior_space_large"
-            android:text="搜索你喜欢的话题圈"
-            android:textColor="@color/main_light_black"
-            android:textSize="@dimen/font_size_small"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <!-- 发现listview -->
-
-    <FrameLayout
+    <com.jlxc.app.group.view.LoopViewPager
+        android:id="@+id/loop_view_page_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
-        <com.handmark.pulltorefresh.library.PullToRefreshListView
-            android:id="@+id/listview_discovey_group"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:footerDividersEnabled="true"
-            android:headerDividersEnabled="false"
-            android:smoothScrollbar="true" >
-        </com.handmark.pulltorefresh.library.PullToRefreshListView>
-
-        <TextView
-            android:id="@+id/tv_group_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="提示信息"
-            android:textColor="@color/main_light_black"
-            android:textSize="@dimen/font_size_medium"
-            android:visibility="gone" />
-    </FrameLayout>
+    </com.jlxc.app.group.view.LoopViewPager>
 
 </LinearLayout>
