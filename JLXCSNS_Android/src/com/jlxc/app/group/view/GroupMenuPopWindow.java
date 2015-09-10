@@ -45,8 +45,8 @@ public class GroupMenuPopWindow extends PopupWindow {
 		// 设置PopupWindow的View
 		this.setContentView(conentView);
 		// 设置窗体的尺寸
-		this.setWidth(screenWidth * 2 / 3);
-		this.setHeight(LayoutParams.WRAP_CONTENT);
+		this.setWidth(LayoutParams.MATCH_PARENT);
+		this.setHeight(screenHeight * 1 / 3);
 		// 设置窗体可点击
 		this.setFocusable(true);
 		this.setOutsideTouchable(true);
@@ -63,7 +63,7 @@ public class GroupMenuPopWindow extends PopupWindow {
 	 */
 	public void showPopupWindow(View parent) {
 		if (!this.isShowing()) {
-			this.showAsDropDown(parent, 0, -parent.getHeight());
+			this.showAsDropDown(parent, 0, 0);
 		} else {
 			this.dismiss();
 		}

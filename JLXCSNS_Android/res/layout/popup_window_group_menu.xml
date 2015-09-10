@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/main_deep_white"
+    android:layout_height="wrap_content"
+    android:background="@color/main_light_white"
     android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/txt_group_menu_title"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/main_yellow"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:text="选择喜欢的频道"
-        android:textColor="@color/main_brown"
-        android:textSize="@dimen/font_size_medium" />
 
     <ScrollView
         android:id="@+id/horizontalScrollView1"
@@ -25,107 +14,194 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/main_light_white"
+            android:background="@color/main_deep_white"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:id="@+id/group_type_A"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="60dp"
                 android:background="@color/main_deep_white"
-                android:gravity="center"
-                android:orientation="vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp" >
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="开学仅进行时"
+                    android:layout_marginLeft="10dp"
+                    android:text="开学进行时"
                     android:textColor="@color/main_deep_black"
-                    android:textSize="@dimen/font_size_huge" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="苦逼的新学期又要开始了"
-                    android:textColor="@color/main_light_black" />
+                    android:textSize="@dimen/font_size_medium" />
             </LinearLayout>
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="60dp"
+                android:background="@color/main_light_gary" />
 
             <LinearLayout
                 android:id="@+id/group_type_B"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="#ffc107"
-                android:gravity="center"
-                android:orientation="vertical" >
+                android:layout_height="60dp"
+                android:background="@color/main_deep_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp" >
 
-                <TextView
-                    android:id="@+id/txt_group_C"
+                <ImageView
+                    android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="开学仅进行时"
-                    android:textColor="@color/main_deep_white"
-                    android:textSize="@dimen/font_size_huge" />
+                    android:src="@drawable/ic_launcher" />
 
                 <TextView
-                    android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="苦逼的新学期又要开始了"
-                    android:textColor="@color/main_deep_white" />
+                    android:layout_marginLeft="10dp"
+                    android:text="我为偶像狂"
+                    android:textColor="@color/main_deep_black"
+                    android:textSize="@dimen/font_size_medium" />
             </LinearLayout>
-            
-                       <LinearLayout
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="60dp"
+                android:background="@color/main_light_gary" />
+
+            <LinearLayout
                 android:id="@+id/group_type_C"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="60dp"
                 android:background="@color/main_deep_white"
-                android:gravity="center"
-                android:orientation="vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp" >
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="开学仅进行时"
+                    android:layout_marginLeft="10dp"
+                    android:text="校园生活大吐糟"
                     android:textColor="@color/main_deep_black"
-                    android:textSize="@dimen/font_size_huge" />
-
-                <TextView
-                    android:id="@+id/textViewr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="苦逼的新学期又要开始了"
-                    android:textColor="@color/main_light_black" />
+                    android:textSize="@dimen/font_size_medium" />
             </LinearLayout>
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="60dp"
+                android:background="@color/main_light_gary" />
 
             <LinearLayout
                 android:id="@+id/group_type_D"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="#ffc107"
-                android:gravity="center"
-                android:orientation="vertical" >
+                android:layout_height="60dp"
+                android:background="@color/main_deep_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp" >
 
-                <TextView
-                    android:id="@+id/txt_group_D"
+                <ImageView
+                    android:id="@+id/imageView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="开学仅进行时"
-                    android:textColor="@color/main_deep_white"
-                    android:textSize="@dimen/font_size_huge" />
+                    android:src="@drawable/ic_launcher" />
 
                 <TextView
-                    android:id="@+id/textViewd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="苦逼的新学期又要开始了"
-                    android:textColor="@color/main_deep_white" />
+                    android:layout_marginLeft="10dp"
+                    android:text="我为偶像狂"
+                    android:textColor="@color/main_deep_black"
+                    android:textSize="@dimen/font_size_medium" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="60dp"
+                android:background="@color/main_light_gary" />
+
+            <LinearLayout
+                android:id="@+id/group_type_E"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/main_deep_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp" >
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="我为偶像狂"
+                    android:textColor="@color/main_deep_black"
+                    android:textSize="@dimen/font_size_medium" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="60dp"
+                android:background="@color/main_light_gary" />
+
+            <LinearLayout
+                android:id="@+id/group_type_F"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/main_deep_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp" >
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="我为偶像狂"
+                    android:textColor="@color/main_deep_black"
+                    android:textSize="@dimen/font_size_medium" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <View
+        android:id="@+id/view6"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/main_light_gary" />
 
 </LinearLayout>

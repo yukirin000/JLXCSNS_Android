@@ -73,9 +73,6 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	// 创建新的圈子
 	@ViewInject(R.id.btn_create_new_group)
 	private ImageButton createNewGroup;
-	// 圈子分类
-	@ViewInject(R.id.image_group_menu)
-	private ImageView groupMenu;
 	// 菜单窗口
 	private GroupMenuPopWindow menuPopWindow;
 	// 圈子信息数据
@@ -108,19 +105,19 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	/**
 	 * 点击事件监听
 	 * */
-	@OnClick(value = { R.id.btn_create_new_group, R.id.image_group_menu,
+	@OnClick(value = { R.id.btn_create_new_group, R.id.tv_discovey_group_title,
 			R.id.txt_more_group })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		// 话题菜单
-		case R.id.image_group_menu:
-			menuPopWindow.showPopupWindow(groupMenu);
+		case R.id.tv_discovey_group_title:
+			menuPopWindow.showPopupWindow(titleTextView);
 
 			// 设置背景颜色变暗
-			WindowManager.LayoutParams lp = getActivity().getWindow()
-					.getAttributes();
-			lp.alpha = .3f;
-			getActivity().getWindow().setAttributes(lp);
+			// WindowManager.LayoutParams lp = getActivity().getWindow()
+			// .getAttributes();
+			// lp.alpha = .3f;
+			// getActivity().getWindow().setAttributes(lp);
 			break;
 
 		// 创建页面
@@ -146,11 +143,11 @@ public class DiscoveryGroupFragment extends BaseFragment {
 
 			@Override
 			public void onDismiss() {
-				// 设置背景颜色变暗
-				WindowManager.LayoutParams lp = getActivity().getWindow()
-						.getAttributes();
-				lp.alpha = 1.0f;
-				getActivity().getWindow().setAttributes(lp);
+				// 设置背景颜色变亮
+				// WindowManager.LayoutParams lp = getActivity().getWindow()
+				// .getAttributes();
+				// lp.alpha = 1.0f;
+				// getActivity().getWindow().setAttributes(lp);
 			}
 		});
 	}
@@ -238,11 +235,13 @@ public class DiscoveryGroupFragment extends BaseFragment {
 
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
-			View header = View.inflate(mContext, R.layout.group_page_layout,
-					null);
-
-			container.addView(header);
-			return header;
+			View groupPageView = View.inflate(mContext,
+					R.layout.group_page_layout, null);
+			TextView txtGroupName = (TextView) groupPageView
+					.findViewById(R.id.txt_group_name);
+			txtGroupName.setText("名字" + position);
+			container.addView(groupPageView);
+			return groupPageView;
 		}
 
 		@Override
@@ -252,7 +251,8 @@ public class DiscoveryGroupFragment extends BaseFragment {
 
 		@Override
 		public int getCount() {
-			return 3;
+			// 返回page的数量
+			return 10;
 		}
 
 		@Override
