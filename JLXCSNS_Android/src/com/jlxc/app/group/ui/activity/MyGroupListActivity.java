@@ -179,12 +179,19 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 				Intent intentToGroupNews = new Intent();
 				intentToGroupNews.setClass(MyGroupListActivity.this,
 						GroupNewsActivity.class);
-				intentToGroupNews.putExtra(
-						GroupNewsActivity.INTENT_KEY_GROUP_TYPE, false);
 				// 传递名称
 				intentToGroupNews.putExtra(
-						GroupNewsActivity.INTENT_KEY_GROUP_NAME,
+						GroupNewsActivity.INTENT_KEY_TOPIC_NAME,
 						groupAdapter.getItem(postion).getTopic_name());
+				// 传递ID
+				intentToGroupNews.putExtra(
+						GroupNewsActivity.INTENT_KEY_TOPIC_ID,
+						groupAdapter.getItem(postion).getTopic_id());
+				//设置为0
+				GroupTopicModel model = groupList.get(postion);
+				model.setUnread_news_count(0);
+				groupAdapter.replaceAll(groupList);
+				
 				startActivityWithRight(intentToGroupNews);
 				break;
 
@@ -249,7 +256,7 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 			groupTopicModel.setTopic_name(object.getString("topic_name"));
 			groupTopicModel.setMember_count(object.getIntValue("member_count"));
 			groupTopicModel.setTopic_cover_sub_image(object.getString("topic_cover_sub_image"));
-			groupTopicModel.setUnread_news_count(object.getIntValue("last_refresh_date"));
+			groupTopicModel.setUnread_news_count(object.getIntValue("unread_news_count"));
 			groupList.add(groupTopicModel);
 		}
 		groupAdapter.replaceAll(groupList);

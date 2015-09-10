@@ -23,6 +23,8 @@ public class NewsModel implements Serializable {
 	private String userName;
 	// 用户的学校
 	private String userSchool;
+	// 学校id
+	private String schoolCode;
 	// 用户的头像
 	private String userHeadImage;
 	// 用户的头像缩略图
@@ -66,6 +68,9 @@ public class NewsModel implements Serializable {
 		}
 		if (object.containsKey("school")) {
 			setUserSchool(object.getString("school"));
+		}
+		if (object.containsKey("school_code")) {
+			setSchoolCode(object.getString("school_code"));
 		}
 		if (object.containsKey("head_image")) {
 			setUserHeadImage(JLXCConst.ATTACHMENT_ADDR
@@ -189,6 +194,14 @@ public class NewsModel implements Serializable {
 
 	public void setUserSchool(String userSchool) {
 		this.userSchool = userSchool;
+	}
+	
+	public String getSchoolCode() {
+		return schoolCode;
+	}
+
+	public void setSchoolCode(String schoolCode) {
+		this.schoolCode = schoolCode;
 	}
 
 	public String getUserHeadImage() {

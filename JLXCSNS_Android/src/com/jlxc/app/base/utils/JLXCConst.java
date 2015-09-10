@@ -2,7 +2,7 @@ package com.jlxc.app.base.utils;
 
 public interface JLXCConst {
 
-	// 正式环境 112.74.202.59 192.168.1.108 www.90newtec.com
+	// 正式环境 112.74.202.59 192.168.1.107 www.90newtec.com
 	// 测试环境
 	public static final String DOMIN = "http://www.90newtec.com/jlxc_php/index.php/Home/MobileApi";
 	public static final String ATTACHMENT_ADDR = "http://www.90newtec.com/jlxc_php/Uploads/";
@@ -187,7 +187,9 @@ public interface JLXCConst {
 	public static final String QUIT_TOPIC = DOMIN + "/quitTopic";	
 	// 获取我的圈子列表
 	//http://localhost/jlxc_php/index.php/Home/MobileApi/getMyTopicList
-	public static final String GET_MY_TOPIC_LIST = DOMIN + "/getMyTopicList";		
+	public static final String GET_MY_TOPIC_LIST = DOMIN + "/getMyTopicList";
+	// 获取我的圈子列表
+	public static final String GET_TOPIC_NEWS_LIST = DOMIN + "/getTopicNewsList";	
 	////////////////////////////////////////发现模块//////////////////////////////////////////
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getContactUser
 	// 获取联系人用户

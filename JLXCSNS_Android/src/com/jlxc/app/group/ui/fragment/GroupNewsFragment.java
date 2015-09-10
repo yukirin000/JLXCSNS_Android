@@ -12,6 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ import com.jlxc.app.group.model.GroupNewsItemModel.GroupNewsBodyItem;
 import com.jlxc.app.group.model.GroupNewsItemModel.GroupNewsOperateItem;
 import com.jlxc.app.group.model.GroupNewsItemModel.GroupNewsTitleItem;
 import com.jlxc.app.group.ui.activity.CampusHomeActivity;
+import com.jlxc.app.group.ui.activity.GroupInfoActivity;
 import com.jlxc.app.group.ui.activity.GroupNewsActivity;
 import com.jlxc.app.group.utils.NewsToGroupItem;
 import com.jlxc.app.news.model.ImageModel;
@@ -55,7 +57,9 @@ import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -66,6 +70,12 @@ public class GroupNewsFragment extends BaseFragment {
 	// 动态listview
 	@ViewInject(R.id.listview_group_news)
 	private PullToRefreshListView newsListView;
+	// 顶部Layout
+	private View header;
+	// 顶部描述tv
+	private TextView topicDescTextView;
+	// 顶部关注按钮tv
+	private TextView topicBtnTextView;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
@@ -94,7 +104,9 @@ public class GroupNewsFragment extends BaseFragment {
 	private DisplayImageOptions options;
 	// 是否为文字长按事件
 	private boolean isLongClick = false;
-
+	//话题id
+	private int topicID;
+	
 	@Override
 	public int setLayoutId() {
 		return R.layout.fragment_group_news;
@@ -121,6 +133,15 @@ public class GroupNewsFragment extends BaseFragment {
 	 * 数据的初始化
 	 * */
 	private void init() {
+		
+		//获取圈子ID
+		Intent intent = getActivity().getIntent();
+		if (intent.hasExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID)) {
+			topicID = intent.getIntExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID, 0);
+		} else {
+			LogUtils.e("未传递圈子");
+		}		
+		
 		mContext = this.getActivity().getApplicationContext();
 
 		itemViewClickListener = new ItemViewClick();
@@ -139,10 +160,20 @@ public class GroupNewsFragment extends BaseFragment {
 	 * */
 	private void widgetInit() {
 		// 添加顶部布局，提示，通知部分
-		View header = View.inflate(mContext,
+		header = View.inflate(mContext,
 				R.layout.group_news_item_head_layout, null);
 		newsListView.getRefreshableView().addHeaderView(header);
-
+		// 顶部描述tv
+		topicDescTextView = (TextView) header.findViewById(R.id.topic_desc_text_view);
+		// 顶部关注按钮tv
+		topicBtnTextView = (TextView) header.findViewById(R.id.topic_top_btn_text_view);
+		topicBtnTextView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//关注点击
+				joinTopic();				
+			}
+		});
 	}
 
 	/**
@@ -444,7 +475,10 @@ public class GroupNewsFragment extends BaseFragment {
 	 * 获取动态数据
 	 * */
 	private void getNewsData(int userID, int desPage, String lastTime) {
-		String path = JLXCConst.NEWS_LIST + "?" + "user_id=" + userID
+		if (topicID < 1) {
+			ToastUtil.show(getActivity(), "圈子不存在");
+		}
+		String path = JLXCConst.GET_TOPIC_NEWS_LIST + "?" + "user_id=" + userID + "&topic_id=" + topicID
 				+ "&page=" + desPage + "&frist_time=" + lastTime;
 
 		HttpManager.get(path, new JsonRequestCallBack<String>(
@@ -457,11 +491,22 @@ public class GroupNewsFragment extends BaseFragment {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							JSONObject jResult = jsonResponse
-									.getJSONObject(JLXCConst.HTTP_RESULT);
+							
+							JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
+							
+							//是否已经关注
+							int isAttent = jResult.getIntValue("is_attent");
+							if (isAttent == 0) {
+								topicDescTextView.setText(jResult.getString("topic_detail"));
+								if (newsListView.getRefreshableView().getHeaderViewsCount() < 2) {
+									newsListView.getRefreshableView().addHeaderView(header);									
+								}
+							}else {
+								newsListView.getRefreshableView().removeHeaderView(header);
+							}
+							
 							// 获取动态列表
-							List<JSONObject> JSONList = (List<JSONObject>) jResult
-									.get("list");
+							List<JSONObject> JSONList = (List<JSONObject>) jResult.get("list");
 							JsonToNewsModel(JSONList);
 							newsListView.onRefreshComplete();
 							if (jResult.getString("is_last").equals("0")) {
@@ -718,6 +763,51 @@ public class GroupNewsFragment extends BaseFragment {
 		getActivity().overridePendingTransition(R.anim.push_right_in,
 				R.anim.push_right_out);
 	}
+	
+	
+	// 加入或者退出
+	private void joinTopic() {
+		// 参数设置
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser()
+				.getUid()
+				+ "");
+		params.addBodyParameter("topic_id", topicID + "");
+		showLoading(getActivity(), "关注中..");
+		
+		// 路径
+		String path = JLXCConst.JOIN_TOPIC;
+		HttpManager.post(path, params, new JsonRequestCallBack<String>(
+				new LoadDataHandler<String>() {
+
+					@Override
+					public void onSuccess(JSONObject jsonResponse, String flag) {
+						super.onSuccess(jsonResponse, flag);
+						hideLoading();
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
+						if (status == JLXCConst.STATUS_SUCCESS) {
+							
+							ToastUtil.show(getActivity(), jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+							
+							newsListView.getRefreshableView().removeHeaderView(header);
+							
+						}
+						if (status == JLXCConst.STATUS_FAIL) {
+							ToastUtil.show(getActivity(), jsonResponse
+									.getString(JLXCConst.HTTP_MESSAGE));
+						}
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1,
+							String flag) {
+						hideLoading();
+						super.onFailure(arg0, arg1, flag);
+						ToastUtil.show(getActivity(), "网络异常");
+					}
+				}, null));
+	}
 
 	/**
 	 * 广播接收处理
@@ -770,24 +860,24 @@ public class GroupNewsFragment extends BaseFragment {
 		}
 	};
 
-	// 平滑滚动到顶
-	private void smoothToTop() {
-		int firstVisiblePosition = newsListView.getRefreshableView()
-				.getFirstVisiblePosition();
-		if (0 == firstVisiblePosition) {
-			// 已经在顶部
-			newsListView.setMode(Mode.PULL_FROM_START);
-			newsListView.setRefreshing();
-		} else {
-			if (firstVisiblePosition < 20) {
-				newsListView.getRefreshableView().smoothScrollToPosition(0);
-			} else {
-				newsListView.getRefreshableView().setSelection(20);
-				newsListView.getRefreshableView().smoothScrollToPosition(0);
-			}
-			newsListView.getRefreshableView().clearFocus();
-		}
-	}
+//	// 平滑滚动到顶
+//	private void smoothToTop() {
+//		int firstVisiblePosition = newsListView.getRefreshableView()
+//				.getFirstVisiblePosition();
+//		if (0 == firstVisiblePosition) {
+//			// 已经在顶部
+//			newsListView.setMode(Mode.PULL_FROM_START);
+//			newsListView.setRefreshing();
+//		} else {
+//			if (firstVisiblePosition < 20) {
+//				newsListView.getRefreshableView().smoothScrollToPosition(0);
+//			} else {
+//				newsListView.getRefreshableView().setSelection(20);
+//				newsListView.getRefreshableView().smoothScrollToPosition(0);
+//			}
+//			newsListView.getRefreshableView().clearFocus();
+//		}
+//	}
 
 	/**
 	 * 创建先的fragment

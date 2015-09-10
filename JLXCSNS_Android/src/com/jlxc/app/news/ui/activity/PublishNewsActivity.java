@@ -387,66 +387,6 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 
 	}
 
-	// 图片滤镜
-	// private void filterImage(final String path, final boolean isAdd) {
-	// File filterFile = new File(path);
-	// // 组件委托
-	// TuSdkComponentDelegate delegate = new TuSdkComponentDelegate() {
-	// @Override
-	// public void onComponentFinished(TuSdkResult result, Error error,
-	// TuFragment lastFragment) {
-	// File oriFile = result.imageFile;
-	// File newFile = new File(path);
-	// // 滤镜成功后重命名 之前的临时文件就被覆盖掉
-	// boolean filterOK = oriFile.renameTo(newFile);
-	// if (filterOK) {
-	// // 添加
-	// if (isAdd) {
-	// addNewsImageView(path);
-	// } else {
-	// // 图片
-	// for (int i = 0; i < addImageLayout.getChildCount(); i++) {
-	// View view = addImageLayout.getChildAt(i);
-	// // 添加成功处理
-	// if (view != addImageView
-	// && view.getTag().equals(path)) {
-	// // 设置照片
-	// bitmapUtils.display(view, path);
-	// }
-	// }
-	// }
-	//
-	// } else {
-	// ToastUtil.show(PublishNewsActivity.this, "图片处理失败T_T");
-	// }
-	// }
-	//
-	// };
-	//
-	// TuEditComponent component = TuSdk.editCommponent(this, delegate);
-	// component.componentOption().editEntryOption().setEnableCuter(false);
-	// component.componentOption().editEntryOption().setEnableSticker(false);
-	// component.componentOption().editEntryOption().setSaveToAlbum(false);
-	// component.componentOption().editEntryOption().setAutoRemoveTemp(false);
-	// component.componentOption().editEntryOption().setSaveToTemp(true);
-	// component.componentOption().editEntryOption().setOutputCompress(80);
-	//
-	// TuSdkResult result = new TuSdkResult();
-	// result.imageFile = filterFile;
-	//
-	// // 设置图片
-	// component.setImage(result.image)
-	// // 设置系统照片
-	// .setImageSqlInfo(result.imageSqlInfo)
-	// // 设置临时文件
-	// .setTempFilePath(result.imageFile)
-	// // 在组件执行完成后自动关闭组件
-	// .setAutoDismissWhenCompleted(true)
-	// // 开启组件
-	// .showComponent();
-	//
-	// }
-
 	// 发布动态
 	private void publishNews() {
 

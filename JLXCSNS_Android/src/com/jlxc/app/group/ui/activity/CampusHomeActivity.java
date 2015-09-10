@@ -230,15 +230,15 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 				Intent intentToGroupNews = new Intent();
 				intentToGroupNews.setClass(CampusHomeActivity.this,
 						GroupNewsActivity.class);
-				// 传递是否是圈子还是校园
-				intentToGroupNews.putExtra(
-						GroupNewsActivity.INTENT_KEY_GROUP_TYPE, true);
-				// 传递是查看着的身份,不是学生
-				intentToGroupNews.putExtra(
-						GroupNewsActivity.INTENT_KEY_VISITOR_TYPE, false);
-				// 传递名称
-				intentToGroupNews.putExtra(
-						GroupNewsActivity.INTENT_KEY_GROUP_NAME, "知乎学园");
+//				// 传递是否是圈子还是校园
+//				intentToGroupNews.putExtra(
+//						GroupNewsActivity.INTENT_KEY_GROUP_TYPE, true);
+//				// 传递是查看着的身份,不是学生
+//				intentToGroupNews.putExtra(
+//						GroupNewsActivity.INTENT_KEY_VISITOR_TYPE, false);
+//				// 传递名称
+//				intentToGroupNews.putExtra(
+//						GroupNewsActivity.INTENT_KEY_GROUP_NAME, "知乎学园");
 				startActivityWithRight(intentToGroupNews);
 			}
 		});

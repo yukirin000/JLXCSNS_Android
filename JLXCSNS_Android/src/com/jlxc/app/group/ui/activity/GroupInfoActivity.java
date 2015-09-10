@@ -120,11 +120,9 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
-
 		// 获取intent
-		// Intent intent = getIntent();
-		// intent.getIntExtra(INTENT_KEY, 0);
-		topicId = 7;
+		Intent intent = getIntent();
+		topicId = intent.getIntExtra(INTENT_KEY, 0);
 
 		initImageLoader();
 		initWidget();
