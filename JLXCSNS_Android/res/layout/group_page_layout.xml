@@ -9,21 +9,70 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_deep_white"
+        android:background="@drawable/shape_group_corner_background"
         android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:orientation="vertical"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="名字"
+                android:textColor="@color/main_deep_black"
+                android:textSize="@dimen/font_size_sper_large" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/ic_launcher" />
+            android:layout_marginTop="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/campus_background" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介一大段文字的简介"
+                android:textColor="@color/main_deep_black"
+                android:textSize="@dimen/font_size_medium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="123人关注"
+                android:textColor="@color/main_clear_yellow" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

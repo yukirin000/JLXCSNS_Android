@@ -37,6 +37,23 @@
             android:src="@drawable/add_friend_content_image" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="right"
+        
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txt_more_group"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="更多..."
+            android:textColor="@color/main_blue"
+            android:textSize="@dimen/font_size_medium" />
+    </LinearLayout>
+
     <com.jlxc.app.group.view.LoopViewPager
         android:id="@+id/loop_view_page_group"
         android:layout_width="match_parent"

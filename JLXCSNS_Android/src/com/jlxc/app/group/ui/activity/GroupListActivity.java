@@ -23,6 +23,7 @@ import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.ui.activity.BaseActivity;
+import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.lidroid.xutils.exception.HttpException;
@@ -33,7 +34,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * 圈子list
  * */
-public class GroupListActivity extends BaseActivity {
+public class GroupListActivity extends BaseActivityWithTopBar {
 
 	// 圈子的相关信息
 	private final static String GROUP_NAME = "group_name";
@@ -61,12 +62,6 @@ public class GroupListActivity extends BaseActivity {
 	@Override
 	public int setLayoutId() {
 		return R.layout.group_list_layout;
-	}
-
-	@Override
-	protected void loadLayout(View v) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

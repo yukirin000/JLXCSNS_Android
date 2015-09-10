@@ -42,6 +42,8 @@ import com.jlxc.app.discovery.model.RecommendItemData;
 import com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity;
 import com.jlxc.app.discovery.ui.avtivity.SearchUserActivity;
 import com.jlxc.app.group.ui.activity.GroupListActivity;
+import com.jlxc.app.group.ui.activity.GroupNewsActivity;
+import com.jlxc.app.group.ui.activity.MyGroupListActivity;
 import com.jlxc.app.group.view.GroupMenuPopWindow;
 import com.jlxc.app.group.view.LoopPagerAdapterWrapper;
 import com.jlxc.app.group.view.LoopViewPager;
@@ -78,11 +80,12 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	private GroupMenuPopWindow menuPopWindow;
 	// 圈子信息数据
 	private List<HashMap<String, String>> groupList = new ArrayList<HashMap<String, String>>();
-	//
+	// 可循环滑动的viewpage
 	@ViewInject(R.id.loop_view_page_group)
 	private LoopViewPager groupViewPage;
-
-	//
+	// 查看更多圈子
+	@ViewInject(R.id.txt_more_group)
+	private TextView moreGroup;
 
 	@Override
 	public int setLayoutId() {
@@ -105,7 +108,8 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	/**
 	 * 点击事件监听
 	 * */
-	@OnClick(value = { R.id.btn_create_new_group, R.id.image_group_menu })
+	@OnClick(value = { R.id.btn_create_new_group, R.id.image_group_menu,
+			R.id.txt_more_group })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		// 话题菜单
@@ -123,6 +127,13 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		case R.id.btn_create_new_group:
 			break;
 
+		// 查看更多圈子
+		case R.id.txt_more_group:
+			// 跳转至更多圈子列表
+			Intent intentToGroupList = new Intent();
+			intentToGroupList.setClass(mContext, GroupListActivity.class);
+			startActivityWithRight(intentToGroupList);
+			break;
 		}
 	}
 
@@ -229,7 +240,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		public Object instantiateItem(ViewGroup container, int position) {
 			View header = View.inflate(mContext, R.layout.group_page_layout,
 					null);
-		
+
 			container.addView(header);
 			return header;
 		}
