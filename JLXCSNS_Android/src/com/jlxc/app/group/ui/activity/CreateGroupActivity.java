@@ -41,7 +41,7 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.model.GroupCatagoryModel;
+import com.jlxc.app.group.model.GroupCategoryModel;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -72,15 +72,15 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 	@ViewInject(R.id.topic_desc_edit_text)
 	private EditText topicDescEditText;
 	//圈子类别
-	@ViewInject(R.id.topic_catagory_text_view)
-	private TextView topicCatagoryTextView;
+	@ViewInject(R.id.topic_category_text_view)
+	private TextView topicCategoryTextView;
 	//圈子类别ID
-	private int topicCatagoryID; 
+	private int topicCategoryID; 
 	//类型list
-	private List<GroupCatagoryModel> catagoryModels;
+	private List<GroupCategoryModel> categoryModels;
 	
 	//统计处理点击
-	@OnClick({R.id.topic_image,R.id.topic_add_layout, R.id.base_ll_right_btns, R.id.topic_catagory_text_view})
+	@OnClick({R.id.topic_image,R.id.topic_add_layout, R.id.base_ll_right_btns, R.id.topic_category_text_view})
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		//头像点击
@@ -88,8 +88,8 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 			showChoiceImageAlert();
 			break;
 		//选择类型
-		case R.id.topic_catagory_text_view:
-			choiceCatagory();
+		case R.id.topic_category_text_view:
+			choiceCategory();
 			break;
 		case R.id.topic_add_layout:
 			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
@@ -115,18 +115,18 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 	protected void setUpView() {
 		setBarText("创建一个新圈子~");
 		addRightBtn("完成");
-		catagoryModels = new ArrayList<GroupCatagoryModel>();
+		categoryModels = new ArrayList<GroupCategoryModel>();
 	}
 
 	//选择类别
-	private void choiceCatagory() {
+	private void choiceCategory() {
 		//存在直接用
-		if (catagoryModels.size() > 0) {
-			showCatagoryList();
+		if (categoryModels.size() > 0) {
+			showCategoryList();
 		}else {
 			showLoading("获取中..", true);
 			//不存在获取一次
-			String path = JLXCConst.GET_TOPIC_CATAGORY;
+			String path = JLXCConst.GET_TOPIC_CATEGORY;
 			HttpManager.get(path, new JsonRequestCallBack<String>(
 					new LoadDataHandler<String>() {
 
@@ -137,22 +137,22 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 							int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 							if (status == JLXCConst.STATUS_SUCCESS) {
 								//已经有了
-								if (catagoryModels.size() > 0) {
-									showCatagoryList();
+								if (categoryModels.size() > 0) {
+									showCategoryList();
 									return;
 								}
 								JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-								JSONArray catagoryArray = jResult.getJSONArray(JLXCConst.HTTP_LIST);
+								JSONArray categoryArray = jResult.getJSONArray(JLXCConst.HTTP_LIST);
 								//模型拼装
-								for (int i=0; i < catagoryArray.size(); i++) {
-									JSONObject object = catagoryArray.getJSONObject(i);
-									GroupCatagoryModel model = new GroupCatagoryModel();
-									model.setCatagory_id(object.getIntValue("catagory_id"));
-									model.setCatagory_name(object.getString("catagory_name"));
-									catagoryModels.add(model);
+								for (int i=0; i < categoryArray.size(); i++) {
+									JSONObject object = categoryArray.getJSONObject(i);
+									GroupCategoryModel model = new GroupCategoryModel();
+									model.setCategory_id(object.getIntValue("category_id"));
+									model.setCategory_name(object.getString("category_name"));
+									categoryModels.add(model);
 								}
 								
-								showCatagoryList();
+								showCategoryList();
 							}
 
 							if (status == JLXCConst.STATUS_FAIL) {
@@ -172,18 +172,18 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 		}
 	}
 	
-	private void showCatagoryList() {
+	private void showCategoryList() {
 		List<String> menuList = new ArrayList<String>();
-		for (GroupCatagoryModel catagory : catagoryModels) {
-			menuList.add(catagory.getCatagory_name());			
+		for (GroupCategoryModel category : categoryModels) {
+			menuList.add(category.getCategory_name());			
 		}
 		final CustomListViewDialog downDialog = new CustomListViewDialog(this, menuList);
 		downDialog.setClickCallBack(new ClickCallBack() {
 			@Override
 			public void Onclick(View view, int which) {
-				GroupCatagoryModel model = catagoryModels.get(which);
-				topicCatagoryID = model.getCatagory_id();
-				topicCatagoryTextView.setText(model.getCatagory_name());
+				GroupCategoryModel model = categoryModels.get(which);
+				topicCategoryID = model.getCategory_id();
+				topicCategoryTextView.setText(model.getCategory_name());
 				downDialog.cancel();
 			}
 		});
@@ -225,7 +225,7 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 			return;
 		}						
 		//类型
-		if (topicCatagoryID < 1) {
+		if (topicCategoryID < 1) {
 			ToastUtil.show(this, "类型不能没有。。");
 			return;
 		}
@@ -235,7 +235,7 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid() + "");
 		params.addBodyParameter("topic_name", topicNameEditText.getText().toString().trim());
 		params.addBodyParameter("topic_desc", topicDescEditText.getText().toString().trim());
-		params.addBodyParameter("catagory_id", topicCatagoryID + "");
+		params.addBodyParameter("category_id", topicCategoryID + "");
 		File uplodaFile = new File(FileUtil.BIG_IMAGE_PATH +currentImageName);
 		if (!uplodaFile.exists()) {
 			return;

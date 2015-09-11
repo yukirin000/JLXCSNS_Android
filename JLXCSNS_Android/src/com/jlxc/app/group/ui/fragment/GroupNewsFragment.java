@@ -162,7 +162,7 @@ public class GroupNewsFragment extends BaseFragment {
 		// 添加顶部布局，提示，通知部分
 		header = View.inflate(mContext,
 				R.layout.group_news_item_head_layout, null);
-		newsListView.getRefreshableView().addHeaderView(header);
+//		newsListView.getRefreshableView().addHeaderView(header);
 		// 顶部描述tv
 		topicDescTextView = (TextView) header.findViewById(R.id.topic_desc_text_view);
 		// 顶部关注按钮tv

@@ -34,7 +34,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * 圈子list
  * */
-public class GroupListActivity extends BaseActivityWithTopBar {
+public class MoreGroupListActivity extends BaseActivityWithTopBar {
 
 	// 圈子的相关信息
 	private final static String GROUP_NAME = "group_name";
@@ -107,7 +107,7 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 	 * */
 	private void listHeadSet() {
 		// 添加顶部布局与初始化事件
-		View header = View.inflate(GroupListActivity.this,
+		View header = View.inflate(MoreGroupListActivity.this,
 				R.layout.discovery_group_head, null);
 		discoveryGroupListView.getRefreshableView().addHeaderView(header);
 	}
@@ -139,7 +139,7 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 		 * adapter的设置
 		 * */
 		diacoveryGroupAdapter = new HelloHaAdapter<HashMap<String, String>>(
-				GroupListActivity.this, R.layout.discovery_group_item,
+				MoreGroupListActivity.this, R.layout.discovery_group_item,
 				groupList) {
 
 			@Override
@@ -199,7 +199,7 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(GroupListActivity.this, jsonResponse
+							ToastUtil.show(MoreGroupListActivity.this, jsonResponse
 									.getString(JLXCConst.HTTP_MESSAGE));
 							discoveryGroupListView.onRefreshComplete();
 						}
@@ -209,7 +209,7 @@ public class GroupListActivity extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(GroupListActivity.this, "网络抽筋了,请检查 =_=");
+						ToastUtil.show(MoreGroupListActivity.this, "网络抽筋了,请检查 =_=");
 						discoveryGroupListView.onRefreshComplete();
 					}
 

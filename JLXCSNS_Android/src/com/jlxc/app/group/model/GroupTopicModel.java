@@ -7,10 +7,14 @@ public class GroupTopicModel {
 	private int topic_id;
 	//话题名
 	private String topic_name;
+	//话题描述
+	private String topic_detail;	
 	//话题封面缩略图
 	private String topic_cover_sub_image;
 	//成员数量
 	private int member_count;
+	//新闻数量
+	private int news_count;
 	//未读数量
 	private int unread_news_count;
 	//最后一次刷新时间
@@ -51,6 +55,18 @@ public class GroupTopicModel {
 	}
 	public void setLast_refresh_date(String last_refresh_date) {
 		this.last_refresh_date = last_refresh_date;
+	}
+	public int getNews_count() {
+		return news_count;
+	}
+	public void setNews_count(int news_count) {
+		this.news_count = news_count;
+	}
+	public String getTopic_detail() {
+		return topic_detail;
+	}
+	public void setTopic_detail(String topic_detail) {
+		this.topic_detail = topic_detail;
 	}
 	
 	

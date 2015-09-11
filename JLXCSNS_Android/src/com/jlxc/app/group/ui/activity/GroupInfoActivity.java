@@ -23,7 +23,7 @@ import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.model.GroupCatagoryModel;
+import com.jlxc.app.group.model.GroupCategoryModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -101,7 +101,9 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 			break;
 		// 查看所有所有成员
 		case R.id.layout_group_info_member:
-
+			Intent allIntent = new Intent(this, GroupAllPersonActivity.class);
+			allIntent.putExtra(GroupAllPersonActivity.INTENT_KEY, topicId);
+			startActivityWithRight(allIntent);
 			break;
 		// 操作按钮事件
 		case R.id.btn_group_operate:
