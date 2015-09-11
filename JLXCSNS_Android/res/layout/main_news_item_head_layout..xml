@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/main_light_white"
-    android:orientation="vertical"
-    android:paddingTop="10dp" >
+    android:orientation="vertical" >
 
     <LinearLayout
         android:id="@+id/layout_main_news_head_rootview"
@@ -17,46 +16,29 @@
 
         <ImageView
             android:id="@+id/imageView1"
-            android:padding="5dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:padding="5dp"
+            android:layout_marginLeft="5dp"
             android:src="@drawable/my_group_icon" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingLeft="5dp" >
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
-                android:textSize="@dimen/font_size_medium"
-                android:text="我的圈子" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="15dp"
-                android:text="已关注3个"
-                android:textColor="@color/main_brown"
-                android:textSize="@dimen/font_size_small" />
-        </RelativeLayout>
+            android:paddingLeft="5dp"
+            android:text="我的频道"
+            android:textSize="@dimen/font_size_medium" />
 
         <TextView
             android:id="@+id/unread_news_count_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dip"
-            android:background="@drawable/big_unread"
+            android:layout_marginRight="20dip"
             android:gravity="center"
             android:text="99"
-            android:textColor="@color/main_white"
+            android:textColor="@color/main_brown"
             android:textSize="@dimen/font_size_tiny" />
     </LinearLayout>
 
@@ -67,19 +49,6 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp" >
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="新鲜事" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/jump_btn" />
     </LinearLayout>
 
 </LinearLayout>

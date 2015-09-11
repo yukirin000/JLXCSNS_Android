@@ -1,5 +1,7 @@
 package com.jlxc.app.news.ui.fragment;
 
+import io.rong.imkit.R.integer;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,18 +16,23 @@ import android.graphics.Bitmap;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnPullEventListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.State;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
@@ -80,11 +87,11 @@ public class MainNewsListFragment extends BaseFragment {
 	@ViewInject(R.id.news_listview)
 	private PullToRefreshListView newsListView;
 	// 发布按钮
-	 @ViewInject(R.id.img_main_publish_btn)
-	 private ImageView publishBtn;
+	@ViewInject(R.id.img_main_publish_btn)
+	private ImageView publishBtn;
 	// 标头部分
-	@ViewInject(R.id.layout_main_page_title_bar)
-	private Fragment titleFragment;
+	// @ViewInject(R.id.layout_main_head_rootview)
+	// private LinearLayout headLayout;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
@@ -119,6 +126,8 @@ public class MainNewsListFragment extends BaseFragment {
 	private DisplayImageOptions options;
 	// 是否为文字长按事件
 	private boolean isLongClick = false;
+	//
+	private View header;
 
 	@Override
 	public int setLayoutId() {
@@ -147,7 +156,8 @@ public class MainNewsListFragment extends BaseFragment {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Intent intentUsrMain = new Intent(mContext, PublishNewsActivity.class);
+				Intent intentUsrMain = new Intent(mContext,
+						PublishNewsActivity.class);
 				startActivityWithRight(intentUsrMain);
 			}
 		});
@@ -298,8 +308,8 @@ public class MainNewsListFragment extends BaseFragment {
 				});
 
 		// 添加顶部布局与初始化事件
-		View header = View.inflate(mContext,
-				R.layout.main_news_item_head_layout, null);// 头部内容
+		header = View.inflate(mContext, R.layout.main_news_item_head_layout,
+				null);// 头部内容
 		newsListView.getRefreshableView().addHeaderView(header);
 		LinearLayout headView = (LinearLayout) header
 				.findViewById(R.id.layout_main_news_head_rootview);
@@ -315,18 +325,33 @@ public class MainNewsListFragment extends BaseFragment {
 		});
 
 		// 滑动刷新
-		newsListView.setOnScrollListener(new OnScrollListener() {
+		newsListView.getRefreshableView().setOnScrollListener(
+				new OnScrollListener() {
 
-			@Override
-			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+					@Override
+					public void onScrollStateChanged(AbsListView arg0, int arg1) {
 
-			}
+					}
 
-			@Override
-			public void onScroll(AbsListView absListView, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-			}
-		});
+					@Override
+					public void onScroll(AbsListView absListView,
+							int firstVisibleItem, int visibleItemCount,
+							int totalItemCount) {
+						// 计算第一条item的位置
+						int scrolledY = 0;
+						View firstItem = absListView.getChildAt(0);
+						if (firstItem != null) {
+							scrolledY = firstItem.getTop();
+						}
+
+						if (scrolledY >= 0) {
+							// newsListView.getRefreshableView().removeHeaderView(header);
+						} else {
+							// newsListView.getRefreshableView().addHeaderView(header);
+						}
+						LogUtils.i("scrolledY=" + scrolledY);
+					}
+				});
 
 		/**
 		 * adapter的设置
