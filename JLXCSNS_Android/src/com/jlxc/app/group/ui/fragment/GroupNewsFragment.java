@@ -546,6 +546,9 @@ public class GroupNewsFragment extends BaseFragment {
 	 * 数据处理
 	 */
 	private void JsonToNewsModel(List<JSONObject> dataList) {
+		if (null == dataList || dataList.size() < 1) {
+			return;
+		}
 		List<NewsModel> newDatas = new ArrayList<NewsModel>();
 		for (JSONObject newsObj : dataList) {
 			NewsModel tempNews = new NewsModel();
@@ -587,8 +590,13 @@ public class GroupNewsFragment extends BaseFragment {
 					// 跳转至校园主页
 					Intent intentCampusInfo = new Intent(
 							mContext, CampusHomeActivity.class);
-					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_KEY,
-							false);
+					//是否是自己学校
+					boolean isOwnSchool = false;					
+					if (titleData.getSchoolCode() == UserManager.getInstance().getUser().getSchool_code()) {
+						isOwnSchool = true;
+					}
+					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_OWN_SCHOOL_KEY,isOwnSchool);
+					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_SCHOOL_CODE_KEY, titleData.getSchoolCode());
 					startActivityWithRight(intentCampusInfo);
 				} else {
 					// 跳转至用户主页

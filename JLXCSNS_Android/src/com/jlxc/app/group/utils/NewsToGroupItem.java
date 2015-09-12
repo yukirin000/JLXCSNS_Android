@@ -36,6 +36,7 @@ public class NewsToGroupItem {
 			item.setUserName(news.getUserName());
 			item.setUserID(news.getUid());
 			item.setSchool(news.getUserSchool());
+			item.setSchoolCode(news.getSchoolCode());
 			item.setUserHeadImage(news.getUserHeadImage());
 			item.setUserSubHeadImage(news.getUserHeadSubImage());
 		} catch (Exception e) {

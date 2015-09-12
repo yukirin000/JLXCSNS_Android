@@ -45,8 +45,11 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CampusHomeActivity extends BaseActivityWithTopBar {
-
-	public static final String INTENT_KEY = "is_Student_view_campus";
+	
+	//是否是本校学生
+	public static final String INTENT_OWN_SCHOOL_KEY = "is_Student_view_campus";
+	//学校ID
+	public static final String INTENT_SCHOOL_CODE_KEY = "schoolCode";
 	// 学校的人
 	private List<CampusPersonModel> personList;
 	// 加载图片
@@ -113,10 +116,11 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 
 		// 获取是否是本校学生浏览
 		Intent intent = this.getIntent();
-		if (intent.hasExtra(INTENT_KEY)) {
-			if (intent.getBooleanExtra(INTENT_KEY, false)) {
+		if (intent.hasExtra(INTENT_OWN_SCHOOL_KEY)) {
+			if (intent.getBooleanExtra(INTENT_OWN_SCHOOL_KEY, false)) {
 				// 本校学生查看则把动态模块隐藏
-				campusNewsLayout.setVisibility(View.GONE);
+//				campusNewsLayout.setVisibility(View.GONE);
+				unreadNewsTextView.setVisibility(View.GONE);
 			}
 		} else {
 			LogUtils.e("未传递查看类型");

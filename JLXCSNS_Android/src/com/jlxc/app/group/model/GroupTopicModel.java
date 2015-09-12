@@ -8,7 +8,9 @@ public class GroupTopicModel {
 	//话题名
 	private String topic_name;
 	//话题描述
-	private String topic_detail;	
+	private String topic_detail;
+	//话题封面原图
+	private String topic_cover_image;
 	//话题封面缩略图
 	private String topic_cover_sub_image;
 	//成员数量
@@ -19,6 +21,8 @@ public class GroupTopicModel {
 	private int unread_news_count;
 	//最后一次刷新时间
 	private String last_refresh_date;
+	//是否有内容
+	private boolean has_news;
 	
 	public int getTopic_id() {
 		return topic_id;
@@ -68,6 +72,17 @@ public class GroupTopicModel {
 	public void setTopic_detail(String topic_detail) {
 		this.topic_detail = topic_detail;
 	}
-	
+	public String getTopic_cover_image() {
+		return topic_cover_image;
+	}
+	public void setTopic_cover_image(String topic_cover_image) {
+		this.topic_cover_image = topic_cover_image;
+	}
+	public boolean isHas_news() {
+		return has_news;
+	}
+	public void setHas_news(boolean has_news) {
+		this.has_news = has_news;
+	}
 	
 }

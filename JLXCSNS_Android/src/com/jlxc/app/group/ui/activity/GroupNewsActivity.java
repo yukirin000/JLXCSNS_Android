@@ -117,7 +117,6 @@ public class GroupNewsActivity extends BaseActivityWithTopBar {
 		});
 		// 点击发布按钮事件
 		publishBtn.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
 				Intent intentPublish = new Intent(GroupNewsActivity.this,

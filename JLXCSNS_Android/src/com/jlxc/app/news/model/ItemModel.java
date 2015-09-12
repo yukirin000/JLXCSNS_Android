@@ -86,8 +86,10 @@ public class ItemModel {
 		private String headImage;
 		// 动态发布者的名字
 		private String userName;
-		// 显示的标签
+		// 学校
 		private String userSchool;
+		// 学校id
+		private String schoolCode;
 		// 显示用户的id
 		private String userID;
 		// 显示是否已赞
@@ -178,6 +180,14 @@ public class ItemModel {
 		public void setTagContent(String tagContent) {
 			this.tagContent = tagContent;
 		}
+		public String getSchoolCode() {
+			return schoolCode;
+		}
+		public void setSchoolCode(String schoolCode) {
+			this.schoolCode = schoolCode;
+		}
+
+		
 	}
 
 	/**

@@ -64,7 +64,7 @@
             android:drawablePadding="5dp"
             android:gravity="left"
             android:text="学校"
-            android:textColor="@color/main_gary"
+            android:textColor="@color/main_light_blue"
             android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 
