@@ -46,9 +46,6 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 	private ImageLoader imgLoader;
 	// 图片配置
 	private DisplayImageOptions options;
-	// 标头
-	@ViewInject(R.id.tv_discovey_group_title)
-	private TextView titleTextView;
 	// 推荐的圈子
 	@ViewInject(R.id.listview_discovey_group)
 	private PullToRefreshListView discoveryGroupListView;
