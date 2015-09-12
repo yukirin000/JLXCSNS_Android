@@ -3,6 +3,7 @@ package com.jlxc.app.group.ui.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,8 +11,15 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -41,9 +49,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DiscoveryGroupFragment extends BaseFragment {
 
-	// 标头
-	@ViewInject(R.id.tv_discovey_group_title)
-	private TextView titleTextView;
+	// 标题
+	@ViewInject(R.id.layout_discovey_group_title)
+	private LinearLayout titleLayout;
+	// 标头根布局
+	@ViewInject(R.id.layout_title_rootview)
+	private FrameLayout titleRootLayout;
+	// 标题图标
+	@ViewInject(R.id.img_title_icon)
+	private ImageView imgTitleIcon;
 	// 创建新的圈子
 	@ViewInject(R.id.btn_create_new_group)
 	private ImageButton createNewGroup;
@@ -63,7 +77,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	private GroupMenuPopWindow menuPopWindow;
 	// 圈子信息数据
 	private List<GroupTopicModel> groupList = new ArrayList<GroupTopicModel>();
-	//类型list
+	// 类型list
 	private List<GroupCategoryModel> categoryModels = new ArrayList<GroupCategoryModel>();
 	//当前的categoryId
 	private int categoryId = 0;
@@ -85,19 +99,20 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		init();
 		// 首次更新数据
 		// getRecommentData("参数", "参数");
-//		groupViewPage.setAdapter(new MyPagerAdapter());
+		// groupViewPage.setAdapter(new MyPagerAdapter());
 		getRecommendData(0);
 	}
 
 	/**
 	 * 点击事件监听
 	 * */
-	@OnClick(value = { R.id.btn_create_new_group, R.id.tv_discovey_group_title,
-			R.id.txt_more_group })
+	@OnClick(value = { R.id.btn_create_new_group,
+			R.id.layout_discovey_group_title, R.id.txt_more_group })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		// 话题菜单
-		case R.id.tv_discovey_group_title:
+		case R.id.layout_discovey_group_title:
+			// 显示类别列表
 			choiceCategory();
 			// 设置背景颜色变暗
 			// WindowManager.LayoutParams lp = getActivity().getWindow()
@@ -122,46 +137,53 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			break;
 		}
 	}
-	
-	//选择类别
+
+	// 选择类别
 	private void choiceCategory() {
-		//存在直接用
+		// 存在直接用
 		if (categoryModels.size() > 0) {
 			showCategoryList();
-		}else {
+		} else {
 			showLoading(getActivity(), "获取中..", true);
-			//不存在获取一次
+			// 不存在获取一次
 			String path = JLXCConst.GET_TOPIC_CATEGORY;
 			HttpManager.get(path, new JsonRequestCallBack<String>(
 					new LoadDataHandler<String>() {
 
 						@Override
-						public void onSuccess(JSONObject jsonResponse, String flag) {
+						public void onSuccess(JSONObject jsonResponse,
+								String flag) {
 							super.onSuccess(jsonResponse, flag);
 							hideLoading();
-							int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+							int status = jsonResponse
+									.getInteger(JLXCConst.HTTP_STATUS);
 							if (status == JLXCConst.STATUS_SUCCESS) {
-								//已经有了
+								// 已经有了
 								if (categoryModels.size() > 0) {
 									showCategoryList();
 									return;
 								}
-								JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-								JSONArray categoryArray = jResult.getJSONArray(JLXCConst.HTTP_LIST);
-								
+								JSONObject jResult = jsonResponse
+										.getJSONObject(JLXCConst.HTTP_RESULT);
+								JSONArray categoryArray = jResult
+										.getJSONArray(JLXCConst.HTTP_LIST);
+
 								GroupCategoryModel allCategoryModel = new GroupCategoryModel();
 								allCategoryModel.setCategory_id(0);
 								allCategoryModel.setCategory_name("全部");
 								categoryModels.add(0, allCategoryModel);
-								//模型拼装
-								for (int i=0; i < categoryArray.size(); i++) {
-									JSONObject object = categoryArray.getJSONObject(i);
+								// 模型拼装
+								for (int i = 0; i < categoryArray.size(); i++) {
+									JSONObject object = categoryArray
+											.getJSONObject(i);
 									GroupCategoryModel model = new GroupCategoryModel();
-									model.setCategory_id(object.getIntValue("category_id"));
-									model.setCategory_name(object.getString("category_name"));
+									model.setCategory_id(object
+											.getIntValue("category_id"));
+									model.setCategory_name(object
+											.getString("category_name"));
 									categoryModels.add(model);
 								}
-								
+
 								showCategoryList();
 							}
 
@@ -181,10 +203,19 @@ public class DiscoveryGroupFragment extends BaseFragment {
 					}, null));
 		}
 	}
-	
+
 	private void showCategoryList() {
 		menuPopWindow.setCategoryList(categoryModels);
-		menuPopWindow.showPopupWindow(titleTextView);
+		menuPopWindow.showPopupWindow(titleRootLayout);
+		// 设置缩放动画
+		ScaleAnimation animation = new ScaleAnimation(1.0f, 1.0f, 1.0f, -1.0f,
+				Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+				0.5f);
+		animation.setDuration(200);
+		animation.setFillAfter(true);
+		imgTitleIcon.clearAnimation();
+		imgTitleIcon.setAnimation(animation);
+		animation.startNow();
 	}
 
 	/**
@@ -201,16 +232,25 @@ public class DiscoveryGroupFragment extends BaseFragment {
 				menuPopWindow.dismiss();
 			}
 		});
-//		menuPopWindow.setOnDismissListener(new OnDismissListener() {
-//			@Override
-//			public void onDismiss() {
-//				// 设置背景颜色变亮
-//				// WindowManager.LayoutParams lp = getActivity().getWindow()
-//				// .getAttributes();
-//				// lp.alpha = 1.0f;
-//				// getActivity().getWindow().setAttributes(lp);
-//			}
-//		});
+		// 监听消失事件
+		menuPopWindow.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss() {
+				// 缩放动画
+				ScaleAnimation animation = new ScaleAnimation(1.0f, 1.0f,
+						-1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+						Animation.RELATIVE_TO_SELF, 0.5f);
+				animation.setDuration(200);
+				imgTitleIcon.clearAnimation();
+				imgTitleIcon.setAnimation(animation);
+				animation.startNow();
+				// 设置背景颜色变亮
+				// WindowManager.LayoutParams lp = getActivity().getWindow()
+				// .getAttributes();
+				// lp.alpha = 1.0f;
+				// getActivity().getWindow().setAttributes(lp);
+			}
+		});
 	}
 
 	/**
@@ -234,9 +274,10 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	 * 获取发现部分的数据 全看的时候topicId为0
 	 * */
 	private void getRecommendData(int categoryId) {
-		
+
 		String path = JLXCConst.GET_TOPIC_HOME_LIST + "?" + "user_id="
-					+ UserManager.getInstance().getUser().getUid( )+ "&category_id=" + categoryId;
+				+ UserManager.getInstance().getUser().getUid()
+				+ "&category_id=" + categoryId;
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
 
@@ -280,7 +321,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		}
 		groupList.clear();
 		for (JSONObject jsonObject : dataList) {
-			//数据处理
+			// 数据处理
 			GroupTopicModel topicModel = new GroupTopicModel();
 			topicModel.setTopic_id(jsonObject.getIntValue("topic_id"));
 			topicModel.setTopic_cover_image(jsonObject.getString("topic_cover_image"));
@@ -288,10 +329,10 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			topicModel.setTopic_detail(jsonObject.getString("topic_detail"));
 			topicModel.setNews_count(jsonObject.getIntValue("news_count"));
 			topicModel.setMember_count(jsonObject.getIntValue("member_count"));
-			
+
 			groupList.add(topicModel);
 		}
-		
+
 		groupViewPage.setAdapter(new MyPagerAdapter());
 	}
 
@@ -301,14 +342,16 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		public Object instantiateItem(ViewGroup container, int position) {
 			View groupPageView = View.inflate(mContext,
 					R.layout.group_page_layout, null);
-			//数据模型
+			// 数据模型
 			final GroupTopicModel topicModel = groupList.get(position);
-			
-			//名字
-			TextView topicNameTextView = (TextView) groupPageView.findViewById(R.id.topic_name_text_view);
+
+			// 名字
+			TextView topicNameTextView = (TextView) groupPageView
+					.findViewById(R.id.topic_name_text_view);
 			topicNameTextView.setText(topicModel.getTopic_name());
-			//描述
-			TextView topicDescTextView = (TextView) groupPageView.findViewById(R.id.topic_desc_text_view);
+			// 描述
+			TextView topicDescTextView = (TextView) groupPageView
+					.findViewById(R.id.topic_desc_text_view);
 			topicDescTextView.setText(topicModel.getTopic_detail());
 			//背景图
 			ImageView topicImageView = (ImageView) groupPageView.findViewById(R.id.topic_image);
@@ -320,22 +363,27 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			TextView newsTextView = (TextView) groupPageView.findViewById(R.id.news_count_text_view);
 			newsTextView.setText(topicModel.getNews_count()+"条内容");
 			container.addView(groupPageView);
-			
-			//点击事件
+
+			// 点击事件
 			groupPageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					// 跳转至圈子内容部分
 					Intent intentToGroupNews = new Intent();
-					intentToGroupNews.setClass(getActivity(),GroupNewsActivity.class);
+					intentToGroupNews.setClass(getActivity(),
+							GroupNewsActivity.class);
 					// 传递名称
-					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_NAME,topicModel.getTopic_name());
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_TOPIC_NAME,
+							topicModel.getTopic_name());
 					// 传递ID
-					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID,topicModel.getTopic_id());
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_TOPIC_ID,
+							topicModel.getTopic_id());
 					startActivityWithRight(intentToGroupNews);
 				}
 			});
-			
+
 			return groupPageView;
 		}
 
@@ -354,6 +402,6 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		public boolean isViewFromObject(View arg0, Object arg1) {
 			return arg0 == arg1;
 		}
-	      
+
 	}
 }

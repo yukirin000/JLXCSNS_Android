@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/layout_title_rootview"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_height_size"
         android:background="@color/main_yellow"
@@ -12,32 +13,42 @@
         android:orientation="horizontal" >
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:id="@+id/layout_discovey_group_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:clickable="true"
+            android:background="@drawable/selector_main_yellow_click"
+            android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/tv_discovey_group_title"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="发现兴趣圈子"
+                android:text="发现频道"
                 android:textColor="@color/main_brown"
-                android:drawableRight="@drawable/ic_launcher"
                 android:textSize="@dimen/action_bar_title_size" />
+
+            <ImageView
+                android:id="@+id/img_title_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/arrow_down_icon" />
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/btn_create_new_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="right"
             android:layout_marginRight="@dimen/title_interior_size_mediu"
             android:background="@color/main_clear"
             android:padding="@dimen/title_interior_size_mediu"
             android:src="@drawable/add_friend_content_image" />
-    </LinearLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

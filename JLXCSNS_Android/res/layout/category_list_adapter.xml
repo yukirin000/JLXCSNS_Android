@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:background="@drawable/selector_deep_white_click"
     android:orientation="vertical" >
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/category_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:text="内容内容内容内容内容内容内容内容容内容内"
-            android:textColor="@color/main_deep_black"
-            android:textSize="@dimen/font_size_small" />
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/campus_background" />
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:background="#33000000"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/category_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="名字"
+                android:textColor="@color/main_deep_white"
+                android:textSize="@dimen/font_size_huge" />
+
+            <TextView
+                android:id="@+id/category_detail_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="描述描述描述描述描述描述描述描述描述描述"
+                android:textColor="@color/main_deep_white"
+                android:textSize="@dimen/font_size_small" />
+        </LinearLayout>
+
+    </FrameLayout>
 
 
     <View

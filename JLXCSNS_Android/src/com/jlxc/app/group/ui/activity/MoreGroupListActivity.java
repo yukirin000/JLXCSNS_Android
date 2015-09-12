@@ -47,7 +47,7 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 	// 图片配置
 	private DisplayImageOptions options;
 	// 标头
-	@ViewInject(R.id.tv_discovey_group_title)
+//	@ViewInject(R.id.tv_discovey_group_title)
 	private TextView titleTextView;
 	//category标题
 	private TextView categoryNameTextView;

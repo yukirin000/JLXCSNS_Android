@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/action_bar_height_size"
         android:background="@drawable/navbar"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
@@ -27,8 +27,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingRight="10dp"
+            android:paddingLeft="5dp"
+            android:clickable="true"
             android:drawableLeft="@drawable/school_home_icon"
             android:gravity="left|center"
+            android:background="@drawable/selector_main_yellow_click"
             android:drawablePadding="3dp"
             android:text="校园"
             android:textColor="@color/main_brown"

@@ -13,13 +13,19 @@ import com.jlxc.app.group.model.GroupCategoryModel;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
@@ -37,29 +43,30 @@ public class GroupMenuPopWindow extends PopupWindow {
 	// 频道类别list
 	private ListView groupTypeListView;
 	private HelloHaAdapter<GroupCategoryModel> categoryAdapter;
-	//类型list
+	// 类型list
 	private List<GroupCategoryModel> categoryModels = new ArrayList<GroupCategoryModel>();
-	//onclick
+	// onclick
 	private CategorySelectListener listener;
-	
+
 	public GroupMenuPopWindow(final Context context) {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// 获取布局
 		conentView = inflater.inflate(R.layout.popup_window_group_menu, null);
-		//listview
-		groupTypeListView = (ListView) conentView.findViewById(R.id.category_list_view);
-		//adapter
+		// listview
+		groupTypeListView = (ListView) conentView
+				.findViewById(R.id.category_list_view);
+		// adapter
 		categoryAdapter = new HelloHaAdapter<GroupCategoryModel>(context,
 				R.layout.category_list_adapter) {
-					@Override
-					protected void convert(HelloHaBaseAdapterHelper helper,
-							GroupCategoryModel item) {
-						helper.setText(R.id.category_text_view, item.getCategory_name());
-					}
+			@Override
+			protected void convert(HelloHaBaseAdapterHelper helper,
+					GroupCategoryModel item) {
+				helper.setText(R.id.category_text_view, item.getCategory_name());
+			}
 		};
 		groupTypeListView.setAdapter(categoryAdapter);
-		//点击
+		// 点击
 		groupTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -78,21 +85,20 @@ public class GroupMenuPopWindow extends PopupWindow {
 		this.setContentView(conentView);
 		// 设置窗体的尺寸
 		this.setWidth(LayoutParams.MATCH_PARENT);
-		this.setHeight(screenHeight * 1 / 3);
+		this.setHeight(LayoutParams.MATCH_PARENT);
 		// 设置窗体可点击
 		this.setFocusable(true);
 		this.setOutsideTouchable(true);
 		// 刷新状态
 		this.update();
 		// 背景变暗
-		this.setBackgroundDrawable(new ColorDrawable(0xff000000));
+		this.setBackgroundDrawable(new ColorDrawable(0x00000000));
 		// 设置窗体动画效果
 		this.setAnimationStyle(R.style.anim_group_menu);
 	}
-	
-	//设置内容
+
+	// 设置内容
 	public void setCategoryList(List<GroupCategoryModel> categoryModels) {
-		
 		this.categoryModels = categoryModels;
 		categoryAdapter.replaceAll(this.categoryModels);
 	}
@@ -107,9 +113,9 @@ public class GroupMenuPopWindow extends PopupWindow {
 			this.dismiss();
 		}
 	}
-	
-	//监听器
-	public interface CategorySelectListener{
+
+	// 监听器
+	public interface CategorySelectListener {
 		public void select(GroupCategoryModel model);
 	}
 
@@ -120,6 +126,4 @@ public class GroupMenuPopWindow extends PopupWindow {
 	public void setListener(CategorySelectListener listener) {
 		this.listener = listener;
 	}
-	
-	
 }
