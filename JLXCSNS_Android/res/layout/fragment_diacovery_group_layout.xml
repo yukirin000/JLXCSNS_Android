@@ -16,18 +16,19 @@
             android:id="@+id/layout_discovey_group_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:clickable="true"
             android:background="@drawable/selector_main_yellow_click"
-            android:orientation="horizontal" >
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp" >
 
             <TextView
+                android:id="@+id/text_discovery_group_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="发现频道"
+                android:text="全部"
                 android:textColor="@color/main_brown"
                 android:textSize="@dimen/action_bar_title_size" />
 
@@ -47,7 +48,7 @@
             android:layout_marginRight="@dimen/title_interior_size_mediu"
             android:background="@color/main_clear"
             android:padding="@dimen/title_interior_size_mediu"
-            android:src="@drawable/add_friend_content_image" />
+            android:src="@drawable/group_create_icon" />
     </FrameLayout>
 
     <LinearLayout
@@ -60,9 +61,10 @@
             android:id="@+id/txt_more_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:paddingRight="10dp"
             android:gravity="center"
             android:text="更多..."
-            android:textColor="@color/main_blue"
+            android:textColor="@color/main_brown"
             android:textSize="@dimen/font_size_medium" />
     </LinearLayout>
 
