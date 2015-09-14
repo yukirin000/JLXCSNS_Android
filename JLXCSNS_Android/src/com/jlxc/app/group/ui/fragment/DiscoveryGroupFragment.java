@@ -49,9 +49,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DiscoveryGroupFragment extends BaseFragment {
 
-	// 标题
+	// 标题布局
 	@ViewInject(R.id.layout_discovey_group_title)
 	private LinearLayout titleLayout;
+	//类别名字
+	@ViewInject(R.id.text_discovery_group_title)
+	private TextView groupCategory;
 	// 标头根布局
 	@ViewInject(R.id.layout_title_rootview)
 	private FrameLayout titleRootLayout;
@@ -138,7 +141,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		if (categoryModels.size() > 0) {
 			showCategoryList();
 		} else {
-			showLoading(getActivity(), "获取中..", true);
+			//showLoading(getActivity(), "获取中..", true);
 			// 不存在获取一次
 			String path = JLXCConst.GET_TOPIC_CATEGORY;
 			HttpManager.get(path, new JsonRequestCallBack<String>(
@@ -222,6 +225,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			public void select(GroupCategoryModel model) {
 				getRecommendData(model.getCategory_id());
 				menuPopWindow.dismiss();
+				groupCategory.setText(model.getCategory_name());
 			}
 		});
 		// 监听消失事件
