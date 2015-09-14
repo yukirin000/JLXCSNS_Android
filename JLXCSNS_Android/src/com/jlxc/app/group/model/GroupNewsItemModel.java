@@ -61,6 +61,8 @@ public class GroupNewsItemModel {
 		private String userID;
 		// 所在学校
 		private String school;
+		// 所在学校代码
+		private String schoolCode;		
 		// 头像图片
 		private String userHeadImage;
 		// 头像缩略
@@ -106,6 +108,14 @@ public class GroupNewsItemModel {
 			this.userSubHeadImage = userSubHeadImage;
 		}
 
+		public String getSchoolCode() {
+			return schoolCode;
+		}
+
+		public void setSchoolCode(String schoolCode) {
+			this.schoolCode = schoolCode;
+		}
+		
 	}
 
 	/**

@@ -82,7 +82,11 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	private List<GroupTopicModel> groupList = new ArrayList<GroupTopicModel>();
 	// 类型list
 	private List<GroupCategoryModel> categoryModels = new ArrayList<GroupCategoryModel>();
-
+	//当前的categoryId
+	private int categoryId = 0;
+	//当前的category名字
+	private String categoryName = "全部";	
+	
 	@Override
 	public int setLayoutId() {
 		return R.layout.fragment_diacovery_group_layout;
@@ -130,6 +134,8 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			// 跳转至更多圈子列表
 			Intent intentToGroupList = new Intent();
 			intentToGroupList.setClass(mContext, MoreGroupListActivity.class);
+			intentToGroupList.putExtra(MoreGroupListActivity.INTENT_CATEGORY_ID_KEY, categoryId);
+			intentToGroupList.putExtra(MoreGroupListActivity.INTENT_CATEGORY_NAME_KEY, categoryName);
 			startActivityWithRight(intentToGroupList);
 			break;
 		}
@@ -223,6 +229,8 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		menuPopWindow.setListener(new CategorySelectListener() {
 			@Override
 			public void select(GroupCategoryModel model) {
+				categoryId = model.getCategory_id();
+				categoryName = model.getCategory_name();
 				getRecommendData(model.getCategory_id());
 				menuPopWindow.dismiss();
 				groupCategory.setText(model.getCategory_name());
@@ -313,7 +321,6 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	 * */
 	private void JsonToItemData(List<JSONObject> dataList) {
 		if (dataList.size() < 1) {
-
 			return;
 		}
 		groupList.clear();
@@ -321,8 +328,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			// 数据处理
 			GroupTopicModel topicModel = new GroupTopicModel();
 			topicModel.setTopic_id(jsonObject.getIntValue("topic_id"));
-			topicModel.setTopic_cover_sub_image(jsonObject
-					.getString("topic_cover_image"));
+			topicModel.setTopic_cover_image(jsonObject.getString("topic_cover_image"));
 			topicModel.setTopic_name(jsonObject.getString("topic_name"));
 			topicModel.setTopic_detail(jsonObject.getString("topic_detail"));
 			topicModel.setNews_count(jsonObject.getIntValue("news_count"));
@@ -351,21 +357,15 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			TextView topicDescTextView = (TextView) groupPageView
 					.findViewById(R.id.topic_desc_text_view);
 			topicDescTextView.setText(topicModel.getTopic_detail());
-			// 背景图
-			ImageView topicImageView = (ImageView) groupPageView
-					.findViewById(R.id.topic_image);
-			ImageLoader.getInstance().displayImage(
-					JLXCConst.ATTACHMENT_ADDR
-							+ topicModel.getTopic_cover_sub_image(),
-					topicImageView, options);
-			// 成员数量
-			TextView memberTextView = (TextView) groupPageView
-					.findViewById(R.id.member_count_text_view);
-			memberTextView.setText(topicModel.getMember_count() + "人关注");
-			// 内容数量
-			TextView newsTextView = (TextView) groupPageView
-					.findViewById(R.id.news_count_text_view);
-			newsTextView.setText(topicModel.getNews_count() + "条内容");
+			//背景图
+			ImageView topicImageView = (ImageView) groupPageView.findViewById(R.id.topic_image);
+			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + topicModel.getTopic_cover_image(), topicImageView, options);
+			//成员数量
+			TextView memberTextView = (TextView) groupPageView.findViewById(R.id.member_count_text_view);
+			memberTextView.setText(topicModel.getMember_count()+"人关注");			
+			//内容数量
+			TextView newsTextView = (TextView) groupPageView.findViewById(R.id.news_count_text_view);
+			newsTextView.setText(topicModel.getNews_count()+"条内容");
 			container.addView(groupPageView);
 
 			// 点击事件

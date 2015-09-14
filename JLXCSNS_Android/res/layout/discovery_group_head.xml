@@ -11,22 +11,22 @@
         android:layout_marginBottom="10dp">
 
         <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/category_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dip"
             android:scaleType="centerCrop"
             android:src="@drawable/campus_background" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="90dip"
             android:layout_gravity="bottom"
             android:background="#66000000"
             android:orientation="vertical"
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/txt_group_type_name"
+                android:id="@+id/category_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="又到开学季"
@@ -34,10 +34,11 @@
                 android:textSize="@dimen/font_size_huge" />
 
             <TextView
-                android:id="@+id/txt_group_type_detail"
+                android:id="@+id/category_desc_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:maxLength="40"
                 android:text="暑假刚过，小伙伴们快来聊一聊暑假发生了什么有趣的事情；对新的学期有什么打算"
                 android:textColor="@color/main_deep_white"
                 android:textSize="@dimen/font_size_small" />

@@ -49,6 +49,7 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.group.ui.activity.CampusHomeActivity;
 import com.jlxc.app.group.ui.activity.MyGroupListActivity;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ImageModel;
@@ -482,6 +483,7 @@ public class MainNewsListFragment extends BaseFragment {
 		helper.setOnClickListener(R.id.img_mian_news_user_head, listener);
 		helper.setOnClickListener(R.id.txt_main_news_user_name, listener);
 		helper.setOnClickListener(R.id.layout_news_title_rootview, listener);
+		helper.setOnClickListener(R.id.txt_main_news_user_school, listener);
 	}
 
 	/**
@@ -762,16 +764,28 @@ public class MainNewsListFragment extends BaseFragment {
 			case R.id.layout_news_title_rootview:
 			case R.id.img_mian_news_user_head:
 			case R.id.txt_main_news_user_name:
+			case R.id.txt_main_news_user_school:
 				TitleItem titleData = (TitleItem) newsAdapter.getItem(postion);
 				if (R.id.layout_news_title_rootview == viewID) {
 					// 跳转到动态详情
 					jumpToNewsDetail(titleData, NewsConstants.KEY_BOARD_CLOSE,
 							null);
+				}else if (R.id.txt_main_news_user_school == viewID) {
+					// 跳转至校园主页
+					Intent intentCampusInfo = new Intent(
+							mContext, CampusHomeActivity.class);
+					//是否是自己学校
+					boolean isOwnSchool = false;
+					if (titleData.getSchoolCode() == UserManager.getInstance().getUser().getSchool_code()) {
+						isOwnSchool = true;
+					}
+					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_OWN_SCHOOL_KEY,isOwnSchool);
+					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_SCHOOL_CODE_KEY, titleData.getSchoolCode());
+					startActivityWithRight(intentCampusInfo);
 				} else {
 					jumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				}
 				break;
-
 			case R.id.layout_news_body_rootview:
 			case R.id.txt_main_news_content:
 			case R.id.miv_main_news_images:
@@ -779,7 +793,6 @@ public class MainNewsListFragment extends BaseFragment {
 				// 跳转到动态详情
 				jumpToNewsDetail(bodyData, NewsConstants.KEY_BOARD_CLOSE, null);
 				break;
-
 			case R.id.btn_mian_reply:
 			case R.id.btn_news_like:
 			case R.id.layout_news_operate_rootview:

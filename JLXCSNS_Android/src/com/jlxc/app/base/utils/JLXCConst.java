@@ -193,7 +193,9 @@ public interface JLXCConst {
 	// 获取圈子成员列表
 	public static final String GET_TOPIC_MEMBER_LIST = DOMIN + "/getTopicMemberList";
 	// 获取话题主页列表
-	public static final String GET_TOPIC_HOME_LIST = DOMIN + "/getTopicHomeList";	
+	public static final String GET_TOPIC_HOME_LIST = DOMIN + "/getTopicHomeList";
+	// 获取分类话题列表
+	public static final String GET_CATEGORY_TOPIC_LIST = DOMIN + "/getCategoryTopicList";
 	////////////////////////////////////////发现模块//////////////////////////////////////////
 	// http://localhost/jlxc_php/index.php/Home/MobileApi/getContactUser
 	// 获取联系人用户

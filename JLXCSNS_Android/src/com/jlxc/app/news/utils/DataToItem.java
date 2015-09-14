@@ -85,6 +85,7 @@ public class DataToItem {
 			item.setUserName(news.getUserName());
 			item.setSendTime(news.getSendTime());
 			item.setUserSchool(news.getUserSchool());
+			item.setSchoolCode(news.getSchoolCode());
 			item.setIsLike(news.getIsLike());
 			item.setUserID(news.getUid());
 			item.setLikeCount(news.getLikeQuantity());
