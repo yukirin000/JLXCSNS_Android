@@ -1,8 +1,6 @@
 package com.jlxc.app.discovery.ui.fragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +8,11 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,12 +31,9 @@ import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
-import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
-import com.jlxc.app.base.ui.view.NoScrollGridView;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.discovery.model.PersonModel;
 import com.jlxc.app.discovery.model.RecommendItemData;
@@ -50,18 +41,13 @@ import com.jlxc.app.discovery.model.RecommendItemData.RecommendInfoItem;
 import com.jlxc.app.discovery.model.RecommendItemData.RecommendPhotoItem;
 import com.jlxc.app.discovery.model.RecommendItemData.RecommendTitleItem;
 import com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity;
-import com.jlxc.app.discovery.ui.avtivity.MipcaCaptureActivity;
 import com.jlxc.app.discovery.ui.avtivity.SameSchoolActivity;
 import com.jlxc.app.discovery.ui.avtivity.SearchUserActivity;
 import com.jlxc.app.discovery.utils.DataToRecommendItem;
 import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
-import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
-import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
-import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -71,7 +57,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DiscoveryFragment extends BaseFragment {
 
-	private final static int SCANNIN_GREQUEST_CODE = 1;
+//	private final static int SCANNIN_GREQUEST_CODE = 1;
 
 	private static final String LOOK_ALL_PHOTOS = "btn_all_photos";
 	// 用户实例
@@ -82,14 +68,14 @@ public class DiscoveryFragment extends BaseFragment {
 	private ImageLoader imgLoader;
 	// 图片配置
 	private DisplayImageOptions options;
-	// 屏幕的尺寸
-	private int screenWidth = 0;
-	// 标头
-	@ViewInject(R.id.tv_discovey_title)
-	private TextView titleTextView;
-	// 扫一扫按钮
-	@ViewInject(R.id.qrcode_scan_btn)
-	private ImageButton qrcodeScanBtn;
+//	// 屏幕的尺寸
+//	private int screenWidth = 0;
+//	// 标头
+//	@ViewInject(R.id.tv_discovey_title)
+//	private TextView titleTextView;
+//	// 扫一扫按钮
+//	@ViewInject(R.id.qrcode_scan_btn)
+//	private ImageButton qrcodeScanBtn;
 	// 搜索框按钮
 	@ViewInject(R.id.tv_discovey_search)
 	private TextView searchTextView;
@@ -115,26 +101,26 @@ public class DiscoveryFragment extends BaseFragment {
 	private boolean isPullDowm = false;
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
-	// 点击图片监听
-	private ImageGridViewItemClick imageItemClickListener;
+//	// 点击图片监听
+//	private ImageGridViewItemClick imageItemClickListener;
 	// 是否正在请求上拉数据
 	private boolean isRequestingUpData = false;
 
 	/**
 	 * 点击事件监听
 	 * */
-	@OnClick(value = { R.id.qrcode_scan_btn, R.id.tv_discovey_search })
+	@OnClick(value = { R.id.tv_discovey_search })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
-		// 扫一扫页面
-		case R.id.qrcode_scan_btn:
-			Intent qrIntent = new Intent();
-			qrIntent.setClass(getActivity(), MipcaCaptureActivity.class);
-			qrIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			getActivity().startActivityForResult(qrIntent,
-					SCANNIN_GREQUEST_CODE);
-
-			break;
+//		// 扫一扫页面
+//		case R.id.qrcode_scan_btn:
+//			Intent qrIntent = new Intent();
+//			qrIntent.setClass(getActivity(), MipcaCaptureActivity.class);
+//			qrIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//			getActivity().startActivityForResult(qrIntent,
+//					SCANNIN_GREQUEST_CODE);
+//
+//			break;
 		// 搜索页面
 		case R.id.tv_discovey_search:
 			Intent searchIntent = new Intent(getActivity(),
@@ -172,7 +158,7 @@ public class DiscoveryFragment extends BaseFragment {
 		userModel = UserManager.getInstance().getUser();
 
 		itemViewClickListener = new ItemViewClick();
-		imageItemClickListener = new ImageGridViewItemClick();
+//		imageItemClickListener = new ImageGridViewItemClick();
 		// 获取显示图片的实例
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
@@ -182,8 +168,8 @@ public class DiscoveryFragment extends BaseFragment {
 				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 
 		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
+//		DisplayMetrics displayMet = getResources().getDisplayMetrics();
+//		screenWidth = displayMet.widthPixels;
 		// 提示信息初始化
 		recommendPrompt.setText("一大波童鞋即将来袭  (•ิ _ •ิ )");
 	}
@@ -421,83 +407,83 @@ public class DiscoveryFragment extends BaseFragment {
 		helper.setOnClickListener(R.id.layout_photos_root_view, listener);
 	}
 
-	/**
-	 * 设置可以左右滑动的相册
-	 * */
-	private void setPhotoItemView2(HelloHaBaseAdapterHelper helper,
-			RecommendItemData item) {
-		RecommendPhotoItem photoListData = (RecommendPhotoItem) item;
-		// 封装数据
-		List<Map<String, String>> photoInfoList = new ArrayList<Map<String, String>>();
-		for (int index = 0; index < photoListData.getPhotoSubUrl().size(); index++) {
-			Map<String, String> tpMap = new HashMap<String, String>();
-			tpMap.put("USER_ID", photoListData.getUserId());
-			tpMap.put("PHOTO_SUB_URL", photoListData.getPhotoSubUrl()
-					.get(index));
-			if (null != photoListData.getPhotoUrl()
-					&& index < photoListData.getPhotoUrl().size()) {
-				tpMap.put("PHOTO_URL", photoListData.getPhotoUrl().get(index));
-			}
-			photoInfoList.add(tpMap);
-		}
-
-		// 照片的尺寸,正方形显示
-		final int photoSize = screenWidth / 3;
-		final int horizontalSpace = 5;
-		HelloHaAdapter<Map<String, String>> newsGVAdapter = new HelloHaAdapter<Map<String, String>>(
-				mContext, R.layout.discovery_new_friend_photos_gridview_item,
-				photoInfoList) {
-			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper,
-					Map<String, String> data) {
-				String subAdd = data.get("PHOTO_SUB_URL");
-				if (subAdd.equals(LOOK_ALL_PHOTOS)) {
-					/********* 添加查看所有照片按钮 *******/
-					ImageView imgView = helper
-							.getView(R.id.iv_recommend_photos_item);
-					LayoutParams laParams = (LayoutParams) imgView
-							.getLayoutParams();
-					laParams.width = photoSize / 2;
-					laParams.height = photoSize;
-					imgView.setLayoutParams(laParams);
-					imgView.setScaleType(ImageView.ScaleType.FIT_XY);
-					helper.setImageResource(R.id.iv_recommend_photos_item,
-							R.drawable.default_avatar);
-				} else {
-					// 设置相册的尺寸的图片大小
-					ImageView imgView = helper
-							.getView(R.id.iv_recommend_photos_item);
-					LayoutParams laParams = (LayoutParams) imgView
-							.getLayoutParams();
-					laParams.width = laParams.height = photoSize
-							- horizontalSpace;
-					imgView.setLayoutParams(laParams);
-					imgLoader.displayImage(subAdd, (ImageView) helper
-							.getView(R.id.iv_recommend_photos_item), options);
-				}
-			}
-		};
-		NoScrollGridView photoGridView = null;
-		// NoScrollGridView photoGridView = (NoScrollGridView) helper
-		// .getView(R.id.gv_recommend_photos);
-		// 设置gridview的尺寸
-		int photoCount = photoInfoList.size();
-		int gridviewWidth = (int) ((photoCount - 1)
-				* (photoSize + horizontalSpace) + photoSize / 2);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-		photoGridView.setColumnWidth(photoSize);
-		photoGridView.setHorizontalSpacing(horizontalSpace);
-		photoGridView.setNumColumns(photoCount);
-		photoGridView.setLayoutParams(params);
-
-		photoGridView.setAdapter(newsGVAdapter);
-
-		/**
-		 * 点击图片事件
-		 * */
-		photoGridView.setOnItemClickListener(imageItemClickListener);
-	}
+//	/**
+//	 * 设置可以左右滑动的相册
+//	 * */
+//	private void setPhotoItemView2(HelloHaBaseAdapterHelper helper,
+//			RecommendItemData item) {
+//		RecommendPhotoItem photoListData = (RecommendPhotoItem) item;
+//		// 封装数据
+//		List<Map<String, String>> photoInfoList = new ArrayList<Map<String, String>>();
+//		for (int index = 0; index < photoListData.getPhotoSubUrl().size(); index++) {
+//			Map<String, String> tpMap = new HashMap<String, String>();
+//			tpMap.put("USER_ID", photoListData.getUserId());
+//			tpMap.put("PHOTO_SUB_URL", photoListData.getPhotoSubUrl()
+//					.get(index));
+//			if (null != photoListData.getPhotoUrl()
+//					&& index < photoListData.getPhotoUrl().size()) {
+//				tpMap.put("PHOTO_URL", photoListData.getPhotoUrl().get(index));
+//			}
+//			photoInfoList.add(tpMap);
+//		}
+//
+//		// 照片的尺寸,正方形显示
+//		final int photoSize = screenWidth / 3;
+//		final int horizontalSpace = 5;
+//		HelloHaAdapter<Map<String, String>> newsGVAdapter = new HelloHaAdapter<Map<String, String>>(
+//				mContext, R.layout.discovery_new_friend_photos_gridview_item,
+//				photoInfoList) {
+//			@Override
+//			protected void convert(HelloHaBaseAdapterHelper helper,
+//					Map<String, String> data) {
+//				String subAdd = data.get("PHOTO_SUB_URL");
+//				if (subAdd.equals(LOOK_ALL_PHOTOS)) {
+//					/********* 添加查看所有照片按钮 *******/
+//					ImageView imgView = helper
+//							.getView(R.id.iv_recommend_photos_item);
+//					LayoutParams laParams = (LayoutParams) imgView
+//							.getLayoutParams();
+//					laParams.width = photoSize / 2;
+//					laParams.height = photoSize;
+//					imgView.setLayoutParams(laParams);
+//					imgView.setScaleType(ImageView.ScaleType.FIT_XY);
+//					helper.setImageResource(R.id.iv_recommend_photos_item,
+//							R.drawable.default_avatar);
+//				} else {
+//					// 设置相册的尺寸的图片大小
+//					ImageView imgView = helper
+//							.getView(R.id.iv_recommend_photos_item);
+//					LayoutParams laParams = (LayoutParams) imgView
+//							.getLayoutParams();
+//					laParams.width = laParams.height = photoSize
+//							- horizontalSpace;
+//					imgView.setLayoutParams(laParams);
+//					imgLoader.displayImage(subAdd, (ImageView) helper
+//							.getView(R.id.iv_recommend_photos_item), options);
+//				}
+//			}
+//		};
+//		NoScrollGridView photoGridView = null;
+//		// NoScrollGridView photoGridView = (NoScrollGridView) helper
+//		// .getView(R.id.gv_recommend_photos);
+//		// 设置gridview的尺寸
+//		int photoCount = photoInfoList.size();
+//		int gridviewWidth = (int) ((photoCount - 1)
+//				* (photoSize + horizontalSpace) + photoSize / 2);
+//		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//				gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
+//		photoGridView.setColumnWidth(photoSize);
+//		photoGridView.setHorizontalSpacing(horizontalSpace);
+//		photoGridView.setNumColumns(photoCount);
+//		photoGridView.setLayoutParams(params);
+//
+//		photoGridView.setAdapter(newsGVAdapter);
+//
+//		/**
+//		 * 点击图片事件
+//		 * */
+//		photoGridView.setOnItemClickListener(imageItemClickListener);
+//	}
 
 	/**
 	 * 获取推荐的人的数据
@@ -724,40 +710,40 @@ public class DiscoveryFragment extends BaseFragment {
 		startActivityWithRight(intentUsrMain);
 	}
 
-	/**
-	 * 跳转查看大图
-	 */
-	private void jumpToBigImage(String intentKey, Object path, int index) {
-		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
-			// 单张图片跳转
-			String pathUrl = (String) path;
-			Intent intentPicDetail = new Intent(mContext,
-					BigImgLookActivity.class);
-			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
-			startActivity(intentPicDetail);
-		} else if (intentKey
-				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
-			// 传递model列表
-			@SuppressWarnings("unchecked")
-			List<ImageModel> mdPath = (List<ImageModel>) path;
-			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
-			// 传递String列表
-			@SuppressWarnings("unchecked")
-			List<String> mdPath = (List<String>) path;
-			Intent intent = new Intent(mContext, BigImgLookActivity.class);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
-					(Serializable) mdPath);
-			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
-			startActivity(intent);
-		} else {
-			LogUtils.e("未传递图片地址");
-		}
-	}
+//	/**
+//	 * 跳转查看大图
+//	 */
+//	private void jumpToBigImage(String intentKey, Object path, int index) {
+//		if (intentKey.equals(BigImgLookActivity.INTENT_KEY)) {
+//			// 单张图片跳转
+//			String pathUrl = (String) path;
+//			Intent intentPicDetail = new Intent(mContext,
+//					BigImgLookActivity.class);
+//			intentPicDetail.putExtra(BigImgLookActivity.INTENT_KEY, pathUrl);
+//			startActivity(intentPicDetail);
+//		} else if (intentKey
+//				.equals(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST)) {
+//			// 传递model列表
+//			@SuppressWarnings("unchecked")
+//			List<ImageModel> mdPath = (List<ImageModel>) path;
+//			Intent intent = new Intent(mContext, BigImgLookActivity.class);
+//			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_MODEl_LIST,
+//					(Serializable) mdPath);
+//			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+//			startActivity(intent);
+//		} else if (intentKey.equals(BigImgLookActivity.INTENT_KEY_IMG_LIST)) {
+//			// 传递String列表
+//			@SuppressWarnings("unchecked")
+//			List<String> mdPath = (List<String>) path;
+//			Intent intent = new Intent(mContext, BigImgLookActivity.class);
+//			intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+//					(Serializable) mdPath);
+//			intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, index);
+//			startActivity(intent);
+//		} else {
+//			LogUtils.e("未传递图片地址");
+//		}
+//	}
 
 	// 添加好友
 	private void addFriend(final IMModel imModel, final int index) {

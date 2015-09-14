@@ -1,45 +1,39 @@
 package com.jlxc.app.group.view;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
-import com.jlxc.app.base.utils.LogUtils;
+import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.group.model.GroupCategoryModel;
-
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Handler;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 左侧group菜单popupwindow
  * */
+@SuppressLint("InflateParams") 
 public class GroupMenuPopWindow extends PopupWindow {
 
+	// 加载图片
+	private DisplayImageOptions options;
 	// 布局
 	private View conentView;
-	// 屏幕宽度
-	private int screenWidth;
-	// 屏幕高度
-	private int screenHeight;
 	// 频道类别list
 	private ListView groupTypeListView;
 	private HelloHaAdapter<GroupCategoryModel> categoryAdapter;
@@ -49,6 +43,13 @@ public class GroupMenuPopWindow extends PopupWindow {
 	private CategorySelectListener listener;
 
 	public GroupMenuPopWindow(final Context context) {
+		
+		// 显示图片的配置
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_back_image)
+				.showImageOnFail(R.drawable.default_back_image).cacheInMemory(true)
+				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+		
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// 获取布局
@@ -63,6 +64,9 @@ public class GroupMenuPopWindow extends PopupWindow {
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					GroupCategoryModel item) {
 				helper.setText(R.id.category_text_view, item.getCategory_name());
+				helper.setText(R.id.category_detail_text_view, item.getCategory_desc());
+				ImageView imageView = helper.getView(R.id.category_cover_image_view);
+				ImageLoader.getInstance().displayImage(JLXCConst.ROOT_PATH + item.getCategory_cover(), imageView, options);
 			}
 		};
 		groupTypeListView.setAdapter(categoryAdapter);
@@ -76,10 +80,6 @@ public class GroupMenuPopWindow extends PopupWindow {
 				}
 			}
 		});
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = context.getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
-		screenHeight = displayMet.heightPixels;
 
 		// 设置PopupWindow的View
 		this.setContentView(conentView);

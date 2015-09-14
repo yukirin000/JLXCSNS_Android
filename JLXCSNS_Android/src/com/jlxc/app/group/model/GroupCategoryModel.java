@@ -7,6 +7,10 @@ public class GroupCategoryModel {
 	private int category_id;
 	//类型名字
 	private String category_name;
+	//类型封面
+	private String category_cover;
+	//类型描述
+	private String category_desc;	
 	
 	public int getCategory_id() {
 		return category_id;
@@ -19,6 +23,18 @@ public class GroupCategoryModel {
 	}
 	public void setCategory_name(String category_name) {
 		this.category_name = category_name;
+	}
+	public String getCategory_cover() {
+		return category_cover;
+	}
+	public void setCategory_cover(String category_cover) {
+		this.category_cover = category_cover;
+	}
+	public String getCategory_desc() {
+		return category_desc;
+	}
+	public void setCategory_desc(String category_desc) {
+		this.category_desc = category_desc;
 	}
 	
 	

@@ -105,6 +105,8 @@ public class DataToItem {
 			item.setNewsID(news.getNewsID());
 			item.setSendTime(news.getSendTime());
 			item.setIsLike(news.getIsLike());
+			item.setTopicID(news.getTopicID());
+			item.setTopicName(news.getTopicName());
 		} catch (Exception e) {
 			LogUtils.e("createOperate error.");
 		}

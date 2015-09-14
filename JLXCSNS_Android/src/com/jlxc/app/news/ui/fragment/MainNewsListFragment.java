@@ -1,13 +1,10 @@
 package com.jlxc.app.news.ui.fragment;
 
-import io.rong.imkit.R.integer;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,23 +13,18 @@ import android.graphics.Bitmap;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnPullEventListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.State;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
@@ -50,6 +42,7 @@ import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.group.ui.activity.CampusHomeActivity;
+import com.jlxc.app.group.ui.activity.GroupNewsActivity;
 import com.jlxc.app.group.ui.activity.MyGroupListActivity;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ImageModel;
@@ -137,6 +130,7 @@ public class MainNewsListFragment extends BaseFragment {
 
 	@Override
 	public void loadLayout(View rootView) {
+		
 	}
 
 	@Override
@@ -523,8 +517,6 @@ public class MainNewsListFragment extends BaseFragment {
 			helper.setVisible(R.id.txt_main_news_content, false);
 		} else {
 			//
-			TextViewHandel customTvHandel = new TextViewHandel(getActivity(),
-					bodyData.getNewsContent());
 			helper.setVisible(R.id.txt_main_news_content, true);
 			TextView contentView = helper.getView(R.id.txt_main_news_content);
 			contentView.setText(bodyData.getNewsContent());
@@ -573,12 +565,21 @@ public class MainNewsListFragment extends BaseFragment {
 			}
 		};
 		// 绑定时间
-		helper.setText(R.id.txt_main_news_publish_time,
-				TimeHandle.getShowTimeFormat(opData.getSendTime()));
+		helper.setText(R.id.txt_main_news_publish_time,TimeHandle.getShowTimeFormat(opData.getSendTime()));
+		//是发到圈子里的东西
+		if (opData.getTopicID() > 0) {
+			helper.setVisible(R.id.txt_topic_name, true);
+			//显示修改
+			helper.setText(R.id.txt_main_news_publish_time,TimeHandle.getShowTimeFormat(opData.getSendTime())+" 发布在");
+			helper.setText(R.id.txt_topic_name, opData.getTopicName());
+		} else {
+			helper.setVisible(R.id.txt_topic_name, false);
+		}
 		// 事件监听绑定
 		helper.setOnClickListener(R.id.btn_mian_reply, listener);
 		helper.setOnClickListener(R.id.btn_news_like, listener);
 		helper.setOnClickListener(R.id.layout_news_operate_rootview, listener);
+		helper.setOnClickListener(R.id.txt_topic_name, listener);
 	}
 
 	/**
@@ -772,14 +773,7 @@ public class MainNewsListFragment extends BaseFragment {
 							null);
 				}else if (R.id.txt_main_news_user_school == viewID) {
 					// 跳转至校园主页
-					Intent intentCampusInfo = new Intent(
-							mContext, CampusHomeActivity.class);
-					//是否是自己学校
-					boolean isOwnSchool = false;
-					if (titleData.getSchoolCode() == UserManager.getInstance().getUser().getSchool_code()) {
-						isOwnSchool = true;
-					}
-					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_OWN_SCHOOL_KEY,isOwnSchool);
+					Intent intentCampusInfo = new Intent(mContext, CampusHomeActivity.class);
 					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_SCHOOL_CODE_KEY, titleData.getSchoolCode());
 					startActivityWithRight(intentCampusInfo);
 				} else {
@@ -796,6 +790,7 @@ public class MainNewsListFragment extends BaseFragment {
 			case R.id.btn_mian_reply:
 			case R.id.btn_news_like:
 			case R.id.layout_news_operate_rootview:
+			case R.id.txt_topic_name:
 
 				final OperateItem operateData = (OperateItem) newsAdapter
 						.getItem(postion);
@@ -807,12 +802,23 @@ public class MainNewsListFragment extends BaseFragment {
 					// 跳转至评论页面并打开评论框
 					jumpToNewsDetail(operateData,
 							NewsConstants.KEY_BOARD_COMMENT, null);
-				} else {
+				} else if (R.id.btn_news_like == viewID) {
 					// 点赞操作
 					likeOperate(postion, view, operateData);
+				} else if (R.id.txt_topic_name == viewID) {
+					//确认有圈子 
+					if (operateData.getTopicID() > 0) {
+						// 跳转至圈子内容部分
+						Intent intentToGroupNews = new Intent();
+						intentToGroupNews.setClass(getActivity(),GroupNewsActivity.class);
+						// 传递名称
+						intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_NAME, operateData.getTopicName());
+						// 传递ID
+						intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID, operateData.getTopicID());
+						startActivityWithRight(intentToGroupNews);
+					}
 				}
 				break;
-
 			case R.id.txt_comment_nameA:
 			case R.id.txt_comment_nameC:
 			case R.id.txt_comment_nameB:

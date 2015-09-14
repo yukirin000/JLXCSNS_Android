@@ -162,6 +162,7 @@ public class BigImgLookActivity extends BaseActivity {
 			// 传递图片地址list
 			imageUrlList = (List<String>) intent
 					.getSerializableExtra(INTENT_KEY_IMG_LIST);
+			LogUtils.i(imageUrlList.toString(), 1);
 			imageSubUrlList = imageUrlList;
 			if (intent.hasExtra(INTENT_KEY_INDEX)) {
 				currentPage = intent.getIntExtra(INTENT_KEY_INDEX, 0);

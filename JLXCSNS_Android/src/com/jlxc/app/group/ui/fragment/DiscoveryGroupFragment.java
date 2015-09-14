@@ -3,7 +3,6 @@ package com.jlxc.app.group.ui.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,8 +11,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -31,13 +28,12 @@ import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.utils.JLXCConst;
-import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.group.model.GroupCategoryModel;
 import com.jlxc.app.group.model.GroupTopicModel;
 import com.jlxc.app.group.ui.activity.CreateGroupActivity;
-import com.jlxc.app.group.ui.activity.MoreGroupListActivity;
 import com.jlxc.app.group.ui.activity.GroupNewsActivity;
+import com.jlxc.app.group.ui.activity.MoreGroupListActivity;
 import com.jlxc.app.group.view.GroupMenuPopWindow;
 import com.jlxc.app.group.view.GroupMenuPopWindow.CategorySelectListener;
 import com.jlxc.app.group.view.LoopViewPager;
@@ -173,6 +169,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 
 								GroupCategoryModel allCategoryModel = new GroupCategoryModel();
 								allCategoryModel.setCategory_id(0);
+								allCategoryModel.setCategory_desc("");
 								allCategoryModel.setCategory_name("全部");
 								categoryModels.add(0, allCategoryModel);
 								// 模型拼装
@@ -180,10 +177,10 @@ public class DiscoveryGroupFragment extends BaseFragment {
 									JSONObject object = categoryArray
 											.getJSONObject(i);
 									GroupCategoryModel model = new GroupCategoryModel();
-									model.setCategory_id(object
-											.getIntValue("category_id"));
-									model.setCategory_name(object
-											.getString("category_name"));
+									model.setCategory_id(object.getIntValue("category_id"));
+									model.setCategory_name(object.getString("category_name"));
+									model.setCategory_cover(object.getString("category_cover"));
+									model.setCategory_desc(object.getString("category_desc"));
 									categoryModels.add(model);
 								}
 

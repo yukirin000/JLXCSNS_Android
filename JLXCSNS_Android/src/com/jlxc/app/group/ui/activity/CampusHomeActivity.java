@@ -5,26 +5,14 @@ import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
-import com.jlxc.app.base.adapter.HelloHaAdapter;
-import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
@@ -35,10 +23,10 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.group.ui.fragment.CampusNewsFragment;
 import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
 import com.jlxc.app.news.ui.activity.CampusNewsListActivity;
-import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -46,8 +34,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CampusHomeActivity extends BaseActivityWithTopBar {
 	
-	//是否是本校学生
-	public static final String INTENT_OWN_SCHOOL_KEY = "is_Student_view_campus";
 	//学校ID
 	public static final String INTENT_SCHOOL_CODE_KEY = "schoolCode";
 	// 学校的人
@@ -83,14 +69,12 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 	// 展示在外面的第三个人
 	@ViewInject(R.id.img_campus_home_mumber_C)
 	private ImageView OutsidePersonC;
+	// 学校代码
+	private String schoolCode;
 
 	@Override
 	public int setLayoutId() {
 		return R.layout.activity_campus_home_layout;
-	}
-
-	@Override
-	public void loadLayout(View rootView) {
 	}
 
 	@Override
@@ -105,7 +89,7 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-
+		setBarText("学校首页!");
 		// 图片加载初始化
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
@@ -116,14 +100,14 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 
 		// 获取是否是本校学生浏览
 		Intent intent = this.getIntent();
-		if (intent.hasExtra(INTENT_OWN_SCHOOL_KEY)) {
-			if (intent.getBooleanExtra(INTENT_OWN_SCHOOL_KEY, false)) {
-				// 本校学生查看则把动态模块隐藏
-//				campusNewsLayout.setVisibility(View.GONE);
-				unreadNewsTextView.setVisibility(View.GONE);
-			}
+		if (intent.hasExtra(INTENT_SCHOOL_CODE_KEY)) {
+			schoolCode = intent.getStringExtra(INTENT_SCHOOL_CODE_KEY);
 		} else {
 			LogUtils.e("未传递查看类型");
+		}
+		//处理学校
+		if (null == schoolCode || schoolCode.length() < 1) {
+			schoolCode = UserManager.getInstance().getUser().getSchool_code();
 		}
 		personList = new ArrayList<CampusPersonModel>();
 	}
@@ -133,15 +117,19 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 	 * */
 	private void schoolHomeData(JSONObject homeJsonObject) {
 
-		// 学校名字
-		schoolNameTextView.setText(UserManager.getInstance().getUser()
-				.getSchool());
+		// 学校默认自己学校
+		schoolNameTextView.setText(UserManager.getInstance().getUser().getSchool());
+		
 		// 学校位置
 		if (homeJsonObject.containsKey("school")) {
+			//位置
 			JSONObject schoolObject = homeJsonObject.getJSONObject("school");
-			String locationString = schoolObject.getString("city_name") + " ▪ "
-					+ schoolObject.getString("district_name");
+			String locationString = schoolObject.getString("city_name") + " ▪ "+ schoolObject.getString("district_name");
 			schoolLocationTextView.setText(locationString);
+			//名字
+			if (schoolObject.containsKey("name")) {
+				schoolNameTextView.setText(schoolObject.getString("name"));	
+			}
 		}
 		if (homeJsonObject.containsKey("student_count")) {
 			// 学校人数
@@ -159,6 +147,10 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 				unreadNewsTextView.setVisibility(View.VISIBLE);
 				unreadNewsTextView.setText(unreadCount + "");
 			} else {
+				unreadNewsTextView.setVisibility(View.GONE);
+			}
+			// 非本校学生查看则把动态模块隐藏
+			if (null != schoolCode && !schoolCode.equals(UserManager.getInstance().getUser().getSchool_code())) {
 				unreadNewsTextView.setVisibility(View.GONE);
 			}
 		}
@@ -220,8 +212,7 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 				// 跳转到所有校友列表页面
 				Intent personIntent = new Intent(CampusHomeActivity.this,
 						CampusAllPersonActivity.class);
-				personIntent.putExtra("School_Code", UserManager.getInstance()
-						.getUser().getSchool_code());
+				personIntent.putExtra(CampusAllPersonActivity.INTENT_SCHOOL_CODE_KEY, schoolCode);
 				startActivityWithRight(personIntent);
 			}
 		});
@@ -232,17 +223,8 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 			public void onClick(View arg0) {
 				// 跳转至校园动态页面
 				Intent intentToGroupNews = new Intent();
-				intentToGroupNews.setClass(CampusHomeActivity.this,
-						GroupNewsActivity.class);
-//				// 传递是否是圈子还是校园
-//				intentToGroupNews.putExtra(
-//						GroupNewsActivity.INTENT_KEY_GROUP_TYPE, true);
-//				// 传递是查看着的身份,不是学生
-//				intentToGroupNews.putExtra(
-//						GroupNewsActivity.INTENT_KEY_VISITOR_TYPE, false);
-//				// 传递名称
-//				intentToGroupNews.putExtra(
-//						GroupNewsActivity.INTENT_KEY_GROUP_NAME, "知乎学园");
+				intentToGroupNews.setClass(CampusHomeActivity.this,CampusNewsListActivity.class);
+				intentToGroupNews.putExtra(CampusNewsFragment.INTENT_SCHOOL_CODE_KEY, schoolCode);
 				startActivityWithRight(intentToGroupNews);
 			}
 		});
@@ -265,7 +247,7 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 		String path = JLXCConst.SCHOOL_HOME_DATA + "?" + "user_id="
 				+ UserManager.getInstance().getUser().getUid()
 				+ "&school_code="
-				+ UserManager.getInstance().getUser().getSchool_code()
+				+ schoolCode
 				+ "&last_time=" + lastRefeshTime;
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {

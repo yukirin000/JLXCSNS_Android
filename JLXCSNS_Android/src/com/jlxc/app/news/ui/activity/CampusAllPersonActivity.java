@@ -47,6 +47,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 
+	public static final String INTENT_SCHOOL_CODE_KEY = "schoolCode";
 	// 学校的人gridview
 	@ViewInject(R.id.gv_school_all_person)
 	private GridView personListGridView;
@@ -146,7 +147,7 @@ public class CampusAllPersonActivity extends BaseActivityWithTopBar {
 		// 获取学校代码
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
-		schoolCode = bundle.getString("School_Code");
+		schoolCode = bundle.getString(INTENT_SCHOOL_CODE_KEY);
 		// 获取实例
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置

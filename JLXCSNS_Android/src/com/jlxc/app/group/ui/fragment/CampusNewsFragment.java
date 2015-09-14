@@ -70,6 +70,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CampusNewsFragment extends BaseFragment {
 
+	//学校ID
+	public static final String INTENT_SCHOOL_CODE_KEY = "schoolCode";
 	// 动态listview
 	@ViewInject(R.id.campus_listview)
 	private PullToRefreshListView campusListView;
@@ -103,6 +105,8 @@ public class CampusNewsFragment extends BaseFragment {
 	private LikeImageListView currentLikeListControl;
 	// 是否是最后一条数据
 	private boolean isLast = false;
+	// 学校代码
+	private String schoolCode;
 
 	@Override
 	public int setLayoutId() {
@@ -120,13 +124,12 @@ public class CampusNewsFragment extends BaseFragment {
 		multiItemTypeSet();
 		newsListViewSet();
 		// 获取上次缓存的数据
-		setLastData(UserManager.getInstance().getUser().getUid(), UserManager
-				.getInstance().getUser().getSchool_code());
+//		setLastData(UserManager.getInstance().getUser().getUid(), UserManager
+//				.getInstance().getUser().getSchool_code());
 		// 进入本页面时请求数据
 		getCampusData(
 				String.valueOf(UserManager.getInstance().getUser().getUid()),
-				String.valueOf(pageIndex), UserManager.getInstance().getUser()
-						.getSchool_code(), "");
+				String.valueOf(pageIndex),  "");
 	}
 
 	/**
@@ -134,6 +137,17 @@ public class CampusNewsFragment extends BaseFragment {
 	 * */
 	private void init() {
 		mContext = this.getActivity().getApplicationContext();
+		
+		Intent intent = getActivity().getIntent();
+		if (intent.hasExtra(INTENT_SCHOOL_CODE_KEY)) {
+			schoolCode = intent.getStringExtra(INTENT_SCHOOL_CODE_KEY);
+		} else {
+			LogUtils.e("未传递查看类型");
+		}
+		//处理学校
+		if (null == schoolCode || schoolCode.length() < 1) {
+			schoolCode = UserManager.getInstance().getUser().getSchool_code();
+		}
 
 		itemViewClickListener = new ItemViewClick();
 		newsOPerate = new NewsOperate<SchoolItemModel>(mContext);
@@ -163,34 +177,34 @@ public class CampusNewsFragment extends BaseFragment {
 	/***
 	 * 上次缓存的数据
 	 * */
-	@SuppressWarnings("unchecked")
-	private void setLastData(int userID, String schoolCode) {
-		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
-				+ "&page=" + 1 + "&school_code=" + schoolCode + "&frist_time=";
-		try {
-			JSONObject JObject = HttpCacheUtils.getHttpCache(path);
-			if (null != JObject) {
-				int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
-				if (status == JLXCConst.STATUS_SUCCESS) {
-					JSONObject jResult = JObject
-							.getJSONObject(JLXCConst.HTTP_RESULT);
-					if (null != jResult) {
-						// 获取数据列表
-						List<JSONObject> JNewsList = (List<JSONObject>) jResult
-								.get(JLXCConst.HTTP_LIST);
-						List<JSONObject> JPersonList = (List<JSONObject>) jResult
-								.get("info");
-
-						if (null != JNewsList && null != JPersonList) {
-							JsonToItemData(JNewsList, JPersonList);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			LogUtils.e("记载缓存出错");
-		}
-	}
+//	@SuppressWarnings("unchecked")
+//	private void setLastData(int userID, String schoolCode) {
+//		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
+//				+ "&page=" + 1 + "&school_code=" + schoolCode + "&frist_time=";
+//		try {
+//			JSONObject JObject = HttpCacheUtils.getHttpCache(path);
+//			if (null != JObject) {
+//				int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
+//				if (status == JLXCConst.STATUS_SUCCESS) {
+//					JSONObject jResult = JObject
+//							.getJSONObject(JLXCConst.HTTP_RESULT);
+//					if (null != jResult) {
+//						// 获取数据列表
+//						List<JSONObject> JNewsList = (List<JSONObject>) jResult
+//								.get(JLXCConst.HTTP_LIST);
+//						List<JSONObject> JPersonList = (List<JSONObject>) jResult
+//								.get("info");
+//
+//						if (null != JNewsList && null != JPersonList) {
+//							JsonToItemData(JNewsList, JPersonList);
+//						}
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//			LogUtils.e("记载缓存出错");
+//		}
+//	}
 
 	/**
 	 * listView 支持多种item的设置
@@ -269,9 +283,7 @@ public class CampusNewsFragment extends BaseFragment {
 					isPullDowm = true;
 					getCampusData(
 							String.valueOf(UserManager.getInstance().getUser()
-									.getUid()), String.valueOf(pageIndex),
-							UserManager.getInstance().getUser()
-									.getSchool_code(), "");
+									.getUid()), String.valueOf(pageIndex), "");
 				}
 			}
 
@@ -283,9 +295,7 @@ public class CampusNewsFragment extends BaseFragment {
 					isPullDowm = false;
 					getCampusData(
 							String.valueOf(UserManager.getInstance().getUser()
-									.getUid()), String.valueOf(pageIndex),
-							UserManager.getInstance().getUser()
-									.getSchool_code(), latestTimesTamp);
+									.getUid()), String.valueOf(pageIndex), latestTimesTamp);
 				}
 			}
 		});
@@ -496,8 +506,7 @@ public class CampusNewsFragment extends BaseFragment {
 	/**
 	 * 获取学校动态的数据
 	 * */
-	private void getCampusData(String userID, String desPage,
-			String schoolCode, String lastTime) {
+	private void getCampusData(String userID, String desPage, String lastTime) {
 		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
 				+ "&page=" + desPage + "&school_code=" + schoolCode
 				+ "&frist_time=" + lastTime;
@@ -583,16 +592,17 @@ public class CampusNewsFragment extends BaseFragment {
 			itemDataList = NewsToSchoolItem.newsToItem(newsList);
 			newsAdapter.replaceAll(itemDataList);
 
-			// 如果有内容 取第一条消息的时间 作为本地对比时间
-			if (this.newsList.size() > 0) {
-				NewsModel news = this.newsList.get(0);
-				// 未读新消息布局
-				// 重置未读消息最后一次时间
-				ConfigUtils.saveConfig(
-						ConfigUtils.LAST_REFRESH__SCHOOL_HOME_NEWS_DATE,
-						news.getTimesTamp());
+			// 如果有内容 取第一条消息的时间 作为本地对比时间 只有自己的学校才更新
+			if (null != schoolCode && schoolCode.equals(UserManager.getInstance().getUser().getSchool_code())) {
+				if (this.newsList.size() > 0) {
+					NewsModel news = this.newsList.get(0);
+					// 未读新消息布局
+					// 重置未读消息最后一次时间
+					ConfigUtils.saveConfig(
+							ConfigUtils.LAST_REFRESH__SCHOOL_HOME_NEWS_DATE,
+							news.getTimesTamp());
+				}	
 			}
-
 		} else {
 			// 加载更多动态信息
 			this.newsList.addAll(newsList);
@@ -877,9 +887,7 @@ public class CampusNewsFragment extends BaseFragment {
 						getCampusData(
 								String.valueOf(UserManager.getInstance()
 										.getUser().getUid()),
-								String.valueOf(pageIndex), UserManager
-										.getInstance().getUser()
-										.getSchool_code(), "");
+								String.valueOf(pageIndex), "");
 					}
 				} else if (resultIntent
 						.hasExtra(NewsConstants.NEWS_LISTVIEW_REFRESH)) {

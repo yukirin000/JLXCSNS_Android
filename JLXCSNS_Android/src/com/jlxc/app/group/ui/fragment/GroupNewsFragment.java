@@ -590,12 +590,6 @@ public class GroupNewsFragment extends BaseFragment {
 					// 跳转至校园主页
 					Intent intentCampusInfo = new Intent(
 							mContext, CampusHomeActivity.class);
-					//是否是自己学校
-					boolean isOwnSchool = false;					
-					if (titleData.getSchoolCode() == UserManager.getInstance().getUser().getSchool_code()) {
-						isOwnSchool = true;
-					}
-					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_OWN_SCHOOL_KEY,isOwnSchool);
 					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_SCHOOL_CODE_KEY, titleData.getSchoolCode());
 					startActivityWithRight(intentCampusInfo);
 				} else {
