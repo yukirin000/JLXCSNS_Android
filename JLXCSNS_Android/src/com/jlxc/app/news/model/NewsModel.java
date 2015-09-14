@@ -43,6 +43,10 @@ public class NewsModel implements Serializable {
 	private String likeQuantity;
 	// 发布的时间
 	private String sendTime;
+	// 发布到的圈子（为0时不存在）
+	private int topicID;	
+	// 发布到的圈子名
+	private String topicName;
 	// 添加的图片列表
 	private List<ImageModel> imageNewsList = new ArrayList<ImageModel>();
 	// 用户是否点赞
@@ -104,7 +108,13 @@ public class NewsModel implements Serializable {
 		if (object.containsKey("is_like")) {
 			setIsLike(object.getString("is_like"));
 		}
-
+		if (object.containsKey("topic_id")) {
+			setTopicID(object.getIntValue("topic_id"));
+		}
+		if (object.containsKey("topic_name")) {
+			setTopicName(object.getString("topic_name"));
+		}
+		
 		// 图片的转换
 		if (object.containsKey("images")) {
 			List<JSONObject> JImageObj = (List<JSONObject>) object
@@ -327,4 +337,21 @@ public class NewsModel implements Serializable {
 	public String getTypeContent() {
 		return TYPE.get("content");
 	}
+
+	public int getTopicID() {
+		return topicID;
+	}
+
+	public void setTopicID(int topicID) {
+		this.topicID = topicID;
+	}
+
+	public String getTopicName() {
+		return topicName;
+	}
+
+	public void setTopicName(String topicName) {
+		this.topicName = topicName;
+	}
+	
 }

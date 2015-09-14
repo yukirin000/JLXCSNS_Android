@@ -8,8 +8,8 @@
     <include layout="@layout/layout_title_bar" />
 
     <fragment 
-        android:id="@+id/fragmentCampus"
-        android:name="com.jlxc.app.group.ui.fragment.CampusNewsFragment"
+        android:id="@+id/fragmentDiscovery"
+        android:name="com.jlxc.app.discovery.ui.fragment.DiscoveryFragment"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent" />
 

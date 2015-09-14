@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
+<!--     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_height_size"
         android:background="@color/main_yellow" >
@@ -31,6 +31,7 @@
             android:orientation="vertical" >
 
             <ImageButton
+                android:visibility="gone"
                 android:id="@+id/qrcode_scan_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -39,7 +40,7 @@
                 android:padding="@dimen/title_interior_size_mediu"
                 android:src="@drawable/qrcode_scan_selector" />
         </LinearLayout>
-    </FrameLayout>
+    </FrameLayout> -->
 
     <LinearLayout
         android:layout_width="match_parent"

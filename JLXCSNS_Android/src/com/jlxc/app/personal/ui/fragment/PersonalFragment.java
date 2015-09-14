@@ -1,10 +1,11 @@
-package com.jlxc.app.personal.ui.fragment;
+package com.jlxc.app.personal.ui.fragment;	
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -34,7 +35,6 @@ import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,13 +42,12 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
-import com.jlxc.app.base.adapter.HelloHaAdapter;
-import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
+import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.CustomSelectPhotoDialog;
 import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity;
@@ -57,16 +56,17 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.discovery.ui.avtivity.DiscoveryHomeActivity;
 import com.jlxc.app.login.ui.activity.SelectSchoolActivity;
 import com.jlxc.app.personal.model.CityModel;
 import com.jlxc.app.personal.model.ProvinceModel;
-import com.jlxc.app.personal.ui.activity.MyCardActivity;
 import com.jlxc.app.personal.ui.activity.MyFansListActivity;
 import com.jlxc.app.personal.ui.activity.MyFriendListActivity;
 import com.jlxc.app.personal.ui.activity.MyNewsListActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSettingActivity;
 import com.jlxc.app.personal.ui.activity.PersonalSignActivity;
 import com.jlxc.app.personal.ui.view.PersonalPictureScrollView;
+import com.jlxc.app.personal.ui.view.PersonalPictureScrollView.ScrollImageBrowseListener;
 import com.jlxc.app.personal.ui.view.cityView.OnWheelChangedListener;
 import com.jlxc.app.personal.ui.view.cityView.WheelView;
 import com.jlxc.app.personal.ui.view.cityView.adapters.ArrayWheelAdapter;
@@ -166,8 +166,10 @@ public class PersonalFragment extends BaseFragment implements
 	private UserModel userModel;
 	// 新图片缓存工具 头像
 	DisplayImageOptions headImageOptions;
-	// 新图片缓存工具 北京
+	// 新图片缓存工具 背景
 	DisplayImageOptions backImageOptions;
+	// 前10张图片数组
+	private List<String> newsImageList = new ArrayList<String>();
 
 	//	// 我的相片adapter
 	//	private HelloHaAdapter<String> myImageAdapter;
@@ -262,19 +264,9 @@ public class PersonalFragment extends BaseFragment implements
 						public void onSelectGallery() {
 							// 相册
 							tmpImageName = JLXCUtils.getPhotoFileName() + "";
-							// Intent intentAlbum = new Intent(
-							// Intent.ACTION_GET_CONTENT);
-							// intentAlbum.setType(IMAGE_UNSPECIFIED);
-							// startActivityForResult(intentAlbum,
-							// ALBUM_SELECT);
-
-							// 相册
 							Intent intentAlbum = new Intent(getActivity(),
 									GalleyActivity.class);
-							intentAlbum
-									.putExtra(
-											GalleyActivity.INTENT_KEY_SELECTED_COUNT,
-											0);
+							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
 							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE,
 									true);
 							startActivityForResult(intentAlbum, ALBUM_SELECT);
@@ -297,73 +289,9 @@ public class PersonalFragment extends BaseFragment implements
 						}
 
 					});
-			// ///////////////////////
-			// Builder headAlertDialog = new AlertDialog.Builder(getActivity())
-			// .setNegativeButton("取消", null).setTitle("修改头像");
-			// String[] headStrings = new String[] { "拍照", "相册" };
-			// headAlertDialog.setItems(headStrings, new OnClickListener() {
-			// @Override
-			// public void onClick(DialogInterface dialog, int which) {
-			//
-			// // 设置为头像
-			// imageType = HEAD_IMAGE;
-			// if (which == 0) {
-			// // 相机
-			// Intent intentCamera = new Intent(
-			// MediaStore.ACTION_IMAGE_CAPTURE);
-			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
-			// File tmpFile = new File(FileUtil.TEMP_PATH
-			// + tmpImageName);
-			// intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
-			// Uri.fromFile(tmpFile));
-			// startActivityForResult(intentCamera, TAKE_PHOTO);
-			// } else {
-			// // 相册
-			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
-			// Intent intentAlbum = new Intent(
-			// Intent.ACTION_GET_CONTENT);
-			// intentAlbum.setType(IMAGE_UNSPECIFIED);
-			// startActivityForResult(intentAlbum, ALBUM_SELECT);
-			//
-			// }
-			// }
-			// });
-			// headAlertDialog.show();
 			break;
 		// 背景点击
 		case R.id.back_click_layout:
-			// 拍照
-			// dialog
-			// Builder backAlertDialog = new AlertDialog.Builder(getActivity())
-			// .setNegativeButton("取消", null).setTitle("修改背景");
-			// String[] backStrings = new String[] { "拍照", "相册" };
-			// backAlertDialog.setItems(backStrings, new OnClickListener() {
-			// @Override
-			// public void onClick(DialogInterface dialog, int which) {
-			//
-			// // 设置为头像
-			// imageType = BACK_IMAGE;
-			// if (which == 0) {
-			// // 相机
-			// Intent intentCamera = new Intent(
-			// MediaStore.ACTION_IMAGE_CAPTURE);
-			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
-			// File tmpFile = new File(FileUtil.TEMP_PATH
-			// + tmpImageName);
-			// intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
-			// Uri.fromFile(tmpFile));
-			// startActivityForResult(intentCamera, TAKE_PHOTO);
-			// } else {
-			// // 相册
-			// tmpImageName = JLXCUtils.getPhotoFileName() + "";
-			// Intent intentAlbum = new Intent(
-			// Intent.ACTION_GET_CONTENT);
-			// intentAlbum.setType(IMAGE_UNSPECIFIED);
-			// startActivityForResult(intentAlbum, ALBUM_SELECT);
-			// }
-			// }
-			// });
-			// backAlertDialog.show();
 			// 设置为背景
 			imageType = BACK_IMAGE;
 			final CustomSelectPhotoDialog selectBackDialog = new CustomSelectPhotoDialog(
@@ -376,12 +304,6 @@ public class PersonalFragment extends BaseFragment implements
 						public void onSelectGallery() {
 							// 相册
 							tmpImageName = JLXCUtils.getPhotoFileName() + "";
-							// Intent intentAlbum = new Intent(
-							// Intent.ACTION_GET_CONTENT);
-							// intentAlbum.setType(IMAGE_UNSPECIFIED);
-							// startActivityForResult(intentAlbum,
-							// ALBUM_SELECT);
-							// 相册
 							Intent intentAlbum = new Intent(getActivity(),
 									GalleyActivity.class);
 							intentAlbum
@@ -444,9 +366,12 @@ public class PersonalFragment extends BaseFragment implements
 			startActivityWithRight(setIntent);
 			break;
 		case R.id.card_Button:
-			// 名片点击
-			Intent cardIntent = new Intent(getActivity(), MyCardActivity.class);
-			startActivityWithRight(cardIntent);
+//			// 名片点击
+//			Intent cardIntent = new Intent(getActivity(), MyCardActivity.class);
+//			startActivityWithRight(cardIntent);
+			//发现入口
+			Intent discoverIntent = new Intent(getActivity(), DiscoveryHomeActivity.class);
+			startActivityWithRight(discoverIntent);
 			break;
 		default:
 			break;
@@ -476,53 +401,6 @@ public class PersonalFragment extends BaseFragment implements
 				.cacheInMemory(true).cacheOnDisk(true)
 				.bitmapConfig(Bitmap.Config.RGB_565).build();
 
-		// 初始化adapter
-//		myImageAdapter = initAdapter(R.layout.my_image_adapter);
-		// visitAdapter = initAdapter(R.layout.attrament_image);
-		// friendsAdapter = new HelloHaAdapter<IMModel>(getActivity(),
-		// R.layout.attrament_image) {
-		// @Override
-		// protected void convert(HelloHaBaseAdapterHelper helper, IMModel item)
-		// {
-		//
-		// ImageView imageView = helper.getView(R.id.image_attrament);
-		// if (null != item.getAvatarPath() && item.getAvatarPath().length() >
-		// 0) {
-		// ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR +
-		// item.getAvatarPath(), imageView, headImageOptions);
-		// }else {
-		// imageView.setImageResource(R.drawable.default_avatar);
-		// }
-		// }
-		// };
-
-//		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-//		int screenWidth = displayMet.widthPixels;
-//		LinearLayout.LayoutParams layoutParams = (android.widget.LinearLayout.LayoutParams) myImageGridView
-//				.getLayoutParams();
-//		float ratio = layoutParams.leftMargin / 10.0f;
-//		// itemWidth
-//		int columnWidth = (int) (ratio * 100);
-//		// 宽度
-//		int width = screenWidth - 2 * layoutParams.leftMargin;
-//		// int height = layoutParams.height;
-//		LogUtils.i(ratio + " " + layoutParams.leftMargin + " "
-//				+ (columnWidth * 3 + 50) + " " + width, 1);
-//		if ((columnWidth * 3 + 50) < width) {
-//			layoutParams.width = columnWidth * 3 + 50;
-//		} else {
-//			myImageGridView.setHorizontalSpacing(10);
-//		}
-
-		// 设置adapter
-//		myImageGridView.setAdapter(myImageAdapter);
-		// visitGridView.setAdapter(visitAdapter);
-		// friendsGridView.setAdapter(friendsAdapter);
-		// 不能点击
-//		myImageGridView.setEnabled(false);
-		// visitGridView.setEnabled(false);
-		// friendsGridView.setEnabled(false);
-
 		userModel = UserManager.getInstance().getUser();
 
 		// 签名因为要跳到领一个页面 所以在只初始化一次
@@ -532,36 +410,26 @@ public class PersonalFragment extends BaseFragment implements
 			signTextView.setText(userModel.getSign());
 		}
 
-		// 设置照片和背景图 取消
-		// bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-		// getActivity(), R.drawable.default_avatar, true, true);
-		// // 背景 2015-07-02/191435808476.png
-		// backBitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(
-		// getActivity(), R.drawable.default_back_image, true, true);
-
-		// 无缓存bitmap
-		// noCacheBitmapUtils =
-		// BitmapManager.getInstance().getHeadPicBitmapUtils(getActivity(),
-		// R.drawable.ic_launcher, false, false);
 		// 解析省份城市xml
 		initProvinceDatas();
-
 		cityBuilder = new AlertDialog.Builder(getActivity(),
 				AlertDialog.THEME_HOLO_LIGHT);
-		// cityBuilder.setPositiveButton("确定",
-		// new DialogInterface.OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// cityTextView.setText(mCurrentProviceName
-		// + mCurrentCityName);
-		//
-		// uploadInformation("city", mCurrentProviceName + ","
-		// + mCurrentCityName);
-		// }
-		// });
-
-		// //设置点击
-		// setOnClickEvent();
+		//设置newsScroll点击
+		myImageScrollView.setBrowseListener(new ScrollImageBrowseListener() {
+			@Override
+			public void clickImage(int positon) {
+				if (newsImageList.size() > 0) {
+					List<String> newsImages = new ArrayList<String>();
+					for (String path : newsImageList) {
+						newsImages.add(JLXCConst.ATTACHMENT_ADDR + path);
+					}
+					Intent intent = new Intent(getActivity(), BigImgLookActivity.class);
+					intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,(Serializable) newsImages);
+					intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, positon);
+					startActivity(intent);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -571,13 +439,8 @@ public class PersonalFragment extends BaseFragment implements
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		// 头像 2015-07-07/01436273216_sub.jpg
-		// bitmapUtils.display(headImageView, JLXCConst.ATTACHMENT_ADDR
-		// + userModel.getHead_image());
-		// backBitmapUtils.display(backImageView, JLXCConst.ATTACHMENT_ADDR
-		// + userModel.getBackground_image());
 		if (null != userModel.getHead_image()
 				&& userModel.getHead_image().length() > 0) {
 			ImageLoader.getInstance().displayImage(
@@ -606,12 +469,6 @@ public class PersonalFragment extends BaseFragment implements
 			// 顶部姓名
 			topNameTextView.setText(userModel.getName());
 		}
-		// //签名 签名不能放在这里更新
-		// if (null == userModel.getSign() || "".equals(userModel.getSign())) {
-		// signTextView.setText("暂无");
-		// }else {
-		// signTextView.setText(userModel.getSign());
-		// }
 		// 生日
 		if (null == userModel.getBirthday()
 				|| "".equals(userModel.getBirthday())) {
@@ -629,8 +486,6 @@ public class PersonalFragment extends BaseFragment implements
 		}
 		// 学校字符串
 		String schoolString = "";
-		// 城市字符串
-		// String cityString = "";
 		// 学校
 		if (null == userModel.getSchool() || "".equals(userModel.getSchool())) {
 			schoolTextView.setText("暂无");
@@ -643,16 +498,7 @@ public class PersonalFragment extends BaseFragment implements
 			cityTextView.setText("暂无");
 		} else {
 			cityTextView.setText(userModel.getCity());
-			// cityString = userModel.getCity();
 		}
-
-		// 顶部学校
-		// String topSchoolString = "";
-		// if (cityString.length()>0) {
-		// topSchoolString = cityString+","+schoolString;
-		// }else {
-		// topSchoolString = schoolString;
-		// }
 
 		// 顶部学校tv 暂时只有学校
 		topSchoolTextView.setText(schoolString);
@@ -662,22 +508,6 @@ public class PersonalFragment extends BaseFragment implements
 //		getVisitImages();
 		getFansCount();
 		getFriendsImages();
-		// //好友
-		// List<IMModel> listModels = IMModel.findHasAddAll();
-		// List<IMModel> userModels = new ArrayList<IMModel>();
-		// //取前三个
-		// for (int i = 0; i < listModels.size(); i++) {
-		// if (i==3) {
-		// break;
-		// }
-		// userModels.add(listModels.get(i));
-		// }
-		// friendsAdapter.replaceAll(userModels);
-		// if (listModels.size() > 0) {
-		// friendsCountTextView.setText(""+listModels.size());
-		// }else {
-		// friendsCountTextView.setText("");
-		// }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -727,20 +557,7 @@ public class PersonalFragment extends BaseFragment implements
 							break;
 						}
 
-						// startPhotoZoom(data.getData());
-
 					} else {
-						// String path = getRealPathFromURI(data.getData());
-						// // 图片压缩
-						// int[] screenSize1 = getScreenSize();
-						// if (FileUtil.tempToLocalPath(path, tmpImageName,
-						// screenSize1[0], screenSize1[1])) {
-						// // bitmapUtils.display(backImageView,
-						// // FileUtil.BIG_IMAGE_PATH + tmpImageName);
-						// // filterImage(FileUtil.BIG_IMAGE_PATH +
-						// tmpImageName);
-						// uploadImage(FileUtil.BIG_IMAGE_PATH + tmpImageName);
-						// }
 
 						List<String> resultList = (List<String>) data
 								.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
@@ -763,49 +580,15 @@ public class PersonalFragment extends BaseFragment implements
 				break;
 			case PHOTO_RESOULT:// 返回的结果
 				if (data != null) {
-
 					if (null != tmpImageName) {
-						// bitmapUtils.display(headImageView,FileUtil.HEAD_PIC_PATH
-						// + tmpImageName);
-
 						// 删除临时文件
 						File file = new File(FileUtil.TEMP_PATH + tmpImageName);
 						if (file.exists()) {
 							file.delete();
 						}
-						// filterImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
 						uploadImage(FileUtil.HEAD_PIC_PATH + tmpImageName);
 					}
 
-					// Bundle bundle = data.getExtras();
-					// Bitmap bitmap = (Bitmap) bundle.get("data");//
-					// 获取相机返回的数据，并转换为Bitmap图片格式
-					// if (null != bitmap && tmpImageName != null) {
-					// FileUtil.savePic(Bitmap.createBitmap(bitmap),
-					// FileUtil.HEAD_PIC_PATH, tmpImageName, 100);
-					// //删除临时文件
-					// File file = new File(FileUtil.TEMP_PATH+tmpImageName);
-					// if (file.exists()) {
-					// file.delete();
-					// }
-					// filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
-					// }else {
-					// if (null != tmpImageName) {
-					// bitmapUtils.display(headImageView,
-					// FileUtil.HEAD_PIC_PATH+tmpImageName);
-					// //删除临时文件
-					// File file = new File(FileUtil.TEMP_PATH+tmpImageName);
-					// if (file.exists()) {
-					// file.delete();
-					// }
-					// filterImage(FileUtil.HEAD_PIC_PATH+tmpImageName);
-					// }
-					// }
-					// 图片裁切后的结果
-					// FileUtil.HEAD_PIC_PATH+tmpImageName
-					// Bitmap bitmap =
-					// BitmapFactory.decodeFile(FileUtil.HEAD_PIC_PATH+tmpImageName);
-					// headImageView.setImageBitmap(bitmap);// 将图片显示在ImageView里
 				}
 				break;
 			}
@@ -900,25 +683,6 @@ public class PersonalFragment extends BaseFragment implements
 			}
 		});
 
-		// // 设置确定
-		// nameAlertDialog.setPositiveButton("确定", new OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// String name = et_search.getText().toString();
-		// if (name.length() < 1) {
-		// ToastUtil.show(getActivity(), "昵称不能为空");
-		// return;
-		// }
-		// if (name.length() > 8) {
-		// ToastUtil.show(getActivity(), "昵称不能超过八个字");
-		// return;
-		// }
-		// uploadInformation("name", et_search.getText().toString());
-		// nameTextView.setText(name);
-		// }
-		// });
-		//
-		// nameAlertDialog.show();
 	}
 
 	@SuppressLint({ "NewApi", "InflateParams" })
@@ -1028,28 +792,6 @@ public class PersonalFragment extends BaseFragment implements
 
 	}
 
-	// 初始化adapter
-//	private HelloHaAdapter<String> initAdapter(int id) {
-//
-//		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(
-//				getActivity(), id) {
-//			@Override
-//			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
-//				ImageView imageView = helper.getView(R.id.image_attrament);
-//				// bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR +
-//				// item);
-//				if (null != item && item.length() > 0) {
-//					ImageLoader.getInstance().displayImage(
-//							JLXCConst.ATTACHMENT_ADDR + item, imageView,
-//							headImageOptions);
-//				} else {
-//					imageView.setImageResource(R.drawable.default_avatar);
-//				}
-//			}
-//		};
-//		return adapter;
-//	}
-
 	// 获取当前最近的十张状态图片
 	private void getNewsImages() {
 
@@ -1070,13 +812,14 @@ public class PersonalFragment extends BaseFragment implements
 							// 数据处理
 							JSONArray array = jResult
 									.getJSONArray(JLXCConst.HTTP_LIST);
-							List<String> imageList = new ArrayList<String>();
+							
+							newsImageList.clear();
 							for (int i = 0; i < array.size(); i++) {
 								JSONObject object = (JSONObject) array.get(i);
-								imageList.add(object.getString("sub_url"));
+								newsImageList.add(object.getString("sub_url"));
 							}
 							//设置图片
-							myImageScrollView.setNewsImageList(imageList);
+							myImageScrollView.setNewsImageList(newsImageList);
 							
 							int imageCount = jResult.getIntValue("image_count");
 							if (imageCount > 0) {
