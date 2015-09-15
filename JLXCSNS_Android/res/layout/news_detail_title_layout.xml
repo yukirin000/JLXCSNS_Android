@@ -49,7 +49,7 @@
             android:paddingTop="@dimen/item_interior_space_medium"
             android:singleLine="true"
             android:text="标签"
-            android:textColor="@color/main_gary"
+            android:textColor="@color/main_light_blue"
             android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 

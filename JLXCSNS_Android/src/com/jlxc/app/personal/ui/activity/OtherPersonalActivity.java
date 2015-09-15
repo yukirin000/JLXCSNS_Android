@@ -6,6 +6,7 @@ import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.UserInfo;
 import io.rong.imlib.model.Conversation.ConversationType;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,7 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.view.PersonalPictureScrollView;
+import com.jlxc.app.personal.ui.view.PersonalPictureScrollView.ScrollImageBrowseListener;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -141,6 +143,8 @@ public class OtherPersonalActivity extends BaseActivity{
 	private int uid;
 	//查看的用户模型
 	private UserModel otherUserModel;
+	// 前10张图片数组
+	private List<String> newsImageList = new ArrayList<String>();
 	
 	@OnClick({R.id.head_image_view, R.id.common_friend_layout, R.id.his_friend_layout, R.id.his_fans_layout,
 			R.id.return_image_view,R.id.send_message_btn, R.id.add_friend_button, R.id.setting_Button,R.id.his_image_layout})
@@ -246,6 +250,23 @@ public class OtherPersonalActivity extends BaseActivity{
 //		hisImageGridView.setEnabled(false);
 //		hisFriendsGridView.setEnabled(false);
 		
+		//设置newsScroll点击
+		hisImageScrollView.setBrowseListener(new ScrollImageBrowseListener() {
+			@Override
+			public void clickImage(int positon) {
+				if (newsImageList.size() > 0) {
+					List<String> newsImages = new ArrayList<String>();
+					for (String path : newsImageList) {
+						newsImages.add(JLXCConst.ATTACHMENT_ADDR + path);
+					}
+					Intent intent = new Intent(OtherPersonalActivity.this, BigImgLookActivity.class);
+					intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,(Serializable) newsImages);
+					intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, positon);
+					startActivity(intent);
+				}
+			}
+		});
+		
 		//获取数据
 		getPersonalInformation();
 	}
@@ -256,22 +277,6 @@ public class OtherPersonalActivity extends BaseActivity{
 	}
 	
 	//////////////////////private method////////////////////////
-	//初始化adapter
-	private HelloHaAdapter<String> initAdapter(int id){
-		HelloHaAdapter<String> adapter = new HelloHaAdapter<String>(this, id) {
-			@Override
-			protected void convert(HelloHaBaseAdapterHelper helper, String item) {
-				ImageView imageView = helper.getView(R.id.image_attrament);
-				if (null != item && item.length() > 0) {
-					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item, imageView, headImageOptions);					
-				}else {
-					imageView.setImageResource(R.drawable.default_avatar);
-				}
-			}
-		};
-		return adapter;
-	}
-	
 	//获取用户信息	
 	private void getPersonalInformation(){
 		
@@ -375,14 +380,15 @@ public class OtherPersonalActivity extends BaseActivity{
 //		}
 //		hisFriendAdapter.replaceAll(friendImageList);
 		
+		newsImageList.clear();
 		//他的动态
 		JSONArray imagesArray = jsonObject.getJSONArray("image_list");
-		List<String> imagesList = new ArrayList<String>();
 		for (int i = 0; i < imagesArray.size(); i++) {
 			JSONObject object = (JSONObject) imagesArray.get(i);
-			imagesList.add(object.getString("sub_url"));
+			newsImageList.add(object.getString("sub_url"));
 		}
-		hisImageScrollView.setNewsImageList(imagesList);
+		//设置图片
+		hisImageScrollView.setNewsImageList(newsImageList);
 //		hisImageAdapter.replaceAll(imagesList);
 		
 		//访客数量

@@ -203,6 +203,10 @@ public class ItemModel {
 		private String location;
 		// 发布的时间
 		private String sendTime;
+		// 发布到的圈子（为0时不存在）
+		private int topicID;	
+		// 发布到的圈子名
+		private String topicName;
 
 		public String getNewsContent() {
 			return newsContent;
@@ -235,6 +239,23 @@ public class ItemModel {
 		public void setSendTime(String sendTime) {
 			this.sendTime = sendTime;
 		}
+
+		public int getTopicID() {
+			return topicID;
+		}
+
+		public void setTopicID(int topicID) {
+			this.topicID = topicID;
+		}
+
+		public String getTopicName() {
+			return topicName;
+		}
+
+		public void setTopicName(String topicName) {
+			this.topicName = topicName;
+		}
+		
 	}
 
 	/**
