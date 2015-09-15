@@ -2,11 +2,18 @@ package com.jlxc.app.group.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -45,6 +52,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DiscoveryGroupFragment extends BaseFragment {
 
+	// 背景
+	@ViewInject(R.id.discovery_home_layout)
+	private LinearLayout backgroundLayout;
 	// 标题布局
 	@ViewInject(R.id.layout_discovey_group_title)
 	private LinearLayout titleLayout;
@@ -81,11 +91,19 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	//当前的categoryId
 	private int categoryId = 0;
 	//当前的category名字
-	private String categoryName = "全部";	
+	private String categoryName = "全部";
+	//当前的背景色
+	private int currentBackgroundColorPosition = 0;
+	//要使用的颜色
+	private String [] colorList = new String[]{"#FF6600","#6699FF","#CCFFCC","#FFCC33","#CCCCFF","#9999FF",
+			"#FF9999","#FF6633","#FFCC66","#CCFF99","#9966FF","#FFFF33","#FFCCCC","#CCFF66","#CC99FF","#FFFFCC"
+			,"#FF9933","#99CCFF","#FFFF66","#9999FF","#66FFCC","#FFFF99","#FF9933","#FF6699","#FFFF99","#FF9999","#99FF99","#FFCCFF","#FF99CC","#FFCC33","#CCFF99","#99FF66"
+			,"#66CCFF","#FFFF66","#FF9933","#CC99FF","#6666FF","#33FF99","#99CCFF","#99CCFF","#00FFCC","#CCFFFF"};
+	
 	
 	@Override
 	public int setLayoutId() {
-		return R.layout.fragment_diacovery_group_layout;
+		return R.layout.fragment_discovery_group_layout;
 	}
 
 	@Override
@@ -94,7 +112,10 @@ public class DiscoveryGroupFragment extends BaseFragment {
 
 	@Override
 	public void setUpViews(View rootView) {
-
+		Random random = new Random();
+		currentBackgroundColorPosition = random.nextInt(colorList.length); 
+		//默认背景色
+		backgroundLayout.setBackgroundColor(Color.parseColor(colorList[currentBackgroundColorPosition]));
 		init();
 		// 首次更新数据
 		// getRecommentData("参数", "参数");
@@ -335,6 +356,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		}
 
 		groupViewPage.setAdapter(new MyPagerAdapter());
+		groupViewPage.setOnPageChangeListener(new ChangeColorListener());
 	}
 
 	class MyPagerAdapter extends PagerAdapter {
@@ -405,4 +427,54 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		}
 
 	}
+	
+	//滚动变色监听器
+	@SuppressLint("NewApi") 
+	private class ChangeColorListener implements OnPageChangeListener{
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			
+		}
+
+		@Override
+		public void onPageSelected(int index) {
+			
+			Integer colorFrom = Color.parseColor(colorList[currentBackgroundColorPosition]);
+			//位置变化
+			currentBackgroundColorPosition = getRandomExcept(colorList.length, currentBackgroundColorPosition);
+        	Integer colorTo = Color.parseColor(colorList[currentBackgroundColorPosition]);
+        	ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        	colorAnimation.setDuration(1000);
+        	colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
+	        	@Override
+	        	public void onAnimationUpdate(ValueAnimator animator) {
+	        		backgroundLayout.setBackgroundColor((Integer)animator.getAnimatedValue());
+	        	}
+        	});
+        	colorAnimation.start();
+		}
+		
+	}
+	
+	public int getRandomExcept(int RandMax,int exceptNums){
+        Random rand=new Random();
+        int num=rand.nextInt(RandMax);
+        while(true){
+            int have=0;
+            if(num==exceptNums){
+                have=1;
+            }
+            if(have==0){
+                return num;
+            }
+            num=rand.nextInt(RandMax);
+        }
+    }
 }
