@@ -130,7 +130,7 @@ public class MainNewsListFragment extends BaseFragment {
 
 	@Override
 	public void loadLayout(View rootView) {
-		
+
 	}
 
 	@Override
@@ -565,14 +565,18 @@ public class MainNewsListFragment extends BaseFragment {
 			}
 		};
 		// 绑定时间
-		helper.setText(R.id.txt_main_news_publish_time,TimeHandle.getShowTimeFormat(opData.getSendTime()));
-		//是发到圈子里的东西
+		helper.setText(R.id.txt_main_news_publish_time,
+				TimeHandle.getShowTimeFormat(opData.getSendTime()));
+		// 是发到圈子里的东西
 		if (opData.getTopicID() > 0) {
 			helper.setVisible(R.id.txt_topic_name, true);
-			//显示修改
-			helper.setText(R.id.txt_main_news_publish_time,TimeHandle.getShowTimeFormat(opData.getSendTime())+" 发布在");
+			helper.setVisible(R.id.txt_main_group_prompt, true);
+			// 显示修改
+			helper.setText(R.id.txt_main_news_publish_time,
+					TimeHandle.getShowTimeFormat(opData.getSendTime()));
 			helper.setText(R.id.txt_topic_name, opData.getTopicName());
 		} else {
+			helper.setVisible(R.id.txt_main_group_prompt, false);
 			helper.setVisible(R.id.txt_topic_name, false);
 		}
 		// 事件监听绑定
@@ -771,10 +775,13 @@ public class MainNewsListFragment extends BaseFragment {
 					// 跳转到动态详情
 					jumpToNewsDetail(titleData, NewsConstants.KEY_BOARD_CLOSE,
 							null);
-				}else if (R.id.txt_main_news_user_school == viewID) {
+				} else if (R.id.txt_main_news_user_school == viewID) {
 					// 跳转至校园主页
-					Intent intentCampusInfo = new Intent(mContext, CampusHomeActivity.class);
-					intentCampusInfo.putExtra(CampusHomeActivity.INTENT_SCHOOL_CODE_KEY, titleData.getSchoolCode());
+					Intent intentCampusInfo = new Intent(mContext,
+							CampusHomeActivity.class);
+					intentCampusInfo.putExtra(
+							CampusHomeActivity.INTENT_SCHOOL_CODE_KEY,
+							titleData.getSchoolCode());
 					startActivityWithRight(intentCampusInfo);
 				} else {
 					jumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
@@ -806,15 +813,20 @@ public class MainNewsListFragment extends BaseFragment {
 					// 点赞操作
 					likeOperate(postion, view, operateData);
 				} else if (R.id.txt_topic_name == viewID) {
-					//确认有圈子 
+					// 确认有圈子
 					if (operateData.getTopicID() > 0) {
 						// 跳转至圈子内容部分
 						Intent intentToGroupNews = new Intent();
-						intentToGroupNews.setClass(getActivity(),GroupNewsActivity.class);
+						intentToGroupNews.setClass(getActivity(),
+								GroupNewsActivity.class);
 						// 传递名称
-						intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_NAME, operateData.getTopicName());
+						intentToGroupNews.putExtra(
+								GroupNewsActivity.INTENT_KEY_TOPIC_NAME,
+								operateData.getTopicName());
 						// 传递ID
-						intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID, operateData.getTopicID());
+						intentToGroupNews.putExtra(
+								GroupNewsActivity.INTENT_KEY_TOPIC_ID,
+								operateData.getTopicID());
 						startActivityWithRight(intentToGroupNews);
 					}
 				}

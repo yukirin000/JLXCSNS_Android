@@ -21,7 +21,7 @@
             android:clickable="true"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="5dp" >
+            android:padding="8dp" >
 
             <TextView
                 android:id="@+id/text_discovery_group_title"
@@ -40,20 +40,25 @@
                 android:src="@drawable/arrow_down_icon" />
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btn_create_new_group"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:layout_marginRight="@dimen/title_interior_size_mediu"
-            android:background="@color/main_clear"
-            android:padding="@dimen/title_interior_size_mediu"
-            android:src="@drawable/group_create_icon" />
+            android:layout_gravity="right" >
+
+            <ImageButton
+                android:id="@+id/btn_create_new_group"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:background="@color/main_clear"
+                android:padding="@dimen/title_interior_size_mediu"
+                android:src="@drawable/group_create_icon" />
+        </LinearLayout>
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:gravity="right"
         android:orientation="vertical" >
 
@@ -61,11 +66,11 @@
             android:id="@+id/txt_more_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingRight="10dp"
             android:gravity="center"
+            android:paddingRight="10dp"
             android:text="更多..."
             android:textColor="@color/main_brown"
-            android:textSize="@dimen/font_size_medium" />
+            android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 
     <com.jlxc.app.group.view.LoopViewPager
