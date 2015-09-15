@@ -3,16 +3,9 @@ package com.jlxc.app.news.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
@@ -20,7 +13,6 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +31,6 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
@@ -53,6 +44,8 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.group.ui.activity.CampusHomeActivity;
+import com.jlxc.app.group.ui.activity.GroupNewsActivity;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ImageModel;
 import com.jlxc.app.news.model.ItemModel;
@@ -70,22 +63,17 @@ import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
 import com.jlxc.app.news.ui.view.MultiImageMetroView;
 import com.jlxc.app.news.ui.view.MultiImageMetroView.JumpCallBack;
-import com.jlxc.app.news.ui.view.MultiImageView;
+import com.jlxc.app.news.ui.view.TextViewHandel;
 import com.jlxc.app.news.utils.DataToItem;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
 import com.jlxc.app.news.utils.NewsOperate.OperateCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
-import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.jlxc.app.news.ui.view.TextViewHandel;
 
 public class NewsDetailActivity extends BaseActivityWithTopBar {
 
@@ -117,7 +105,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
 	// 对动态的操作
-	private NewsOperate newsOPerate;
+	private NewsOperate<ItemModel> newsOPerate;
 	// 评论的内容
 	private String commentContent = "";
 	// 当前的操作的item
@@ -620,6 +608,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		helper.setOnClickListener(R.id.img_news_detail_user_head, listener);
 		helper.setOnClickListener(R.id.txt_news_detail_user_name, listener);
 		helper.setOnClickListener(R.id.btn_news_detail_like, listener);
+		helper.setOnClickListener(R.id.txt_news_detail_user_tag, listener);
 	}
 
 	/**
@@ -632,7 +621,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		//MultiImageView bodyImages = helper.getView(R.id.miv_news_detail_images);
 		MultiImageMetroView bodyImages = helper.getView(R.id.miv_news_detail_images);
 		bodyImages.imageDataSet(pictureList);
-
+		
 		bodyImages.setJumpListener(new JumpCallBack() {
 
 			@Override
@@ -645,8 +634,6 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		if (bodyData.getNewsContent().equals("")) {
 			helper.setVisible(R.id.txt_news_detail_content, false);
 		} else {
-			TextViewHandel customTvHandel = new TextViewHandel(
-					NewsDetailActivity.this, bodyData.getNewsContent());
 			helper.setVisible(R.id.txt_news_detail_content, true);
 			TextView contentView = helper.getView(R.id.txt_news_detail_content);
 			// customTvHandel.setTextContent(contentView);
@@ -667,6 +654,24 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		// 发布时间
 		helper.setText(R.id.txt_news_detail_publish_time,
 				TimeHandle.getShowTimeFormat(bodyData.getSendTime()));
+		//是发到圈子里的东西
+		if (bodyData.getTopicID() > 0) {
+			helper.setVisible(R.id.txt_topic_name, true);
+			//显示修改
+			helper.setText(R.id.txt_news_detail_publish_time,TimeHandle.getShowTimeFormat(bodyData.getSendTime())+" 发布在");
+			helper.setText(R.id.txt_topic_name, bodyData.getTopicName());
+		} else {
+			helper.setVisible(R.id.txt_topic_name, false);
+		}
+		// 设置事件监听
+		final int postion = helper.getPosition();
+		OnClickListener listener = new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				itemViewClickListener.onClick(view, postion, view.getId());
+			}
+		};
+		helper.setOnClickListener(R.id.txt_topic_name, listener);
 	}
 
 	/**
@@ -921,12 +926,32 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 						.getItem(postion);
 				JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				break;
-
+			case R.id.txt_news_detail_user_tag:
+				TitleItem schoolData = (TitleItem) detailAdapter.getItem(postion);
+				// 跳转至校园主页
+				Intent intentCampusInfo = new Intent(NewsDetailActivity.this, CampusHomeActivity.class);
+				intentCampusInfo.putExtra(CampusHomeActivity.INTENT_SCHOOL_CODE_KEY, schoolData.getSchoolCode());
+				startActivityWithRight(intentCampusInfo);
+				break;
 			case R.id.btn_news_detail_like:
 				actionType = NewsConstants.OPERATE_UPDATE;
 				likeOperate();
 				break;
-
+			case R.id.txt_topic_name:
+				//圈子
+				BodyItem bodyData = (BodyItem) detailAdapter.getItem(postion);
+				//确认有圈子 
+				if (bodyData.getTopicID() > 0) {
+					// 跳转至圈子内容部分
+					Intent intentToGroupNews = new Intent();
+					intentToGroupNews.setClass(NewsDetailActivity.this,GroupNewsActivity.class);
+					// 传递名称
+					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_NAME, bodyData.getTopicName());
+					// 传递ID
+					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID, bodyData.getTopicID());
+					startActivityWithRight(intentToGroupNews);
+				}
+				break;
 			case R.id.layout_news_detail_comment_root_view:
 			case R.id.iv_comment_head:
 			case R.id.txt_news_detail_comment_name:

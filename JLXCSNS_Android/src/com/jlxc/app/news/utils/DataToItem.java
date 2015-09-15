@@ -124,6 +124,8 @@ public class DataToItem {
 			item.setImageNewsList(news.getImageNewsList());
 			item.setSendTime(news.getSendTime());
 			item.setLocation(news.getLocation());
+			item.setTopicID(news.getTopicID());
+			item.setTopicName(news.getTopicName());
 		} catch (Exception e) {
 			LogUtils.e("createBody error.");
 		}
