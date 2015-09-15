@@ -1,4 +1,4 @@
-package com.jlxc.app.personal.ui.fragment;	
+package com.jlxc.app.personal.ui.fragment;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
@@ -23,6 +23,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -119,12 +120,12 @@ public class PersonalFragment extends BaseFragment implements
 	// 顶部学校
 	@ViewInject(R.id.top_school_text_view)
 	private TextView topSchoolTextView;
-//	// 我的相片grid
-//	@ViewInject(R.id.my_image_grid_view)
-//	private GridView myImageGridView;
+	// // 我的相片grid
+	// @ViewInject(R.id.my_image_grid_view)
+	// private GridView myImageGridView;
 	// 我的相片scroll
 	@ViewInject(R.id.my_image_scroll_view)
-	private PersonalPictureScrollView myImageScrollView;	
+	private PersonalPictureScrollView myImageScrollView;
 	// 我的相片数量
 	@ViewInject(R.id.my_image_count_text_view)
 	private TextView myImageCountTextView;
@@ -171,8 +172,8 @@ public class PersonalFragment extends BaseFragment implements
 	// 前10张图片数组
 	private List<String> newsImageList = new ArrayList<String>();
 
-	//	// 我的相片adapter
-	//	private HelloHaAdapter<String> myImageAdapter;
+	// // 我的相片adapter
+	// private HelloHaAdapter<String> myImageAdapter;
 	// // 最近来访adapter
 	// private HelloHaAdapter<String> visitAdapter;
 	// // 好友adapter
@@ -266,7 +267,10 @@ public class PersonalFragment extends BaseFragment implements
 							tmpImageName = JLXCUtils.getPhotoFileName() + "";
 							Intent intentAlbum = new Intent(getActivity(),
 									GalleyActivity.class);
-							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
+							intentAlbum
+									.putExtra(
+											GalleyActivity.INTENT_KEY_SELECTED_COUNT,
+											0);
 							intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE,
 									true);
 							startActivityForResult(intentAlbum, ALBUM_SELECT);
@@ -344,14 +348,14 @@ public class PersonalFragment extends BaseFragment implements
 			break;
 		case R.id.visit_layout:
 			// 最近来访点击
-//			Intent visitIntent = new Intent(getActivity(),
-//					VisitListActivity.class);
-//			visitIntent.putExtra(VisitListActivity.INTENT_KEY,
-//					userModel.getUid());
-//			startActivityWithRight(visitIntent);
+			// Intent visitIntent = new Intent(getActivity(),
+			// VisitListActivity.class);
+			// visitIntent.putExtra(VisitListActivity.INTENT_KEY,
+			// userModel.getUid());
+			// startActivityWithRight(visitIntent);
 			Intent fansIntent = new Intent(getActivity(),
-			MyFansListActivity.class);
-			startActivityWithRight(fansIntent);			
+					MyFansListActivity.class);
+			startActivityWithRight(fansIntent);
 			break;
 		case R.id.friend_layout:
 			// 我的好友列表
@@ -366,11 +370,13 @@ public class PersonalFragment extends BaseFragment implements
 			startActivityWithRight(setIntent);
 			break;
 		case R.id.card_Button:
-//			// 名片点击
-//			Intent cardIntent = new Intent(getActivity(), MyCardActivity.class);
-//			startActivityWithRight(cardIntent);
-			//发现入口
-			Intent discoverIntent = new Intent(getActivity(), DiscoveryHomeActivity.class);
+			// // 名片点击
+			// Intent cardIntent = new Intent(getActivity(),
+			// MyCardActivity.class);
+			// startActivityWithRight(cardIntent);
+			// 发现入口
+			Intent discoverIntent = new Intent(getActivity(),
+					DiscoveryHomeActivity.class);
 			startActivityWithRight(discoverIntent);
 			break;
 		default:
@@ -405,16 +411,18 @@ public class PersonalFragment extends BaseFragment implements
 
 		// 签名因为要跳到领一个页面 所以在只初始化一次
 		if (null == userModel.getSign() || "".equals(userModel.getSign())) {
-			signTextView.setText("暂无");
+			signTextView.setText("牛逼的签名可以彰显彪悍的人生");
+			signTextView.setTextColor(Color.rgb(204, 204, 204));
 		} else {
 			signTextView.setText(userModel.getSign());
+			signTextView.setTextColor(Color.rgb(77, 77, 77));
 		}
 
 		// 解析省份城市xml
 		initProvinceDatas();
 		cityBuilder = new AlertDialog.Builder(getActivity(),
 				AlertDialog.THEME_HOLO_LIGHT);
-		//设置newsScroll点击
+		// 设置newsScroll点击
 		myImageScrollView.setBrowseListener(new ScrollImageBrowseListener() {
 			@Override
 			public void clickImage(int positon) {
@@ -423,9 +431,12 @@ public class PersonalFragment extends BaseFragment implements
 					for (String path : newsImageList) {
 						newsImages.add(JLXCConst.ATTACHMENT_ADDR + path);
 					}
-					Intent intent = new Intent(getActivity(), BigImgLookActivity.class);
-					intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,(Serializable) newsImages);
-					intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX, positon);
+					Intent intent = new Intent(getActivity(),
+							BigImgLookActivity.class);
+					intent.putExtra(BigImgLookActivity.INTENT_KEY_IMG_LIST,
+							(Serializable) newsImages);
+					intent.putExtra(BigImgLookActivity.INTENT_KEY_INDEX,
+							positon);
 					startActivity(intent);
 				}
 			}
@@ -505,7 +516,7 @@ public class PersonalFragment extends BaseFragment implements
 
 		// 获取当前最近的三张状态图片
 		getNewsImages();
-//		getVisitImages();
+		// getVisitImages();
 		getFansCount();
 		getFriendsImages();
 	}
@@ -652,7 +663,7 @@ public class PersonalFragment extends BaseFragment implements
 				.findViewById(R.id.name_edit_text);
 		et_search.setText(userModel.getName());
 		et_search.setSelection(et_search.getText().length());
-		
+
 		final Dialog dialog = nameAlertDialog.show();
 		TextView cancelTextView = (TextView) textViewLayout
 				.findViewById(R.id.tv_custom_alert_dialog_cancel);
@@ -812,15 +823,15 @@ public class PersonalFragment extends BaseFragment implements
 							// 数据处理
 							JSONArray array = jResult
 									.getJSONArray(JLXCConst.HTTP_LIST);
-							
+
 							newsImageList.clear();
 							for (int i = 0; i < array.size(); i++) {
 								JSONObject object = (JSONObject) array.get(i);
 								newsImageList.add(object.getString("sub_url"));
 							}
-							//设置图片
+							// 设置图片
 							myImageScrollView.setNewsImageList(newsImageList);
-							
+
 							int imageCount = jResult.getIntValue("image_count");
 							if (imageCount > 0) {
 								myImageCountTextView.setText(imageCount + "条");
@@ -830,7 +841,7 @@ public class PersonalFragment extends BaseFragment implements
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-//							myImageAdapter.clear();
+							// myImageAdapter.clear();
 							myImageCountTextView.setText("0条");
 						}
 					}
@@ -845,62 +856,62 @@ public class PersonalFragment extends BaseFragment implements
 
 	}
 
-//	// 获取当前最近的三张最近来访人的头像
-//	private void getVisitImages() {
-//
-//		String path = JLXCConst.GET_VISIT_IMAGES + "?" + "uid="
-//				+ UserManager.getInstance().getUser().getUid();
-//		HttpManager.get(path, new JsonRequestCallBack<String>(
-//				new LoadDataHandler<String>() {
-//
-//					@Override
-//					public void onSuccess(JSONObject jsonResponse, String flag) {
-//						super.onSuccess(jsonResponse, flag);
-//						int status = jsonResponse
-//								.getInteger(JLXCConst.HTTP_STATUS);
-//						if (status == JLXCConst.STATUS_SUCCESS) {
-//							JSONObject jResult = jsonResponse
-//									.getJSONObject(JLXCConst.HTTP_RESULT);
-//							// 数据处理
-//							// JSONArray array = jResult
-//							// .getJSONArray(JLXCConst.HTTP_LIST);
-//							// List<String> headImageList = new
-//							// ArrayList<String>();
-//							// if (null != array && array.size() < 1) {
-//							// visitAdapter.clear();
-//							// }
-//							// for (int i = 0; i < array.size(); i++) {
-//							// JSONObject object = (JSONObject) array.get(i);
-//							// headImageList.add(object
-//							// .getString("head_sub_image"));
-//							// }
-//							// visitAdapter.replaceAll(headImageList);
-//							// 人数
-//							int visitCount = jResult.getIntValue("visit_count");
-//							if (visitCount > 0) {
-//								visitCountTextView.setText(visitCount + "");
-//							} else {
-//								visitCountTextView.setText("");
-//							}
-//						}
-//
-//						if (status == JLXCConst.STATUS_FAIL) {
-//							// ToastUtil.show(getActivity(),
-//							// jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
-//							// visitAdapter.clear();
-//							visitCountTextView.setText("");
-//						}
-//					}
-//
-//					@Override
-//					public void onFailure(HttpException arg0, String arg1,
-//							String flag) {
-//						super.onFailure(arg0, arg1, flag);
-//						ToastUtil.show(getActivity(), "网络有毒=_=");
-//					}
-//
-//				}, null));
-//	}
+	// // 获取当前最近的三张最近来访人的头像
+	// private void getVisitImages() {
+	//
+	// String path = JLXCConst.GET_VISIT_IMAGES + "?" + "uid="
+	// + UserManager.getInstance().getUser().getUid();
+	// HttpManager.get(path, new JsonRequestCallBack<String>(
+	// new LoadDataHandler<String>() {
+	//
+	// @Override
+	// public void onSuccess(JSONObject jsonResponse, String flag) {
+	// super.onSuccess(jsonResponse, flag);
+	// int status = jsonResponse
+	// .getInteger(JLXCConst.HTTP_STATUS);
+	// if (status == JLXCConst.STATUS_SUCCESS) {
+	// JSONObject jResult = jsonResponse
+	// .getJSONObject(JLXCConst.HTTP_RESULT);
+	// // 数据处理
+	// // JSONArray array = jResult
+	// // .getJSONArray(JLXCConst.HTTP_LIST);
+	// // List<String> headImageList = new
+	// // ArrayList<String>();
+	// // if (null != array && array.size() < 1) {
+	// // visitAdapter.clear();
+	// // }
+	// // for (int i = 0; i < array.size(); i++) {
+	// // JSONObject object = (JSONObject) array.get(i);
+	// // headImageList.add(object
+	// // .getString("head_sub_image"));
+	// // }
+	// // visitAdapter.replaceAll(headImageList);
+	// // 人数
+	// int visitCount = jResult.getIntValue("visit_count");
+	// if (visitCount > 0) {
+	// visitCountTextView.setText(visitCount + "");
+	// } else {
+	// visitCountTextView.setText("");
+	// }
+	// }
+	//
+	// if (status == JLXCConst.STATUS_FAIL) {
+	// // ToastUtil.show(getActivity(),
+	// // jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+	// // visitAdapter.clear();
+	// visitCountTextView.setText("");
+	// }
+	// }
+	//
+	// @Override
+	// public void onFailure(HttpException arg0, String arg1,
+	// String flag) {
+	// super.onFailure(arg0, arg1, flag);
+	// ToastUtil.show(getActivity(), "网络有毒=_=");
+	// }
+	//
+	// }, null));
+	// }
 
 	// 获取最近关注的三个人的头像
 	private void getFansCount() {
@@ -940,7 +951,6 @@ public class PersonalFragment extends BaseFragment implements
 				}, null));
 	}
 
-	
 	// 获取最近关注的三个人的头像
 	private void getFriendsImages() {
 
@@ -1129,25 +1139,24 @@ public class PersonalFragment extends BaseFragment implements
 					}
 				}, null));
 
-
 	}
 
-//	private String getRealPathFromURI(Uri contentURI) {
-//		String result;
-//		Cursor cursor = getActivity().getContentResolver().query(contentURI,
-//				null, null, null, null);
-//		if (cursor == null) { // Source is Dropbox or other similar local file
-//								// path
-//			result = contentURI.getPath();
-//		} else {
-//			cursor.moveToFirst();
-//			int idx = cursor
-//					.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-//			result = cursor.getString(idx);
-//			cursor.close();
-//		}
-//		return result;
-//	}
+	// private String getRealPathFromURI(Uri contentURI) {
+	// String result;
+	// Cursor cursor = getActivity().getContentResolver().query(contentURI,
+	// null, null, null, null);
+	// if (cursor == null) { // Source is Dropbox or other similar local file
+	// // path
+	// result = contentURI.getPath();
+	// } else {
+	// cursor.moveToFirst();
+	// int idx = cursor
+	// .getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+	// result = cursor.getString(idx);
+	// cursor.close();
+	// }
+	// return result;
+	// }
 
 	/**
 	 * XML解析
@@ -1191,6 +1200,9 @@ public class PersonalFragment extends BaseFragment implements
 	}
 
 	private void setUpListener() {
+		// 设置样式
+		mViewProvince.setShadowColor(0xeeffffff, 0x00ffffff, 0x33ffffff);
+		//mViewProvince.setWheelForeground(R.drawable.icon);
 		// 省份改变
 		mViewProvince.addChangingListener(new OnWheelChangedListener() {
 			@Override
@@ -1198,6 +1210,8 @@ public class PersonalFragment extends BaseFragment implements
 				updateCities();
 			}
 		});
+		// 设置样式
+		mViewCity.setShadowColor(0xeeffffff, 0x00ffffff, 0x33ffffff);
 		// 城市改变
 		mViewCity.addChangingListener(new OnWheelChangedListener() {
 			@Override
@@ -1211,8 +1225,8 @@ public class PersonalFragment extends BaseFragment implements
 		initProvinceDatas();
 		mViewProvince.setViewAdapter(new ArrayWheelAdapter<String>(
 				getActivity(), mProvinceDatas));
-		mViewProvince.setVisibleItems(7);
-		mViewCity.setVisibleItems(7);
+		mViewProvince.setVisibleItems(3);
+		mViewCity.setVisibleItems(3);
 		updateCities();
 		updateAreas();
 	}

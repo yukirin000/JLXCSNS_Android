@@ -8,7 +8,7 @@
               <LinearLayout
                   android:id="@+id/name_layout"
                   android:layout_width="match_parent"
-                  android:layout_height="45dip"
+                  android:layout_height="55dp"
                   android:gravity="center_vertical"
                   android:orientation="horizontal" >
 
@@ -32,9 +32,9 @@
 
               <View
                   android:layout_width="fill_parent"
-                  android:layout_height="1dip"
+                  android:layout_height="1px"
                   android:layout_marginLeft="20dip"
-                  android:background="@color/main_light_gary" />
+                  android:background="@color/main_light_white" />
               <!-- 签名 -->
               <LinearLayout
                   android:id="@+id/sign_layout"
@@ -45,7 +45,7 @@
 
                   <TextView
                       android:layout_width="wrap_content"
-                      android:layout_height="45dip"
+                      android:layout_height="55dp"
                       android:gravity="center_vertical"
                       android:textSize="@dimen/font_size_small"
                       android:textColor="@color/main_char_gary"
@@ -56,22 +56,23 @@
                       android:id="@+id/sign_text_view"
                       android:textColor="@color/main_deep_black"
                       android:textSize="@dimen/font_size_medium"
-                      android:layout_width="200dip"
+                      android:layout_width="match_parent"
+                      android:padding="10dp"
                       android:layout_height="wrap_content"
-                      android:layout_marginLeft="15dip" />
+                      android:layout_marginLeft="5dip" />
 
               </LinearLayout>
 
               <View
                   android:layout_width="fill_parent"
-                  android:layout_height="1dip"
+                  android:layout_height="1px"
                   android:layout_marginLeft="20dip"
-                  android:background="@color/main_light_gary" />
+                  android:background="@color/main_light_white" />
               <!-- 生日 -->
               <LinearLayout
                   android:id="@+id/birth_layout"
                   android:layout_width="match_parent"
-                  android:layout_height="45dip"
+                  android:layout_height="55dp"
                   android:gravity="center_vertical"
                   android:orientation="horizontal" >
 
@@ -95,15 +96,15 @@
 
               <View
                   android:layout_width="fill_parent"
-                  android:layout_height="1dip"
+                  android:layout_height="1px"
                   android:layout_marginLeft="20dip"
-                  android:background="@color/main_light_gary" />
+                  android:background="@color/main_light_white" />
               
               <!-- 性别 -->
               <LinearLayout
                   android:id="@+id/sex_layout"
                   android:layout_width="match_parent"
-                  android:layout_height="45dip"
+                  android:layout_height="55dp"
                   android:gravity="center_vertical"
                   android:orientation="horizontal" >
 
@@ -126,15 +127,15 @@
 
               <View
                   android:layout_width="fill_parent"
-                  android:layout_height="1dip"
+                  android:layout_height="1px"
                   android:layout_marginLeft="20dip"
-                  android:background="@color/main_light_gary" />
+                  android:background="@color/main_light_white" />
               
               <!-- 学校 -->
               <LinearLayout
                   android:id="@+id/school_layout"
                   android:layout_width="match_parent"
-                  android:layout_height="45dip"
+                  android:layout_height="55dp"
                   android:gravity="center_vertical"
                   android:orientation="horizontal" >
 
@@ -158,15 +159,15 @@
 
               <View
                   android:layout_width="fill_parent"
-                  android:layout_height="1dip"
+                  android:layout_height="1px"
                   android:layout_marginLeft="20dip"
-                  android:background="@color/main_light_gary" />
+                  android:background="@color/main_light_white" />
               
               <!-- 城市 -->
               <LinearLayout
                   android:id="@+id/city_layout"
                   android:layout_width="match_parent"
-                  android:layout_height="45dip"
+                  android:layout_height="55dp"
                   android:gravity="center_vertical"
                   android:orientation="horizontal" >
 

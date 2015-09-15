@@ -128,41 +128,30 @@
 
                             <TextView
                                 android:id="@+id/my_image_count_text_view"
-                                android:textSize="@dimen/font_size_small"
-	                        	android:textColor="@color/main_char_gary"
-						     	android:layout_centerVertical="true"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dip"
                                 android:layout_toLeftOf="@+id/my_image_arrow"
-                                android:layout_marginRight="5dip" />
+                                android:textColor="@color/main_char_gary"
+                                android:textSize="@dimen/font_size_small" />
 
                             <ImageView
                                 android:id="@+id/my_image_arrow"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
-                                android:layout_centerVertical="true"
                                 android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
                                 android:layout_marginRight="10dp"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/right_arrow" />
                         </RelativeLayout>
                     </LinearLayout>
 
-<!--                     <com.jlxc.app.base.ui.view.TouchInterceptGridView
-                        android:id="@+id/my_image_grid_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dip"
-                        android:layout_marginLeft="10dip"
-                        android:layout_marginRight="10dip"
-                        android:horizontalSpacing="0dip"
-                        android:numColumns="3" >
-                    </com.jlxc.app.base.ui.view.TouchInterceptGridView> -->
-                    <com.jlxc.app.personal.ui.view.PersonalPictureScrollView 
+                    <com.jlxc.app.personal.ui.view.PersonalPictureScrollView
                         android:id="@+id/my_image_scroll_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <View
@@ -172,224 +161,85 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="90dip"
+                    android:layout_height="wrap_content"
                     android:background="@color/main_light_white"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:paddingTop="10dp" >
 
-                    <!-- 最近来访 -->
+                    <!-- 我的关注 -->
 
-                    <RelativeLayout
-                        android:id="@+id/visit_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/selector_deep_white_click" >
-
-                        <TextView
-                            android:id="@+id/visit_count_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_above="@+id/visit_bottom_view"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginBottom="10dip"
-                            android:layout_marginLeft="5dip"
-                            android:textColor="@color/main_char_gary"
-                            android:textSize="@dimen/font_size_sper_large" />
-
-                        <LinearLayout
-                            android:id="@+id/visit_bottom_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="10dip"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal" >
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginLeft="10dip"
-                                android:src="@drawable/my_visit_icon" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dip"
-                                android:text="谁来看过我"
-                                android:textColor="@color/main_brown"
-                                android:textSize="@dimen/font_size_small" />
-                        </LinearLayout>
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dip"
-                        android:layout_height="fill_parent"
-                        android:layout_marginBottom="4dip"
-                        android:layout_marginTop="4dip"
-                        android:background="@color/main_light_gary" />
-
-                    <!-- 我的好友 -->
-
-                    <RelativeLayout
+                    <LinearLayout
                         android:id="@+id/friend_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/selector_deep_white_click" >
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_deep_white_click"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:padding="15dip"
+                            android:src="@drawable/my_friends_icon" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="我关注的人"
+                            android:textColor="@color/main_brown"
+                            android:textSize="@dimen/font_size_small" />
 
                         <TextView
                             android:id="@+id/friend_count_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_above="@+id/friend_bottom_view"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginBottom="10dip"
-                            android:layout_marginLeft="5dip"
+                            android:layout_marginRight="20dp"
+                            android:text="11"
                             android:textColor="@color/main_char_gary"
-                            android:textSize="@dimen/font_size_sper_large" />
+                            android:textSize="@dimen/font_size_small" />
+                    </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/friend_bottom_view"
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginLeft="20dp"
+                        android:background="@color/main_light_white" />
+
+                    <!-- 粉丝 -->
+
+                    <LinearLayout
+                        android:id="@+id/visit_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_deep_white_click"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:padding="15dip"
+                            android:src="@drawable/my_visit_icon" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="关注我的人"
+                            android:textColor="@color/main_brown"
+                            android:textSize="@dimen/font_size_small" />
+
+                        <TextView
+                            android:id="@+id/visit_count_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="10dip"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal" >
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginLeft="10dip"
-                                android:src="@drawable/my_friends_icon" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dip"
-                                android:text="我的朋友们"
-                                android:textColor="@color/main_brown"
-                                android:textSize="@dimen/font_size_small" />
-                        </LinearLayout>
-                    </RelativeLayout>
-
-                    <!--
-                	<RelativeLayout
-					    android:layout_width="match_parent"
-					    android:layout_height="wrap_content" >
-
-					 <com.jlxc.app.base.ui.view.TouchInterceptGridView
-					     android:layout_centerVertical="true"
-					     android:id="@+id/visit_grid_view"
-					     android:layout_width="wrap_content"
-					     android:layout_height="wrap_content"
-					     android:layout_toLeftOf="@+id/visit_count_text_view"
-					     android:layout_marginBottom="2dip"
-					     android:layout_marginLeft="5dip"
-					     android:layout_marginTop="5dip"
-					     android:horizontalSpacing="3dip"
-					     android:numColumns="4" >
-					 </com.jlxc.app.base.ui.view.TouchInterceptGridView>
-
-					 <TextView
-					     android:id="@+id/visit_count_text_view"
-					     android:layout_width="wrap_content"
-					     android:layout_height="wrap_content"
-					     android:layout_toLeftOf="@+id/visit_arrow"
-                         android:textSize="@dimen/font_size_small"
-                         android:textColor="@color/main_char_gary"
-					     android:layout_centerVertical="true"
-					     android:layout_marginLeft="5dip" />
-
-					 <ImageView
-					     android:id="@+id/visit_arrow"
-					     android:layout_width="15dp"
-					     android:layout_height="15dp"
-					     android:layout_centerVertical="true"
-					     android:layout_alignParentRight="true"
-					     android:layout_marginRight="10dp"
-					     android:src="@drawable/right_arrow" />
-
-					</RelativeLayout>
-                    -->
-
+                            android:layout_marginRight="20dp"
+                            android:text="11"
+                            android:textColor="@color/main_char_gary"
+                            android:textSize="@dimen/font_size_small" />
+                    </LinearLayout>
                 </LinearLayout>
-                <!--
-                     <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginLeft="10dip"
-                         android:background="@color/main_light_gary" />
-                -->
-                <!-- 我的好友 -->
-                <!--
-                <LinearLayout
-                    android:id="@+id/friend_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dip"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal" >
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginLeft="10dip"
-                        android:src="@drawable/my_friends_icon" />
-                    
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dip"
-                        android:textSize="@dimen/font_size_small"
-                        android:textColor="@color/main_brown"
-                        android:text="我的好友" />
-                    
-                    <RelativeLayout
-					    android:layout_width="match_parent"
-					    android:layout_height="wrap_content" >
-
-					 <com.jlxc.app.base.ui.view.TouchInterceptGridView
-					     android:layout_centerVertical="true"
-					     android:id="@+id/friend_grid_view"
-					     android:layout_width="wrap_content"
-					     android:layout_height="wrap_content"
-					     android:layout_toLeftOf="@+id/friend_count_text_view"
-					     android:layout_marginBottom="2dip"
-					     android:layout_marginLeft="5dip"
-					     android:layout_marginTop="5dip"
-					     android:horizontalSpacing="3dip"
-					     android:numColumns="4" >
-					 </com.jlxc.app.base.ui.view.TouchInterceptGridView>
-
-					 <TextView
-					     android:id="@+id/friend_count_text_view"
-					     android:layout_width="wrap_content"
-					     android:layout_height="wrap_content"
-					     android:layout_toLeftOf="@+id/friend_arrow"
-					     android:textSize="@dimen/font_size_small"
-                         android:textColor="@color/main_char_gary"
-					     android:layout_centerVertical="true"
-					     android:layout_marginLeft="5dip" />
-
-					 <ImageView
-					     android:id="@+id/friend_arrow"
-					     android:layout_width="15dp"
-					     android:layout_height="15dp"
-					     android:layout_centerVertical="true"
-					     android:layout_alignParentRight="true"
-					     android:layout_marginRight="10dp"
-					     android:src="@drawable/right_arrow" />
-
-					</RelativeLayout>
-
-                </LinearLayout>
-                -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
