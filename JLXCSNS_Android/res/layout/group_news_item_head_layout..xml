@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/topic_news_top_layout"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@color/main_light_white"
-    android:clickable="true"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="10dp" >
+    android:layout_height="wrap_content"
+    android:background="@color/main_blue"
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/topic_desc_text_view"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/topic_news_top_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:maxLength="25"
-        android:text="我的圈子,我做主"
-        android:textSize="@dimen/font_size_medium" />
+        android:background="#99FFFFFF"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp" >
 
-    <TextView
-        android:id="@+id/topic_top_btn_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="关注"
-        android:textSize="@dimen/font_size_medium" />
+        <TextView
+            android:id="@+id/topic_desc_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="4"
+            android:text="我的圈子,我做主"
+            android:textColor="@color/main_deep_white"
+            android:textSize="@dimen/font_size_small" />
+
+        <TextView
+            android:id="@+id/topic_top_btn_text_view"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/main_blue"
+            android:gravity="center"
+            android:text="关注"
+            android:textColor="@color/main_deep_white"
+            android:textSize="@dimen/font_size_small" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view1"
+        android:background="@color/main_light_white"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="10dp" />
 
 </LinearLayout>

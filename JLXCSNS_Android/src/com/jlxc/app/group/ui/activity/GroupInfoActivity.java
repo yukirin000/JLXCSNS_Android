@@ -48,6 +48,9 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 	// 活跃程度
 	@ViewInject(R.id.active_text_view)
 	private TextView activeTextView;
+	// 活跃图
+	@ViewInject(R.id.active_image_view)
+	private ImageView activeImageView;
 	// 创建者姓名
 	@ViewInject(R.id.create_name_text_view)
 	private TextView createNameTextView;
@@ -149,12 +152,12 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 	 * 控件初始化
 	 * */
 	private void initWidget() {
-		setBarText("圈子信息");
+		setBarText("频道信息");
 		// 添加圈子设置按钮
-		ImageView groupInfo = addRightImgBtn(R.layout.right_image_button,
+		ImageView groupSetting = addRightImgBtn(R.layout.right_image_button,
 				R.id.layout_top_btn_root_view, R.id.img_btn_right_top);
-		groupInfo.setImageResource(R.drawable.setting_btn);
-		groupInfo.setOnClickListener(new OnClickListener() {
+		groupSetting.setImageResource(R.drawable.setting_btn);
+		groupSetting.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -164,7 +167,8 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 
 			}
 		});
-
+		// 隐藏设置按钮
+		groupSetting.setVisibility(View.GONE);
 	}
 
 	/**
@@ -202,7 +206,7 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 							String flag) {
 						hideLoading();
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(GroupInfoActivity.this, "获取失败。。");
+						ToastUtil.show(GroupInfoActivity.this, "oh no 获取失败...");
 					}
 
 				}, null));
@@ -216,13 +220,16 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 		topicNameTextView.setText(content.getString("topic_name"));
 		// 内容
 		int newsCount = result.getIntValue("news_count");
-		topicCountTextView.setText("共产生了" + newsCount + "条内容");
+		topicCountTextView.setText(newsCount + "条内容");
 		if (newsCount > 100) {
 			activeTextView.setText("热门");
+			activeImageView.setImageResource(R.drawable.group_statues_hot);
 		} else if (newsCount > 50) {
 			activeTextView.setText("中等");
+			activeImageView.setImageResource(R.drawable.group_statues_moderate);
 		} else {
 			activeTextView.setText("冷清");
+			activeImageView.setImageResource(R.drawable.group_statues_cold);
 		}
 		// 图片
 		ImageLoader.getInstance().displayImage(
@@ -290,7 +297,7 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 		String path = JLXCConst.JOIN_TOPIC;
 		if (isJoin) {
 			path = JLXCConst.QUIT_TOPIC;
-			showLoading("退出中..", false);
+			showLoading("取消关注中..", false);
 		} else {
 			showLoading("关注中..", false);
 		}

@@ -10,7 +10,7 @@
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,15 +24,14 @@
                 <ImageView
                     android:id="@+id/group_image_view"
                     android:layout_width="match_parent"
-                    android:layout_height="160dip"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/campus_background" />
+                    android:layout_height="200dip"
+                    android:scaleType="centerCrop" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="#55000000"
+                    android:background="#88000000"
                     android:gravity="center_vertical" >
 
                     <RelativeLayout
@@ -47,7 +46,7 @@
                             android:id="@+id/group_name_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="tfboys粉丝大集合"
+                            android:text=""
                             android:textColor="@color/main_deep_white"
                             android:textSize="@dimen/font_size_huge" />
 
@@ -57,7 +56,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/group_name_text_view"
                             android:paddingTop="5dp"
-                            android:text="共产生了125条内容"
+                            android:text=""
                             android:textColor="@color/main_deep_white"
                             android:textSize="@dimen/font_size_small" />
                     </RelativeLayout>
@@ -66,14 +65,15 @@
                         android:id="@+id/active_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="火爆"
-                        android:textColor="@color/main_deep_white" />
+                        android:text=""
+                        android:textColor="@color/main_deep_white"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/active_image_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher" />
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:padding="10dp" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -91,19 +91,28 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="创建者" />
+                    android:text="创建的人"
+                    android:textColor="@color/main_brown"
+                    android:textSize="@dimen/font_size_medium" />
 
                 <TextView
                     android:id="@+id/create_name_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="吉米优优" />
+                    android:padding="10dp"
+                    android:text=""
+                    android:textColor="@color/main_deep_black" />
 
                 <ImageView
                     android:id="@+id/create_head_image_view"
-                    android:layout_width="50dip"
-                    android:layout_height="50dip"
-                    android:src="@drawable/ic_launcher" />
+                    android:layout_width="40dip"
+                    android:layout_height="40dip" />
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/right_arrow_icon" />
             </LinearLayout>
 
             <LinearLayout
@@ -120,41 +129,50 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="成员" />
+                    android:text="关注的人"
+                    android:textColor="@color/main_brown"
+                    android:textSize="@dimen/font_size_medium" />
 
                 <ImageView
                     android:id="@+id/img_number_A"
-                    android:visibility="gone"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_launcher" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_launcher"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/img_number_B"
-                    android:visibility="gone"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_launcher" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_launcher"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/img_number_C"
-                    android:visibility="gone"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_launcher" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_launcher"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/img_number_D"
-                    android:visibility="gone"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_launcher" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_launcher"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/member_count_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="56人" />
+                    android:layout_marginLeft="10dp"
+                    android:drawableRight="@drawable/right_arrow_icon"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@color/main_deep_black" />
             </LinearLayout>
 
             <LinearLayout
@@ -170,24 +188,30 @@
                     android:id="@+id/txt_detail_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="说明" />
+                    android:text="频道介绍"
+                    android:textColor="@color/main_brown"
+                    android:textSize="@dimen/font_size_medium" />
 
                 <TextView
                     android:id="@+id/group_description_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="百度李毅吧，也叫帝吧、D吧、D8。有百度卢浮宫之称，人气最旺盛的贴吧。" />
+                    android:text=""
+                    android:textColor="@color/main_deep_black"
+                    android:textSize="@dimen/font_size_small" />
             </LinearLayout>
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/btn_group_operate"
-                android:layout_width="200dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:background="@drawable/selector_dialog_confirm_btn_click"
                 android:layout_marginTop="20dp"
-                android:text="关注" />
+                android:text="关注"
+                android:textColor="@color/main_brown"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

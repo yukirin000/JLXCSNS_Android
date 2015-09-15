@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:text="标签"
-                android:textColor="@color/main_flesh"
+                android:textColor="@color/main_gary"
                 android:textSize="@dimen/font_size_tiny" />
         </LinearLayout>
 

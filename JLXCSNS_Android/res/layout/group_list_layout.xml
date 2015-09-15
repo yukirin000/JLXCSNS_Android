@@ -10,6 +10,7 @@
         android:id="@+id/listview_discovey_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clickable="false"
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="false"
         android:smoothScrollbar="true" >

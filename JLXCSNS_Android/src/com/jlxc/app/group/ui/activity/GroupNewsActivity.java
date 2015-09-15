@@ -92,7 +92,7 @@ public class GroupNewsActivity extends BaseActivityWithTopBar {
 		// 添加圈子信息按钮
 		groupInfo = addRightImgBtn(R.layout.right_image_button,
 				R.id.layout_top_btn_root_view, R.id.img_btn_right_top);
-		groupInfo.setImageResource(R.drawable.campus_person_icon);
+		groupInfo.setImageResource(R.drawable.group_info_icon);
 
 		// 添加点事件跳转至圈子资料
 		groupInfo.setOnClickListener(new OnClickListener() {
