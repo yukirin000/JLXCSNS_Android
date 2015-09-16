@@ -32,13 +32,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="#55000000"
+                    android:background="#66000000"
                     android:gravity="center_vertical" >
 
                     <TextView
                         android:id="@+id/txt_campus_home_school_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="2"
                         android:maxLines="3"
                         android:text="知乎学园知乎学园知乎学园知乎学园"
@@ -48,9 +49,9 @@
                     <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:padding="5dp"
-                        android:src="@drawable/localtion" />
+                        android:src="@drawable/school_localtion" />
 
                     <TextView
                         android:id="@+id/txt_campus_home_school_local"
@@ -58,6 +59,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:maxLines="3"
+                        android:paddingBottom="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingTop="5dp"
                         android:text="深圳宝安深圳宝安深圳宝安深圳宝安"
                         android:textColor="@color/main_deep_white" />
                 </LinearLayout>
@@ -74,10 +78,10 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/campus_person_icon" />
+                    android:src="@drawable/campus_person" />
 
                 <TextView
                     android:id="@+id/txt_number"
@@ -91,7 +95,6 @@
                     android:id="@+id/img_campus_home_mumber_C"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:padding="2dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_launcher" />
 
@@ -115,7 +118,11 @@
                     android:id="@+id/txt_campus_home_mumber_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="56人" />
+                    android:layout_marginLeft="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/right_arrow"
+                    android:text="56人"
+                    android:textColor="@color/main_gary" />
             </LinearLayout>
 
             <LinearLayout
@@ -130,10 +137,10 @@
 
                 <ImageView
                     android:id="@+id/imageView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/campus_news_icon" />
+                    android:src="@drawable/campus_news" />
 
                 <TextView
                     android:id="@+id/tv_campus_home_news_title"
