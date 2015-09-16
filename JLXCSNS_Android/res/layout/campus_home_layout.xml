@@ -61,7 +61,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:scaleType="centerInside"
-            android:src="@drawable/campus_person_icon" />
+            android:src="@drawable/campus_person" />
 
         <TextView
             android:id="@+id/tv_campus_person_title"
@@ -171,7 +171,7 @@
                 android:layout_alignTop="@+id/unread_news_count_text_view"
                 android:layout_centerVertical="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/campus_news_icon" />
+                android:src="@drawable/campus_news" />
         </RelativeLayout>
     </LinearLayout>
 

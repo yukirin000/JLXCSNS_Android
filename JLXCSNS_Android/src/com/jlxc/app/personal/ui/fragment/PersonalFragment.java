@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,13 +33,17 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -51,6 +57,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.fragment.BaseFragment;
 import com.jlxc.app.base.ui.view.CustomSelectPhotoDialog;
+import com.jlxc.app.base.ui.view.CustomerScrollView;
 import com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity;
 import com.jlxc.app.base.utils.FileUtil;
 import com.jlxc.app.base.utils.JLXCConst;
@@ -107,7 +114,15 @@ public class PersonalFragment extends BaseFragment implements
 	private WheelView mViewCity;
 	private Builder cityBuilder;
 	private LinearLayout linearLayout;
-
+	// 根scollview
+	@ViewInject(R.id.scrollView_person)
+	private CustomerScrollView personScrollView;
+	// 相册部分根布局
+	@ViewInject(R.id.my_image_layout)
+	private LinearLayout imageLayout;
+	// 设置与加好友根布局
+	@ViewInject(R.id.layout_operate_container)
+	private RelativeLayout operateLayout;
 	// 背景图
 	@ViewInject(R.id.back_image_View)
 	private ImageView backImageView;
@@ -439,6 +454,34 @@ public class PersonalFragment extends BaseFragment implements
 							positon);
 					startActivity(intent);
 				}
+			}
+		});
+		// 渐变色
+		GradientDrawable grad = new GradientDrawable(Orientation.TOP_BOTTOM,
+				new int[] { 0xff999999, 0x05999999 });
+		operateLayout.setBackground(grad);
+		operateLayout.setAlpha(0.5f);
+		// 监听滚动事件
+		personScrollView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+					// 可以监听到ScrollView的滚动事件
+					int[] scollPosition = new int[2];
+					imageLayout.getLocationOnScreen(scollPosition);
+					// 头部的坐标
+					int[] operatePosition = new int[2];
+					operateLayout.getLocationOnScreen(operatePosition);
+					// 设置透明度渐变动画
+					if (scollPosition[1] < (operatePosition[1] + operateLayout
+							.getMeasuredHeight())) {
+						operateLayout.setAlpha(1.0f);
+					} else {
+						operateLayout.setAlpha(0.5f);
+					}
+				}
+				return false;
 			}
 		});
 	}
@@ -1202,7 +1245,7 @@ public class PersonalFragment extends BaseFragment implements
 	private void setUpListener() {
 		// 设置样式
 		mViewProvince.setShadowColor(0xeeffffff, 0x00ffffff, 0x33ffffff);
-		//mViewProvince.setWheelForeground(R.drawable.icon);
+		// mViewProvince.setWheelForeground(R.drawable.icon);
 		// 省份改变
 		mViewProvince.addChangingListener(new OnWheelChangedListener() {
 			@Override

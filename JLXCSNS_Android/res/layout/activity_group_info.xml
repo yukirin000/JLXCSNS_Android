@@ -112,7 +112,8 @@
                     android:id="@+id/imageView1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/right_arrow_icon" />
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/right_arrow" />
             </LinearLayout>
 
             <LinearLayout
@@ -169,8 +170,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:drawableRight="@drawable/right_arrow_icon"
+                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center_vertical"
+                    android:drawablePadding="10dp"
                     android:text=""
                     android:textColor="@color/main_deep_black" />
             </LinearLayout>

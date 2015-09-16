@@ -23,7 +23,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="5dip"
             android:scaleType="centerCrop"
-            android:src="@drawable/my_group_icon" />
+            android:src="@drawable/my_channel_icon" />
 
         <RelativeLayout
             android:layout_width="0dp"

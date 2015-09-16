@@ -25,10 +25,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
-
+import com.jlxc.app.R;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
@@ -44,6 +43,8 @@ import com.jlxc.app.group.ui.activity.MoreGroupListActivity;
 import com.jlxc.app.group.view.GroupMenuPopWindow;
 import com.jlxc.app.group.view.GroupMenuPopWindow.CategorySelectListener;
 import com.jlxc.app.group.view.LoopViewPager;
+import com.jlxc.app.group.view.OperatePopupWindow;
+import com.jlxc.app.group.view.OperatePopupWindow.OperateListener;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
@@ -58,7 +59,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	// 标题布局
 	@ViewInject(R.id.layout_discovey_group_title)
 	private LinearLayout titleLayout;
-	//类别名字
+	// 类别名字
 	@ViewInject(R.id.text_discovery_group_title)
 	private TextView groupCategory;
 	// 标头根布局
@@ -68,14 +69,11 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	@ViewInject(R.id.img_title_icon)
 	private ImageView imgTitleIcon;
 	// 创建新的圈子
-	@ViewInject(R.id.btn_create_new_group)
-	private ImageButton createNewGroup;
+	@ViewInject(R.id.btn_more_operate)
+	private ImageButton moreOperate;
 	// 可循环滑动的viewpage
 	@ViewInject(R.id.loop_view_page_group)
 	private LoopViewPager groupViewPage;
-	// 查看更多圈子
-	@ViewInject(R.id.txt_more_group)
-	private TextView moreGroup;
 	// 上下文信息
 	private Context mContext;
 	// 加载图片
@@ -84,22 +82,17 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	private DisplayImageOptions options;
 	// 菜单窗口
 	private GroupMenuPopWindow menuPopWindow;
+	// 操作窗口
+	private OperatePopupWindow operatePopWindow;
 	// 圈子信息数据
 	private List<GroupTopicModel> groupList = new ArrayList<GroupTopicModel>();
 	// 类型list
 	private List<GroupCategoryModel> categoryModels = new ArrayList<GroupCategoryModel>();
-	//当前的categoryId
+	// 当前的categoryId
 	private int categoryId = 0;
-	//当前的category名字
-	private String categoryName = "全部";
-	//当前的背景色
-	private int currentBackgroundColorPosition = 0;
-	//要使用的颜色
-	private String [] colorList = new String[]{"#FF6600","#6699FF","#CCFFCC","#FFCC33","#CCCCFF","#9999FF",
-			"#FF9999","#FF6633","#FFCC66","#CCFF99","#9966FF","#FFFF33","#FFCCCC","#CCFF66","#CC99FF","#FFFFCC"
-			,"#FF9933","#99CCFF","#FFFF66","#9999FF","#66FFCC","#FFFF99","#FF9933","#FF6699","#FFFF99","#FF9999","#99FF99","#FFCCFF","#FF99CC","#FFCC33","#CCFF99","#99FF66"
-			,"#66CCFF","#FFFF66","#FF9933","#CC99FF","#6666FF","#33FF99","#99CCFF","#99CCFF","#00FFCC","#CCFFFF"};
-	
+	// 当前的category名字
+	private String categoryName = "发现频道";
+
 	@Override
 	public int setLayoutId() {
 		return R.layout.fragment_discovery_group_layout;
@@ -111,10 +104,6 @@ public class DiscoveryGroupFragment extends BaseFragment {
 
 	@Override
 	public void setUpViews(View rootView) {
-		Random random = new Random();
-		currentBackgroundColorPosition = random.nextInt(colorList.length); 
-		//默认背景色
-		backgroundLayout.setBackgroundColor(Color.parseColor(colorList[currentBackgroundColorPosition]));
 		init();
 		// 首次更新数据
 		// getRecommentData("参数", "参数");
@@ -125,8 +114,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 	/**
 	 * 点击事件监听
 	 * */
-	@OnClick(value = { R.id.btn_create_new_group,
-			R.id.layout_discovey_group_title, R.id.txt_more_group })
+	@OnClick(value = { R.id.btn_more_operate, R.id.layout_discovey_group_title })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		// 话题菜单
@@ -139,20 +127,9 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			// lp.alpha = .3f;
 			// getActivity().getWindow().setAttributes(lp);
 			break;
-		// 创建页面
-		case R.id.btn_create_new_group:
-			Intent createGroupList = new Intent();
-			createGroupList.setClass(mContext, CreateGroupActivity.class);
-			startActivityWithRight(createGroupList);
-			break;
-		// 查看更多圈子
-		case R.id.txt_more_group:
-			// 跳转至更多圈子列表
-			Intent intentToGroupList = new Intent();
-			intentToGroupList.setClass(mContext, MoreGroupListActivity.class);
-			intentToGroupList.putExtra(MoreGroupListActivity.INTENT_CATEGORY_ID_KEY, categoryId);
-			intentToGroupList.putExtra(MoreGroupListActivity.INTENT_CATEGORY_NAME_KEY, categoryName);
-			startActivityWithRight(intentToGroupList);
+
+		case R.id.btn_more_operate:
+			operatePopWindow.showPopupWindow(moreOperate);
 			break;
 		}
 	}
@@ -163,7 +140,7 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		if (categoryModels.size() > 0) {
 			showCategoryList();
 		} else {
-			//showLoading(getActivity(), "获取中..", true);
+			// showLoading(getActivity(), "获取中..", true);
 			// 不存在获取一次
 			String path = JLXCConst.GET_TOPIC_CATEGORY;
 			HttpManager.get(path, new JsonRequestCallBack<String>(
@@ -197,10 +174,14 @@ public class DiscoveryGroupFragment extends BaseFragment {
 									JSONObject object = categoryArray
 											.getJSONObject(i);
 									GroupCategoryModel model = new GroupCategoryModel();
-									model.setCategory_id(object.getIntValue("category_id"));
-									model.setCategory_name(object.getString("category_name"));
-									model.setCategory_cover(object.getString("category_cover"));
-									model.setCategory_desc(object.getString("category_desc"));
+									model.setCategory_id(object
+											.getIntValue("category_id"));
+									model.setCategory_name(object
+											.getString("category_name"));
+									model.setCategory_cover(object
+											.getString("category_cover"));
+									model.setCategory_desc(object
+											.getString("category_desc"));
 									categoryModels.add(model);
 								}
 
@@ -270,6 +251,34 @@ public class DiscoveryGroupFragment extends BaseFragment {
 				// .getAttributes();
 				// lp.alpha = 1.0f;
 				// getActivity().getWindow().setAttributes(lp);
+			}
+		});
+
+		// 操作菜单监听
+		operatePopWindow = new OperatePopupWindow(mContext);
+		operatePopWindow.setListener(new OperateListener() {
+
+			@Override
+			public void createClick() {
+				// 创建页面
+				Intent createGroupList = new Intent();
+				createGroupList.setClass(mContext, CreateGroupActivity.class);
+				startActivityWithRight(createGroupList);
+			}
+
+			@Override
+			public void lookMoreGroup() {
+				// 跳转至更多圈子列表
+				Intent intentToGroupList = new Intent();
+				intentToGroupList.setClass(mContext,
+						MoreGroupListActivity.class);
+				intentToGroupList.putExtra(
+						MoreGroupListActivity.INTENT_CATEGORY_ID_KEY,
+						categoryId);
+				intentToGroupList.putExtra(
+						MoreGroupListActivity.INTENT_CATEGORY_NAME_KEY,
+						categoryName);
+				startActivityWithRight(intentToGroupList);
 			}
 		});
 	}
@@ -345,7 +354,8 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			// 数据处理
 			GroupTopicModel topicModel = new GroupTopicModel();
 			topicModel.setTopic_id(jsonObject.getIntValue("topic_id"));
-			topicModel.setTopic_cover_image(jsonObject.getString("topic_cover_image"));
+			topicModel.setTopic_cover_image(jsonObject
+					.getString("topic_cover_image"));
 			topicModel.setTopic_name(jsonObject.getString("topic_name"));
 			topicModel.setTopic_detail(jsonObject.getString("topic_detail"));
 			topicModel.setNews_count(jsonObject.getIntValue("news_count"));
@@ -375,15 +385,21 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			TextView topicDescTextView = (TextView) groupPageView
 					.findViewById(R.id.topic_desc_text_view);
 			topicDescTextView.setText(topicModel.getTopic_detail());
-			//背景图
-			ImageView topicImageView = (ImageView) groupPageView.findViewById(R.id.topic_image);
-			ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + topicModel.getTopic_cover_image(), topicImageView, options);
-			//成员数量
-			TextView memberTextView = (TextView) groupPageView.findViewById(R.id.member_count_text_view);
-			memberTextView.setText(topicModel.getMember_count()+"人关注");			
-			//内容数量
-			TextView newsTextView = (TextView) groupPageView.findViewById(R.id.news_count_text_view);
-			newsTextView.setText(topicModel.getNews_count()+"条内容");
+			// 背景图
+			ImageView topicImageView = (ImageView) groupPageView
+					.findViewById(R.id.topic_image);
+			ImageLoader.getInstance().displayImage(
+					JLXCConst.ATTACHMENT_ADDR
+							+ topicModel.getTopic_cover_image(),
+					topicImageView, options);
+			// 成员数量
+			TextView memberTextView = (TextView) groupPageView
+					.findViewById(R.id.member_count_text_view);
+			memberTextView.setText(topicModel.getMember_count() + "人关注");
+			// 内容数量
+			TextView newsTextView = (TextView) groupPageView
+					.findViewById(R.id.news_count_text_view);
+			newsTextView.setText(topicModel.getNews_count() + "条内容");
 			container.addView(groupPageView);
 
 			// 点击事件
@@ -426,54 +442,41 @@ public class DiscoveryGroupFragment extends BaseFragment {
 		}
 
 	}
-	
-	//滚动变色监听器
-	@SuppressLint("NewApi") 
-	private class ChangeColorListener implements OnPageChangeListener{
+
+	// 滚动变色监听器
+	@SuppressLint("NewApi")
+	private class ChangeColorListener implements OnPageChangeListener {
 
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
-			
+
 		}
 
 		@Override
 		public void onPageSelected(int index) {
-			
-			Integer colorFrom = Color.parseColor(colorList[currentBackgroundColorPosition]);
-			//位置变化
-			currentBackgroundColorPosition = getRandomExcept(colorList.length, currentBackgroundColorPosition);
-        	Integer colorTo = Color.parseColor(colorList[currentBackgroundColorPosition]);
-        	ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        	colorAnimation.setDuration(1000);
-        	colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
-	        	@Override
-	        	public void onAnimationUpdate(ValueAnimator animator) {
-	        		backgroundLayout.setBackgroundColor((Integer)animator.getAnimatedValue());
-	        	}
-        	});
-        	colorAnimation.start();
+
 		}
-		
+
 	}
-	
-	public int getRandomExcept(int RandMax,int exceptNums){
-        Random rand=new Random();
-        int num=rand.nextInt(RandMax);
-        while(true){
-            int have=0;
-            if(num==exceptNums){
-                have=1;
-            }
-            if(have==0){
-                return num;
-            }
-            num=rand.nextInt(RandMax);
-        }
-    }
+
+	public int getRandomExcept(int RandMax, int exceptNums) {
+		Random rand = new Random();
+		int num = rand.nextInt(RandMax);
+		while (true) {
+			int have = 0;
+			if (num == exceptNums) {
+				have = 1;
+			}
+			if (have == 0) {
+				return num;
+			}
+			num = rand.nextInt(RandMax);
+		}
+	}
 }

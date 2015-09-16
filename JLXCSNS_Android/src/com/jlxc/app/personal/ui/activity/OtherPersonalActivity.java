@@ -15,9 +15,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,6 +44,7 @@ import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivity;
 import com.jlxc.app.base.ui.activity.BigImgLookActivity;
 import com.jlxc.app.base.ui.view.CustomAlertDialog;
+import com.jlxc.app.base.ui.view.CustomerScrollView;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
@@ -58,6 +63,15 @@ public class OtherPersonalActivity extends BaseActivity {
 
 	public final static String INTENT_KEY = "uid";
 
+	// 根scollview
+	@ViewInject(R.id.scrollView_other_person)
+	private CustomerScrollView personScrollView;
+	// 信息部分根布局
+	@ViewInject(R.id.layout_other_person_content)
+	private LinearLayout contentLayout;
+	// 操作部分的根布局
+	@ViewInject(R.id.layout_other_operate_container)
+	private RelativeLayout operateLayout;
 	// 背景图
 	@ViewInject(R.id.back_image_View)
 	private ImageView backImageView;
@@ -280,7 +294,34 @@ public class OtherPersonalActivity extends BaseActivity {
 				}
 			}
 		});
+		// 渐变色
+		GradientDrawable grad = new GradientDrawable(Orientation.TOP_BOTTOM,
+				new int[] { 0xff999999, 0x05999999 });
+		operateLayout.setBackground(grad);
+		operateLayout.setAlpha(0.5f);
+		// 监听滚动事件
+		personScrollView.setOnTouchListener(new OnTouchListener() {
 
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+					// 可以监听到ScrollView的滚动事件
+					int[] scollPosition = new int[2];
+					contentLayout.getLocationOnScreen(scollPosition);
+					// 头部的坐标
+					int[] operatePosition = new int[2];
+					operateLayout.getLocationOnScreen(operatePosition);
+					// 设置透明度渐变动画
+					if (scollPosition[1] < (operatePosition[1] + operateLayout
+							.getMeasuredHeight())) {
+						operateLayout.setAlpha(1.0f);
+					} else {
+						operateLayout.setAlpha(0.5f);
+					}
+				}
+				return false;
+			}
+		});
 		// 获取数据
 		getPersonalInformation();
 	}
@@ -344,10 +385,10 @@ public class OtherPersonalActivity extends BaseActivity {
 		if (null == otherUserModel.getSign()
 				|| "".equals(otherUserModel.getSign())) {
 			signTextView.setText("此人向来洒脱，暂无签名");
-			signTextView.setTextColor(Color.rgb(204,204,204));
+			signTextView.setTextColor(Color.rgb(204, 204, 204));
 		} else {
 			signTextView.setText(otherUserModel.getSign());
-			signTextView.setTextColor(Color.rgb(77,77,77));
+			signTextView.setTextColor(Color.rgb(77, 77, 77));
 		}
 		// 生日
 		if (null == otherUserModel.getBirthday()

@@ -3,7 +3,7 @@
     android:id="@+id/discovery_home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_orange"
+    android:background="@color/main_yellow"
     android:orientation="vertical" >
 
     <FrameLayout
@@ -19,12 +19,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/main_clear"
+            android:background="@drawable/selector_main_yellow_click"
             android:clickable="true"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="8dp" >
-<!-- android:background="@drawable/selector_main_yellow_click" -->
+
             <TextView
                 android:id="@+id/text_discovery_group_title"
                 android:layout_width="wrap_content"
@@ -48,13 +48,14 @@
             android:orientation="horizontal" >
 
             <ImageButton
-                android:id="@+id/btn_create_new_group"
+                android:id="@+id/btn_more_operate"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:background="@color/main_clear"
+                android:background="@drawable/selector_main_yellow_click"
                 android:padding="10dp"
-                android:src="@drawable/group_create" />
+                android:layout_marginRight="10dp"
+                android:src="@drawable/group_more_operate" />
         </RelativeLayout>
     </FrameLayout>
 

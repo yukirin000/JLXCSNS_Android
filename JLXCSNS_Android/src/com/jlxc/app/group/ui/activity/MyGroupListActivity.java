@@ -73,7 +73,7 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 	@Override
 	protected void setUpView() {
 		// 设置标头
-		setBarText("我的圈子");
+		setBarText("我的频道");
 		// 初始化
 		initialize();
 		newsListViewSet();

@@ -89,7 +89,7 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 	 * 数据的初始化
 	 * */
 	private void init() {
-		setBarText("学校首页!");
+		setBarText("校园主页");
 		// 图片加载初始化
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置

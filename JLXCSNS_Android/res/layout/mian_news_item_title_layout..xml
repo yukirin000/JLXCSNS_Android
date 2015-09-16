@@ -60,6 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/item_interior_space_small"
+            android:background="@drawable/selector_deep_white_click"
             android:drawableLeft="@drawable/school_icon"
             android:drawablePadding="5dp"
             android:gravity="left"

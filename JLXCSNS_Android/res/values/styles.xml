@@ -95,5 +95,11 @@
         <item name="android:windowEnterAnimation">@anim/group_menu_fade_in</item>
         <item name="android:windowExitAnimation">@anim/group_menu_fade_out</item>
     </style>
+    
+     <!-- 话题操作菜单弹出动画 -->
+    <style name="anim_group_operate">
+        <item name="android:windowEnterAnimation">@anim/group_operate_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/group_operate_fade_out</item>
+    </style>
 
 </resources>
