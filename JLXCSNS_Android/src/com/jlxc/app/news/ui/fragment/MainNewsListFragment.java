@@ -83,6 +83,9 @@ public class MainNewsListFragment extends BaseFragment {
 	// 发布按钮
 	@ViewInject(R.id.img_main_publish_btn)
 	private ImageView publishBtn;
+	// 学校按钮
+	@ViewInject(R.id.txt_school)
+	private TextView schoolBtn;
 	// 标头部分
 	// @ViewInject(R.id.layout_main_head_rootview)
 	// private LinearLayout headLayout;
@@ -154,6 +157,14 @@ public class MainNewsListFragment extends BaseFragment {
 				Intent intentUsrMain = new Intent(mContext,
 						PublishNewsActivity.class);
 				startActivityWithRight(intentUsrMain);
+			}
+		});
+		schoolBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// 跳转至校园主页
+				Intent intentCampusInfo = new Intent(mContext,CampusHomeActivity.class);
+				startActivityWithRight(intentCampusInfo);
 			}
 		});
 	}

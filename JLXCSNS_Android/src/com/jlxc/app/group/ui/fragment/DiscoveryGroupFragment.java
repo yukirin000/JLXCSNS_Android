@@ -100,7 +100,6 @@ public class DiscoveryGroupFragment extends BaseFragment {
 			,"#FF9933","#99CCFF","#FFFF66","#9999FF","#66FFCC","#FFFF99","#FF9933","#FF6699","#FFFF99","#FF9999","#99FF99","#FFCCFF","#FF99CC","#FFCC33","#CCFF99","#99FF66"
 			,"#66CCFF","#FFFF66","#FF9933","#CC99FF","#6666FF","#33FF99","#99CCFF","#99CCFF","#00FFCC","#CCFFFF"};
 	
-	
 	@Override
 	public int setLayoutId() {
 		return R.layout.fragment_discovery_group_layout;

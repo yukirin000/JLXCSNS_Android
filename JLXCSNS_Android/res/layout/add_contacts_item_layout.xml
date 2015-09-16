@@ -40,10 +40,14 @@
             android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 
-    <ImageView
+    <Button
         android:id="@+id/btn_contacts_add"
-        android:layout_width="wrap_content"
+        android:layout_width="75dip"
         android:layout_height="wrap_content"
-        android:background="@drawable/friend_btn_add_normal" />
+        android:padding="7dip"
+	    android:text="关注"
+	    android:background="@color/main_orange"  
+	    android:textColor="@color/main_white"
+	    android:textSize="@dimen/font_size_small"/>
 
 </LinearLayout>

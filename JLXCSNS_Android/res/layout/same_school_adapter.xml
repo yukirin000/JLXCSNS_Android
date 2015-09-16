@@ -44,16 +44,19 @@
 	        android:ellipsize = "end"
 	        android:text="签名在这里" />
 
-	    <ImageView
-	        android:src="@drawable/friend_btn_add_normal"
-	        android:padding="5dip"
-	        android:id="@+id/add_image_view"
-	        android:layout_width="wrap_content"
+	    <Button
+	        android:id="@+id/add_image_button"
+	        android:layout_width="75dip"
 	        android:layout_height="wrap_content"
 	        android:layout_marginRight="10dip"
 	        android:layout_alignParentRight="true"
-	        android:layout_centerVertical="true" />
-
+	        android:layout_centerVertical="true"
+	        android:padding="7dip"
+		    android:text="关注"
+		    android:background="@color/main_gary"  
+		    android:textColor="@color/main_white"
+		    android:textSize="@dimen/font_size_small" />
+	    
 	    <ImageView
 	        android:id="@+id/sex_image_view"
 	        android:src="@drawable/sex_boy"
