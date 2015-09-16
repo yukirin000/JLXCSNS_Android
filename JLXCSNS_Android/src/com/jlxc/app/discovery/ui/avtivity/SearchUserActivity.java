@@ -4,37 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.jlxc.app.R;
 import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
 import com.jlxc.app.base.model.UserModel;
@@ -46,8 +44,6 @@ import com.jlxc.app.discovery.model.FindUserModel;
 import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -202,7 +198,7 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 		// 设置内容
 		searchAdapter = new HelloHaAdapter<FindUserModel>(
 				SearchUserActivity.this, R.layout.search_user_adapter) {
-			@Override
+			@SuppressLint("ResourceAsColor") @Override
 			protected void convert(final HelloHaBaseAdapterHelper helper,
 					final FindUserModel item) {
 
@@ -222,9 +218,9 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 					headImageView.setImageResource(R.drawable.default_avatar);
 				}
 				// 添加好友tv
-				ImageView addImageView = helper.getView(R.id.add_image_view);
+				Button addImageBtn = helper.getView(R.id.add_image_button);
 				// 点击添加
-				addImageView.setOnClickListener(new OnClickListener() {
+				addImageBtn.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						IMModel imModel = new IMModel();
@@ -237,13 +233,15 @@ public class SearchUserActivity extends BaseActivityWithTopBar {
 
 				// 是否是好友
 				if (item.getIs_friend() == 1) {
-					addImageView.setEnabled(false);
-					addImageView
-							.setImageResource(R.drawable.friend_btn_add_highlight);
+					addImageBtn.setEnabled(false);
+					addImageBtn.setBackgroundResource(R.color.main_gary);
+					addImageBtn.setTextColor(getResources().getColorStateList(R.color.main_white));
+					addImageBtn.setText("已关注");
 				} else {
-					addImageView.setEnabled(true);
-					addImageView
-							.setImageResource(R.drawable.friend_btn_add_normal);
+					addImageBtn.setEnabled(true);
+					addImageBtn.setBackgroundResource(R.color.main_yellow);
+					addImageBtn.setTextColor(getResources().getColorStateList(R.color.main_brown));
+					addImageBtn.setText("关注");
 				}
 
 				LinearLayout linearLayout = (LinearLayout) helper.getView();

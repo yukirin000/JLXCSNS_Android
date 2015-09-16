@@ -168,9 +168,11 @@ public class MyFansListActivity extends BaseActivityWithTopBar {
 				if (item.isOrHasAttent()) {
 					helper.setText(R.id.attent_state_btn, "互相关注");
 					helper.setBackgroundRes(R.id.attent_state_btn, R.color.main_gary);
+					helper.setTextColorRes(R.id.attent_state_btn, R.color.main_white);
 				}else {
 					helper.setText(R.id.attent_state_btn, "关注");
-					helper.setBackgroundRes(R.id.attent_state_btn, R.color.main_orange);
+					helper.setBackgroundRes(R.id.attent_state_btn, R.color.main_yellow);
+					helper.setTextColorRes(R.id.attent_state_btn, R.color.main_brown);
 				}
 				
 				final int index = helper.getPosition();

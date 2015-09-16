@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,7 +57,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class DiscoveryFragment extends BaseFragment {
+@SuppressLint("ResourceAsColor") public class DiscoveryFragment extends BaseFragment {
 
 //	private final static int SCANNIN_GREQUEST_CODE = 1;
 
@@ -354,12 +356,16 @@ public class DiscoveryFragment extends BaseFragment {
 		}
 		helper.setText(R.id.tv_recommend_school, titleData.getUserSchool());
 
-		ImageView addButton = helper.getView(R.id.btn_recomment_add);
+		Button addButton = helper.getView(R.id.btn_recomment_add);
 		if (titleData.isAdd()) {
 			addButton.setEnabled(false);
-			addButton.setImageResource(R.drawable.friend_btn_add_highlight);
+			addButton.setText("已关注");
+			addButton.setBackgroundResource(R.color.main_gary);
+			addButton.setTextColor(getResources().getColorStateList(R.color.main_white));
 		} else {
-			addButton.setImageResource(R.drawable.friend_btn_add_normal);
+			addButton.setText("关注");
+			addButton.setBackgroundResource(R.color.main_yellow);
+			addButton.setTextColor(getResources().getColorStateList(R.color.main_brown));
 			addButton.setEnabled(true);
 		}
 

@@ -15,6 +15,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,10 +31,8 @@ import com.jlxc.app.base.adapter.HelloHaAdapter;
 import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.model.UserModel;
 import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
@@ -42,9 +41,7 @@ import com.jlxc.app.discovery.model.PersonModel;
 import com.jlxc.app.message.helper.MessageAddFriendHelper;
 import com.jlxc.app.message.model.IMModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
-import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
@@ -182,15 +179,17 @@ public class ContactsUserActivity extends BaseActivityWithTopBar {
 							}
 						});
 
-				ImageView addButton = helper.getView(R.id.btn_contacts_add);
+				Button addButton = helper.getView(R.id.btn_contacts_add);
 				if (null != item.getIsFriend()
 						&& "1".equals(item.getIsFriend())) {
-					addButton
-							.setImageResource(R.drawable.friend_btn_add_highlight);
+					addButton.setText("已关注");
+					addButton.setBackgroundResource(R.color.main_gary);
+					addButton.setTextColor(getResources().getColorStateList(R.color.main_white));
 					addButton.setEnabled(false);
 				} else {
-					addButton
-							.setImageResource(R.drawable.friend_btn_add_normal);
+					addButton.setText("关注");
+					addButton.setBackgroundResource(R.color.main_yellow);
+					addButton.setTextColor(getResources().getColorStateList(R.color.main_brown));
 					addButton.setEnabled(true);
 				}
 

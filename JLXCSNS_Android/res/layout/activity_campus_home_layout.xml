@@ -32,26 +32,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="#66000000"
+                    android:background="#55000000"
                     android:gravity="center_vertical" >
 
                     <TextView
                         android:id="@+id/txt_campus_home_school_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:layout_weight="2"
                         android:maxLines="3"
-                        android:text="知乎学园知乎学园知乎学园知乎学园"
                         android:textColor="@color/main_deep_white"
                         android:textSize="@dimen/font_size_huge" />
 
                     <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="wrap_content"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:src="@drawable/school_localtion" />
+                        android:src="@drawable/localtion" />
 
                     <TextView
                         android:id="@+id/txt_campus_home_school_local"
@@ -59,10 +57,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:maxLines="3"
-                        android:paddingBottom="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingTop="5dp"
-                        android:text="深圳宝安深圳宝安深圳宝安深圳宝安"
                         android:textColor="@color/main_deep_white" />
                 </LinearLayout>
             </FrameLayout>
@@ -78,10 +72,10 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:scaleType="centerInside"
-                    android:src="@drawable/campus_person" />
+                    android:src="@drawable/campus_person_icon" />
 
                 <TextView
                     android:id="@+id/txt_number"
@@ -95,6 +89,7 @@
                     android:id="@+id/img_campus_home_mumber_C"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:padding="2dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_launcher" />
 
@@ -117,12 +112,7 @@
                 <TextView
                     android:id="@+id/txt_campus_home_mumber_count"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:drawablePadding="5dp"
-                    android:drawableRight="@drawable/right_arrow"
-                    android:text="56人"
-                    android:textColor="@color/main_gary" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -137,10 +127,10 @@
 
                 <ImageView
                     android:id="@+id/imageView5"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:scaleType="centerInside"
-                    android:src="@drawable/campus_news" />
+                    android:src="@drawable/campus_news_icon" />
 
                 <TextView
                     android:id="@+id/tv_campus_home_news_title"
@@ -157,7 +147,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:text="25条"
                     android:textColor="@color/main_light_black"
                     android:textSize="@dimen/font_size_medium" />
             </LinearLayout>

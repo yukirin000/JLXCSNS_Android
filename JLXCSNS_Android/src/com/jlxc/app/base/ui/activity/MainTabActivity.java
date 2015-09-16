@@ -61,7 +61,7 @@ public class MainTabActivity extends BaseActivity {
 	// MessageMainFragment.class,DiscoveryFragment.class,
 	// PersonalFragment.class };
 	private Class<?> fragmentArray[] = { MainNewsListFragment.class,
-			MessageMainFragment.class, DiscoveryGroupFragment.class,
+			DiscoveryGroupFragment.class, MessageMainFragment.class,
 			PersonalFragment.class };
 
 	private int mImageViewArray[] = { R.drawable.tab_home_btn,

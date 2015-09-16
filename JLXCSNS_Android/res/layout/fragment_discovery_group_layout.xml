@@ -10,7 +10,7 @@
         android:id="@+id/layout_title_rootview"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_height_size"
-        android:background="@color/main_yellow"
+        android:background="@color/main_clear"
         android:gravity="center"
         android:orientation="horizontal" >
 
@@ -19,12 +19,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/selector_main_yellow_click"
+            android:background="@color/main_clear"
             android:clickable="true"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="8dp" >
-
+<!-- android:background="@drawable/selector_main_yellow_click" -->
             <TextView
                 android:id="@+id/text_discovery_group_title"
                 android:layout_width="wrap_content"
