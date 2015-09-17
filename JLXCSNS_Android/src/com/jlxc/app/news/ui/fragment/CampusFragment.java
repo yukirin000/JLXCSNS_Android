@@ -83,7 +83,10 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
+/**
+ * 本fragment暂时没有用到
+ * 
+ * ***/
 public class CampusFragment extends BaseFragment {
 
 	// 动态listview

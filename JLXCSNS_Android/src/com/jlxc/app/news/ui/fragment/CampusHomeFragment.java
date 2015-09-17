@@ -43,13 +43,16 @@ import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
-import com.jlxc.app.news.ui.activity.CampusNewsListActivity;
+import com.jlxc.app.news.ui.activity.CampusNewsActivity;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
+/**
+ * 本fragment暂时没有用到
+ * 
+ * ***/
 public class CampusHomeFragment extends BaseFragment {
 
 	// 动态listview
@@ -328,7 +331,7 @@ public class CampusHomeFragment extends BaseFragment {
 			case R.id.unread_news_layout:
 				//未读新消息隐藏
 				unreadNewsTextView.setVisibility(View.GONE);
-				Intent intent = new Intent(getActivity(), CampusNewsListActivity.class);
+				Intent intent = new Intent(getActivity(), CampusNewsActivity.class);
 //				intent.putExtra(CampusNewsListActivity.SCHOOL_CODE, UserManager.getInstance().getUser().getSchool_code());
 				startActivityWithRight(intent);
 				break;				

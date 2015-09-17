@@ -57,54 +57,54 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 	public static final int PHOTO_RESOULT = 4;// 结果
 	public static final int GET_DEPARTMENT_REQUEST_CODE = 5;
 	public static final String IMAGE_UNSPECIFIED = "image/*";
-	
-	//图片名字
+
+	// 图片名字
 	private String tmpImageName;
-	//当前图片名字
+	// 当前图片名字
 	private String currentImageName;
-	//圈子名
+	// 圈子名
 	@ViewInject(R.id.topic_name_edit_text)
 	private EditText topicNameEditText;
-	//圈子图片
+	// 圈子图片
 	@ViewInject(R.id.topic_image)
 	private ImageView topicImageView;
-	//圈子介绍
+	// 圈子介绍
 	@ViewInject(R.id.topic_desc_edit_text)
 	private EditText topicDescEditText;
-	//圈子类别
+	// 圈子类别
 	@ViewInject(R.id.topic_category_text_view)
 	private TextView topicCategoryTextView;
-	//圈子类别ID
-	private int topicCategoryID; 
-	//类型list
+	// 圈子类别ID
+	private int topicCategoryID;
+	// 类型list
 	private List<GroupCategoryModel> categoryModels;
-	
-	//统计处理点击
-	@OnClick({R.id.topic_image,R.id.topic_add_layout, R.id.base_ll_right_btns, R.id.topic_category_text_view})
+
+	// 统计处理点击
+	@OnClick({ R.id.topic_image, R.id.topic_add_layout,
+			R.id.base_ll_right_btns, R.id.topic_category_text_view })
 	private void clickEvent(View view) {
 		switch (view.getId()) {
-		//头像点击
+		// 头像点击
 		case R.id.topic_image:
 			showChoiceImageAlert();
 			break;
-		//选择类型
+		// 选择类型
 		case R.id.topic_category_text_view:
 			choiceCategory();
 			break;
 		case R.id.topic_add_layout:
-			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
-	        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-	        break;
+			InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+			break;
 		case R.id.base_ll_right_btns:
-			//完成
+			// 完成
 			createNewGroupFinish();
 			break;
 		default:
 			break;
 		}
 	}
-	
-	
+
 	@Override
 	public int setLayoutId() {
 		// TODO Auto-generated method stub
@@ -113,50 +113,58 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 
 	@Override
 	protected void setUpView() {
-		setBarText("创建一个新圈子~");
+		setBarText("创建一个新频道");
 		addRightBtn("完成");
 		categoryModels = new ArrayList<GroupCategoryModel>();
 	}
 
-	//选择类别
+	// 选择类别
 	private void choiceCategory() {
-		//存在直接用
+		// 存在直接用
 		if (categoryModels.size() > 0) {
 			showCategoryList();
-		}else {
+		} else {
 			showLoading("获取中..", true);
-			//不存在获取一次
+			// 不存在获取一次
 			String path = JLXCConst.GET_TOPIC_CATEGORY;
 			HttpManager.get(path, new JsonRequestCallBack<String>(
 					new LoadDataHandler<String>() {
 
 						@Override
-						public void onSuccess(JSONObject jsonResponse, String flag) {
+						public void onSuccess(JSONObject jsonResponse,
+								String flag) {
 							super.onSuccess(jsonResponse, flag);
 							hideLoading();
-							int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+							int status = jsonResponse
+									.getInteger(JLXCConst.HTTP_STATUS);
 							if (status == JLXCConst.STATUS_SUCCESS) {
-								//已经有了
+								// 已经有了
 								if (categoryModels.size() > 0) {
 									showCategoryList();
 									return;
 								}
-								JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-								JSONArray categoryArray = jResult.getJSONArray(JLXCConst.HTTP_LIST);
-								//模型拼装
-								for (int i=0; i < categoryArray.size(); i++) {
-									JSONObject object = categoryArray.getJSONObject(i);
+								JSONObject jResult = jsonResponse
+										.getJSONObject(JLXCConst.HTTP_RESULT);
+								JSONArray categoryArray = jResult
+										.getJSONArray(JLXCConst.HTTP_LIST);
+								// 模型拼装
+								for (int i = 0; i < categoryArray.size(); i++) {
+									JSONObject object = categoryArray
+											.getJSONObject(i);
 									GroupCategoryModel model = new GroupCategoryModel();
-									model.setCategory_id(object.getIntValue("category_id"));
-									model.setCategory_name(object.getString("category_name"));
+									model.setCategory_id(object
+											.getIntValue("category_id"));
+									model.setCategory_name(object
+											.getString("category_name"));
 									categoryModels.add(model);
 								}
-								
+
 								showCategoryList();
 							}
 
 							if (status == JLXCConst.STATUS_FAIL) {
-								ToastUtil.show(CreateGroupActivity.this, "获取失败,请重试");
+								ToastUtil.show(CreateGroupActivity.this,
+										"获取失败,请重试");
 							}
 						}
 
@@ -165,19 +173,21 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 								String flag) {
 							hideLoading();
 							super.onFailure(arg0, arg1, flag);
-							ToastUtil.show(CreateGroupActivity.this, "获取失败,请重试");
+							ToastUtil
+									.show(CreateGroupActivity.this, "获取失败,请重试");
 						}
 
 					}, null));
 		}
 	}
-	
+
 	private void showCategoryList() {
 		List<String> menuList = new ArrayList<String>();
 		for (GroupCategoryModel category : categoryModels) {
-			menuList.add(category.getCategory_name());			
+			menuList.add(category.getCategory_name());
 		}
-		final CustomListViewDialog downDialog = new CustomListViewDialog(this, menuList);
+		final CustomListViewDialog downDialog = new CustomListViewDialog(this,
+				menuList);
 		downDialog.setClickCallBack(new ClickCallBack() {
 			@Override
 			public void Onclick(View view, int which) {
@@ -194,55 +204,64 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 			}
 		});
 		downDialog.show();
-		
+
 	}
-	
-	//创建完成
+
+	// 创建完成
 	private void createNewGroupFinish() {
-		//封面
+		// 封面
 		if (null == currentImageName || currentImageName.length() < 1) {
-			ToastUtil.show(this, "圈子封面不能没有~");
+			ToastUtil.show(this, "封面怎么可以没有 ∪︿∪");
 			return;
 		}
-		//名称
+		// 名称
 		if (topicNameEditText.getText().toString().trim().length() < 1) {
-			ToastUtil.show(this, "圈子标题不能没有~");
-			return;
-		}		
-		//名称
-		if (topicNameEditText.getText().toString().trim().length() > 16) {
-			ToastUtil.show(this, "圈子标题不能超过16个字~");
-			return;
-		}				
-		//介绍
-		if (topicDescEditText.getText().toString().trim().length() < 1) {
-			ToastUtil.show(this, "圈子描述不能没有~");
-			return;
-		}		
-		//介绍
-		if (topicDescEditText.getText().toString().trim().length() > 200) {
-			ToastUtil.show(this, "圈子描述不能超过200个字~");
-			return;
-		}						
-		//类型
-		if (topicCategoryID < 1) {
-			ToastUtil.show(this, "类型不能没有。。");
+			ToastUtil.show(this, "标题怎么可以没有 ∪︿∪");
 			return;
 		}
-		
+		// 名称
+		if (topicNameEditText.getText().toString().trim().length() > 16) {
+			ToastUtil.show(this, "标题不能超过16个字  ∪︿∪");
+			return;
+		}
+		// 介绍
+		if (topicDescEditText.getText().toString().trim().length() < 1) {
+			ToastUtil.show(this, "描述不能没有  ∪︿∪");
+			return;
+		}
+		// 介绍
+		if (topicDescEditText.getText().toString().trim().length() < 25) {
+			ToastUtil.show(this, "描述不能少于26个字 ∪︿∪");
+			return;
+		}
+		// 介绍
+		if (topicDescEditText.getText().toString().trim().length() > 200) {
+			ToastUtil.show(this, "描述不能超过200个字");
+			return;
+		}
+		// 类型
+		if (topicCategoryID < 1) {
+			ToastUtil.show(this, "类型还没选呢  ∪︿∪");
+			return;
+		}
+
 		// 参数设置
 		RequestParams params = new RequestParams();
-		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid() + "");
-		params.addBodyParameter("topic_name", topicNameEditText.getText().toString().trim());
-		params.addBodyParameter("topic_desc", topicDescEditText.getText().toString().trim());
+		params.addBodyParameter("user_id", UserManager.getInstance().getUser()
+				.getUid()
+				+ "");
+		params.addBodyParameter("topic_name", topicNameEditText.getText()
+				.toString().trim());
+		params.addBodyParameter("topic_desc", topicDescEditText.getText()
+				.toString().trim());
 		params.addBodyParameter("category_id", topicCategoryID + "");
-		File uplodaFile = new File(FileUtil.BIG_IMAGE_PATH +currentImageName);
+		File uplodaFile = new File(FileUtil.BIG_IMAGE_PATH + currentImageName);
 		if (!uplodaFile.exists()) {
 			return;
 		}
 		params.addBodyParameter("image", uplodaFile);
 
-		showLoading("创建中^_^", false);
+		showLoading("创建中 (≡ω≡．)", false);
 
 		HttpManager.post(JLXCConst.POST_NEW_TOPIC, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
@@ -252,11 +271,15 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 						super.onSuccess(jsonResponse, flag);
 						LogUtils.i(jsonResponse.toJSONString(), 1);
 						hideLoading();
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							ToastUtil.show(CreateGroupActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+							ToastUtil.show(CreateGroupActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 							// 删除临时文件
-							File tmpFile = new File(FileUtil.BIG_IMAGE_PATH +currentImageName);
+							File tmpFile = new File(FileUtil.BIG_IMAGE_PATH
+									+ currentImageName);
 							if (tmpFile.exists()) {
 								tmpFile.delete();
 							}
@@ -266,8 +289,9 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(CreateGroupActivity.this, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
+							ToastUtil.show(CreateGroupActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 
@@ -276,108 +300,118 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 							String flag) {
 						hideLoading();
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(CreateGroupActivity.this, "网络异常");
+						ToastUtil.show(CreateGroupActivity.this, "网络异常  ∪︿∪");
 					}
 				}, null));
 	}
-	
+
 	private void showChoiceImageAlert() {
-		
+
 		// 设置为头像
-		final CustomSelectPhotoDialog selectDialog = new CustomSelectPhotoDialog(this);
+		final CustomSelectPhotoDialog selectDialog = new CustomSelectPhotoDialog(
+				this);
 		selectDialog.show();
-		selectDialog.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
+		selectDialog
+				.setClicklistener(new CustomSelectPhotoDialog.ClickListenerInterface() {
 
 					@Override
 					public void onSelectGallery() {
-						//相册
-						tmpImageName = JLXCUtils.getPhotoFileName()+"";
 						// 相册
-						Intent intentAlbum = new Intent(CreateGroupActivity.this,GalleyActivity.class);
-						intentAlbum.putExtra(GalleyActivity.INTENT_KEY_SELECTED_COUNT,0);
-						intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE, true);
+						tmpImageName = JLXCUtils.getPhotoFileName() + "";
+						// 相册
+						Intent intentAlbum = new Intent(
+								CreateGroupActivity.this, GalleyActivity.class);
+						intentAlbum.putExtra(
+								GalleyActivity.INTENT_KEY_SELECTED_COUNT, 0);
+						intentAlbum.putExtra(GalleyActivity.INTENT_KEY_ONE,
+								true);
 						startActivityForResult(intentAlbum, ALBUM_SELECT);
 						selectDialog.dismiss();
 					}
 
 					@Override
 					public void onSelectCamera() {
-						//相机
-						Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-						tmpImageName = JLXCUtils.getPhotoFileName()+"";
-						File tmpFile = new File(FileUtil.TEMP_PATH+tmpImageName);
+						// 相机
+						Intent intentCamera = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						tmpImageName = JLXCUtils.getPhotoFileName() + "";
+						File tmpFile = new File(FileUtil.TEMP_PATH
+								+ tmpImageName);
 						intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
-				                Uri.fromFile(tmpFile));
+								Uri.fromFile(tmpFile));
 						startActivityForResult(intentCamera, TAKE_PHOTO);
 						selectDialog.dismiss();
 					}
 
-				});		
+				});
 	}
-	
-	//图片滤镜
-	 @Override  
-	 protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
-	        // TODO Auto-generated method stub  
-	        super.onActivityResult(requestCode, resultCode, data);  
-	        if (resultCode == Activity.RESULT_OK) {  
-	            String sdStatus = Environment.getExternalStorageState();  
-	            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-	            	LogUtils.i("SD card is not avaiable/writeable right now.", 1);
-	                return;  
-	            }  
-	        	//头像需要缩放	            
-	            switch (requestCode) {
-	            case TAKE_PHOTO:// 当选择拍照时调用   
-	            	// 图片压缩
-					int[] screenSize = getScreenSize();
-					if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0],
-							screenSize[1])) {
-						displayImage(tmpImageName);
-					}
-	                break;
-	            case ALBUM_SELECT:// 当选择从本地获取图片时
-	            	if (data != null) {
-	            		@SuppressWarnings("unchecked")
-						List<String> resultList = (List<String>) data.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
-						// 循环处理图片
-						for (String fileRealPath : resultList) {
-							//只取一张
-							int[] screenSize1 = getScreenSize();
-							if (fileRealPath != null && FileUtil.tempToLocalPath(fileRealPath, tmpImageName,
-											screenSize1[0], screenSize1[1])) {
-								displayImage(tmpImageName);
-								break;
-							}
+
+	// 图片滤镜
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == Activity.RESULT_OK) {
+			String sdStatus = Environment.getExternalStorageState();
+			if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+				LogUtils.i("SD card is not avaiable/writeable right now.", 1);
+				return;
+			}
+			// 头像需要缩放
+			switch (requestCode) {
+			case TAKE_PHOTO:// 当选择拍照时调用
+				// 图片压缩
+				int[] screenSize = getScreenSize();
+				if (FileUtil.tempToLocalPath(tmpImageName, screenSize[0],
+						screenSize[1])) {
+					displayImage(tmpImageName);
+				}
+				break;
+			case ALBUM_SELECT:// 当选择从本地获取图片时
+				if (data != null) {
+					@SuppressWarnings("unchecked")
+					List<String> resultList = (List<String>) data
+							.getSerializableExtra(GalleyActivity.INTENT_KEY_PHOTO_LIST);
+					// 循环处理图片
+					for (String fileRealPath : resultList) {
+						// 只取一张
+						int[] screenSize1 = getScreenSize();
+						if (fileRealPath != null
+								&& FileUtil.tempToLocalPath(fileRealPath,
+										tmpImageName, screenSize1[0],
+										screenSize1[1])) {
+							displayImage(tmpImageName);
+							break;
 						}
 					}
-	                break;
-	            }
-	        }  
-	 }
-	 
-	 public void displayImage(String imagePath) {
-		 
-		 currentImageName = tmpImageName;
-		 
-		 DisplayImageOptions headImageOptions = new DisplayImageOptions.Builder()  
-	        .showImageOnLoading(R.drawable.default_avatar)  
-	        .showImageOnFail(R.drawable.default_avatar)  
-	        .cacheInMemory(false)  
-	        .cacheOnDisk(false)  
-	        .bitmapConfig(Bitmap.Config.RGB_565)  
-	        .build();
-		
-		ImageLoader.getInstance().displayImage("file://"+FileUtil.BIG_IMAGE_PATH + imagePath, topicImageView, headImageOptions);
+				}
+				break;
+			}
+		}
+	}
+
+	public void displayImage(String imagePath) {
+
+		currentImageName = tmpImageName;
+
+		DisplayImageOptions headImageOptions = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnFail(R.drawable.default_avatar)
+				.cacheInMemory(false).cacheOnDisk(false)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
+
+		ImageLoader.getInstance().displayImage(
+				"file://" + FileUtil.BIG_IMAGE_PATH + imagePath,
+				topicImageView, headImageOptions);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub 
+		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
-		outState.putSerializable("tmpImageName", tmpImageName);  
+		outState.putSerializable("tmpImageName", tmpImageName);
 	}
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -386,5 +420,5 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 			tmpImageName = savedInstanceState.getString("tmpImageName");
 		}
 	}
-	
+
 }

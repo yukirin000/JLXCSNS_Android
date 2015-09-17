@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="创建的人"
-                    android:textColor="@color/main_brown"
+                    android:textColor="@color/main_deep_black"
                     android:textSize="@dimen/font_size_medium" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:text=""
-                    android:textColor="@color/main_deep_black" />
+                    android:textColor="@color/main_gary" />
 
                 <ImageView
                     android:id="@+id/create_head_image_view"
@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="关注的人"
-                    android:textColor="@color/main_brown"
+                    android:textColor="@color/main_deep_black"
                     android:textSize="@dimen/font_size_medium" />
 
                 <ImageView
@@ -170,11 +170,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:drawablePadding="10dp"
                     android:drawableRight="@drawable/right_arrow"
                     android:gravity="center_vertical"
-                    android:drawablePadding="10dp"
                     android:text=""
-                    android:textColor="@color/main_deep_black" />
+                    android:textColor="@color/main_gary" />
             </LinearLayout>
 
             <LinearLayout
@@ -191,7 +191,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="频道介绍"
-                    android:textColor="@color/main_brown"
+                    android:textColor="@color/main_deep_black"
                     android:textSize="@dimen/font_size_medium" />
 
                 <TextView
@@ -200,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text=""
-                    android:textColor="@color/main_deep_black"
+                    android:textColor="@color/main_gary"
                     android:textSize="@dimen/font_size_small" />
             </LinearLayout>
 
@@ -209,8 +209,9 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/selector_dialog_confirm_btn_click"
+                android:layout_marginBottom="40dp"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/selector_dialog_confirm_btn_click"
                 android:text="关注"
                 android:textColor="@color/main_brown"
                 android:visibility="gone" />

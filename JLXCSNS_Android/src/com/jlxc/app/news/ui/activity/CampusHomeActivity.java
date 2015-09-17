@@ -1,4 +1,4 @@
-package com.jlxc.app.group.ui.activity;
+package com.jlxc.app.news.ui.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,9 @@ import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.ui.fragment.CampusNewsFragment;
 import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
-import com.jlxc.app.news.ui.activity.CampusNewsListActivity;
+import com.jlxc.app.news.ui.activity.CampusNewsActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -223,8 +222,8 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 			public void onClick(View arg0) {
 				// 跳转至校园动态页面
 				Intent intentToGroupNews = new Intent();
-				intentToGroupNews.setClass(CampusHomeActivity.this,CampusNewsListActivity.class);
-				intentToGroupNews.putExtra(CampusNewsFragment.INTENT_SCHOOL_CODE_KEY, schoolCode);
+				intentToGroupNews.setClass(CampusHomeActivity.this,CampusNewsActivity.class);
+				intentToGroupNews.putExtra(CampusNewsActivity.INTENT_SCHOOL_CODE_KEY, schoolCode);
 				startActivityWithRight(intentToGroupNews);
 			}
 		});

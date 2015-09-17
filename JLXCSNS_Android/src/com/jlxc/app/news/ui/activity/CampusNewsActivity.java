@@ -1,31 +1,21 @@
-package com.jlxc.app.news.ui.fragment;
+package com.jlxc.app.news.ui.activity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -39,74 +29,59 @@ import com.jlxc.app.base.adapter.HelloHaBaseAdapterHelper;
 import com.jlxc.app.base.adapter.MultiItemTypeSupport;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
-import com.jlxc.app.base.manager.BitmapManager;
 import com.jlxc.app.base.manager.HttpManager;
 import com.jlxc.app.base.manager.UserManager;
-import com.jlxc.app.base.ui.fragment.BaseFragment;
-import com.jlxc.app.base.ui.view.CustomListViewDialog;
-import com.jlxc.app.base.ui.view.CustomListViewDialog.ClickCallBack;
+import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.ConfigUtils;
-import com.jlxc.app.base.utils.HttpCacheUtils;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
+import com.jlxc.app.group.model.SchoolItemModel;
+import com.jlxc.app.group.model.SchoolItemModel.SchoolNewsBodyItem;
+import com.jlxc.app.group.model.SchoolItemModel.SchoolNewsLikeListItem;
+import com.jlxc.app.group.model.SchoolItemModel.SchoolNewsOperateItem;
+import com.jlxc.app.group.model.SchoolItemModel.SchoolNewsTitleItem;
+import com.jlxc.app.group.utils.NewsToSchoolItem;
 import com.jlxc.app.news.model.CampusPersonModel;
 import com.jlxc.app.news.model.ImageModel;
-import com.jlxc.app.news.model.ItemModel;
-import com.jlxc.app.news.model.ItemModel.BodyItem;
-import com.jlxc.app.news.model.ItemModel.LikeListItem;
-import com.jlxc.app.news.model.ItemModel.OperateItem;
-import com.jlxc.app.news.model.ItemModel.TitleItem;
 import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.model.NewsModel;
-import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
-import com.jlxc.app.news.ui.activity.CampusAllPersonActivity;
-import com.jlxc.app.news.ui.activity.NewsDetailActivity;
-import com.jlxc.app.news.ui.view.MultiImageMetroView;
-import com.jlxc.app.news.ui.view.MultiImageMetroView.JumpCallBack;
-import com.jlxc.app.news.ui.view.TextViewHandel;
 import com.jlxc.app.news.ui.view.LikeButton;
 import com.jlxc.app.news.ui.view.LikeImageListView;
 import com.jlxc.app.news.ui.view.LikeImageListView.EventCallBack;
-import com.jlxc.app.news.ui.view.MultiImageView;
-import com.jlxc.app.news.utils.DataToItem;
+import com.jlxc.app.news.ui.view.MultiImageMetroView;
+import com.jlxc.app.news.ui.view.MultiImageMetroView.JumpCallBack;
+import com.jlxc.app.news.ui.view.TextViewHandel;
 import com.jlxc.app.news.utils.NewsOperate;
 import com.jlxc.app.news.utils.NewsOperate.LikeCallBack;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
-import com.lidroid.xutils.bitmap.PauseOnScrollListener;
-import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
-import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class CampusNewsListFragment extends BaseFragment {
+public class CampusNewsActivity extends BaseActivityWithTopBar {
 
+	// 学校ID
+	public static final String INTENT_SCHOOL_CODE_KEY = "schoolCode";
 	// 动态listview
 	@ViewInject(R.id.campus_listview)
 	private PullToRefreshListView campusListView;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
-	private List<ItemModel> itemDataList = null;
+	private List<SchoolItemModel> itemDataList = null;
 	// 动态列表适配器
-	private HelloHaAdapter<ItemModel> newsAdapter = null;
+	private HelloHaAdapter<SchoolItemModel> newsAdapter = null;
 	// 使支持多种item
-	private MultiItemTypeSupport<ItemModel> multiItemTypeCampus = null;
-	// 上下文信息
-	private Context mContext;
+	private MultiItemTypeSupport<SchoolItemModel> multiItemTypeCampus = null;
 	// 加载图片
 	private ImageLoader imgLoader;
 	// 图片配置
 	private DisplayImageOptions options;
-	// 屏幕的尺寸
-	private int screenWidth = 0;
 	// 当前的数据页
 	private int pageIndex = 1;
 	// 时间戳
@@ -118,45 +93,62 @@ public class CampusNewsListFragment extends BaseFragment {
 	// 点击view监听对象
 	private ItemViewClick itemViewClickListener;
 	// 对动态的操作
-	private NewsOperate newsOPerate;
+	private NewsOperate<SchoolItemModel> newsOPerate;
 	// 当前点赞对应的gridview的adpter
 	private LikeImageListView currentLikeListControl;
 	// 是否是最后一条数据
 	private boolean isLast = false;
+	// 学校代码
+	private String schoolCode;
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.fragment_campus_layout;
+		return R.layout.activity_campus_news_list;
 	}
 
 	@Override
-	public void loadLayout(View rootView) {
-	}
+	protected void setUpView() {
+		setBarText("校园新鲜事");
+//		Intent intent = getIntent();
+//
+//		if (intent.hasExtra(CampusNewsFragment.INTENT_SCHOOL_CODE_KEY)) {
+//			String schoolCode = intent
+//					.getStringExtra(CampusNewsFragment.INTENT_SCHOOL_CODE_KEY);
+//			if (!schoolCode.equals(UserManager.getInstance().getUser()
+//					.getSchool_code())) {
+//				setBarText("别人学校中发生的事~");
+//			}
+//		}
 
-	@Override
-	public void setUpViews(View rootView) {
 		init();
 		initBoradcastReceiver();
 		multiItemTypeSet();
 		newsListViewSet();
-		// 获取上次缓存的数据
-		setLastData(UserManager.getInstance().getUser().getUid(), UserManager
-				.getInstance().getUser().getSchool_code());
 		// 进入本页面时请求数据
 		getCampusData(
 				String.valueOf(UserManager.getInstance().getUser().getUid()),
-				String.valueOf(pageIndex), UserManager.getInstance().getUser()
-						.getSchool_code(), "");
+				String.valueOf(pageIndex), "");
+
 	}
 
 	/**
 	 * 数据的初始化
 	 * */
 	private void init() {
-		mContext = this.getActivity().getApplicationContext();
+		Intent intent = this.getIntent();
+		if (intent.hasExtra(INTENT_SCHOOL_CODE_KEY)) {
+			schoolCode = intent.getStringExtra(INTENT_SCHOOL_CODE_KEY);
+		} else {
+			LogUtils.e("未传递查看类型");
+		}
+		// 处理学校
+		if (null == schoolCode || schoolCode.length() < 1) {
+			schoolCode = UserManager.getInstance().getUser().getSchool_code();
+		}
 
 		itemViewClickListener = new ItemViewClick();
-		newsOPerate = new NewsOperate(mContext);
+		newsOPerate = new NewsOperate<SchoolItemModel>(
+				CampusNewsActivity.this);
 		// 图片加载初始化
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
@@ -164,9 +156,6 @@ public class CampusNewsListFragment extends BaseFragment {
 				.showImageOnLoading(R.drawable.default_avatar)
 				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
 				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-		// 获取屏幕尺寸
-		DisplayMetrics displayMet = getResources().getDisplayMetrics();
-		screenWidth = displayMet.widthPixels;
 	}
 
 	/**
@@ -175,7 +164,7 @@ public class CampusNewsListFragment extends BaseFragment {
 	private void initBoradcastReceiver() {
 		LocalBroadcastManager mLocalBroadcastManager;
 		mLocalBroadcastManager = LocalBroadcastManager
-				.getInstance(getActivity());
+				.getInstance(CampusNewsActivity.this);
 		IntentFilter myIntentFilter = new IntentFilter();
 		myIntentFilter.addAction(JLXCConst.BROADCAST_NEWS_LIST_REFRESH);
 		// 注册广播
@@ -186,55 +175,55 @@ public class CampusNewsListFragment extends BaseFragment {
 	/***
 	 * 上次缓存的数据
 	 * */
-	@SuppressWarnings("unchecked")
-	private void setLastData(int userID, String schoolCode) {
-		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
-				+ "&page=" + 1 + "&school_code=" + schoolCode + "&frist_time=";
-		try {
-			JSONObject JObject = HttpCacheUtils.getHttpCache(path);
-			if (null != JObject) {
-				int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
-				if (status == JLXCConst.STATUS_SUCCESS) {
-					JSONObject jResult = JObject
-							.getJSONObject(JLXCConst.HTTP_RESULT);
-					if (null != jResult) {
-						// 获取数据列表
-						List<JSONObject> JNewsList = (List<JSONObject>) jResult
-								.get(JLXCConst.HTTP_LIST);
-						List<JSONObject> JPersonList = (List<JSONObject>) jResult
-								.get("info");
-
-						if (null != JNewsList && null != JPersonList) {
-							JsonToItemData(JNewsList, JPersonList);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			LogUtils.e("记载缓存出错");
-		}
-	}
+	// @SuppressWarnings("unchecked")
+	// private void setLastData(int userID, String schoolCode) {
+	// String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
+	// + "&page=" + 1 + "&school_code=" + schoolCode + "&frist_time=";
+	// try {
+	// JSONObject JObject = HttpCacheUtils.getHttpCache(path);
+	// if (null != JObject) {
+	// int status = JObject.getInteger(JLXCConst.HTTP_STATUS);
+	// if (status == JLXCConst.STATUS_SUCCESS) {
+	// JSONObject jResult = JObject
+	// .getJSONObject(JLXCConst.HTTP_RESULT);
+	// if (null != jResult) {
+	// // 获取数据列表
+	// List<JSONObject> JNewsList = (List<JSONObject>) jResult
+	// .get(JLXCConst.HTTP_LIST);
+	// List<JSONObject> JPersonList = (List<JSONObject>) jResult
+	// .get("info");
+	//
+	// if (null != JNewsList && null != JPersonList) {
+	// JsonToItemData(JNewsList, JPersonList);
+	// }
+	// }
+	// }
+	// }
+	// } catch (Exception e) {
+	// LogUtils.e("记载缓存出错");
+	// }
+	// }
 
 	/**
 	 * listView 支持多种item的设置
 	 * */
 	private void multiItemTypeSet() {
-		multiItemTypeCampus = new MultiItemTypeSupport<ItemModel>() {
+		multiItemTypeCampus = new MultiItemTypeSupport<SchoolItemModel>() {
 
 			@Override
-			public int getLayoutId(int position, ItemModel itemData) {
+			public int getLayoutId(int position, SchoolItemModel itemData) {
 				int layoutId = 0;
 				switch (itemData.getItemType()) {
-				case ItemModel.CAMPUS_TITLE:
+				case SchoolItemModel.SCHOOL_NEWS_TITLE:
 					layoutId = R.layout.campus_news_item_title_layout;
 					break;
-				case ItemModel.CAMPUS_BODY:
+				case SchoolItemModel.SCHOOL_NEWS_BODY:
 					layoutId = R.layout.campus_news_item_body_layout;
 					break;
-				case ItemModel.CAMPUS_OPERATE:
+				case SchoolItemModel.SCHOOL_NEWS_OPERATE:
 					layoutId = R.layout.campus_news_item_operate_layout;
 					break;
-				case ItemModel.CAMPUS_LIKELIST:
+				case SchoolItemModel.SCHOOL_NEWS_LIKELIST:
 					layoutId = R.layout.campus_news_item_likelist_layout;
 					break;
 				default:
@@ -245,24 +234,24 @@ public class CampusNewsListFragment extends BaseFragment {
 
 			@Override
 			public int getViewTypeCount() {
-				return ItemModel.CAMPUS_ITEM_TYPE_COUNT;
+				return SchoolItemModel.SCHOOL_NEWS_ITEM_TYPE_COUNT;
 			}
 
 			@Override
-			public int getItemViewType(int postion, ItemModel itemData) {
+			public int getItemViewType(int postion, SchoolItemModel itemData) {
 				int itemtype = 0;
 				switch (itemData.getItemType()) {
-				case ItemModel.CAMPUS_TITLE:
-					itemtype = ItemModel.CAMPUS_TITLE;
+				case SchoolItemModel.SCHOOL_NEWS_TITLE:
+					itemtype = SchoolItemModel.SCHOOL_NEWS_TITLE;
 					break;
-				case ItemModel.CAMPUS_BODY:
-					itemtype = ItemModel.CAMPUS_BODY;
+				case SchoolItemModel.SCHOOL_NEWS_BODY:
+					itemtype = SchoolItemModel.SCHOOL_NEWS_BODY;
 					break;
-				case ItemModel.CAMPUS_OPERATE:
-					itemtype = ItemModel.CAMPUS_OPERATE;
+				case SchoolItemModel.SCHOOL_NEWS_OPERATE:
+					itemtype = SchoolItemModel.SCHOOL_NEWS_OPERATE;
 					break;
-				case ItemModel.CAMPUS_LIKELIST:
-					itemtype = ItemModel.CAMPUS_LIKELIST;
+				case SchoolItemModel.SCHOOL_NEWS_LIKELIST:
+					itemtype = SchoolItemModel.SCHOOL_NEWS_LIKELIST;
 					break;
 				default:
 					break;
@@ -292,9 +281,7 @@ public class CampusNewsListFragment extends BaseFragment {
 					isPullDowm = true;
 					getCampusData(
 							String.valueOf(UserManager.getInstance().getUser()
-									.getUid()), String.valueOf(pageIndex),
-							UserManager.getInstance().getUser()
-									.getSchool_code(), "");
+									.getUid()), String.valueOf(pageIndex), "");
 				}
 			}
 
@@ -307,8 +294,7 @@ public class CampusNewsListFragment extends BaseFragment {
 					getCampusData(
 							String.valueOf(UserManager.getInstance().getUser()
 									.getUid()), String.valueOf(pageIndex),
-							UserManager.getInstance().getUser()
-									.getSchool_code(), latestTimesTamp);
+							latestTimesTamp);
 				}
 			}
 		});
@@ -331,12 +317,12 @@ public class CampusNewsListFragment extends BaseFragment {
 		/**
 		 * adapter的设置
 		 * */
-		newsAdapter = new HelloHaAdapter<ItemModel>(mContext, itemDataList,
-				multiItemTypeCampus) {
+		newsAdapter = new HelloHaAdapter<SchoolItemModel>(
+				CampusNewsActivity.this, itemDataList, multiItemTypeCampus) {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,
-					ItemModel item) {
+					SchoolItemModel item) {
 
 				switch (helper.layoutId) {
 				case R.layout.campus_news_item_title_layout:
@@ -367,8 +353,8 @@ public class CampusNewsListFragment extends BaseFragment {
 	 * titleItem的数据绑定与设置
 	 * */
 	private void setTitleItemView(HelloHaBaseAdapterHelper helper,
-			ItemModel item) {
-		TitleItem titleData = (TitleItem) item;
+			SchoolItemModel item) {
+		SchoolNewsTitleItem titleData = (SchoolNewsTitleItem) item;
 
 		// 显示头像
 		imgLoader.displayImage(titleData.getHeadSubImage(),
@@ -394,11 +380,14 @@ public class CampusNewsListFragment extends BaseFragment {
 	/**
 	 * 设置新闻主题item
 	 * */
-	private void setBodyItemView(HelloHaBaseAdapterHelper helper, ItemModel item) {
-		final BodyItem bodyData = (BodyItem) item;
+	private void setBodyItemView(HelloHaBaseAdapterHelper helper,
+			SchoolItemModel item) {
+		final SchoolNewsBodyItem bodyData = (SchoolNewsBodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
-		//MultiImageView bodyImages = helper.getView(R.id.miv_campus_body_images);
-		MultiImageMetroView  bodyImages = helper.getView(R.id.miv_campus_body_images);
+		// MultiImageView bodyImages =
+		// helper.getView(R.id.miv_campus_body_images);
+		MultiImageMetroView bodyImages = helper
+				.getView(R.id.miv_campus_body_images);
 		bodyImages.imageDataSet(pictureList);
 		// 快速滑动时不加载图片
 		bodyImages.loadImageOnFastSlide(campusListView, true);
@@ -427,8 +416,8 @@ public class CampusNewsListFragment extends BaseFragment {
 		} else {
 			helper.setVisible(R.id.txt_campus_news_content, true);
 			// 设置文字
-			TextViewHandel customTvHandel = new TextViewHandel(getActivity(),
-					bodyData.getNewsContent());
+			TextViewHandel customTvHandel = new TextViewHandel(
+					CampusNewsActivity.this, bodyData.getNewsContent());
 			helper.setVisible(R.id.txt_campus_news_content, true);
 			TextView contentView = helper.getView(R.id.txt_campus_news_content);
 			contentView.setText(bodyData.getNewsContent());
@@ -436,7 +425,7 @@ public class CampusNewsListFragment extends BaseFragment {
 			// bodyData.getNewsContent());
 			// // 长按复制
 			contentView.setOnLongClickListener(TextViewHandel
-					.getLongClickListener(getActivity(),
+					.getLongClickListener(CampusNewsActivity.this,
 							bodyData.getNewsContent()));
 			// 点击
 			helper.setOnClickListener(R.id.txt_campus_news_content, listener);
@@ -455,8 +444,8 @@ public class CampusNewsListFragment extends BaseFragment {
 	 * 设置操作部分item
 	 * */
 	private void setOperateItemView(HelloHaBaseAdapterHelper helper,
-			ItemModel item) {
-		OperateItem opData = (OperateItem) item;
+			SchoolItemModel item) {
+		SchoolNewsOperateItem opData = (SchoolNewsOperateItem) item;
 		// 点赞按钮
 		LikeButton likeBtn = helper.getView(R.id.btn_campus_like);
 		if (opData.getIsLike()) {
@@ -484,8 +473,8 @@ public class CampusNewsListFragment extends BaseFragment {
 	 * 设置点赞部分item
 	 * */
 	private void setLikeListItemView(HelloHaBaseAdapterHelper helper,
-			ItemModel item) {
-		LikeListItem lkData = (LikeListItem) item;
+			SchoolItemModel item) {
+		SchoolNewsLikeListItem lkData = (SchoolNewsLikeListItem) item;
 		List<LikeModel> lkImageList = lkData.getLikeHeadListimage();
 		LikeImageListView likeControl = helper
 				.getView(R.id.control_campus_like_listview);
@@ -504,7 +493,8 @@ public class CampusNewsListFragment extends BaseFragment {
 			@Override
 			public void onAllPersonBtnClick(String newsId) {
 				// 跳转到点赞的人
-				Intent intentToALLPerson = new Intent(mContext,
+				Intent intentToALLPerson = new Intent(
+						CampusNewsActivity.this,
 						AllLikePersonActivity.class);
 				intentToALLPerson.putExtra(
 						AllLikePersonActivity.INTENT_KEY_NEWS_ID, newsId);
@@ -516,8 +506,7 @@ public class CampusNewsListFragment extends BaseFragment {
 	/**
 	 * 获取学校动态的数据
 	 * */
-	private void getCampusData(String userID, String desPage,
-			String schoolCode, String lastTime) {
+	private void getCampusData(String userID, String desPage, String lastTime) {
 		String path = JLXCConst.SCHOOL_NEWS_LIST + "?" + "user_id=" + userID
 				+ "&page=" + desPage + "&school_code=" + schoolCode
 				+ "&frist_time=" + lastTime;
@@ -558,8 +547,9 @@ public class CampusNewsListFragment extends BaseFragment {
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(mContext, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
+							ToastUtil.show(CampusNewsActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 							campusListView.onRefreshComplete();
 							campusListView.setMode(Mode.PULL_FROM_START);
 							isRequestData = false;
@@ -570,7 +560,8 @@ public class CampusNewsListFragment extends BaseFragment {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(mContext, "网络抽筋了，请检查(→_→)");
+						ToastUtil.show(CampusNewsActivity.this,
+								"网络抽筋了，请检查(→_→)");
 						campusListView.onRefreshComplete();
 						campusListView.setMode(Mode.BOTH);
 						isRequestData = false;
@@ -600,22 +591,26 @@ public class CampusNewsListFragment extends BaseFragment {
 			if (null != itemDataList) {
 				itemDataList.clear();
 			}
-			itemDataList = DataToItem.campusDataToItems(newsList, new ArrayList<CampusPersonModel>());
+			itemDataList = NewsToSchoolItem.newsToItem(newsList);
 			newsAdapter.replaceAll(itemDataList);
-			
-			//如果有内容 取第一条消息的时间 作为本地对比时间
-			if (this.newsList.size() > 0) {
-				NewsModel news = this.newsList.get(0);
-				//未读新消息布局
-				//重置未读消息最后一次时间
-				ConfigUtils.saveConfig(ConfigUtils.LAST_REFRESH__SCHOOL_HOME_NEWS_DATE, news.getTimesTamp());
+
+			// 如果有内容 取第一条消息的时间 作为本地对比时间 只有自己的学校才更新
+			if (null != schoolCode
+					&& schoolCode.equals(UserManager.getInstance().getUser()
+							.getSchool_code())) {
+				if (this.newsList.size() > 0) {
+					NewsModel news = this.newsList.get(0);
+					// 未读新消息布局
+					// 重置未读消息最后一次时间
+					ConfigUtils.saveConfig(
+							ConfigUtils.LAST_REFRESH__SCHOOL_HOME_NEWS_DATE,
+							news.getTimesTamp());
+				}
 			}
-			
 		} else {
 			// 加载更多动态信息
 			this.newsList.addAll(newsList);
-			itemDataList.addAll(DataToItem.campusDataToItems(newsList,
-					new ArrayList<CampusPersonModel>()));
+			itemDataList.addAll(NewsToSchoolItem.newsToItem(newsList));
 			newsAdapter.replaceAll(itemDataList);
 		}
 
@@ -638,7 +633,8 @@ public class CampusNewsListFragment extends BaseFragment {
 			case R.id.img_campus_user_head:
 			case R.id.txt_campus_user_name:
 			case R.id.layout_campus_title_rootview:
-				TitleItem titleData = (TitleItem) newsAdapter.getItem(postion);
+				SchoolNewsTitleItem titleData = (SchoolNewsTitleItem) newsAdapter
+						.getItem(postion);
 				if (R.id.layout_campus_title_rootview == viewID) {
 					// 跳转到动态详情
 					jumpToNewsDetail(titleData, NewsConstants.KEY_BOARD_CLOSE,
@@ -653,14 +649,15 @@ public class CampusNewsListFragment extends BaseFragment {
 			case R.id.layout_campus_body_root_view:
 			case R.id.txt_campus_news_content:
 				// 跳转到动态详情
-				BodyItem bodyData = (BodyItem) newsAdapter.getItem(postion);
+				SchoolNewsBodyItem bodyData = (SchoolNewsBodyItem) newsAdapter
+						.getItem(postion);
 				jumpToNewsDetail(bodyData, NewsConstants.KEY_BOARD_CLOSE, null);
 				break;
 
 			case R.id.btn_campus_reply:
 			case R.id.btn_campus_like:
 			case R.id.layout_campus_operate_root_view:
-				OperateItem operateData = (OperateItem) newsAdapter
+				SchoolNewsOperateItem operateData = (SchoolNewsOperateItem) newsAdapter
 						.getItem(postion);
 				if (R.id.layout_campus_operate_root_view == viewID) {
 					// 跳转到动态详情
@@ -678,7 +675,7 @@ public class CampusNewsListFragment extends BaseFragment {
 
 			case R.id.tv_campus_person_title:
 				// 跳转到所有好友列表页面
-				Intent personIntent = new Intent(mContext,
+				Intent personIntent = new Intent(CampusNewsActivity.this,
 						CampusAllPersonActivity.class);
 				personIntent.putExtra("School_Code", UserManager.getInstance()
 						.getUser().getSchool_code());
@@ -694,7 +691,7 @@ public class CampusNewsListFragment extends BaseFragment {
 	 * 点赞操作
 	 * */
 	private void likeOperate(int postion, View view,
-			final OperateItem operateData) {
+			final SchoolNewsOperateItem operateData) {
 
 		final LikeButton oprtView = (LikeButton) view;
 		final int likeListPostion = postion + 1;
@@ -790,7 +787,8 @@ public class CampusNewsListFragment extends BaseFragment {
 	 * 跳转至用户的主页
 	 */
 	private void JumpToHomepage(int userID) {
-		Intent intentUsrMain = new Intent(mContext, OtherPersonalActivity.class);
+		Intent intentUsrMain = new Intent(CampusNewsActivity.this,
+				OtherPersonalActivity.class);
 		intentUsrMain.putExtra(OtherPersonalActivity.INTENT_KEY, userID);
 		startActivityWithRight(intentUsrMain);
 	}
@@ -798,10 +796,10 @@ public class CampusNewsListFragment extends BaseFragment {
 	/***
 	 * 跳转至动态相详情
 	 */
-	private void jumpToNewsDetail(ItemModel itemModel, int keyBoardMode,
-			String commentId) {
+	private void jumpToNewsDetail(SchoolItemModel SchoolItemModel,
+			int keyBoardMode, String commentId) {
 		// 跳转到动态详情
-		Intent intentToNewsDetail = new Intent(mContext,
+		Intent intentToNewsDetail = new Intent(CampusNewsActivity.this,
 				NewsDetailActivity.class);
 		switch (keyBoardMode) {
 		// 键盘关闭
@@ -831,11 +829,12 @@ public class CampusNewsListFragment extends BaseFragment {
 		}
 		// 当前操作的动态id
 		intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_NEWS_ID,
-				itemModel.getNewsID());
+				SchoolItemModel.getNewsID());
 
 		// 找到当前的操作对象
 		for (int index = 0; index < newsList.size(); ++index) {
-			if (newsList.get(index).getNewsID().equals(itemModel.getNewsID())) {
+			if (newsList.get(index).getNewsID()
+					.equals(SchoolItemModel.getNewsID())) {
 				intentToNewsDetail.putExtra(NewsConstants.INTENT_KEY_NEWS_OBJ,
 						newsList.get(index));
 				break;
@@ -844,8 +843,8 @@ public class CampusNewsListFragment extends BaseFragment {
 
 		// 带有返回参数的跳转至动态详情
 		startActivityForResult(intentToNewsDetail, 0);
-		getActivity().overridePendingTransition(R.anim.push_right_in,
-				R.anim.push_right_out);
+		CampusNewsActivity.this.overridePendingTransition(
+				R.anim.push_right_in, R.anim.push_right_out);
 	}
 
 	/**
@@ -864,8 +863,8 @@ public class CampusNewsListFragment extends BaseFragment {
 						if (resultNews.getNewsID().equals(
 								newsList.get(index).getNewsID())) {
 							newsList.set(index, resultNews);
-							newsAdapter.replaceAll(DataToItem
-									.campusDataToItems(newsList, new ArrayList<CampusPersonModel>()));
+							newsAdapter.replaceAll(NewsToSchoolItem
+									.newsToItem(newsList));
 							break;
 						}
 					}
@@ -876,8 +875,8 @@ public class CampusNewsListFragment extends BaseFragment {
 					for (int index = 0; index < newsList.size(); index++) {
 						if (resultID.equals(newsList.get(index).getNewsID())) {
 							newsList.remove(index);
-							newsAdapter.replaceAll(DataToItem
-									.campusDataToItems(newsList, new ArrayList<CampusPersonModel>()));
+							newsAdapter.replaceAll(NewsToSchoolItem
+									.newsToItem(newsList));
 							break;
 						}
 					}
@@ -893,9 +892,7 @@ public class CampusNewsListFragment extends BaseFragment {
 						getCampusData(
 								String.valueOf(UserManager.getInstance()
 										.getUser().getUid()),
-								String.valueOf(pageIndex), UserManager
-										.getInstance().getUser()
-										.getSchool_code(), "");
+								String.valueOf(pageIndex), "");
 					}
 				} else if (resultIntent
 						.hasExtra(NewsConstants.NEWS_LISTVIEW_REFRESH)) {

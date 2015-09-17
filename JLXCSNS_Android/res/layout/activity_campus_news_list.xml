@@ -6,11 +6,19 @@
     android:orientation="vertical" >
 
     <include layout="@layout/layout_title_bar" />
+    <!-- 校园动态的listview -->
 
-    <fragment 
-        android:id="@+id/fragmentCampus"
-        android:name="com.jlxc.app.group.ui.fragment.CampusNewsFragment"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent" />
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/campus_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="#00000000"
+        android:divider="#19000000"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:scrollbars="none"
+        android:smoothScrollbar="true" />
 
 </LinearLayout>

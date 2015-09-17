@@ -41,7 +41,6 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.ui.activity.CampusHomeActivity;
 import com.jlxc.app.group.ui.activity.GroupNewsActivity;
 import com.jlxc.app.group.ui.activity.MyGroupListActivity;
 import com.jlxc.app.news.model.CommentModel;
@@ -56,6 +55,7 @@ import com.jlxc.app.news.model.LikeModel;
 import com.jlxc.app.news.model.NewsConstants;
 import com.jlxc.app.news.model.NewsModel;
 import com.jlxc.app.news.ui.activity.AllLikePersonActivity;
+import com.jlxc.app.news.ui.activity.CampusHomeActivity;
 import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.jlxc.app.news.ui.activity.PublishNewsActivity;
 import com.jlxc.app.news.ui.view.LikeButton;
@@ -163,7 +163,8 @@ public class MainNewsListFragment extends BaseFragment {
 			@Override
 			public void onClick(View v) {
 				// 跳转至校园主页
-				Intent intentCampusInfo = new Intent(mContext,CampusHomeActivity.class);
+				Intent intentCampusInfo = new Intent(mContext,
+						CampusHomeActivity.class);
 				startActivityWithRight(intentCampusInfo);
 			}
 		});
