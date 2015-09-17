@@ -84,9 +84,12 @@ public class MainNewsListFragment extends BaseFragment {
 	// 学校按钮
 	@ViewInject(R.id.txt_school)
 	private TextView schoolBtn;
-	// 标头部分
-	// @ViewInject(R.id.layout_main_head_rootview)
-	// private LinearLayout headLayout;
+	 //标头部分
+//	 @ViewInject(R.id.layout_main_head_rootview)
+//	 private LinearLayout headLayout;
+	//顶部
+//	@ViewInject(R.id.home_top_layout)
+//	private LinearLayout topBarLayout;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
@@ -123,6 +126,9 @@ public class MainNewsListFragment extends BaseFragment {
 	private boolean isLongClick = false;
 	//
 	private View header;
+//	//最后一条
+//	private int lastItem;
+//	private boolean isAnimation;
 
 	@Override
 	public int setLayoutId() {
@@ -358,7 +364,6 @@ public class MainNewsListFragment extends BaseFragment {
 //			                		AnimationSet animationSet = new AnimationSet(true);
 //				                    TranslateAnimation translateAnimation = new TranslateAnimation(0.0f, 0.0f,0.0f,-topBarLayout.getHeight());
 //				                    translateAnimation.setDuration(300);
-//				                    animationSet.setFillAfter(true);
 //				                    animationSet.addAnimation(translateAnimation);
 //				                    animationSet.setAnimationListener(new AnimationListener() {
 //										@Override
@@ -373,6 +378,12 @@ public class MainNewsListFragment extends BaseFragment {
 //											RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) topBarLayout.getLayoutParams();
 //											params.setMargins(0, -topBarLayout.getHeight(), 0, 0);
 //											topBarLayout.setLayoutParams(params);
+//											
+//											RelativeLayout.LayoutParams listParams = (android.widget.RelativeLayout.LayoutParams) newsListView.getLayoutParams();
+//											marginTop = listParams.topMargin;
+//											listParams.setMargins(0, 0, 0, 0);
+//											newsListView.setLayoutParams(listParams);
+//											
 //											isAnimation = false;
 //										}
 //									});
@@ -380,12 +391,10 @@ public class MainNewsListFragment extends BaseFragment {
 //								}
 //		                		
 //			                }else{
-//			                	LogUtils.i("???", 1);
 //			                	if (location[1] < 0) {
 //			                		AnimationSet animationSet = new AnimationSet(true);
 //				                    TranslateAnimation translateAnimation = new TranslateAnimation(0.0f, 0.f,-topBarLayout.getHeight(),0.0f);
 //				                    translateAnimation.setDuration(300);
-//				                    animationSet.setFillAfter(true);
 //				                    animationSet.addAnimation(translateAnimation);
 //				                    animationSet.setAnimationListener(new AnimationListener() {
 //										@Override
@@ -400,6 +409,11 @@ public class MainNewsListFragment extends BaseFragment {
 //											RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) topBarLayout.getLayoutParams();
 //											params.setMargins(0, 0, 0, 0);
 //											topBarLayout.setLayoutParams(params);
+//											
+//											RelativeLayout.LayoutParams listParams = (android.widget.RelativeLayout.LayoutParams) newsListView.getLayoutParams();
+//											listParams.setMargins(0, (int) marginTop, 0, 0);
+//											newsListView.setLayoutParams(listParams);
+//											
 //											isAnimation = false;
 //										}
 //									});
