@@ -13,8 +13,6 @@ import android.graphics.Bitmap;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -330,34 +328,100 @@ public class MainNewsListFragment extends BaseFragment {
 			}
 		});
 
-		// 滑动刷新
-		newsListView.getRefreshableView().setOnScrollListener(
-				new OnScrollListener() {
-
-					@Override
-					public void onScrollStateChanged(AbsListView arg0, int arg1) {
-
-					}
-
-					@Override
-					public void onScroll(AbsListView absListView,
-							int firstVisibleItem, int visibleItemCount,
-							int totalItemCount) {
-						// 计算第一条item的位置
-						int scrolledY = 0;
-						View firstItem = absListView.getChildAt(0);
-						if (firstItem != null) {
-							scrolledY = firstItem.getTop();
-						}
-
-						if (scrolledY >= 0) {
-							// newsListView.getRefreshableView().removeHeaderView(header);
-						} else {
-							// newsListView.getRefreshableView().addHeaderView(header);
-						}
-						LogUtils.i("scrolledY=" + scrolledY);
-					}
-				});
+//		// 滑动刷新
+//		newsListView.getRefreshableView().setOnScrollListener(
+//				new OnScrollListener() {
+//
+//					@Override
+//					public void onScrollStateChanged(AbsListView arg0, int arg1) {
+//
+//					}
+//
+//					@Override
+//					public void onScroll(AbsListView absListView,
+//							int firstVisibleItem, int visibleItemCount,
+//							int totalItemCount) {
+//
+//						if (isAnimation) {
+//							return;
+//						}
+//						
+//						final int[] location = new int[2];  
+//	                	topBarLayout.getLocationOnScreen(location);
+//	                	
+//						if(firstVisibleItem!=lastItem)
+//			            {
+//			                if(firstVisibleItem>lastItem)
+//			                {
+//			                	if (location[1] >= 0) {
+//			                		AnimationSet animationSet = new AnimationSet(true);
+//				                    TranslateAnimation translateAnimation = new TranslateAnimation(0.0f, 0.0f,0.0f,-topBarLayout.getHeight());
+//				                    translateAnimation.setDuration(300);
+//				                    animationSet.setFillAfter(true);
+//				                    animationSet.addAnimation(translateAnimation);
+//				                    animationSet.setAnimationListener(new AnimationListener() {
+//										@Override
+//										public void onAnimationStart(Animation animation) {
+//											isAnimation = true;
+//										}
+//										@Override
+//										public void onAnimationRepeat(Animation animation) {
+//										}
+//										@Override
+//										public void onAnimationEnd(Animation animation) {
+//											RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) topBarLayout.getLayoutParams();
+//											params.setMargins(0, -topBarLayout.getHeight(), 0, 0);
+//											topBarLayout.setLayoutParams(params);
+//											isAnimation = false;
+//										}
+//									});
+//				                    topBarLayout.startAnimation(animationSet);	
+//								}
+//		                		
+//			                }else{
+//			                	LogUtils.i("???", 1);
+//			                	if (location[1] < 0) {
+//			                		AnimationSet animationSet = new AnimationSet(true);
+//				                    TranslateAnimation translateAnimation = new TranslateAnimation(0.0f, 0.f,-topBarLayout.getHeight(),0.0f);
+//				                    translateAnimation.setDuration(300);
+//				                    animationSet.setFillAfter(true);
+//				                    animationSet.addAnimation(translateAnimation);
+//				                    animationSet.setAnimationListener(new AnimationListener() {
+//										@Override
+//										public void onAnimationStart(Animation animation) {
+//											isAnimation = true;
+//										}
+//										@Override
+//										public void onAnimationRepeat(Animation animation) {
+//										}
+//										@Override
+//										public void onAnimationEnd(Animation animation) {
+//											RelativeLayout.LayoutParams params = (android.widget.RelativeLayout.LayoutParams) topBarLayout.getLayoutParams();
+//											params.setMargins(0, 0, 0, 0);
+//											topBarLayout.setLayoutParams(params);
+//											isAnimation = false;
+//										}
+//									});
+//				                    topBarLayout.startAnimation(animationSet);									
+//			                	}
+//			                }
+//			                
+//			                lastItem = firstVisibleItem;
+////			                mScreenY = location[1];
+//			            }else{
+////			                if(mScreenY>location[1])
+////			                {
+////			                    Log.i("--->", "->向上滑动");
+////			                }
+////			                else if(mScreenY<location[1])
+////			                {
+////			                    Log.i("--->", "->向下滑动");
+////			                }
+////			                mScreenY = location[1];
+//			            }
+//					}
+//					
+//				});
 
 		/**
 		 * adapter的设置
