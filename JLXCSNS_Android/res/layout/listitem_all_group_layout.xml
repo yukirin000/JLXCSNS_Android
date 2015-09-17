@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="15dp"
-                android:drawableLeft="@drawable/group_follow_icon"
+                android:drawableLeft="@drawable/group_following_icon"
                 android:drawablePadding="2dp"
                 android:text=" "
                 android:textColor="@color/main_clear_brown"

@@ -44,7 +44,6 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.TimeHandle;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.ui.activity.CampusHomeActivity;
 import com.jlxc.app.group.ui.activity.GroupNewsActivity;
 import com.jlxc.app.news.model.CommentModel;
 import com.jlxc.app.news.model.ImageModel;

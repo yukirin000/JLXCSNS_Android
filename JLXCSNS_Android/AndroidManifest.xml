@@ -64,7 +64,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>
         -->
         <activity android:name="com.jlxc.app.demo.ui.activity.NextActivity" >
         </activity>
@@ -98,7 +98,7 @@
         <activity android:name="com.jlxc.app.base.ui.activity.BigImgLookActivity" />
         <activity android:name="com.jlxc.app.news.ui.activity.ChoiceLocationActivity" >
         </activity>
-         <activity android:name="com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity" >
+        <activity android:name="com.jlxc.app.base.ui.view.gallery.imageloader.GalleyActivity" >
         </activity>
         <!-- 个人 -->
         <activity android:name="com.jlxc.app.personal.ui.activity.PersonalSignActivity" >
@@ -130,7 +130,7 @@
         <activity android:name="com.jlxc.app.personal.ui.activity.MyCardActivity" >
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.AboutUsActivity" >
-        </activity>        
+        </activity>
         <!-- 新闻 -->
         <activity android:name="com.jlxc.app.news.ui.activity.CampusAllPersonActivity" >
         </activity>
@@ -140,13 +140,15 @@
         </activity>
         <activity android:name="com.jlxc.app.news.ui.activity.PublisPhotoHandelActivity" >
         </activity>
-        <activity android:name="com.jlxc.app.news.ui.activity.CampusNewsListActivity" >
+        <activity android:name="com.jlxc.app.news.ui.activity.CampusNewsActivity" >
         </activity>
         <activity android:name="com.jlxc.app.news.ui.activity.AllLikePersonActivity" >
         </activity>
         <activity android:name="com.jlxc.app.personal.ui.activity.MyNewsListActivity" >
         </activity>
-        <!-- 消息 -->
+        <!-- 首页 -->
+        <activity android:name="com.jlxc.app.news.ui.activity.CampusHomeActivity" >
+        </activity>
         <activity android:name="com.jlxc.app.message.ui.activity.NewFriendsActivity" >
         </activity>
         <!-- 发现 -->
@@ -161,7 +163,7 @@
         <activity android:name="com.jlxc.app.discovery.ui.avtivity.ContactsUserActivity" >
         </activity>
         <activity android:name="com.jlxc.app.discovery.ui.avtivity.DiscoveryHomeActivity" >
-        </activity>        
+        </activity>
         <!-- 圈子 -->
         <activity android:name="com.jlxc.app.group.ui.activity.CreateGroupActivity" >
         </activity>
@@ -174,8 +176,6 @@
         <activity android:name="com.jlxc.app.group.ui.activity.MoreGroupListActivity" >
         </activity>
         <activity android:name="com.jlxc.app.group.ui.activity.GroupManageActivity" >
-        </activity>
-        <activity android:name="com.jlxc.app.group.ui.activity.CampusHomeActivity" >
         </activity>
         <activity android:name="com.jlxc.app.group.ui.activity.GroupAllPersonActivity" >
         </activity>

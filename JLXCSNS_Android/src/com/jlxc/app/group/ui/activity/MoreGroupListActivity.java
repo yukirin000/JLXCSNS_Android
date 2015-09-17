@@ -173,7 +173,7 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 		 * adapter的设置
 		 * */
 		discoveryGroupAdapter = new HelloHaAdapter<GroupTopicModel>(
-				MoreGroupListActivity.this, R.layout.discovery_group_item) {
+				MoreGroupListActivity.this, R.layout.listitem_all_group_layout) {
 
 			@Override
 			protected void convert(HelloHaBaseAdapterHelper helper,

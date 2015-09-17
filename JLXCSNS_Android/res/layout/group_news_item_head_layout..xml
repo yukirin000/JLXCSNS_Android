@@ -20,6 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="end"
             android:maxLines="4"
             android:text="我的圈子,我做主"
             android:textColor="@color/main_deep_white"
@@ -39,9 +40,9 @@
 
     <View
         android:id="@+id/view1"
-        android:background="@color/main_light_white"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="10dp" />
+        android:layout_height="10dp"
+        android:background="@color/main_light_white"
+        android:visibility="gone" />
 
 </LinearLayout>

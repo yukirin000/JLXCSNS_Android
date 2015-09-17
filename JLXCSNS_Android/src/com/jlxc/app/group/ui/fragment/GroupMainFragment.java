@@ -51,7 +51,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class DiscoveryGroupFragment extends BaseFragment {
+public class GroupMainFragment extends BaseFragment {
 
 	// 背景
 	@ViewInject(R.id.discovery_home_layout)
