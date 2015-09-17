@@ -18,37 +18,32 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp" >
 
             <TextView
-                android:id="@+id/txt_main_group_prompt"
+                android:id="@+id/txt_main_news_publish_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发布在 "
+                android:text="时间"
                 android:textColor="@color/main_gary"
-                android:textSize="@dimen/font_size_tiny" />
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/txt_topic_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_deep_white_click"
-                android:paddingTop="2dp"
+                android:drawableLeft="@drawable/main_news_from_icon"
+                android:drawablePadding="2dp"
+                android:paddingLeft="5dp"
                 android:text="圈子"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textColor="@color/main_clear_brown"
                 android:textSize="@dimen/font_size_tiny"
                 android:visibility="visible" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/txt_main_news_publish_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="时间"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/main_gary"
-            android:textSize="@dimen/font_size_tiny" />
     </LinearLayout>
     <!-- 评论按钮 -->
 

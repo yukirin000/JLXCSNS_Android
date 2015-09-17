@@ -655,12 +655,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				TimeHandle.getShowTimeFormat(bodyData.getSendTime()));
 		//是发到圈子里的东西
 		if (bodyData.getTopicID() > 0) {
-			helper.setVisible(R.id.txt_topic_name, true);
+			helper.setVisible(R.id.txt_news_detial_topic_name, true);
 			//显示修改
 			helper.setText(R.id.txt_news_detail_publish_time,TimeHandle.getShowTimeFormat(bodyData.getSendTime())+" 发布在");
-			helper.setText(R.id.txt_topic_name, bodyData.getTopicName());
+			helper.setText(R.id.txt_news_detial_topic_name, bodyData.getTopicName());
 		} else {
-			helper.setVisible(R.id.txt_topic_name, false);
+			helper.setVisible(R.id.txt_news_detial_topic_name, false);
 		}
 		// 设置事件监听
 		final int postion = helper.getPosition();
@@ -670,7 +670,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				itemViewClickListener.onClick(view, postion, view.getId());
 			}
 		};
-		helper.setOnClickListener(R.id.txt_topic_name, listener);
+		helper.setOnClickListener(R.id.txt_news_detial_topic_name, listener);
 	}
 
 	/**
@@ -936,7 +936,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				actionType = NewsConstants.OPERATE_UPDATE;
 				likeOperate();
 				break;
-			case R.id.txt_topic_name:
+			case R.id.txt_news_detial_topic_name:
 				//圈子
 				BodyItem bodyData = (BodyItem) detailAdapter.getItem(postion);
 				//确认有圈子 

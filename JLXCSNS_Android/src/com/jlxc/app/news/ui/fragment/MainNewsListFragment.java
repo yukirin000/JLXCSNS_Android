@@ -660,13 +660,11 @@ public class MainNewsListFragment extends BaseFragment {
 		// 是发到圈子里的东西
 		if (opData.getTopicID() > 0) {
 			helper.setVisible(R.id.txt_topic_name, true);
-			helper.setVisible(R.id.txt_main_group_prompt, true);
 			// 显示修改
 			helper.setText(R.id.txt_main_news_publish_time,
 					TimeHandle.getShowTimeFormat(opData.getSendTime()));
 			helper.setText(R.id.txt_topic_name, opData.getTopicName());
 		} else {
-			helper.setVisible(R.id.txt_main_group_prompt, false);
 			helper.setVisible(R.id.txt_topic_name, false);
 		}
 		// 事件监听绑定

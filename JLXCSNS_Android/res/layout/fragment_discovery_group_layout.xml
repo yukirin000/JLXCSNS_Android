@@ -63,7 +63,7 @@
         android:id="@+id/loop_view_page_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ttest" >
+        android:background="@drawable/group_viewpage_background" >
     </com.jlxc.app.group.view.LoopViewPager>
 
 </LinearLayout>

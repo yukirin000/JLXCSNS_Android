@@ -110,7 +110,7 @@ public class MainPageFragment extends BaseFragment {
 		newsTitleTextView.setOnClickListener(new ViewClickListener(0));
 		campusTitleTextView.setOnClickListener(new ViewClickListener(1));
 		mFragmentList.add(new MainNewsListFragment());
-		mFragmentList.add(new CampusHomeFragment());
+		//mFragmentList.add(new CampusHomeFragment());
 
 		mainPager.setAdapter(new MainFragmentPagerAdapter(
 				getChildFragmentManager(), mFragmentList));
