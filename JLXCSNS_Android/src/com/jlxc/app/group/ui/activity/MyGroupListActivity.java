@@ -67,7 +67,7 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 
 	@Override
 	public int setLayoutId() {
-		return R.layout.activity_group_list;
+		return R.layout.activity_my_group_list;
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 		 * adapter的设置
 		 * */
 		groupAdapter = new HelloHaAdapter<GroupTopicModel>(
-				MyGroupListActivity.this, R.layout.group_listitem_layout,
+				MyGroupListActivity.this, R.layout.listitem_my_group_layout,
 				groupList) {
 
 			@Override
@@ -132,18 +132,18 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 					GroupTopicModel item) {
 				// 关注的圈子
 				imgLoader.displayImage(JLXCConst.ATTACHMENT_ADDR + item.getTopic_cover_sub_image(),
-						(ImageView) helper.getView(R.id.img_group_icon),
+						(ImageView) helper.getView(R.id.img_my_group_icon),
 						options);
-				helper.setText(R.id.txt_group_name, item.getTopic_name());
+				helper.setText(R.id.txt_my_group_name, item.getTopic_name());
 				helper.setText(R.id.txt_group_member_count,
 						item.getMember_count() + "人关注");
 				
 				int unread = item.getUnread_news_count();
 				if (unread > 0) {
-					helper.setVisible(R.id.txt_group_unread_news_count, true);
-					helper.setText(R.id.txt_group_unread_news_count, unread+"");	
+					helper.setVisible(R.id.txt_my_group_unread_news_count, true);
+					helper.setText(R.id.txt_my_group_unread_news_count, unread+"");	
 				}else {
-					helper.setVisible(R.id.txt_group_unread_news_count, false);
+					helper.setVisible(R.id.txt_my_group_unread_news_count, false);
 				}
 				
 				// 设置事件监听

@@ -65,7 +65,7 @@ public class MainTabActivity extends BaseActivity {
 			PersonalFragment.class };
 
 	private int mImageViewArray[] = { R.drawable.tab_home_btn,
-			R.drawable.tab_friend_btn,R.drawable.tab_message_btn,
+			R.drawable.tab_find_btn,R.drawable.tab_message_btn,
 			R.drawable.tab_me_btn };
 
 	private String mTextviewArray[] = { "主页", "找同学", "消息", "我" };
