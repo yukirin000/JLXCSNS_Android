@@ -59,7 +59,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class OtherPersonalActivity extends BaseActivity {
+@SuppressLint("NewApi") public class OtherPersonalActivity extends BaseActivity {
 
 	public final static String INTENT_KEY = "uid";
 
@@ -90,8 +90,8 @@ public class OtherPersonalActivity extends BaseActivity {
 	@ViewInject(R.id.setting_Button)
 	private ImageButton settingButton;
 	// TA的相片数量
-	@ViewInject(R.id.his_image_count_text_view)
-	private TextView hisImageCountTextView;
+	@ViewInject(R.id.his_news_count_text_view)
+	private TextView hisNewsCountTextView;
 	// TA的相片scroll
 	@ViewInject(R.id.his_image_scroll_view)
 	private PersonalPictureScrollView hisImageScrollView;
@@ -470,12 +470,12 @@ public class OtherPersonalActivity extends BaseActivity {
 		// }else {
 		// visitFriendCountTextView.setText("");
 		// }
-		// 图片数量
-		if (jsonObject.getIntValue("image_count") > 0) {
-			hisImageCountTextView.setText(jsonObject.getIntValue("image_count")
+		// 状态数量
+		if (jsonObject.getIntValue("news_count") > 0) {
+			hisNewsCountTextView.setText(jsonObject.getIntValue("news_count")
 					+ "条");
 		} else {
-			hisImageCountTextView.setText("0条");
+			hisNewsCountTextView.setText("0条");
 		}
 		// 好友数量
 		if (jsonObject.getIntValue("friend_count") > 0) {

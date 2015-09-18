@@ -219,7 +219,7 @@
                             android:layout_height="wrap_content" >
 
                             <TextView
-                                android:id="@+id/his_image_count_text_view"
+                                android:id="@+id/his_news_count_text_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"

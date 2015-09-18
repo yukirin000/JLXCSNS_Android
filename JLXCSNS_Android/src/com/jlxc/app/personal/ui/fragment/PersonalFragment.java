@@ -141,9 +141,9 @@ public class PersonalFragment extends BaseFragment implements
 	// 我的相片scroll
 	@ViewInject(R.id.my_image_scroll_view)
 	private PersonalPictureScrollView myImageScrollView;
-	// 我的相片数量
-	@ViewInject(R.id.my_image_count_text_view)
-	private TextView myImageCountTextView;
+	// 我的动态数量
+	@ViewInject(R.id.my_news_count_text_view)
+	private TextView myNewsCountTextView;
 	// 最近来访grid
 	// @ViewInject(R.id.visit_grid_view)
 	// private GridView visitGridView;
@@ -875,17 +875,17 @@ public class PersonalFragment extends BaseFragment implements
 							// 设置图片
 							myImageScrollView.setNewsImageList(newsImageList);
 
-							int imageCount = jResult.getIntValue("image_count");
+							int imageCount = jResult.getIntValue("news_count");
 							if (imageCount > 0) {
-								myImageCountTextView.setText(imageCount + "条");
+								myNewsCountTextView.setText(imageCount + "条");
 							} else {
-								myImageCountTextView.setText("0条");
+								myNewsCountTextView.setText("0条");
 							}
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
 							// myImageAdapter.clear();
-							myImageCountTextView.setText("0条");
+							myNewsCountTextView.setText("0条");
 						}
 					}
 
