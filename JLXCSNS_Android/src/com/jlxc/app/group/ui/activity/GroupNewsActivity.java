@@ -191,6 +191,8 @@ public class GroupNewsActivity extends BaseActivityWithTopBar {
 						PublishNewsActivity.class);
 				intentPublish.putExtra(PublishNewsActivity.INTENT_TOPIC_ID,
 						topicID);
+				intentPublish.putExtra(PublishNewsActivity.INTENT_TOPIC_NAME,
+						topicName);
 				startActivityWithRight(intentPublish);
 			}
 		});

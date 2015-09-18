@@ -77,8 +77,11 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 	private ListImageDirPopupWindow mListImageDirPopupWindow;
 	// 已选照片的数量
 	private int selectedCount = 0;
-	//是否是只选单张
+	// 是否是只选单张
 	private boolean isSingle = false;
+	// 完成按钮
+	@ViewInject(R.id.base_ll_right_btns)
+	private LinearLayout finishBtn;
 
 	@Override
 	public int setLayoutId() {
@@ -87,6 +90,9 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 
 	@Override
 	protected void setUpView() {
+		// 添加完成按钮
+		addRightBtn("完成");
+
 		DisplayMetrics outMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
 		mScreenHeight = outMetrics.heightPixels;
@@ -97,11 +103,11 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		}
 		isSingle = intent.getBooleanExtra(INTENT_KEY_ONE, false);
 		if (isSingle) {
-			setBarText("选取照片poi~");
-		}else {
+			setBarText("选取照片");
+		} else {
 			setBarText("选取照片 (" + selectedCount + "/9)");
 		}
-		
+
 		GalleyAdapter.clearSelectedImageList();
 		getImages();
 		initEvent();
@@ -138,13 +144,13 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
 				R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
 				selectedCount);
-		//设置最多
+		// 设置最多
 		if (isSingle) {
 			mAdapter.setMAX_SELECT_COUNT(1);
-		}else {
+		} else {
 			mAdapter.setMAX_SELECT_COUNT(9);
 		}
-		
+
 		mGirdView.setAdapter(mAdapter);
 		mAdapter.setClickCallBack(onItemClickClass);
 	};
@@ -278,33 +284,39 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		mBottomLy.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mListImageDirPopupWindow
-						.setAnimationStyle(R.style.anim_popup_dir);
-				mListImageDirPopupWindow.showAsDropDown(mBottomLy, 0,
-						-mBottomLy.getHeight());
+				try {
+					mListImageDirPopupWindow
+							.setAnimationStyle(R.style.anim_popup_dir);
+					mListImageDirPopupWindow.showAsDropDown(mBottomLy, 0,
+							-mBottomLy.getHeight());
 
-				// 设置背景颜色变暗
-				WindowManager.LayoutParams lp = getWindow().getAttributes();
-				lp.alpha = .3f;
-				getWindow().setAttributes(lp);
+					// 设置背景颜色变暗
+					WindowManager.LayoutParams lp = getWindow().getAttributes();
+					lp.alpha = .3f;
+					getWindow().setAttributes(lp);
+				} catch (Exception e) {
+					LogUtils.e("选择相册出错");
+				}
 			}
 		});
 
-		final TextView finishView = addRightBtn("完成");
-		finishView.setOnClickListener(new OnClickListener() {
+		// 完成按钮
+		finishBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// 点击完成时
-				List<String> list = mAdapter.getSelectedImageList();
-				if (list.size() > 0) {
-					Intent intentFinish = new Intent();
-					intentFinish.putExtra(INTENT_KEY_PHOTO_LIST,
-							(Serializable) list);
-					setResult(Activity.RESULT_OK, intentFinish);
-					finish();
+				if (null != mAdapter) {
+					// 点击完成时
+					List<String> list = mAdapter.getSelectedImageList();
+					if (list.size() > 0) {
+						Intent intentFinish = new Intent();
+						intentFinish.putExtra(INTENT_KEY_PHOTO_LIST,
+								(Serializable) list);
+						setResult(Activity.RESULT_OK, intentFinish);
+						finish();
 
-					finishView.setEnabled(false);
+						finishBtn.setEnabled(false);
+					}
 				}
 			}
 		});
@@ -329,20 +341,21 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		if (null != defaultImgDir.list(tpfFilter)) {
 			mImgs = Arrays.asList(defaultImgDir.list(tpfFilter));
 		}
-		
+
 		Collections.reverse(mImgs);
 		// 文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
-		//设置最多
+		// 设置最多
 		if (isSingle) {
-			//清空
+			// 清空
 			GalleyAdapter.clearSelectedImageList();
 			mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
-					R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),0);
+					R.layout.gallery_grid_item,
+					defaultImgDir.getAbsolutePath(), 0);
 			mAdapter.setMAX_SELECT_COUNT(1);
-		}else {
+		} else {
 			mAdapter = new GalleyAdapter(getApplicationContext(), mImgs,
-					R.layout.gallery_grid_item, defaultImgDir.getAbsolutePath(),
-					selectedCount);
+					R.layout.gallery_grid_item,
+					defaultImgDir.getAbsolutePath(), selectedCount);
 			mAdapter.setMAX_SELECT_COUNT(9);
 		}
 		mGirdView.setAdapter(mAdapter);
@@ -360,13 +373,12 @@ public class GalleyActivity extends BaseActivityWithTopBar implements
 		public void OnItemClick(int count) {
 			if (isSingle) {
 				setBarText("选取照片poi~");
-			}else {
-				setBarText("选取照片 (" + count + "/9)");	
+			} else {
+				setBarText("选取照片 (" + count + "/9)");
 			}
 		}
 	};
 
-	
 	/**
 	 * key点击
 	 */

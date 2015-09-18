@@ -27,7 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * 左侧group菜单popupwindow
  * */
-@SuppressLint("InflateParams") 
+@SuppressLint("InflateParams")
 public class GroupMenuPopWindow extends PopupWindow {
 
 	// 加载图片
@@ -43,13 +43,13 @@ public class GroupMenuPopWindow extends PopupWindow {
 	private CategorySelectListener listener;
 
 	public GroupMenuPopWindow(final Context context) {
-		
+
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.drawable.default_back_image)
-				.showImageOnFail(R.drawable.default_back_image).cacheInMemory(true)
+				.showImageOnLoading(R.color.main_clear)
+				.showImageOnFail(R.color.main_clear).cacheInMemory(true)
 				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-		
+
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// 获取布局
@@ -64,9 +64,20 @@ public class GroupMenuPopWindow extends PopupWindow {
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					GroupCategoryModel item) {
 				helper.setText(R.id.category_text_view, item.getCategory_name());
-				helper.setText(R.id.category_detail_text_view, item.getCategory_desc());
-				ImageView imageView = helper.getView(R.id.category_cover_image_view);
-				ImageLoader.getInstance().displayImage(JLXCConst.ROOT_PATH + item.getCategory_cover(), imageView, options);
+				helper.setText(R.id.category_detail_text_view,
+						item.getCategory_desc());
+
+				if (item.getCategory_cover().equals("NULL")) {
+					helper.setImageResource(R.id.category_cover_image_view,
+							R.drawable.group_main_background);
+				} else {
+					ImageView imageView = helper
+							.getView(R.id.category_cover_image_view);
+					ImageLoader.getInstance().displayImage(
+							JLXCConst.ROOT_PATH + item.getCategory_cover(),
+							imageView, options);
+				}
+
 			}
 		};
 		groupTypeListView.setAdapter(categoryAdapter);

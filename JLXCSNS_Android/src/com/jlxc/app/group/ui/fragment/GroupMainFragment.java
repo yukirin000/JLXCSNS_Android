@@ -91,7 +91,7 @@ public class GroupMainFragment extends BaseFragment {
 	// 当前的categoryId
 	private int categoryId = 0;
 	// 当前的category名字
-	private String categoryName = "发现频道";
+	private String categoryName = "话题频道";
 
 	@Override
 	public int setLayoutId() {
@@ -166,8 +166,9 @@ public class GroupMainFragment extends BaseFragment {
 
 								GroupCategoryModel allCategoryModel = new GroupCategoryModel();
 								allCategoryModel.setCategory_id(0);
-								allCategoryModel.setCategory_desc("");
-								allCategoryModel.setCategory_name("全部");
+								allCategoryModel.setCategory_desc("全宇宙的事情都在这里讨论");
+								allCategoryModel.setCategory_name("话题频道");
+								allCategoryModel.setCategory_cover("NULL");
 								categoryModels.add(0, allCategoryModel);
 								// 模型拼装
 								for (int i = 0; i < categoryArray.size(); i++) {

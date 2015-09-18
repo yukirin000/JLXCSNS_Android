@@ -255,9 +255,12 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 		if (joinState == 1) {
 			isJoin = true;
 			groupOperateButton.setText("取消关注");
+			groupOperateButton.setBackgroundResource(R.drawable.logout_btn);
 		} else {
 			isJoin = false;
 			groupOperateButton.setText("关注");
+			groupOperateButton
+					.setBackgroundResource(R.drawable.alert_dialog_confirm_btn_normal);
 		}
 
 		topicMembers = new ArrayList<GroupInfoActivity.TopicMember>();
@@ -317,9 +320,13 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 							if (isJoin) {
 								isJoin = false;
 								groupOperateButton.setText("关注");
+								groupOperateButton
+										.setBackgroundResource(R.drawable.alert_dialog_confirm_btn_normal);
 							} else {
 								isJoin = true;
 								groupOperateButton.setText("取消关注");
+								groupOperateButton
+										.setBackgroundResource(R.drawable.logout_btn);
 							}
 						}
 						if (status == JLXCConst.STATUS_FAIL) {

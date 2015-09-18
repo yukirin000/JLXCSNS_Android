@@ -9,7 +9,7 @@
         android:id="@+id/topic_news_top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#99FFFFFF"
+        android:background="#F8FFFFFF"
         android:clickable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -23,18 +23,18 @@
             android:ellipsize="end"
             android:maxLines="4"
             android:text="我的圈子,我做主"
-            android:textColor="@color/main_deep_white"
-            android:textSize="@dimen/font_size_small" />
+            android:textColor="@color/main_blue"
+            android:textSize="@dimen/font_size_tiny" />
 
         <TextView
             android:id="@+id/topic_top_btn_text_view"
             android:layout_width="50dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
-            android:background="@color/main_blue"
+            android:background="@color/main_clear_yellow"
             android:gravity="center"
             android:text="关注"
-            android:textColor="@color/main_deep_white"
+            android:textColor="@color/main_clear_brown"
             android:textSize="@dimen/font_size_small" />
     </LinearLayout>
 
@@ -42,7 +42,6 @@
         android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@color/main_light_white"
-        android:visibility="gone" />
+        android:background="@color/main_light_white" />
 
 </LinearLayout>
