@@ -30,7 +30,7 @@
                 android:id="@+id/category_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="所有频道"
+                android:text="全部频道列表"
                 android:textColor="@color/main_deep_white"
                 android:textSize="@dimen/font_size_huge" />
 
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:maxLength="40"
-                android:text="小伙伴们创建的频道都在这里了，用你的火眼金睛发现好玩的频道吧."
+                android:text="全宇宙的事情都在这里讨论"
                 android:textColor="@color/main_deep_white"
                 android:textSize="@dimen/font_size_small" />
         </LinearLayout>

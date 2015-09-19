@@ -3,16 +3,21 @@
     android:id="@+id/discovery_home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_yellow"
     android:orientation="vertical" >
 
     <FrameLayout
         android:id="@+id/layout_title_rootview"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_height_size"
-        android:background="@color/main_clear"
+        android:background="@color/main_yellow"
         android:gravity="center"
         android:orientation="horizontal" >
+
+        <View
+            android:id="@+id/view_title_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/main_clear" />
 
         <LinearLayout
             android:id="@+id/layout_discovey_group_title"
@@ -42,21 +47,15 @@
                 android:src="@drawable/arrow_down_icon" />
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/btn_more_operate"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal" >
-
-            <ImageButton
-                android:id="@+id/btn_more_operate"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/selector_main_yellow_click"
-                android:padding="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/group_more_operate" />
-        </RelativeLayout>
+            android:layout_gravity="right"
+            android:background="@drawable/selector_main_yellow_click"
+            android:paddingRight="20dp"
+            android:paddingLeft="10dp"
+            android:src="@drawable/group_more_operate" />
     </FrameLayout>
 
     <com.jlxc.app.group.view.LoopViewPager

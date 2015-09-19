@@ -5,13 +5,16 @@
     android:orientation="vertical" >
 
     <FrameLayout
+        android:id="@+id/layout_item_background"
         android:layout_width="match_parent"
+        android:background="@color/main_deep_white"
         android:layout_height="match_parent" >
 
         <ImageView
             android:id="@+id/category_cover_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:scaleType="centerCrop" />
 
         <LinearLayout

@@ -10,8 +10,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -41,6 +43,8 @@ public class GroupMenuPopWindow extends PopupWindow {
 	private List<GroupCategoryModel> categoryModels = new ArrayList<GroupCategoryModel>();
 	// onclick
 	private CategorySelectListener listener;
+	// 记录上一次可见的第一条item
+	private int lastFirstVisibleItem = 0;
 
 	public GroupMenuPopWindow(final Context context) {
 
@@ -66,18 +70,20 @@ public class GroupMenuPopWindow extends PopupWindow {
 				helper.setText(R.id.category_text_view, item.getCategory_name());
 				helper.setText(R.id.category_detail_text_view,
 						item.getCategory_desc());
-
-				if (item.getCategory_cover().equals("NULL")) {
-					helper.setImageResource(R.id.category_cover_image_view,
-							R.drawable.group_main_background);
-				} else {
-					ImageView imageView = helper
-							.getView(R.id.category_cover_image_view);
-					ImageLoader.getInstance().displayImage(
-							JLXCConst.ROOT_PATH + item.getCategory_cover(),
-							imageView, options);
-				}
-
+				// 设置背景颜色
+				helper.setBackgroundColor(R.id.layout_item_background,
+						item.getBackgroundValue());
+				// 显示背景图片
+				// if (item.getCategory_cover().equals("NULL")) {
+				// helper.setImageResource(R.id.category_cover_image_view,
+				// R.drawable.group_main_background);
+				// } else {
+				// ImageView imageView = helper
+				// .getView(R.id.category_cover_image_view);
+				// ImageLoader.getInstance().displayImage(
+				// JLXCConst.ROOT_PATH + item.getCategory_cover(),
+				// imageView, options);
+				// }
 			}
 		};
 		groupTypeListView.setAdapter(categoryAdapter);
@@ -91,8 +97,26 @@ public class GroupMenuPopWindow extends PopupWindow {
 				}
 			}
 		});
+		// 滚动事件监听
+		groupTypeListView.setOnScrollListener(new OnScrollListener() {
 
-		// 设置PopupWindow的View
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				if (lastFirstVisibleItem != firstVisibleItem
+						&& null != listener) {
+					listener.onFirstVisibleItemChange(firstVisibleItem);
+					lastFirstVisibleItem = firstVisibleItem;
+				}
+			}
+		});
+
+		// 设置PopupWindow的View0
 		this.setContentView(conentView);
 		// 设置窗体的尺寸
 		this.setWidth(LayoutParams.MATCH_PARENT);
@@ -120,6 +144,10 @@ public class GroupMenuPopWindow extends PopupWindow {
 	public void showPopupWindow(View parent) {
 		if (!this.isShowing()) {
 			this.showAsDropDown(parent, 0, 0);
+			if (null != listener) {
+				// 第一次显示时修改title背景
+				listener.onFirstVisibleItemChange(0);
+			}
 		} else {
 			this.dismiss();
 		}
@@ -127,7 +155,11 @@ public class GroupMenuPopWindow extends PopupWindow {
 
 	// 监听器
 	public interface CategorySelectListener {
+		// 点击item选择
 		public void select(GroupCategoryModel model);
+
+		// 滚动listview时
+		public void onFirstVisibleItemChange(int index);
 	}
 
 	public CategorySelectListener getListener() {
