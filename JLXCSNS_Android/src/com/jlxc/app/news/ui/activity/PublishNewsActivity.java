@@ -53,7 +53,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 
 	public static final String INTENT_TOPIC_ID = "topicId";// 话题id
 	public static final String INTENT_TOPIC_NAME = "topicName";// 话题名
-	
+
 	public static final int TAKE_PHOTO = 1;// 拍照
 	public static final int ALBUM_SELECT = 2;// 相册选取
 	public static final int PHOTO_ZOOM = 3; // 缩放
@@ -92,10 +92,12 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	private String tmpImageName;
 	// 地点
 	private String locationString;
-	//图片加载配置
-	DisplayImageOptions headImageOptions; 
-	//圈子id
+	// 图片加载配置
+	DisplayImageOptions headImageOptions;
+	// 圈子id
 	private int topicId;
+	// 圈子名称
+	private String topicName;
 
 	@OnClick(value = { R.id.addImageView, R.id.choice_location_layout,
 			R.id.base_ll_right_btns, R.id.publish_news_layout })
@@ -244,8 +246,9 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		// 设置tag
 		imageView.setTag(filePath);
 		// 设置照片
-//		bitmapUtils.display(imageView, filePath);
-		ImageLoader.getInstance().displayImage("file://"+filePath, imageView, headImageOptions);
+		// bitmapUtils.display(imageView, filePath);
+		ImageLoader.getInstance().displayImage("file://" + filePath, imageView,
+				headImageOptions);
 
 		// 设置点击查看大图事件
 		imageView.setOnClickListener(new View.OnClickListener() {
@@ -292,42 +295,43 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 						tmpFilePath);
 				startActivityForResult(intent, PHOTO_DELETE);
 
-//				List<String> menuList = new ArrayList<String>();
-//				menuList.add("删除");
-//				menuList.add("查看大图");
-//				// menuList.add("滤镜处理");
-//				final CustomListViewDialog downDialog = new CustomListViewDialog(
-//						PublishNewsActivity.this, menuList);
-//				downDialog.setClickCallBack(new ClickCallBack() {
-//					@Override
-//					public void Onclick(View view, int which) {
-//						switch (which) {
-//						case 0:
-//							// 删除
-//							deleteNewsImageView(tmpFilePath);
-//							break;
-//						case 1:
-//							// 查看大图
-//							Intent intent = new Intent(
-//									PublishNewsActivity.this,
-//									BigImgLookActivity.class);
-//							intent.putExtra(BigImgLookActivity.INTENT_KEY,
-//									tmpFilePath);
-//							// startActivityWithBottom(intent);
-//							startActivity(intent);
-//							break;
-//						case 2:
-//							// 滤镜
-//							// filterImage(tmpFilePath, false);
-//
-//							break;
-//						default:
-//							break;
-//						}
-//						downDialog.cancel();
-//					}
-//				});
-//				downDialog.show();
+				// List<String> menuList = new ArrayList<String>();
+				// menuList.add("删除");
+				// menuList.add("查看大图");
+				// // menuList.add("滤镜处理");
+				// final CustomListViewDialog downDialog = new
+				// CustomListViewDialog(
+				// PublishNewsActivity.this, menuList);
+				// downDialog.setClickCallBack(new ClickCallBack() {
+				// @Override
+				// public void Onclick(View view, int which) {
+				// switch (which) {
+				// case 0:
+				// // 删除
+				// deleteNewsImageView(tmpFilePath);
+				// break;
+				// case 1:
+				// // 查看大图
+				// Intent intent = new Intent(
+				// PublishNewsActivity.this,
+				// BigImgLookActivity.class);
+				// intent.putExtra(BigImgLookActivity.INTENT_KEY,
+				// tmpFilePath);
+				// // startActivityWithBottom(intent);
+				// startActivity(intent);
+				// break;
+				// case 2:
+				// // 滤镜
+				// // filterImage(tmpFilePath, false);
+				//
+				// break;
+				// default:
+				// break;
+				// }
+				// downDialog.cancel();
+				// }
+				// });
+				// downDialog.show();
 
 			}
 		});
@@ -413,9 +417,9 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("location", locationString);
 		// 哪个圈子里的
 		if (topicId > 0) {
-			params.addBodyParameter("topic_id", topicId+"");	
+			params.addBodyParameter("topic_id", topicId + "");
 		}
-		
+
 		// 图片
 		for (int i = 0; i < addImageLayout.getChildCount(); i++) {
 			View view = addImageLayout.getChildAt(i);
@@ -498,30 +502,36 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void setUpView() {
-		// TODO Auto-generated method stub
-		setBarText("记录点滴");
+		// 如果有topicID 则设置上
+		Intent intent = getIntent();
+		if (intent.hasExtra(INTENT_TOPIC_ID)) {
+			topicId = intent.getIntExtra(INTENT_TOPIC_ID, 0);
+		} else {
+			setBarText("发表新动态");
+		}
+		// 如果有圈子名称
+		if (intent.hasExtra(INTENT_TOPIC_NAME)) {
+			topicName = intent.getStringExtra(INTENT_TOPIC_NAME);
+			if (topicName.length() > 8) {
+				topicName = topicName.substring(0, 8)+"...";
+			}
+			setBarText("发表至“" + topicName + "”");
+		}
+
 		// 设置初始间隔
 		MarginLayoutParams oriLp = (MarginLayoutParams) addImageView
 				.getLayoutParams();
 		oriMarginLeft = oriLp.leftMargin;
 		space = (getWindowManager().getDefaultDisplay().getWidth()
 				- oriLp.width * 4 - oriMarginLeft * 2) / 3;
-		addRightBtn("发布");
+		addRightBtn("完成");
 		locationString = "";
 		// bitmap初始化
-		headImageOptions = new DisplayImageOptions.Builder()  
-        .cacheInMemory(false)  
-        .cacheOnDisk(false)  
-        .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-        .bitmapConfig(Bitmap.Config.RGB_565)  
-        .build();
-		
-		//如果又topicID 则设置上
-		Intent intent = getIntent();
-		if (intent.hasExtra(INTENT_TOPIC_ID)) {
-			topicId = intent.getIntExtra(INTENT_TOPIC_ID, 0);
-		}
-		
+		headImageOptions = new DisplayImageOptions.Builder()
+				.cacheInMemory(false).cacheOnDisk(false)
+				.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
+
 	}
 
 	@Override

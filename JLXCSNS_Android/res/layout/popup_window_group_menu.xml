@@ -2,9 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_light_white"
-    android:orientation="vertical"
-    android:paddingBottom="5dp" >
+    android:orientation="vertical" >
 
     <ListView
         android:id="@+id/category_list_view"
@@ -13,6 +11,7 @@
         android:cacheColorHint="@color/main_clear"
         android:divider="@color/main_clear"
         android:dividerHeight="0dp"
+        android:scrollbars="none"
         android:footerDividersEnabled="false"
         android:listSelector="@color/main_clear" >
     </ListView>

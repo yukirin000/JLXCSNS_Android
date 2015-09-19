@@ -84,7 +84,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
                 .bitmapConfig(Bitmap.Config.RGB_565)  
                 .build();
 		
-		setBarText("我的关注的人  (●´ω｀●)φ");
+		setBarText("我的关注的人 ");
 		
 		init();
 		listviewSet();

@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
@@ -24,7 +25,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
-
+import com.jlxc.app.R;
+import com.jlxc.app.R.color;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
@@ -53,9 +55,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class GroupMainFragment extends BaseFragment {
 
-	// 背景
-	@ViewInject(R.id.discovery_home_layout)
-	private LinearLayout backgroundLayout;
 	// 标题布局
 	@ViewInject(R.id.layout_discovey_group_title)
 	private LinearLayout titleLayout;
@@ -65,6 +64,9 @@ public class GroupMainFragment extends BaseFragment {
 	// 标头根布局
 	@ViewInject(R.id.layout_title_rootview)
 	private FrameLayout titleRootLayout;
+	// 标题背景遮罩
+	@ViewInject(R.id.view_title_background)
+	private View titlebackView;
 	// 标题图标
 	@ViewInject(R.id.img_title_icon)
 	private ImageView imgTitleIcon;
@@ -91,7 +93,12 @@ public class GroupMainFragment extends BaseFragment {
 	// 当前的categoryId
 	private int categoryId = 0;
 	// 当前的category名字
-	private String categoryName = "发现频道";
+	private String categoryName = "话题频道";
+	// 记录前一状态下title的颜色
+	private int lastTitleBackColor = 0xffffc400;
+	// 每个item的颜色
+	private int[] colorList = new int[] { 0xFFFF9966, 0xFFFFcc66, 0xFFb6b6b6,
+			0xFF99ccFF, 0xFF61a8dd, 0xFF43ba8f, 0xFFffcc99 };
 
 	@Override
 	public int setLayoutId() {
@@ -165,11 +172,15 @@ public class GroupMainFragment extends BaseFragment {
 										.getJSONObject(JLXCConst.HTTP_RESULT);
 								JSONArray categoryArray = jResult
 										.getJSONArray(JLXCConst.HTTP_LIST);
-
+								// 第一条item的值
 								GroupCategoryModel allCategoryModel = new GroupCategoryModel();
 								allCategoryModel.setCategory_id(0);
-								allCategoryModel.setCategory_desc("");
-								allCategoryModel.setCategory_name("全部");
+								allCategoryModel
+										.setCategory_desc("全宇宙的事情都在这里讨论");
+								allCategoryModel.setCategory_name("话题频道");
+								allCategoryModel.setCategory_cover("NULL");
+								allCategoryModel
+										.setBackgroundValue(colorList[0]);
 								categoryModels.add(0, allCategoryModel);
 								// 模型拼装
 								for (int i = 0; i < categoryArray.size(); i++) {
@@ -184,6 +195,7 @@ public class GroupMainFragment extends BaseFragment {
 											.getString("category_cover"));
 									model.setCategory_desc(object
 											.getString("category_desc"));
+									model.setBackgroundValue(colorList[i + 1]);
 									categoryModels.add(model);
 								}
 
@@ -219,6 +231,8 @@ public class GroupMainFragment extends BaseFragment {
 		imgTitleIcon.clearAnimation();
 		imgTitleIcon.setAnimation(animation);
 		animation.startNow();
+		//隐藏操作按钮
+		moreOperate.setVisibility(View.GONE);
 	}
 	
 	/**
@@ -266,6 +280,18 @@ public class GroupMainFragment extends BaseFragment {
 				menuPopWindow.dismiss();
 				groupCategory.setText(model.getCategory_name());
 			}
+
+			@Override
+			public void onFirstVisibleItemChange(int index) {
+				titleRootLayout.setBackgroundColor(lastTitleBackColor);
+				lastTitleBackColor = colorList[index];
+				titleLayout.setBackgroundColor(0x00000000);
+				titlebackView.setBackgroundColor(colorList[index]);
+				// 设置颜色渐变
+				Animation alphaAnimation = new AlphaAnimation(0.1f, 1.0f);
+				alphaAnimation.setDuration(500);
+				titlebackView.startAnimation(alphaAnimation);
+			}
 		});
 		// 监听消失事件
 		menuPopWindow.setOnDismissListener(new OnDismissListener() {
@@ -284,6 +310,12 @@ public class GroupMainFragment extends BaseFragment {
 				// .getAttributes();
 				// lp.alpha = 1.0f;
 				// getActivity().getWindow().setAttributes(lp);
+				// 恢复背景颜色
+				titleRootLayout.setBackgroundColor(0xFFffc400);
+				titlebackView.setBackgroundColor(0x00000000);
+				titleLayout
+						.setBackgroundResource(R.drawable.selector_main_yellow_click);
+				moreOperate.setVisibility(View.VISIBLE);
 			}
 		});
 

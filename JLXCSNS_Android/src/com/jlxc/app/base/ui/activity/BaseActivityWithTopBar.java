@@ -3,6 +3,7 @@ package com.jlxc.app.base.ui.activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,8 +47,8 @@ public abstract class BaseActivityWithTopBar extends BaseActivity {
 	protected void setBarText(String title) {
 		barTitle.setText(title);
 	}
-	
-	protected void setBarText(String title,float size,ColorStateList color) {
+
+	protected void setBarText(String title, float size, ColorStateList color) {
 		barTitle.setText(title);
 		barTitle.setTextSize(size);
 		barTitle.setTextColor(color);
@@ -67,18 +68,20 @@ public abstract class BaseActivityWithTopBar extends BaseActivity {
 		rightBtn.setText(text);
 		LinearLayout llLayout = (LinearLayout) layout
 				.findViewById(R.id.ll_layout);
+		LinearLayout.LayoutParams linlLayoutParams = new LinearLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		linlLayoutParams.setMargins(0, 0, 10, 0);
 		llLayout.removeAllViews();
 		llRightView.removeAllViews();
-		llRightView.addView(rightBtn);
+		llRightView.addView(rightBtn, linlLayoutParams);
 		return rightBtn;
 	}
 
 	/** 添加图片按钮 */
-	protected ImageView addRightImgBtn(int layoutId,int rootLayout, int btnId) {
+	protected ImageView addRightImgBtn(int layoutId, int rootLayout, int btnId) {
 		View layout = View.inflate(BaseActivityWithTopBar.this, layoutId, null);
 		ImageView rightBtn = (ImageView) layout.findViewById(btnId);
-		LinearLayout llLayout = (LinearLayout) layout
-				.findViewById(rootLayout);
+		LinearLayout llLayout = (LinearLayout) layout.findViewById(rootLayout);
 		llLayout.removeAllViews();
 		llRightView.removeAllViews();
 		llRightView.addView(rightBtn);

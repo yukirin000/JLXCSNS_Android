@@ -87,7 +87,7 @@ public class MyFansListActivity extends BaseActivityWithTopBar {
                 .bitmapConfig(Bitmap.Config.RGB_565)  
                 .build();
 		
-		setBarText("关注我的人  (●´ω｀●)φ");
+		setBarText("关注我的人 ");
 		
 		init();
 		listviewSet();

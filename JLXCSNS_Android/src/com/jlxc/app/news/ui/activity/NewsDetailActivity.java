@@ -309,7 +309,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 	 * 动态操作设置
 	 * */
 	private void newsOperateSet() {
-		newsOPerate = new NewsOperate(NewsDetailActivity.this);
+		newsOPerate = new NewsOperate<ItemModel>(NewsDetailActivity.this);
 		newsOPerate.setOperateListener(new OperateCallBack() {
 			@Override
 			public void onStart(int operateType) {
@@ -617,10 +617,12 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		final BodyItem bodyData = (BodyItem) item;
 		List<ImageModel> pictureList = bodyData.getNewsImageListList();
 
-		//MultiImageView bodyImages = helper.getView(R.id.miv_news_detail_images);
-		MultiImageMetroView bodyImages = helper.getView(R.id.miv_news_detail_images);
+		// MultiImageView bodyImages =
+		// helper.getView(R.id.miv_news_detail_images);
+		MultiImageMetroView bodyImages = helper
+				.getView(R.id.miv_news_detail_images);
 		bodyImages.imageDataSet(pictureList);
-		
+
 		bodyImages.setJumpListener(new JumpCallBack() {
 
 			@Override
@@ -653,12 +655,14 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 		// 发布时间
 		helper.setText(R.id.txt_news_detail_publish_time,
 				TimeHandle.getShowTimeFormat(bodyData.getSendTime()));
-		//是发到圈子里的东西
+		// 是发到圈子里的东西
 		if (bodyData.getTopicID() > 0) {
 			helper.setVisible(R.id.txt_news_detial_topic_name, true);
-			//显示修改
-			helper.setText(R.id.txt_news_detail_publish_time,TimeHandle.getShowTimeFormat(bodyData.getSendTime())+" 发布在");
-			helper.setText(R.id.txt_news_detial_topic_name, bodyData.getTopicName());
+			// 显示修改
+			helper.setText(R.id.txt_news_detail_publish_time,
+					TimeHandle.getShowTimeFormat(bodyData.getSendTime()));
+			helper.setText(R.id.txt_news_detial_topic_name,
+					bodyData.getTopicName());
 		} else {
 			helper.setVisible(R.id.txt_news_detial_topic_name, false);
 		}
@@ -926,10 +930,14 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				JumpToHomepage(JLXCUtils.stringToInt(titleData.getUserID()));
 				break;
 			case R.id.txt_news_detail_user_tag:
-				TitleItem schoolData = (TitleItem) detailAdapter.getItem(postion);
+				TitleItem schoolData = (TitleItem) detailAdapter
+						.getItem(postion);
 				// 跳转至校园主页
-				Intent intentCampusInfo = new Intent(NewsDetailActivity.this, CampusHomeActivity.class);
-				intentCampusInfo.putExtra(CampusHomeActivity.INTENT_SCHOOL_CODE_KEY, schoolData.getSchoolCode());
+				Intent intentCampusInfo = new Intent(NewsDetailActivity.this,
+						CampusHomeActivity.class);
+				intentCampusInfo.putExtra(
+						CampusHomeActivity.INTENT_SCHOOL_CODE_KEY,
+						schoolData.getSchoolCode());
 				startActivityWithRight(intentCampusInfo);
 				break;
 			case R.id.btn_news_detail_like:
@@ -937,17 +945,22 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 				likeOperate();
 				break;
 			case R.id.txt_news_detial_topic_name:
-				//圈子
+				// 圈子
 				BodyItem bodyData = (BodyItem) detailAdapter.getItem(postion);
-				//确认有圈子 
+				// 确认有圈子
 				if (bodyData.getTopicID() > 0) {
 					// 跳转至圈子内容部分
 					Intent intentToGroupNews = new Intent();
-					intentToGroupNews.setClass(NewsDetailActivity.this,GroupNewsActivity.class);
+					intentToGroupNews.setClass(NewsDetailActivity.this,
+							GroupNewsActivity.class);
 					// 传递名称
-					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_NAME, bodyData.getTopicName());
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_TOPIC_NAME,
+							bodyData.getTopicName());
 					// 传递ID
-					intentToGroupNews.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID, bodyData.getTopicID());
+					intentToGroupNews.putExtra(
+							GroupNewsActivity.INTENT_KEY_TOPIC_ID,
+							bodyData.getTopicID());
 					startActivityWithRight(intentToGroupNews);
 				}
 				break;
