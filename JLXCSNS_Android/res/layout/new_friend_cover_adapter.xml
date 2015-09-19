@@ -26,7 +26,7 @@
                 android:layout_marginLeft="10dip"
                 android:textSize="@dimen/font_size_medium"
                 android:textColor="@color/main_deep_black"
-                android:text="新的关注" />
+                android:text="新的朋友" />
 
             <RelativeLayout 
                 android:layout_marginLeft="10dip"

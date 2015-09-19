@@ -71,14 +71,16 @@
                     android:id="@+id/news_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dip"
+                    android:layout_gravity="center"
+                    android:layout_margin="1dip"
                     android:ellipsize="end"
+                    android:gravity="center"
                     android:maxHeight="55dip"
                     android:maxLines="3"
                     android:maxWidth="55dip"
                     android:text="内容内容内容内"
                     android:textColor="@color/main_deep_black"
-                    android:textSize="@dimen/font_size_micro" />
+                    android:textSize="@dimen/font_size_tiny" />
 
                 <ImageView
                     android:id="@+id/news_image_view"

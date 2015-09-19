@@ -26,6 +26,7 @@
         android:gravity="left|center"
         android:hint="来个爆炸的昵称..."
         android:inputType="text"
+        android:maxLength="10"
         android:paddingLeft="5dp"
         android:textColor="@color/main_deep_black"
         android:textColorHint="@color/main_deep_gary" />

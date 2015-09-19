@@ -35,7 +35,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:background="#66000000"
-                    android:gravity="center_vertical" >
+                    android:gravity="center_vertical"
+                    android:padding="10dp" >
 
                     <TextView
                         android:id="@+id/txt_campus_home_school_name"
@@ -123,8 +124,8 @@
                 android:id="@+id/layout_campus_home_news_rootview"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/selector_deep_white_click"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"

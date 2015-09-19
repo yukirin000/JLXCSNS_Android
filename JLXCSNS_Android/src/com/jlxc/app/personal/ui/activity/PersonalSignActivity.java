@@ -29,7 +29,7 @@ public class PersonalSignActivity extends BaseActivityWithTopBar {
 			}
 			
 			Intent intent = new Intent();
-			intent.putExtra("sign", signEditText.getText().toString());
+			intent.putExtra("sign", signEditText.getText().toString().trim());
 			setResult(100, intent);
 			finishWithRight();
 			

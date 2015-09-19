@@ -72,7 +72,7 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
         .bitmapConfig(Bitmap.Config.RGB_565)  
         .build();
 		
-		setBarText("新的好友");
+		setBarText("新的朋友");
 //		bitmapUtils = BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true);
 		initListView();
 		refreshListView();

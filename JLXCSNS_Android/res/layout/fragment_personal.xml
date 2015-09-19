@@ -191,7 +191,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_light_black"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
 
@@ -231,7 +231,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_light_black"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
                 </LinearLayout>

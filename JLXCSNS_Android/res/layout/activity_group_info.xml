@@ -206,7 +206,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:drawablePadding="10dp"
-                        android:drawableRight="@drawable/right_arrow"
                         android:gravity="center_vertical"
                         android:textColor="@color/main_light_black" />
                 </LinearLayout>

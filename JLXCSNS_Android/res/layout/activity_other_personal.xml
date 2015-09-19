@@ -280,7 +280,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="TA关注的人"
-                            android:textColor="@color/main_deep_black"
+                            android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
                         <TextView
@@ -289,7 +289,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_light_black"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
 
@@ -319,7 +319,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="关注TA的人"
-                            android:textColor="@color/main_deep_black"
+                            android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
                         <TextView
@@ -328,7 +328,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_light_black"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
 
@@ -358,7 +358,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="共同关注"
-                            android:textColor="@color/main_deep_black"
+                            android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
                         <TextView
@@ -367,7 +367,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_light_black"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
                 </LinearLayout>
