@@ -29,7 +29,9 @@ public interface JLXCConst {
 	public static final String BROADCAST_MESSAGE_REFRESH = "com.jlxc.broadcastreceiver.messageRefresh";
 	// 动态详细更新后上一页面也进行更新
 	public static final String BROADCAST_NEWS_LIST_REFRESH = "com.jlxc.broadcastreceiver.newsDetailRefresh";
-
+	// 新圈子发布
+	public static final String BROADCAST_NEW_TOPIC_REFRESH = "com.jlxc.broadcastreceiver.newTopicPublish";
+	
 	// 匹配网页
 	public static final String URL_PATTERN = "[http|https]+[://]+[0-9A-Za-z:/[-]_#[?][=][.][&]]*";
 	// 匹配手机号

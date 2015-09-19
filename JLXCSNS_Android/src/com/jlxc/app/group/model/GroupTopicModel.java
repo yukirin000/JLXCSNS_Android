@@ -1,8 +1,14 @@
 package com.jlxc.app.group.model;
 
-//话题模型
-public class GroupTopicModel {
+import java.io.Serializable;
 
+//话题模型
+public class GroupTopicModel implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//话题ID
 	private int topic_id;
 	//话题名

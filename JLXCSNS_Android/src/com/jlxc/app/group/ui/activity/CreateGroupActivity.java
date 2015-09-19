@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -42,6 +43,15 @@ import com.jlxc.app.base.utils.JLXCUtils;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
 import com.jlxc.app.group.model.GroupCategoryModel;
+import com.jlxc.app.group.model.GroupTopicModel;
+import com.jlxc.app.news.model.CommentModel;
+import com.jlxc.app.news.model.ItemModel;
+import com.jlxc.app.news.model.LikeModel;
+import com.jlxc.app.news.model.NewsConstants;
+import com.jlxc.app.news.model.ItemModel.CommentItem;
+import com.jlxc.app.news.model.ItemModel.LikeListItem;
+import com.jlxc.app.news.model.ItemModel.TitleItem;
+import com.jlxc.app.news.ui.activity.NewsDetailActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -57,6 +67,8 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 	public static final int PHOTO_RESOULT = 4;// 结果
 	public static final int GET_DEPARTMENT_REQUEST_CODE = 5;
 	public static final String IMAGE_UNSPECIFIED = "image/*";
+	//创建成功
+	public static final String NEW_TOPIC_OK = "newTopicOK*";
 
 	// 图片名字
 	private String tmpImageName;
@@ -209,6 +221,7 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 
 	// 创建完成
 	private void createNewGroupFinish() {
+		
 		// 封面
 		if (null == currentImageName || currentImageName.length() < 1) {
 			ToastUtil.show(this, "封面怎么可以没有 ∪︿∪");
@@ -271,12 +284,11 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 						super.onSuccess(jsonResponse, flag);
 						LogUtils.i(jsonResponse.toJSONString(), 1);
 						hideLoading();
-						int status = jsonResponse
-								.getInteger(JLXCConst.HTTP_STATUS);
+						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
 							ToastUtil.show(CreateGroupActivity.this,
-									jsonResponse
-											.getString(JLXCConst.HTTP_MESSAGE));
+									jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+							
 							// 删除临时文件
 							File tmpFile = new File(FileUtil.BIG_IMAGE_PATH
 									+ currentImageName);
@@ -285,6 +297,16 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 							}
 							tmpImageName = "";
 							currentImageName = "";
+							JSONObject jsonObject = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
+							//发送通知
+							GroupTopicModel model = new GroupTopicModel();
+							model.setTopic_id(jsonObject.getIntValue("id"));
+							model.setTopic_cover_image(jsonObject.getString("topic_cover_image"));
+							model.setTopic_name(jsonObject.getString("topic_name"));
+							model.setTopic_detail(jsonObject.getString("topic_detail"));
+							model.setNews_count(0);
+							model.setMember_count(1);
+							sendBroadCastData(model);
 							finishWithRight();
 						}
 
@@ -403,6 +425,17 @@ public class CreateGroupActivity extends BaseActivityWithTopBar {
 		ImageLoader.getInstance().displayImage(
 				"file://" + FileUtil.BIG_IMAGE_PATH + imagePath,
 				topicImageView, headImageOptions);
+	}
+	
+	/**
+	 * 保存对动态的数据，并广播给上一个activity
+	 * */
+	private void sendBroadCastData(GroupTopicModel model) {
+		
+		Intent mIntent = new Intent(JLXCConst.BROADCAST_NEW_TOPIC_REFRESH);
+		mIntent.putExtra(NEW_TOPIC_OK, model);
+		// 发送广播
+		LocalBroadcastManager.getInstance(CreateGroupActivity.this).sendBroadcast(mIntent);
 	}
 
 	@Override

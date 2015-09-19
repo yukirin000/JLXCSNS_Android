@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
@@ -25,9 +24,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
-import com.jlxc.app.R;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jlxc.app.R;
 import com.jlxc.app.base.helper.JsonRequestCallBack;
 import com.jlxc.app.base.helper.LoadDataHandler;
 import com.jlxc.app.base.manager.HttpManager;
@@ -108,6 +108,8 @@ public class GroupMainFragment extends BaseFragment {
 		// 首次更新数据
 		// getRecommentData("参数", "参数");
 		// groupViewPage.setAdapter(new MyPagerAdapter());
+		//初始化broadcast
+		initBoradcastReceiver();
 		getRecommendData(0);
 	}
 
@@ -218,6 +220,37 @@ public class GroupMainFragment extends BaseFragment {
 		imgTitleIcon.setAnimation(animation);
 		animation.startNow();
 	}
+	
+	/**
+	 * 初始化广播信息
+	 * */
+	private void initBoradcastReceiver() {
+		LocalBroadcastManager mLocalBroadcastManager;
+		mLocalBroadcastManager = LocalBroadcastManager
+				.getInstance(getActivity());
+		IntentFilter myIntentFilter = new IntentFilter();
+		myIntentFilter.addAction(JLXCConst.BROADCAST_NEW_TOPIC_REFRESH);
+		// 注册广播
+		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver,
+				myIntentFilter);
+	}
+	
+	/**
+	 * 广播接收处理
+	 * */
+	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent resultIntent) {
+			String action = resultIntent.getAction();
+			if (action.equals(JLXCConst.BROADCAST_NEW_TOPIC_REFRESH)) {
+				if (resultIntent.hasExtra(CreateGroupActivity.NEW_TOPIC_OK)) {
+					GroupTopicModel topicModel = (GroupTopicModel) resultIntent.getSerializableExtra(CreateGroupActivity.NEW_TOPIC_OK);
+					groupList.add(0, topicModel);
+					groupViewPage.setAdapter(new MyPagerAdapter());
+				}
+			}
+		}
+	};
 
 	/**
 	 * 频道菜单的初始化
