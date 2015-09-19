@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/campus_background" />
+        android:src="@drawable/ic_launcher" />
 
     <ImageButton
         android:id="@+id/enter_button"

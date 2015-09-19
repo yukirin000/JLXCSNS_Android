@@ -673,14 +673,6 @@ public class CampusNewsActivity extends BaseActivityWithTopBar {
 				}
 				break;
 
-			case R.id.tv_campus_person_title:
-				// 跳转到所有好友列表页面
-				Intent personIntent = new Intent(CampusNewsActivity.this,
-						CampusAllPersonActivity.class);
-				personIntent.putExtra("School_Code", UserManager.getInstance()
-						.getUser().getSchool_code());
-				startActivityWithRight(personIntent);
-				break;
 			default:
 				break;
 			}

@@ -83,8 +83,8 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 
 	// 起始左边间距
 	private int oriMarginLeft;
-	// 间隔
-	private int space;
+	// 设置间隔为5
+	private int space = 5;
 	// 点击加号的image弹窗
 	// private AlertDialog imageDialog;
 	private CustomSelectPhotoDialog selectDialog;
@@ -513,7 +513,7 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		if (intent.hasExtra(INTENT_TOPIC_NAME)) {
 			topicName = intent.getStringExtra(INTENT_TOPIC_NAME);
 			if (topicName.length() > 8) {
-				topicName = topicName.substring(0, 8)+"...";
+				topicName = topicName.substring(0, 8) + "...";
 			}
 			setBarText("发表至“" + topicName + "”");
 		}
@@ -522,8 +522,13 @@ public class PublishNewsActivity extends BaseActivityWithTopBar {
 		MarginLayoutParams oriLp = (MarginLayoutParams) addImageView
 				.getLayoutParams();
 		oriMarginLeft = oriLp.leftMargin;
-		space = (getWindowManager().getDefaultDisplay().getWidth()
-				- oriLp.width * 4 - oriMarginLeft * 2) / 3;
+		// 设置图片大小
+		RelativeLayout.LayoutParams rlParams = (RelativeLayout.LayoutParams) addImageView
+				.getLayoutParams();
+		rlParams.height = rlParams.width = (getWindowManager()
+				.getDefaultDisplay().getWidth() - space * 3 - oriMarginLeft * 2) / 4;
+		addImageView.setLayoutParams(rlParams);
+		// 添加完成按钮
 		addRightBtn("完成");
 		locationString = "";
 		// bitmap初始化

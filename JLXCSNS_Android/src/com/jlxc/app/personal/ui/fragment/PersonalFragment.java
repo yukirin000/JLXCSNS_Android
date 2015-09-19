@@ -407,6 +407,8 @@ public class PersonalFragment extends BaseFragment implements
 		return R.layout.fragment_personal;
 	}
 
+	@SuppressWarnings("deprecation")
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public void setUpViews(View rootView) {
 
@@ -459,7 +461,7 @@ public class PersonalFragment extends BaseFragment implements
 		// 渐变色
 		GradientDrawable grad = new GradientDrawable(Orientation.TOP_BOTTOM,
 				new int[] { 0xff999999, 0x05999999 });
-		operateLayout.setBackground(grad);
+		operateLayout.setBackgroundDrawable(grad);
 		operateLayout.setAlpha(0.5f);
 		// 监听滚动事件
 		personScrollView.setOnTouchListener(new OnTouchListener() {

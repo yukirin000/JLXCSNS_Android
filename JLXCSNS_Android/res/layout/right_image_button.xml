@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/selector_main_yellow_click"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingRight="20dp"
         android:scaleType="centerInside"
         android:src="@drawable/delete_btn_click_selector" />
 

@@ -7,14 +7,16 @@
 
     <include layout="@layout/layout_title_bar" />
 
-    <ScrollView
+    <com.jlxc.app.base.ui.view.CustomerScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical" >
 
             <FrameLayout
@@ -23,10 +25,10 @@
 
                 <ImageView
                     android:id="@+id/img_campus_home_cover"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/campus_background" />
+                    android:src="@drawable/school_home_background" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -48,7 +50,7 @@
                     <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="wrap_content"
-                        android:layout_height="50dp"
+                        android:layout_height="55dp"
                         android:padding="5dp"
                         android:src="@drawable/school_localtion" />
 
@@ -112,9 +114,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/right_arrow"
                     android:paddingLeft="5dp"
-                    android:textColor="@color/main_clear_brown"
-                    android:drawableRight="@drawable/right_arrow" />
+                    android:textColor="@color/main_light_black" />
             </LinearLayout>
 
             <LinearLayout
@@ -122,6 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/selector_deep_white_click"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -153,6 +156,6 @@
                     android:textSize="@dimen/font_size_medium" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.jlxc.app.base.ui.view.CustomerScrollView>
 
 </LinearLayout>
