@@ -58,7 +58,7 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 		setUid(intent.getIntExtra(INTENT_KEY, 0));
 //		setBitmapUtils(BitmapManager.getInstance().getHeadPicBitmapUtils(this, R.drawable.default_avatar, true, true));
 		headImageOptions = new DisplayImageOptions.Builder()  
-        .showImageOnLoading(R.drawable.default_avatar)  
+        .showImageOnLoading(R.drawable.loading_default)  
         .showImageOnFail(R.drawable.default_avatar)  
         .cacheInMemory(false)  
         .cacheOnDisk(true)  

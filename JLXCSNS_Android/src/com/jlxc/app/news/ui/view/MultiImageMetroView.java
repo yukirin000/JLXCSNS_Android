@@ -71,7 +71,7 @@ public class MultiImageMetroView extends RelativeLayout {
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
 				.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-				.showImageOnLoading(android.R.color.darker_gray)
+				.showImageOnLoading(R.drawable.loading_default)
 				.showImageOnFail(R.drawable.image_load_fail)
 				.cacheInMemory(false).cacheOnDisk(true)
 				.bitmapConfig(Bitmap.Config.RGB_565).build();

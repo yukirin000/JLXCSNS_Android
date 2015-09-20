@@ -391,7 +391,7 @@ public class BigImgLookActivity extends BaseActivity {
 				FailReason failReason) {
 			loadingDialog.dismiss();
 			imageViewList.get(currentPage).setImageResource(
-					R.drawable.image_download_fail);
+					R.drawable.image_load_fail);
 		}
 
 		@Override

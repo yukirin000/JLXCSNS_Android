@@ -153,7 +153,7 @@ public class CampusNewsActivity extends BaseActivityWithTopBar {
 		imgLoader = ImageLoader.getInstance();
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.drawable.default_avatar)
+				.showImageOnLoading(R.drawable.loading_default)
 				.showImageOnFail(R.drawable.default_avatar).cacheInMemory(true)
 				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
