@@ -396,7 +396,7 @@ public class MainTabActivity extends BaseActivity {
 
 	// 刷新tab 未读标志
 	private void refreshTab() {
-		View messageView = mTabHost.getTabWidget().getChildAt(1);
+		View messageView = mTabHost.getTabWidget().getChildAt(2);
 		TextView unreadTextView = (TextView) messageView
 				.findViewById(R.id.unread_text_view);
 		// 聊天页面
