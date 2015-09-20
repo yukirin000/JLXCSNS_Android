@@ -1018,7 +1018,7 @@ public class NewsDetailActivity extends BaseActivityWithTopBar {
 									.getUid()))) {
 						// 如果是自己发布的评论，则删除评论
 						List<String> menuList = new ArrayList<String>();
-						menuList.add("删除评论");
+						menuList.add("删除回复");
 						final CustomListViewDialog downDialog = new CustomListViewDialog(
 								NewsDetailActivity.this, menuList);
 						downDialog.setClickCallBack(new ClickCallBack() {
