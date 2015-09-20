@@ -257,7 +257,7 @@ public class MyFansListActivity extends BaseActivityWithTopBar {
 		//取消关注或者关注
 		if (friend.isOrHasAttent()) {
 			final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-					this, "确定要取消关注"+friend.getName()+"吗", "确定", "取消");
+					this, "确定要取消关注“"+friend.getName()+"”吗？", "确定", "取消");
 			confirmDialog.show();
 			confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 						@Override

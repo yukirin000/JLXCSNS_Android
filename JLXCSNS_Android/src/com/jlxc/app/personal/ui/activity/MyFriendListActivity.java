@@ -84,7 +84,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
                 .bitmapConfig(Bitmap.Config.RGB_565)  
                 .build();
 		
-		setBarText("我的关注的人 ");
+		setBarText("我关注的人 ");
 		
 		init();
 		listviewSet();
@@ -248,7 +248,7 @@ public class MyFriendListActivity extends BaseActivityWithTopBar {
 		
 		FriendModel friend = dataList.get(index);
 		final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-				this, "确定要取消关注"+friend.getName()+"吗", "确定", "取消");
+				this, "确定要取消关注“"+friend.getName()+"”吗？", "确定", "取消");
 		confirmDialog.show();
 		confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 					@Override
