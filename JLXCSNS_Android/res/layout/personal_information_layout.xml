@@ -201,25 +201,23 @@
 
         <TextView
             android:id="@+id/school_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dip"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:text="什么学校？？？？"
             android:textColor="@color/main_deep_black"
             android:textSize="@dimen/font_size_medium" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/right_arrow" />
-        </RelativeLayout>
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/right_arrow" />
     </LinearLayout>
 
     <View

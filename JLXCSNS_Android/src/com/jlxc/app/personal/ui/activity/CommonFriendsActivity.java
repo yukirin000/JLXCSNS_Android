@@ -65,7 +65,7 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
         .bitmapConfig(Bitmap.Config.RGB_565)  
         .build();
 		
-		setBarText("共同的朋友们 <(▰˘◡˘▰)>");
+		setBarText("共同关注的人 ");
 		
 		initGridView();
 		getData();
@@ -119,7 +119,7 @@ public class CommonFriendsActivity extends BaseActivityWithTopBar {
 							String jsonString = jResult.getString(JLXCConst.HTTP_LIST);
 							List<CommonFriendsModel> commonsFriendslist = JSON.parseArray(jsonString, CommonFriendsModel.class);
 							if (commonsFriendslist.size()>0) {
-								setBarText("共同好友"+"（"+commonsFriendslist.size()+"）");								
+								setBarText("共同关注的人"+"（"+commonsFriendslist.size()+"）");								
 							}
 							
 							commonAdapter.replaceAll(commonsFriendslist);

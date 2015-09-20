@@ -113,7 +113,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dip"
-                            android:text="生活小点滴  (●′ω`●)"
+                            android:text="动态记录"
                             android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
@@ -128,7 +128,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginRight="5dip"
                                 android:layout_toLeftOf="@+id/my_image_arrow"
-                                android:textColor="@color/main_char_gary"
+                                android:textColor="@color/main_clear_brown"
                                 android:textSize="@dimen/font_size_small" />
 
                             <ImageView
@@ -191,7 +191,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_char_gary"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
 
@@ -231,7 +231,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_char_gary"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
                 </LinearLayout>

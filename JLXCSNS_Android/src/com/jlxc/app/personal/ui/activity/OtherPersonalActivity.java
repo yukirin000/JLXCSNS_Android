@@ -59,7 +59,8 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-@SuppressLint("NewApi") public class OtherPersonalActivity extends BaseActivity {
+@SuppressLint("NewApi")
+public class OtherPersonalActivity extends BaseActivity {
 
 	public final static String INTENT_KEY = "uid";
 
@@ -78,7 +79,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 	// 头像
 	@ViewInject(R.id.head_image_view)
 	private ImageView headImageView;
-
 	// 顶部姓名
 	@ViewInject(R.id.top_name_text_view)
 	private TextView topNameTextView;
@@ -246,6 +246,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		return R.layout.activity_other_personal;
 	}
 
+	@SuppressLint("ClickableViewAccessibility")
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void setUpView() {
 		// 显示头像的配置
@@ -297,7 +299,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		// 渐变色
 		GradientDrawable grad = new GradientDrawable(Orientation.TOP_BOTTOM,
 				new int[] { 0xff999999, 0x05999999 });
-		operateLayout.setBackground(grad);
+		operateLayout.setBackgroundDrawable(grad);
 		operateLayout.setAlpha(0.5f);
 		// 监听滚动事件
 		personScrollView.setOnTouchListener(new OnTouchListener() {
@@ -480,23 +482,23 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		// 好友数量
 		if (jsonObject.getIntValue("friend_count") > 0) {
 			hisFriendsCountTextView.setText(jsonObject
-					.getIntValue("friend_count") + "人");
+					.getIntValue("friend_count") + "");
 		} else {
-			hisFriendsCountTextView.setText("0" + "人");
+			hisFriendsCountTextView.setText("0");
 		}
 		// 粉丝数量
 		if (jsonObject.getIntValue("fans_count") > 0) {
 			hisFansCountTextView.setText(jsonObject.getIntValue("fans_count")
-					+ "人");
+					+ "");
 		} else {
-			hisFansCountTextView.setText("0" + "人");
+			hisFansCountTextView.setText("0");
 		}
 		// 共同好友数量
 		if (jsonObject.getIntValue("common_friend_count") > 0) {
 			commonFriendCountTextView.setText(jsonObject
-					.getIntValue("common_friend_count") + "人");
+					.getIntValue("common_friend_count")+"");
 		} else {
-			commonFriendCountTextView.setText("0" + "人");
+			commonFriendCountTextView.setText("0");
 		}
 
 		// 融云刷新信息
@@ -705,7 +707,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 		// popupWindow.dismiss();
 
 		final CustomAlertDialog confirmDialog = new CustomAlertDialog(this,
-				"确定要删除好友" + otherUserModel.getName() + "吗", "确定", "取消");
+				"确定取消关注“" + otherUserModel.getName() + "”吗", "确定", "取消");
 		confirmDialog.show();
 		confirmDialog
 				.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
@@ -740,7 +742,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 				+ "");
 		params.addBodyParameter("friend_id", otherUserModel.getUid() + "");
 
-		showLoading("删除中..", false);
+		showLoading("取消中...", false);
 		HttpManager.post(JLXCConst.DELETE_FRIEND, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 

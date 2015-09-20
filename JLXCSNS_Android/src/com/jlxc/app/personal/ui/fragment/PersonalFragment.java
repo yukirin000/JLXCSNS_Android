@@ -407,6 +407,8 @@ public class PersonalFragment extends BaseFragment implements
 		return R.layout.fragment_personal;
 	}
 
+	@SuppressWarnings("deprecation")
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public void setUpViews(View rootView) {
 
@@ -459,7 +461,7 @@ public class PersonalFragment extends BaseFragment implements
 		// 渐变色
 		GradientDrawable grad = new GradientDrawable(Orientation.TOP_BOTTOM,
 				new int[] { 0xff999999, 0x05999999 });
-		operateLayout.setBackground(grad);
+		operateLayout.setBackgroundDrawable(grad);
 		operateLayout.setAlpha(0.5f);
 		// 监听滚动事件
 		personScrollView.setOnTouchListener(new OnTouchListener() {
@@ -650,9 +652,11 @@ public class PersonalFragment extends BaseFragment implements
 			// 签名返回
 			String signString = data.getStringExtra("sign");
 			if (null == signString || "".equals(signString)) {
-				signTextView.setText("暂无");
+				signTextView.setText("牛逼的签名可以彰显彪悍的人生");
+				signTextView.setTextColor(Color.rgb(204, 204, 204));
 			} else {
 				signTextView.setText(signString);
+				signTextView.setTextColor(Color.rgb(77, 77, 77));
 			}
 			uploadInformation("sign", signString);
 		} else {
@@ -722,7 +726,7 @@ public class PersonalFragment extends BaseFragment implements
 		confirmTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String name = et_search.getText().toString();
+				String name = et_search.getText().toString().trim();
 				if (name.length() < 1) {
 					ToastUtil.show(getActivity(), "昵称不能为空");
 					return;
@@ -731,7 +735,7 @@ public class PersonalFragment extends BaseFragment implements
 					ToastUtil.show(getActivity(), "昵称不能超过10个字");
 					return;
 				}
-				uploadInformation("name", et_search.getText().toString());
+				uploadInformation("name", name);
 				nameTextView.setText(name);
 				dialog.dismiss();
 			}
@@ -1059,8 +1063,14 @@ public class PersonalFragment extends BaseFragment implements
 								userModel.setName(value);
 							} else if ("sign".equals(field)) {
 								// 签名
-								userModel.setSign(value);
-								signTextView.setText(value);
+								if ("".equals(value)) {
+									signTextView.setText("牛逼的签名可以彰显彪悍的人生");
+									signTextView.setTextColor(Color.rgb(204,
+											204, 204));
+								} else {
+									userModel.setSign(value);
+									signTextView.setText(value);
+								}
 							} else if ("birthday".equals(field)) {
 								// 生日
 								userModel.setBirthday(value);

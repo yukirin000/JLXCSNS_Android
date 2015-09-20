@@ -105,9 +105,9 @@ public class OtherAttentOrFansActivity extends BaseActivityWithTopBar {
 		}
 		
 		if (isAttentOrFans()) {
-			setBarText("TA关注的人  (●´ω｀●)φ");
+			setBarText("TA关注的人");
 		}else {
-			setBarText("关注TA的人  (●´ω｀●)φ");
+			setBarText("关注TA的人");
 		}
 		
 		// 获取屏幕尺寸
@@ -241,7 +241,7 @@ public class OtherAttentOrFansActivity extends BaseActivityWithTopBar {
 		//取消关注或者关注
 		if (friend.isOrHasAttent()) {
 			final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-					this, "确定要取消关注"+friend.getName()+"吗", "确定", "取消");
+					this, "确定要取消关注“"+friend.getName()+"”吗", "确定", "取消");
 			confirmDialog.show();
 			confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 						@Override
@@ -270,7 +270,7 @@ public class OtherAttentOrFansActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
 		params.addBodyParameter("friend_id", friend.getUid()+"");
 		
-		showLoading("添加中^_^", false);
+		//showLoading("添加中^_^", false);
 		HttpManager.post(JLXCConst.Add_FRIEND, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 
@@ -312,7 +312,7 @@ public class OtherAttentOrFansActivity extends BaseActivityWithTopBar {
 		params.addBodyParameter("user_id", UserManager.getInstance().getUser().getUid()+"");
 		params.addBodyParameter("friend_id", friend.getUid()+"");
 		
-		showLoading("删除中..", false);
+		showLoading("取消中..", false);
 		HttpManager.post(JLXCConst.DELETE_FRIEND, params,
 				new JsonRequestCallBack<String>(new LoadDataHandler<String>() {
 

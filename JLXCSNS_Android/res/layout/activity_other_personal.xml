@@ -16,7 +16,8 @@
     <com.jlxc.app.base.ui.view.CustomerScrollView
         android:id="@+id/scrollView_other_person"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:scrollbars="none" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -210,7 +211,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dip"
-                            android:text="TA记录的小点滴 (●′ω`●)"
+                            android:text="发布过的动态"
                             android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
@@ -225,7 +226,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginRight="5dip"
                                 android:layout_toLeftOf="@+id/my_image_arrow"
-                                android:textColor="@color/main_char_gary"
+                                android:textColor="@color/main_clear_brown"
                                 android:textSize="@dimen/font_size_small" />
 
                             <ImageView
@@ -262,6 +263,7 @@
                         android:id="@+id/his_friend_layout"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:background="@drawable/selector_deep_white_click"
                         android:gravity="center_vertical"
                         android:orientation="horizontal" >
 
@@ -278,7 +280,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="TA关注的人"
-                            android:textColor="@color/main_deep_black"
+                            android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
                         <TextView
@@ -287,7 +289,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_char_gary"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
 
@@ -300,6 +302,7 @@
                         android:id="@+id/his_fans_layout"
                         android:layout_width="match_parent"
                         android:layout_height="50dip"
+                        android:background="@drawable/selector_deep_white_click"
                         android:gravity="center_vertical"
                         android:orientation="horizontal" >
 
@@ -316,7 +319,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="关注TA的人"
-                            android:textColor="@color/main_deep_black"
+                            android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
                         <TextView
@@ -325,7 +328,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_char_gary"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
 
@@ -338,6 +341,7 @@
                         android:id="@+id/common_friend_layout"
                         android:layout_width="match_parent"
                         android:layout_height="50dip"
+                        android:background="@drawable/selector_deep_white_click"
                         android:gravity="center_vertical"
                         android:orientation="horizontal" >
 
@@ -354,7 +358,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="共同关注"
-                            android:textColor="@color/main_deep_black"
+                            android:textColor="@color/main_brown"
                             android:textSize="@dimen/font_size_small" />
 
                         <TextView
@@ -363,7 +367,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:text="11"
-                            android:textColor="@color/main_char_gary"
+                            android:textColor="@color/main_clear_brown"
                             android:textSize="@dimen/font_size_small" />
                     </LinearLayout>
                 </LinearLayout>
@@ -399,8 +403,8 @@
 
         <ImageButton
             android:id="@+id/return_image_view"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:background="#00000000"
@@ -409,13 +413,13 @@
 
         <ImageButton
             android:id="@+id/setting_Button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:background="#00000000"
             android:padding="10dp"
-            android:src="@drawable/other_setting_selector"
+            android:src="@drawable/selector_unfollow_icon"
             android:visibility="gone" />
     </RelativeLayout>
 

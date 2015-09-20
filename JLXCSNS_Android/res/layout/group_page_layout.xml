@@ -41,7 +41,7 @@
             android:layout_marginTop="10dp"
             android:layout_weight="6"
             android:scaleType="centerCrop"
-            android:src="@drawable/campus_background" />
+            android:src="@drawable/school_home_background" />
 
         <LinearLayout
             android:layout_width="match_parent"
