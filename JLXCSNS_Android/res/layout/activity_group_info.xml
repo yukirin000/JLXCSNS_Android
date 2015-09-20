@@ -242,6 +242,12 @@
                         android:gravity="center_vertical"
                         android:text=""
                         android:textColor="@color/main_light_black" />
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/right_arrow" />
                 </LinearLayout>
 
                 <View
