@@ -163,7 +163,7 @@ public class VisitListActivity extends BaseActivityWithTopBar {
 //							deleteBuilder.show();
 							
 							final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-									VisitListActivity.this, "确定要删除吗", "确定", "取消");
+									VisitListActivity.this, "确定要删除吗？", "确定", "取消");
 							confirmDialog.show();
 							confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
 										@Override

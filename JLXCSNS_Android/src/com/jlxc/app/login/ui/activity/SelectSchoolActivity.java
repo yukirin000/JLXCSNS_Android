@@ -189,12 +189,12 @@ public class SelectSchoolActivity extends BaseActivityWithTopBar {
 						SchoolModel.JUNIOR_MIDDLE_SCHOOL)) {
 					helper.setText(R.id.school_location_textView,
 							item.getCityName() + item.getDistrictName()
-									+ "◆ 初中");
+									+ " ▪ 初中");
 				} else if (item.getSchoolType().equals(
 						SchoolModel.SENIOR_MIDDLE_SCHOOL)) {
 					helper.setText(R.id.school_location_textView,
 							item.getCityName() + item.getDistrictName()
-									+ "◆ 高中");
+									+ " ▪ 高中");
 				} else {
 					// 其他
 				}

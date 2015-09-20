@@ -552,7 +552,7 @@ public class MainNewsListFragment extends BaseFragment {
 		} else {
 			helper.setVisible(R.id.txt_main_news_user_tag, true);
 			helper.setText(R.id.txt_main_news_user_tag,
-					" ◆ " + titleData.getTagContent());
+					" ▪ " + titleData.getTagContent());
 		}
 
 		// 设置事件监听

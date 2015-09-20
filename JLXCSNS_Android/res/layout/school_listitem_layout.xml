@@ -2,14 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_white"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-		android:padding="8dip"        
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:padding="8dip" >
 
         <TextView
             android:id="@+id/school_name_textView"
@@ -28,10 +27,10 @@
             android:textColor="@color/main_deep_gary"
             android:textSize="@dimen/font_size_tiny" />
     </LinearLayout>
-	
-    <View 
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@color/main_light_gary"/>
+        android:layout_height="1px"
+        android:background="@color/main_gary" />
 
 </LinearLayout>

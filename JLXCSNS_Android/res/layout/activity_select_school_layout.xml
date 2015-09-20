@@ -51,6 +51,7 @@
             android:cacheColorHint="#00000000"
             android:divider="#cccccc"
             android:dividerHeight="0px"
+            android:listSelector="@drawable/selector_deep_white_click"
             android:fadingEdge="none"
             android:fastScrollEnabled="false"
             android:headerDividersEnabled="false"
