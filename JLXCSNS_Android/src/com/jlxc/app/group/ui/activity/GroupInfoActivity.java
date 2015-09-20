@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -23,7 +22,6 @@ import com.jlxc.app.base.ui.activity.BaseActivityWithTopBar;
 import com.jlxc.app.base.utils.JLXCConst;
 import com.jlxc.app.base.utils.LogUtils;
 import com.jlxc.app.base.utils.ToastUtil;
-import com.jlxc.app.group.model.GroupCategoryModel;
 import com.jlxc.app.personal.ui.activity.OtherPersonalActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -54,6 +52,9 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 	// 创建者姓名
 	@ViewInject(R.id.create_name_text_view)
 	private TextView createNameTextView;
+	// 类别名
+	@ViewInject(R.id.category_name)
+	private TextView categoryNametTextView;
 	// 创建者头像
 	@ViewInject(R.id.create_head_image_view)
 	private ImageView createImageView;
@@ -80,6 +81,7 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 	private ImageView memberDImageView;
 
 	// 加载图片
+	@SuppressWarnings("unused")
 	private ImageLoader imgLoader;
 	// 图片配置
 	private DisplayImageOptions options;
@@ -89,29 +91,54 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 	private boolean isJoin;
 	// 创建人ID
 	private int creatorId;
+	//类别ID
+	private int categoryId;
+	//类别名字
+	private String categoryName;
 	// 成员数组
 	private List<TopicMember> topicMembers;
 
 	@OnClick({ R.id.layout_group_info_create_creator,
-			R.id.layout_group_info_member, R.id.btn_group_operate })
+			R.id.layout_group_info_member, R.id.btn_group_operate, R.id.category_layout})
 	private void clickEvent(View view) {
 		switch (view.getId()) {
 		// 点击创建人item
 		case R.id.layout_group_info_create_creator:
-			Intent creatorIntent = new Intent(this, OtherPersonalActivity.class);
-			creatorIntent.putExtra(OtherPersonalActivity.INTENT_KEY, creatorId);
-			startActivityWithRight(creatorIntent);
+			if (creatorId != 0) {
+				Intent creatorIntent = new Intent(this, OtherPersonalActivity.class);
+				creatorIntent.putExtra(OtherPersonalActivity.INTENT_KEY, creatorId);
+				startActivityWithRight(creatorIntent);				
+			}
 			break;
 		// 查看所有所有成员
 		case R.id.layout_group_info_member:
-			Intent allIntent = new Intent(this, GroupAllPersonActivity.class);
-			allIntent.putExtra(GroupAllPersonActivity.INTENT_KEY, topicId);
-			startActivityWithRight(allIntent);
+			if (topicId != 0) {
+				Intent allIntent = new Intent(this, GroupAllPersonActivity.class);
+				allIntent.putExtra(GroupAllPersonActivity.INTENT_KEY, topicId);
+				startActivityWithRight(allIntent);				
+			}
 			break;
 		// 操作按钮事件
 		case R.id.btn_group_operate:
-			joinOrExit();
+			if (topicId != 0) {
+				joinOrExit();				
+			}
 			break;
+		// 类别布局
+		case R.id.category_layout:
+			if (categoryId != 0) {
+				// 跳转至更多圈子列表
+				Intent intentToGroupList = new Intent();
+				intentToGroupList.setClass(this,MoreGroupListActivity.class);
+				intentToGroupList.putExtra(
+						MoreGroupListActivity.INTENT_CATEGORY_ID_KEY,
+						categoryId);
+				intentToGroupList.putExtra(
+						MoreGroupListActivity.INTENT_CATEGORY_NAME_KEY,
+						categoryName);
+				startActivityWithRight(intentToGroupList);				
+			}
+			break;			
 		default:
 			break;
 		}
@@ -238,6 +265,11 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 				topicImageView, options);
 		// 创建者
 		createNameTextView.setText(content.getString("name"));
+		//类别ID
+		categoryId = content.getIntValue("category_id");
+		categoryName = content.getString("category_name");
+		// 类别名
+		categoryNametTextView.setText(categoryName);
 		creatorId = content.getIntValue("user_id");
 		// 创建者头像
 		ImageLoader.getInstance()
@@ -261,6 +293,11 @@ public class GroupInfoActivity extends BaseActivityWithTopBar {
 			groupOperateButton.setText("关注");
 			groupOperateButton
 					.setBackgroundResource(R.drawable.alert_dialog_confirm_btn_normal);
+		}
+		
+		//如果是创建者隐藏
+		if (creatorId == UserManager.getInstance().getUser().getUid()) {
+			groupOperateButton.setVisibility(View.GONE);
 		}
 
 		topicMembers = new ArrayList<GroupInfoActivity.TopicMember>();

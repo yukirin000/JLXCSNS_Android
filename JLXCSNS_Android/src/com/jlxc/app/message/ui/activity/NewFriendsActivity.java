@@ -87,7 +87,6 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 			protected void convert(HelloHaBaseAdapterHelper helper, final IMModel item) {
 				//头像
 				ImageView imageView = helper.getView(R.id.head_image_view);
-//				bitmapUtils.display(imageView, JLXCConst.ATTACHMENT_ADDR+item.getAvatarPath());
 				if (null != item.getAvatarPath() && item.getAvatarPath().length() > 0) {
 					ImageLoader.getInstance().displayImage(JLXCConst.ATTACHMENT_ADDR + item.getAvatarPath(), imageView, headImageOptions);					
 				}else {
@@ -110,25 +109,6 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 				}else {
 					helper.setText(R.id.time_text_view, "");
 				}
-				
-//				//好友管理本地持久化废弃 隐藏该按钮
-//				TextView addTextView = helper.getView(R.id.add_text_view);
-//				addTextView.setVisibility(View.GONE);
-//				//点击添加
-//				addTextView.setOnClickListener(new OnClickListener() {
-//					@Override
-//					public void onClick(View v) {
-//						addFriend(item);
-//					}
-//				});
-//				//按钮
-//				if (item.getCurrentState() == IMModel.GroupHasAdd) {
-//					addTextView.setText("已添加");
-//					addTextView.setEnabled(false);
-//				}else {
-//					addTextView.setText("添加");
-//					addTextView.setEnabled(true);
-//				}
 			}
 		};
 		newFriendListView.setAdapter(newFriendAdapter);
@@ -150,37 +130,6 @@ public class NewFriendsActivity extends BaseActivityWithTopBar {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					final int position, long id) {
-//				new AlertDialog.Builder(NewFriendsActivity.this).setTitle("确定要删除吗").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialog, int which) {
-//						IMModel imModel = newFriendAdapter.getItem(position);
-//						imModel.setIsNew(0);
-//						imModel.update();
-////						imModel.remove();
-//						refreshListView(); 
-//					}
-//				}).setNegativeButton("取消", null).show();
-				
-//				final CustomAlertDialog confirmDialog = new CustomAlertDialog(
-//						NewFriendsActivity.this, "确定要删除吗", "确定", "取消");
-//				confirmDialog.show();
-//				confirmDialog.setClicklistener(new CustomAlertDialog.ClickListenerInterface() {
-//							@Override
-//							public void doConfirm() {
-//								IMModel imModel = newFriendAdapter.getItem(position);
-//								imModel.setIsNew(0);
-//								imModel.update();
-////								imModel.remove();
-//								refreshListView(); 
-//								confirmDialog.dismiss();
-//							}
-//
-//							@Override
-//							public void doCancel() {
-//								confirmDialog.dismiss();
-//							}
-//						});					
-				
 				
 				List<String> menuList = new ArrayList<String>();
 				menuList.add("删除内容");

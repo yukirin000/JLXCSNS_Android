@@ -25,8 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
-import com.jlxc.app.R;
-import com.jlxc.app.R.color;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jlxc.app.R;
@@ -79,6 +78,7 @@ public class GroupMainFragment extends BaseFragment {
 	// 上下文信息
 	private Context mContext;
 	// 加载图片
+	@SuppressWarnings("unused")
 	private ImageLoader imgLoader;
 	// 图片配置
 	private DisplayImageOptions options;
