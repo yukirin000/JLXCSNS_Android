@@ -3,8 +3,11 @@ package com.jlxc.app.group.ui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -38,24 +41,24 @@ import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
  * */
 public class MoreGroupListActivity extends BaseActivityWithTopBar {
 
-	//id
+	// id
 	public final static String INTENT_CATEGORY_ID_KEY = "categoryID";
-	//名字
+	// 名字
 	public final static String INTENT_CATEGORY_NAME_KEY = "categoryName";
 	// 加载图片
 	private ImageLoader imgLoader;
 	// 图片配置
 	private DisplayImageOptions options;
 	// 标头
-//	@ViewInject(R.id.tv_discovey_group_title)
+	// @ViewInject(R.id.tv_discovey_group_title)
 	private TextView titleTextView;
-	//category标题
+	// category标题
 	private TextView categoryNameTextView;
-	//category描述
-	private TextView categoryDescTextView;	
-	//category封面
+	// category描述
+	private TextView categoryDescTextView;
+	// category封面
 	private ImageView categoryImageView;
-	
+
 	// 推荐的圈子
 	@ViewInject(R.id.listview_discovey_group)
 	private PullToRefreshListView discoveryGroupListView;
@@ -65,13 +68,12 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 	private ItemViewClick itemViewClickListener;
 	// 是否下拉刷新
 	private boolean isPullDowm = false;
-	//是否是最后一页
-	private boolean isLast = false; 
-	//当前的页数
+	// 是否是最后一页
+	private boolean isLast = false;
+	// 当前的页数
 	private int currentPage = 1;
-	//当前的类别
+	// 当前的类别
 	private int categoryId = 0;
-	
 
 	@Override
 	public int setLayoutId() {
@@ -104,22 +106,26 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.loading_default)
-				.showImageOnFail(R.drawable.image_load_fail).cacheInMemory(true)
-				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+				.showImageOnFail(R.drawable.school_home_background)
+				.cacheInMemory(true).cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
 	 * listvew head的初始化
 	 * */
 	private void listHeadSet() {
+
 		// 添加顶部布局与初始化事件
-		View header = View.inflate(MoreGroupListActivity.this,
-				R.layout.discovery_group_head, null);
+		View header = View.inflate(this, R.layout.discovery_group_head, null);
 		discoveryGroupListView.getRefreshableView().addHeaderView(header);
-		
-		categoryNameTextView = (TextView) header.findViewById(R.id.category_name_text_view);
-		categoryDescTextView = (TextView) header.findViewById(R.id.category_desc_text_view);
-		categoryImageView = (ImageView) header.findViewById(R.id.category_image_view);
+
+		categoryNameTextView = (TextView) header
+				.findViewById(R.id.category_name_text_view);
+		categoryDescTextView = (TextView) header
+				.findViewById(R.id.category_desc_text_view);
+		categoryImageView = (ImageView) header
+				.findViewById(R.id.category_image_view);
 	}
 
 	/**
@@ -149,7 +155,8 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 					}
 				});
 		// 设置底部自动刷新
-		discoveryGroupListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+		discoveryGroupListView
+				.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 
 					@Override
 					public void onLastItemVisible() {
@@ -166,8 +173,8 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 					}
 				});
 		// 快宿滑动时不加载图片
-		discoveryGroupListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),
-				false, true));
+		discoveryGroupListView.setOnScrollListener(new PauseOnScrollListener(
+				ImageLoader.getInstance(), false, true));
 
 		/**
 		 * adapter的设置
@@ -179,12 +186,15 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					GroupTopicModel item) {
 				// 数据绑定
-				imgLoader.displayImage(JLXCConst.ATTACHMENT_ADDR + item.getTopic_cover_sub_image(),
+				imgLoader.displayImage(
+						JLXCConst.ATTACHMENT_ADDR
+								+ item.getTopic_cover_sub_image(),
 						(ImageView) helper.getView(R.id.img_group_cover),
 						options);
 				helper.setText(R.id.text_group_name, item.getTopic_name());
-				helper.setText(R.id.text_group_member_count, item.getMember_count() + "人关注");
-				//新闻数量
+				helper.setText(R.id.text_group_member_count,
+						item.getMember_count() + "人关注");
+				// 新闻数量
 				int newsCount = item.getNews_count();
 				if (newsCount < 2 && !item.isHas_news()) {
 					newsCount = 0;
@@ -227,31 +237,43 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 						int status = jsonResponse
 								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-							//最后一页
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							// 最后一页
 							if (0 < jResult.getIntValue("is_last")) {
-								isLast = true;								
-							}else {
+								isLast = true;
+							} else {
 								isLast = false;
 							}
-							//有类别
+							// 有类别
 							if (jResult.containsKey("category")) {
-								JSONObject object = jResult.getJSONObject("category");
-								categoryNameTextView.setText(object.getString("category_name"));
-								categoryDescTextView.setText(object.getString("category_desc"));
-								String categoryImage = object.getString("category_cover");
-								if (null != categoryImage && categoryImage.length() > 1) {
-									ImageLoader.getInstance().displayImage(JLXCConst.ROOT_PATH+categoryImage, categoryImageView, options);
+								JSONObject object = jResult
+										.getJSONObject("category");
+								categoryNameTextView.setText(object
+										.getString("category_name"));
+								categoryDescTextView.setText(object
+										.getString("category_desc"));
+								String categoryImage = object
+										.getString("category_cover");
+								if (null != categoryImage
+										&& categoryImage.length() > 1) {
+									ImageLoader.getInstance()
+											.displayImage(
+													JLXCConst.ROOT_PATH
+															+ categoryImage,
+													categoryImageView, options);
 								}
 							}
 							// 获取数据列表
-							List<JSONObject> JPersonList = (List<JSONObject>) jResult.get(JLXCConst.HTTP_LIST);
+							List<JSONObject> JPersonList = (List<JSONObject>) jResult
+									.get(JLXCConst.HTTP_LIST);
 							JsonToItemData(JPersonList);
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(MoreGroupListActivity.this, jsonResponse
-									.getString(JLXCConst.HTTP_MESSAGE));
+							ToastUtil.show(MoreGroupListActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 							discoveryGroupListView.onRefreshComplete();
 						}
 					}
@@ -260,7 +282,8 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 					public void onFailure(HttpException arg0, String arg1,
 							String flag) {
 						super.onFailure(arg0, arg1, flag);
-						ToastUtil.show(MoreGroupListActivity.this, "网络抽筋了,请检查 =_=");
+						ToastUtil.show(MoreGroupListActivity.this,
+								"网络抽筋了,请检查 =_=");
 						discoveryGroupListView.onRefreshComplete();
 					}
 
@@ -271,35 +294,36 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 	 * 数据解析
 	 * */
 	private void JsonToItemData(List<JSONObject> dataList) {
-		
+
 		List<GroupTopicModel> list = new ArrayList<GroupTopicModel>();
 		for (JSONObject jsonObject : dataList) {
-			//数据处理
+			// 数据处理
 			GroupTopicModel topicModel = new GroupTopicModel();
 			topicModel.setTopic_id(jsonObject.getIntValue("topic_id"));
-			topicModel.setTopic_cover_sub_image(jsonObject.getString("topic_cover_sub_image"));
+			topicModel.setTopic_cover_sub_image(jsonObject
+					.getString("topic_cover_sub_image"));
 			topicModel.setTopic_name(jsonObject.getString("topic_name"));
 			topicModel.setTopic_detail(jsonObject.getString("topic_detail"));
 			topicModel.setNews_count(jsonObject.getIntValue("news_count"));
 			topicModel.setMember_count(jsonObject.getIntValue("member_count"));
 			if (1 == jsonObject.getIntValue("has_news")) {
 				topicModel.setHas_news(true);
-			}else {
+			} else {
 				topicModel.setHas_news(false);
 			}
 			list.add(topicModel);
 		}
-		//如果是下拉刷新
+		// 如果是下拉刷新
 		if (isPullDowm) {
 			discoveryGroupAdapter.replaceAll(list);
-		}else {
+		} else {
 			discoveryGroupAdapter.addAll(list);
 		}
 		discoveryGroupListView.onRefreshComplete();
-		//是否是最后一页
+		// 是否是最后一页
 		if (isLast) {
 			discoveryGroupListView.setMode(Mode.PULL_FROM_START);
-		}else {
+		} else {
 			discoveryGroupListView.setMode(Mode.BOTH);
 		}
 	}
@@ -313,11 +337,16 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 		public void onClick(View view, int position, int viewID) {
 			switch (viewID) {
 			case R.id.layout_group_item_rootview:
-				GroupTopicModel topicModel = discoveryGroupAdapter.getItem(position);
+				GroupTopicModel topicModel = discoveryGroupAdapter
+						.getItem(position);
 				// 跳转到圈子内容页面
-				Intent groupNewsIntent = new Intent(MoreGroupListActivity.this, GroupNewsActivity.class);
-				groupNewsIntent.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID, topicModel.getTopic_id());
-				groupNewsIntent.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_NAME, topicModel.getTopic_name());
+				Intent groupNewsIntent = new Intent(MoreGroupListActivity.this,
+						GroupNewsActivity.class);
+				groupNewsIntent.putExtra(GroupNewsActivity.INTENT_KEY_TOPIC_ID,
+						topicModel.getTopic_id());
+				groupNewsIntent.putExtra(
+						GroupNewsActivity.INTENT_KEY_TOPIC_NAME,
+						topicModel.getTopic_name());
 				startActivityWithRight(groupNewsIntent);
 				break;
 			default:
