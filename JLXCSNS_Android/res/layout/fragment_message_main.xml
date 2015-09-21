@@ -41,8 +41,8 @@
                     android:textSize="@dimen/action_bar_title_size" />
                 <TextView
                     android:id="@+id/conversation_unread_text_view"
-                    android:layout_width="5dip"
-                    android:layout_height="5dip"
+                    android:layout_width="10dip"
+                    android:layout_height="10dip"
                     android:background="@drawable/small_unread"
                     android:visibility="gone"
                     android:layout_alignParentTop="true"
@@ -68,8 +68,8 @@
 
                 <TextView
                     android:id="@+id/notify_unread_text_view"
-                    android:layout_width="5dip"
-                    android:layout_height="5dip"
+                    android:layout_width="10dip"
+                    android:layout_height="10dip"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@id/notify_text_view"
                     android:visibility="gone"
