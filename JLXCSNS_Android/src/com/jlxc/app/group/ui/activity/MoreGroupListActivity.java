@@ -116,16 +116,20 @@ public class MoreGroupListActivity extends BaseActivityWithTopBar {
 	 * */
 	private void listHeadSet() {
 
-		// 添加顶部布局与初始化事件
-		View header = View.inflate(this, R.layout.discovery_group_head, null);
-		discoveryGroupListView.getRefreshableView().addHeaderView(header);
+		try {
+			// 添加顶部布局与初始化事件
+			View header = View.inflate(this, R.layout.discovery_group_head, null);
+			discoveryGroupListView.getRefreshableView().addHeaderView(header);
 
-		categoryNameTextView = (TextView) header
-				.findViewById(R.id.category_name_text_view);
-		categoryDescTextView = (TextView) header
-				.findViewById(R.id.category_desc_text_view);
-		categoryImageView = (ImageView) header
-				.findViewById(R.id.category_image_view);
+			categoryNameTextView = (TextView) header
+					.findViewById(R.id.category_name_text_view);
+			categoryDescTextView = (TextView) header
+					.findViewById(R.id.category_desc_text_view);
+			categoryImageView = (ImageView) header
+					.findViewById(R.id.category_image_view);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	/**

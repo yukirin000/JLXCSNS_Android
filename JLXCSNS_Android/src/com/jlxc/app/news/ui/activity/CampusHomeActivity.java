@@ -220,6 +220,7 @@ public class CampusHomeActivity extends BaseActivityWithTopBar {
 
 			@Override
 			public void onClick(View arg0) {
+				unreadNewsTextView.setVisibility(View.GONE);
 				// 跳转至校园动态页面
 				Intent intentToGroupNews = new Intent();
 				intentToGroupNews.setClass(CampusHomeActivity.this,CampusNewsActivity.class);
