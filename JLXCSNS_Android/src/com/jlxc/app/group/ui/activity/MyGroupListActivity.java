@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -41,19 +42,22 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class MyGroupListActivity extends BaseActivityWithTopBar {
 
 	// 圈子的相关信息
-//	private final static String GROUP_TYPE = "group_type";
-//	private final static String GROUP_NAME = "group_name";
-//	private final static String GROUP_MEMBER = "group_member";
-//	private final static String GROUP_COVER_IMG = "group_cover_image";
-//	private final static String GROUP_UNREAD_COUNT = "group_unread_msg";
+	// private final static String GROUP_TYPE = "group_type";
+	// private final static String GROUP_NAME = "group_name";
+	// private final static String GROUP_MEMBER = "group_member";
+	// private final static String GROUP_COVER_IMG = "group_cover_image";
+	// private final static String GROUP_UNREAD_COUNT = "group_unread_msg";
 	// 圈子类别
-//	private final static String GROUP_TYPE_SCHOOL = "school";
-//	private final static String GROUP_TYPE_ATTENTION = "attention";
-//	private final static String GROUP_TYPE_CREATE = "create";
+	// private final static String GROUP_TYPE_SCHOOL = "school";
+	// private final static String GROUP_TYPE_ATTENTION = "attention";
+	// private final static String GROUP_TYPE_CREATE = "create";
 
 	// 动态listview
 	@ViewInject(R.id.listview_my_group)
 	private PullToRefreshListView groupListView;
+	// 提示信息
+	@ViewInject(R.id.txt_my_group_prompt)
+	private TextView myGroupPrompt;
 	// 动态列表适配器
 	private HelloHaAdapter<GroupTopicModel> groupAdapter = null;
 	// 用户关注的圈子信息数据
@@ -77,7 +81,7 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 		// 初始化
 		initialize();
 		newsListViewSet();
-		//获取我的圈子列表
+		// 获取我的圈子列表
 		getMyTopicList();
 	}
 
@@ -92,8 +96,9 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 		// 显示图片的配置
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.loading_default)
-				.showImageOnFail(R.drawable.image_load_fail).cacheInMemory(true)
-				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+				.showImageOnFail(R.drawable.image_load_fail)
+				.cacheInMemory(true).cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 	}
 
 	/**
@@ -131,21 +136,25 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 			protected void convert(HelloHaBaseAdapterHelper helper,
 					GroupTopicModel item) {
 				// 关注的圈子
-				imgLoader.displayImage(JLXCConst.ATTACHMENT_ADDR + item.getTopic_cover_sub_image(),
+				imgLoader.displayImage(
+						JLXCConst.ATTACHMENT_ADDR
+								+ item.getTopic_cover_sub_image(),
 						(ImageView) helper.getView(R.id.img_my_group_icon),
 						options);
 				helper.setText(R.id.txt_my_group_name, item.getTopic_name());
 				helper.setText(R.id.txt_group_member_count,
 						item.getMember_count() + "人关注");
-				
+
 				int unread = item.getUnread_news_count();
 				if (unread > 0) {
 					helper.setVisible(R.id.txt_my_group_unread_news_count, true);
-					helper.setText(R.id.txt_my_group_unread_news_count, unread+"");	
-				}else {
-					helper.setVisible(R.id.txt_my_group_unread_news_count, false);
+					helper.setText(R.id.txt_my_group_unread_news_count, unread
+							+ "");
+				} else {
+					helper.setVisible(R.id.txt_my_group_unread_news_count,
+							false);
 				}
-				
+
 				// 设置事件监听
 				final int postion = helper.getPosition();
 				OnClickListener listener = new OnClickListener() {
@@ -181,17 +190,17 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 						GroupNewsActivity.class);
 				// 传递名称
 				intentToGroupNews.putExtra(
-						GroupNewsActivity.INTENT_KEY_TOPIC_NAME,
-						groupAdapter.getItem(postion).getTopic_name());
+						GroupNewsActivity.INTENT_KEY_TOPIC_NAME, groupAdapter
+								.getItem(postion).getTopic_name());
 				// 传递ID
 				intentToGroupNews.putExtra(
-						GroupNewsActivity.INTENT_KEY_TOPIC_ID,
-						groupAdapter.getItem(postion).getTopic_id());
-				//设置为0
+						GroupNewsActivity.INTENT_KEY_TOPIC_ID, groupAdapter
+								.getItem(postion).getTopic_id());
+				// 设置为0
 				GroupTopicModel model = groupList.get(postion);
 				model.setUnread_news_count(0);
 				groupAdapter.replaceAll(groupList);
-				
+
 				startActivityWithRight(intentToGroupNews);
 				break;
 
@@ -209,11 +218,12 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 	private interface ListItemClickHelp {
 		void onClick(View view, int postion, int viewID);
 	}
-	
-	//获取我的话题
-	private void getMyTopicList(){
-		//获取群组详情
-		String path = JLXCConst.GET_MY_TOPIC_LIST+"?user_id="+UserManager.getInstance().getUser().getUid();
+
+	// 获取我的话题
+	private void getMyTopicList() {
+		// 获取群组详情
+		String path = JLXCConst.GET_MY_TOPIC_LIST + "?user_id="
+				+ UserManager.getInstance().getUser().getUid();
 		LogUtils.i(path, 1);
 		HttpManager.get(path, new JsonRequestCallBack<String>(
 				new LoadDataHandler<String>() {
@@ -222,14 +232,19 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 					public void onSuccess(JSONObject jsonResponse, String flag) {
 						super.onSuccess(jsonResponse, flag);
 						hideLoading();
-						int status = jsonResponse.getInteger(JLXCConst.HTTP_STATUS);
+						int status = jsonResponse
+								.getInteger(JLXCConst.HTTP_STATUS);
 						if (status == JLXCConst.STATUS_SUCCESS) {
-							JSONObject jResult = jsonResponse.getJSONObject(JLXCConst.HTTP_RESULT);
-							jsonToGroupData(jResult.getJSONArray(JLXCConst.HTTP_LIST));
+							JSONObject jResult = jsonResponse
+									.getJSONObject(JLXCConst.HTTP_RESULT);
+							jsonToGroupData(jResult
+									.getJSONArray(JLXCConst.HTTP_LIST));
 						}
 
 						if (status == JLXCConst.STATUS_FAIL) {
-							ToastUtil.show(MyGroupListActivity.this, jsonResponse.getString(JLXCConst.HTTP_MESSAGE));
+							ToastUtil.show(MyGroupListActivity.this,
+									jsonResponse
+											.getString(JLXCConst.HTTP_MESSAGE));
 						}
 					}
 
@@ -243,22 +258,30 @@ public class MyGroupListActivity extends BaseActivityWithTopBar {
 
 				}, null));
 	}
-	
+
 	/**
 	 * 数据处理
 	 */
 	private void jsonToGroupData(JSONArray dataList) {
 		groupList.clear();
-		for (int i=0; i < dataList.size(); i++) {
+		for (int i = 0; i < dataList.size(); i++) {
 			JSONObject object = dataList.getJSONObject(i);
 			GroupTopicModel groupTopicModel = new GroupTopicModel();
 			groupTopicModel.setTopic_id(object.getIntValue("topic_id"));
 			groupTopicModel.setTopic_name(object.getString("topic_name"));
 			groupTopicModel.setMember_count(object.getIntValue("member_count"));
-			groupTopicModel.setTopic_cover_sub_image(object.getString("topic_cover_sub_image"));
-			groupTopicModel.setUnread_news_count(object.getIntValue("unread_news_count"));
+			groupTopicModel.setTopic_cover_sub_image(object
+					.getString("topic_cover_sub_image"));
+			groupTopicModel.setUnread_news_count(object
+					.getIntValue("unread_news_count"));
 			groupList.add(groupTopicModel);
 		}
 		groupAdapter.replaceAll(groupList);
+		//显示提示信息
+		if (groupAdapter.getCount() <= 0) {
+			myGroupPrompt.setVisibility(View.VISIBLE);
+		} else {
+			myGroupPrompt.setVisibility(View.GONE);
+		}
 	}
 }

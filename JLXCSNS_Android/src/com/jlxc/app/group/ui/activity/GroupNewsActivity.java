@@ -86,6 +86,9 @@ public class GroupNewsActivity extends BaseActivityWithTopBar {
 	private TextView topicDescTextView;
 	// 顶部关注按钮tv
 	private TextView topicBtnTextView;
+	// 提示信息
+	@ViewInject(R.id.txt_group_news_prompt)
+	private TextView groupNewsPrompt;
 	// 原始数据源
 	private List<NewsModel> newsList = new ArrayList<NewsModel>();
 	// item数据源
@@ -601,26 +604,32 @@ public class GroupNewsActivity extends BaseActivityWithTopBar {
 	 * 数据处理
 	 */
 	private void JsonToNewsModel(List<JSONObject> dataList) {
-		if (null == dataList || dataList.size() < 1) {
-			return;
+		if (null != dataList && dataList.size() >= 1) {
+			List<NewsModel> newDatas = new ArrayList<NewsModel>();
+			for (JSONObject newsObj : dataList) {
+				NewsModel tempNews = new NewsModel();
+				tempNews.setContentWithJson(newsObj);
+				newDatas.add(tempNews);
+			}
+			if (isPullDowm) {
+				// 更新时间戳
+				latestTimesTamp = newDatas.get(0).getTimesTamp();
+				newsList.clear();
+				newsList.addAll(newDatas);
+				newsAdapter.replaceAll(NewsToGroupItem.newsToItem(newDatas));
+			} else {
+				newsList.addAll(newDatas);
+				newsAdapter.addAll(NewsToGroupItem.newsToItem(newDatas));
+			}
+			dataList.clear();
 		}
-		List<NewsModel> newDatas = new ArrayList<NewsModel>();
-		for (JSONObject newsObj : dataList) {
-			NewsModel tempNews = new NewsModel();
-			tempNews.setContentWithJson(newsObj);
-			newDatas.add(tempNews);
-		}
-		if (isPullDowm) {
-			// 更新时间戳
-			latestTimesTamp = newDatas.get(0).getTimesTamp();
-			newsList.clear();
-			newsList.addAll(newDatas);
-			newsAdapter.replaceAll(NewsToGroupItem.newsToItem(newDatas));
+
+		// 显示提示信息
+		if (newsAdapter.getCount() <= 0) {
+			groupNewsPrompt.setVisibility(View.VISIBLE);
 		} else {
-			newsList.addAll(newDatas);
-			newsAdapter.addAll(NewsToGroupItem.newsToItem(newDatas));
+			groupNewsPrompt.setVisibility(View.GONE);
 		}
-		dataList.clear();
 	}
 
 	/**

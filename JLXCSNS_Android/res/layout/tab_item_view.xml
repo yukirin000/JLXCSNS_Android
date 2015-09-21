@@ -29,8 +29,8 @@
 
     <TextView
         android:id="@+id/unread_text_view"
-        android:layout_width="7dip"
-        android:layout_height="7dip"
+        android:layout_width="10dip"
+        android:layout_height="10dip"
         android:background="@drawable/small_unread"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="15dp"
